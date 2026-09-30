@@ -58,9 +58,12 @@ arcgis_as_sf <- function(data, features, metadata, spatial_reference = NULL,
 
   if (!length(geometries) || all(missing)) {
     # Construct a typed prototype first so a zero-row result keeps its type.
-    geometry <- sf::st_sfc(lapply(seq_len(max(1L, length(features))), function(i) {
+    prototype <- sf::st_sfc(lapply(seq_len(max(1L, length(features))), function(i) {
       arcgis_empty_geometry(geometry_type)
-    }), crs = crs)[seq_along(features)]
+    }), crs = crs)
+    geometry <- prototype[seq_along(features)]
+    # Older sf versions generalize an empty subset to sfc_GEOMETRY.
+    if (!length(features)) class(geometry) <- class(prototype)
     return(arcgis_attach_geometry(data, geometry))
   }
 
@@ -146,10 +149,8 @@ arcgis_attach_geometry <- function(data, geometry) {
   # A source field named 'geometry' must survive unchanged.
   name <- "geometry"
   while (name %in% names(data)) name <- paste0(".", name)
-  column <- list(geometry)
-  names(column) <- name
-  args <- c(list(data), column, list(sf_column_name = name))
-  do.call(sf::st_sf, args)
+  data[[name]] <- geometry
+  sf::st_as_sf(data, sf_column_name = name)
 }
 
 arcgis_empty_geometry <- function(type) {
