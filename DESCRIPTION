@@ -1,0 +1,26 @@
+Package: tampaBayOpenData
+Title: An R Interface to Tampa Bay Public Open Data
+Version: 0.1.0
+Authors@R: person("Jaclenga", role = c("aut", "cre"),
+    email = "jack3lenga@gmail.com")
+Description: Discover, inspect, and retrieve authoritative public datasets
+    through a small catalog-driven interface. The initial release supports
+    City of Tampa ArcGIS feature and map services, with verified dataset
+    metadata, checked pagination, server-side filtering, typed tabular
+    results, optional spatial objects, and attached source provenance.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports:
+    httr2 (>= 1.2.3),
+    jsonlite (>= 1.6.0),
+    tibble
+Suggests:
+    knitr,
+    rmarkdown,
+    sf (>= 1.0.0),
+    testthat (>= 3.2.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.1.0

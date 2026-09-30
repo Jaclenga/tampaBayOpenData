@@ -1,0 +1,169 @@
+---
+title: "Discover and retrieve City of Tampa open data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Discover and retrieve City of Tampa open data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+`tampaBayOpenData` connects a small catalog of verified City of Tampa sources to
+ordinary R tables and spatial objects. The City publishes the data; this package
+provides discovery, querying, pagination, parsing, and provenance.
+
+Catalog examples below run offline. Retrieval examples are displayed without
+contacting government services when this vignette builds. Run them in your R
+session with an internet connection; install `sf` for the spatial example.
+
+## Find a dataset
+
+```{r load, eval=TRUE}
+library(tampaBayOpenData)
+```
+
+The catalog is bundled with the package. Its IDs are stable package identifiers,
+separate from upstream titles and ArcGIS layer numbers.
+
+```{r catalog, eval=TRUE}
+datasets <- list_datasets()
+datasets
+search_datasets("permit")
+```
+
+Only `jurisdiction = "tampa"` is implemented in v0.1. Explicit jurisdiction works
+with the same API:
+
+```{r explicit-jurisdiction, eval=TRUE}
+search_datasets("planning", jurisdiction = "tampa")
+```
+
+## Inspect the source
+
+```{r metadata, eval=TRUE}
+info <- dataset_info("construction-permits")
+str(info, max.level = 1)
+```
+
+Metadata identifies the City publisher, official landing page, service/layer,
+geometry, useful date fields, terms, and endpoint verification date. Fetch live
+metadata to inspect the current field schema and service capabilities:
+
+```{r live-metadata}
+dataset_info("construction-permits", refresh = TRUE)
+```
+
+The permit source contains permit locations and source attributes. A layer's
+title does not by itself establish a complete permit or inspection history.
+
+## Retrieve and analyze attributes
+
+```{r retrieve-permits}
+permits <- get_dataset("construction-permits")
+head(permits)
+table(permits$PROJECTSTATUS, useNA = "ifany")
+```
+
+The default returns a tibble and retrieves every matching record with automatic
+pagination. Source names such as `RECORD_ID` and `PROJECTSTATUS` retain their
+spelling and case. Declared date fields such as `LASTUPDATE` become UTC `POSIXct`
+where their semantics are known. Date-looking strings remain strings.
+
+Reduce the downloaded columns and filter at the service:
+
+```{r filter-permits}
+selected <- get_dataset(
+  "construction-permits",
+  where = "PROJECTSTATUS IS NOT NULL",
+  fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE")
+)
+head(selected)
+```
+
+`where` is an ArcGIS SQL expression. Use source field names and consult the live
+metadata when a service rejects a field. Advanced ArcGIS spatial/time/version
+parameters can be supplied through `query`; see `?get_dataset` for supported
+parameters.
+
+For a deliberate subset ordered by reported update time:
+
+```{r recent-permits}
+recent <- get_permits(order_by = "LASTUPDATE DESC", limit = 100)
+head(recent)
+dataset_provenance(recent)
+```
+
+The convenience function calls the same generic client. A limit below the
+matching count is recorded with a false completeness flag. It is suitable for
+exploration, but is not the full matching dataset.
+
+## Retrieve spatial development cases
+
+The verified `development-cases` dataset represents active entitlement locations.
+Its source fields include `RECORDID`, `ADDRESS`, `APPSTATUS`, and `LASTUPDATE`.
+
+```{r spatial-development}
+projects <- get_dataset(
+  "development-cases",
+  fields = c("RECORDID", "ADDRESS", "APPSTATUS", "LASTUPDATE"),
+  spatial = TRUE,
+  out_sr = 4326
+)
+sf::st_crs(projects)
+head(projects)
+plot(sf::st_geometry(projects))
+```
+
+`out_sr = 4326` requests WGS 84 coordinates from the service. Omit it to retain
+the source spatial reference. The client reads CRS metadata rather than assigning
+one shared projection to all datasets. Missing geometry remains represented in
+the returned `sf` object.
+
+Polygon data use the same API:
+
+```{r boundary}
+boundary <- get_dataset("city-boundary", spatial = TRUE, out_sr = 4326)
+plot(sf::st_geometry(boundary))
+```
+
+## Keep provenance with an analysis
+
+```{r provenance}
+provenance <- dataset_provenance(projects)
+provenance
+saveRDS(list(data = projects, provenance = provenance), "development-cases.rds")
+```
+
+Provenance records the government source, package dataset ID, endpoint, retrieval
+time, query options, expected/returned rows, and completeness. Save it separately
+if subsequent transformations drop custom attributes. Do not cite this package
+as the government publisher.
+
+The client compares a matching count and object-ID manifest with downloaded
+batches. A truncated response, unexpected ID, missing record, or duplicate page
+produces an error rather than a result presented as complete. Live services can
+change during a request; those checks establish record membership, not a frozen
+transactional snapshot of every attribute.
+
+## Handle service changes
+
+An unknown ID is resolved with `list_datasets()`. An unknown field is resolved
+with `dataset_info(id, refresh = TRUE)`. For an unavailable service, inspect the
+dataset's official source page, retry later, or increase `timeout`:
+
+```{r longer-timeout}
+capital <- get_capital_projects(timeout = 60)
+```
+
+For a retrieval-integrity failure, retry or narrow `where`; do not silently
+discard the failure. Very large queries can exceed the upstream object-ID
+manifest cap and must be filtered. Spatial retrieval requires `sf` and a
+resolvable source or requested CRS. Unknown date time zones remain raw with a
+warning.
+
+Read the source's limitations and terms before using a dataset. The catalog
+verification date describes an endpoint check, not the freshness or completeness
+of every government record.
