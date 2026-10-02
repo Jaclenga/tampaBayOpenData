@@ -2,28 +2,33 @@
 % Please edit documentation in R/catalog.R
 \name{dataset_info}
 \alias{dataset_info}
-\title{Inspect a dataset and its government source}
+\title{Inspect a checked or discovered dataset and its source}
 \usage{
 dataset_info(id, jurisdiction = "tampa", refresh = FALSE, timeout = 30)
 }
 \arguments{
-\item{id}{Stable package dataset ID from \code{\link[=list_datasets]{list_datasets()}}.}
+\item{id}{Checked package ID, one-row discovery descriptor, or stable
+ArcGIS item/layer identifier.}
 
-\item{jurisdiction}{Government provider. v0.1 supports only \code{"tampa"}.}
+\item{jurisdiction}{Checked-registry jurisdiction. Omit for a discovered
+result or stable ArcGIS ID so its source jurisdiction is used.}
 
 \item{refresh}{Whether to request live layer metadata.}
 
 \item{timeout}{Per-request timeout in seconds.}
 }
 \value{
-A named list of registry metadata. Live inspection adds \code{fields}
+A named list of dataset metadata. Live inspection adds \code{fields}
 (a tibble), \code{metadata} (the raw layer metadata), and \code{inspected_at} (UTC).
 }
 \description{
-The default is an offline registry lookup. Set \code{refresh = TRUE} to retrieve
-the current layer schema, aliases, field types, CRS, query capabilities, and
-upstream editing metadata when available. Registry verification dates are
-endpoint checks, not dates when government records were updated.
+A checked package ID reads the offline registry. A one-row discovery result
+carries its portal metadata; a stable \verb{arcgis:<item-id>:<layer-id>} identifier
+looks up the current portal item. Set \code{refresh = TRUE} to retrieve the current
+layer schema, aliases, field types,
+CRS, query capabilities, and upstream editing metadata when available.
+Registry verification dates are endpoint checks, not dates when government
+records were updated.
 }
 \examples{
 dataset_info("construction-permits")

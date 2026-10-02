@@ -2,24 +2,49 @@
 % Please edit documentation in R/catalog.R
 \name{search_datasets}
 \alias{search_datasets}
-\title{Search the supported dataset catalog}
+\title{Search Tampa Bay ArcGIS datasets}
 \usage{
-search_datasets(query, jurisdiction = "tampa")
+search_datasets(
+  query,
+  jurisdiction = "tampa",
+  source = "all",
+  portals = "all",
+  max_items = Inf,
+  timeout = 30
+)
 }
 \arguments{
-\item{query}{A single search string; punctuation is treated literally.}
+\item{query}{A single search string. Checked matching treats punctuation
+literally; live matching uses the ArcGIS portal search index.}
 
-\item{jurisdiction}{Government provider. v0.1 supports only \code{"tampa"}.}
+\item{jurisdiction}{Checked-registry jurisdiction. v0.1 has City of Tampa
+checked entries. Live organizations are selected with \code{portals}.}
+
+\item{source}{\code{"all"} (default) combines live discovery with the checked
+registry; \code{"live"} returns layers found through the portal with checked
+matches marked; \code{"checked"} reads only the offline registry.}
+
+\item{portals}{Live ArcGIS organizations to search: \code{"city"}, \code{"tbrpc"}
+(Tampa Bay Regional Planning Council), or \code{"all"} (default). A character
+vector of \code{"city"} and \code{"tbrpc"} is also accepted. This does not filter the
+bundled checked catalog.}
+
+\item{max_items}{Maximum number of portal service items to scan per selected
+organization. \code{Inf} (default) follows all available search pages. This
+limits items, not expanded layers.}
+
+\item{timeout}{Timeout in seconds for each HTTP attempt.}
 }
 \value{
 A tibble with the same columns as \code{\link[=list_datasets]{list_datasets()}}.
 }
 \description{
-Searches titles, descriptions, tags, categories, and package IDs using
-case-insensitive literal substring matching. Multiple whitespace-separated
-words must all match somewhere in the record. An empty query lists all records.
+Live searches use the selected public ArcGIS portal indexes. Checked entries are
+also matched locally by literal, case-insensitive words in their ID, title,
+description, category, and tags. Portal search can include other indexed
+fields, so its results need not follow the checked catalog's literal matching.
 }
 \examples{
-search_datasets("permit")
-search_datasets("capital projects")
+search_datasets("permit", source = "checked")
+\dontrun{search_datasets("housing")}
 }

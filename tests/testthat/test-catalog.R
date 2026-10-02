@@ -1,14 +1,17 @@
-test_that("the bundled catalog is offline, verified, and City-only", {
+test_that("the bundled catalog is offline, verified, and City-published", {
   local_mocked_bindings(arcgis_http = function(...) stop("unexpected network"),
                         .package = "tampaBayOpenData")
   entries <- .read_registry()
   expect_invisible(.validate_registry(entries))
-  catalog <- list_datasets()
+  catalog <- list_datasets(source = "checked")
   expect_s3_class(catalog, "tbl_df")
-  expect_equal(nrow(catalog), 11L)
+  expect_equal(nrow(catalog), 20L)
   expect_setequal(catalog$id, c("construction-permits", "development-cases",
     "capital-projects", "city-boundary", "neighborhoods", "council-districts",
-    "riverwalk", "parks", "fire-stations", "bike-lanes", "recycling-pickup"))
+    "riverwalk", "parks", "fire-stations", "bike-lanes", "recycling-pickup",
+    "community-redevelopment", "high-injury-network", "historic-district-local",
+    "historic-landmarks-local", "police-districts", "street-speed-reductions",
+    "truck-routes", "water-service-area", "zoning-districts"))
   expect_identical(unique(catalog$jurisdiction), "tampa")
   expect_identical(unique(catalog$publisher), "City of Tampa")
   expect_s3_class(catalog$verified, "Date")
@@ -115,20 +118,20 @@ test_that("dataset IDs are unique within a jurisdiction", {
 })
 
 test_that("search matches literal words across metadata fields", {
-  expect_identical(search_datasets(" ACTIVE permit ")$id, "construction-permits")
-  expect_identical(search_datasets("CAPITAL projects")$id, "capital-projects")
-  expect_identical(search_datasets("riverwalk infrastructure")$id, "riverwalk")
-  expect_equal(nrow(search_datasets("per.*")), 0L)
-  expect_equal(nrow(search_datasets("[")), 0L)
-  expect_equal(nrow(search_datasets("a phrase with no matching dataset")), 0L)
-  expect_equal(search_datasets(" \t\n "), list_datasets())
-  expect_equal(search_datasets(""), list_datasets())
-  expect_error(search_datasets(c("permit", "park")), "single nonmissing string")
-  expect_error(search_datasets(NA_character_), "single nonmissing string")
+  expect_identical(search_datasets(" ACTIVE permit ", source = "checked")$id, "construction-permits")
+  expect_identical(search_datasets("CAPITAL projects", source = "checked")$id, "capital-projects")
+  expect_identical(search_datasets("riverwalk infrastructure", source = "checked")$id, "riverwalk")
+  expect_equal(nrow(search_datasets("per.*", source = "checked")), 0L)
+  expect_equal(nrow(search_datasets("[", source = "checked")), 0L)
+  expect_equal(nrow(search_datasets("a phrase with no matching dataset", source = "checked")), 0L)
+  expect_equal(search_datasets(" \t\n ", source = "checked"), list_datasets(source = "checked"))
+  expect_equal(search_datasets("", source = "checked"), list_datasets(source = "checked"))
+  expect_error(search_datasets(c("permit", "park"), source = "checked"), "single nonmissing string")
+  expect_error(search_datasets(NA_character_, source = "checked"), "single nonmissing string")
 })
 
 test_that("search combines category, tags, and title without changing catalog rows", {
-  catalog <- list_datasets()
+  catalog <- list_datasets(source = "checked")
   cases <- list(
     c("transportation trails", "bike-lanes"),
     c("public safety facilities", "fire-stations"),
@@ -137,14 +140,14 @@ test_that("search combines category, tags, and title without changing catalog ro
     c("bike-lanes", "bike-lanes")
   )
   for (case in cases) {
-    actual <- search_datasets(case[[1L]])
+    actual <- search_datasets(case[[1L]], source = "checked")
     expect_identical(actual$id, case[[2L]])
     expect_identical(actual, catalog[catalog$id == case[[2L]], , drop = FALSE])
   }
-  expect_identical(search_datasets("  PUBLIC   safety\tFACILITIES  ")$id,
+  expect_identical(search_datasets("  PUBLIC   safety\tFACILITIES  ", source = "checked")$id,
                    "fire-stations")
-  expect_equal(nrow(search_datasets("CC0")), 0L)
-  empty <- search_datasets("no-such-category")
+  expect_equal(nrow(search_datasets("CC0", source = "checked")), 0L)
+  empty <- search_datasets("no-such-category", source = "checked")
   expect_s3_class(empty, "tbl_df")
   expect_identical(names(empty), names(catalog))
   expect_identical(vapply(empty, typeof, character(1)),
@@ -176,9 +179,9 @@ test_that("lookup explains unsupported IDs and jurisdictions", {
   expect_error(dataset_info("made-up"), "Unknown dataset.*list_datasets")
   expect_error(dataset_info("construction-permits", jurisdiction = "pinellas"),
                "Unsupported jurisdiction.*tampa")
-  expect_error(list_datasets("hillsborough"), "v0.1 supports the City of Tampa")
+  expect_error(list_datasets("hillsborough", source = "checked"), "v0.1 supports the City of Tampa")
   expect_error(dataset_info(c("parks", "riverwalk")), "single nonmissing string")
-  expect_error(list_datasets(NA_character_), "single nonmissing string")
+  expect_error(list_datasets(NA_character_, source = "checked"), "single nonmissing string")
   expect_error(dataset_info("parks", refresh = NA), "TRUE or FALSE")
   expect_error(dataset_info("parks", timeout = 0), "timeout")
 })

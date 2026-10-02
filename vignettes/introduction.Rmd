@@ -1,8 +1,8 @@
 ---
-title: "Discover and retrieve City of Tampa open data"
+title: "Discover and retrieve Tampa Bay ArcGIS data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Discover and retrieve City of Tampa open data}
+  %\VignetteIndexEntry{Discover and retrieve Tampa Bay ArcGIS data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -11,26 +11,61 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 ```
 
-`tampaBayOpenData` helps you discover a curated catalog of City of Tampa open
-datasets and query the City's public services through stable package IDs and a
-consistent interface. It retrieves records as R tables or optional `sf`
-objects, attaching provenance and completeness information to each retrieval.
-The City publishes the data; this package helps you retrieve and assess it.
+`tampaBayOpenData` searches public City of Tampa and Tampa Bay Regional Planning
+Council ArcGIS datasets. It also includes 20 City layers that package maintainers
+have checked. The same client retrieves checked or newly discovered layers as R
+tables or optional `sf` objects, with provenance and completeness information.
 
-Catalog examples run offline. Examples that query City services are displayed
-but not executed during vignette builds; run them in an internet-connected R
-session.
+The checked catalog examples run offline. Live discovery and retrieval examples
+are displayed but not executed during vignette builds; run them in an R session
+with internet access.
 
 ## Find a dataset
 
 ```{r catalog, eval=TRUE}
 library(tampaBayOpenData)
-list_datasets()[, c("id", "title")]
-search_datasets("permit")
+list_datasets(source = "checked")[, c("id", "title", "validation_status")]
+search_datasets("permit", source = "checked")
 ```
 
-Only `jurisdiction = "tampa"` is supported in version 0.1.0. Catalog IDs are
-stable package identifiers, not ArcGIS item or layer IDs.
+`source = "checked"` reads the bundled City registry without a network request.
+Checked IDs are stable package names, separate from ArcGIS item and layer IDs.
+The `jurisdiction` argument selects checked City entries; `portals` selects
+live City and regional organizations.
+
+Search the live portals when you need more than the checked catalog:
+
+```{r live-discovery}
+# The default `source = "all", portals = "all"` also includes checked entries.
+found <- search_datasets("housing", source = "live", portals = "city")
+found[, c("id", "title", "publisher", "geometry_type", "validation_status")]
+
+# Inspect one candidate's source before retrieving it.
+selected <- found[1, ]
+selected[, c("item_id", "service_url", "layer_id", "portal")]
+```
+
+`validation_status = "checked"` means maintainers specifically tested that
+layer. `"discovered"` identifies a candidate from a public portal index;
+maintainers have not validated its contents or reuse terms. Retrieval checks
+that the selected layer advertises ArcGIS Query capability. Unchecked live IDs
+have the form `arcgis:<item-id>:<layer-id>` and remain usable if a title changes.
+A portal item may still be deleted or its service
+changed. `list_datasets()` searches both public organizations by default;
+`source = "checked"` remains available if the network is unavailable.
+
+```{r discovered-retrieval}
+# A one-row discovery result carries its source and item metadata.
+housing <- get_dataset(selected, limit = 100)
+dataset_provenance(housing)[c("item_id", "portal", "validation_status")]
+
+# Its ID can also be passed to get_dataset() in a later online session:
+# housing <- get_dataset(selected$id[[1]], limit = 100)
+```
+
+The discovery result includes the item's `modified` date, tags, and service
+location when available. That date is not necessarily the last update to its
+records. `max_items` limits portal items scanned per organization, not layers.
 
 ## Inspect dataset metadata
 
@@ -39,8 +74,8 @@ info <- dataset_info("construction-permits")
 info[c("title", "source_url", "scope_note", "verified")]
 ```
 
-`source_url` links to the City source, and `scope_note` describes limits on
-what the dataset represents. The `verified` date records an endpoint check,
+`source_url` links to the checked City source, and `scope_note` describes limits
+on what the dataset represents. The `verified` date records an endpoint check,
 not the freshness of individual records. To inspect current field names,
 request the live schema:
 
@@ -60,15 +95,25 @@ permits <- get_dataset(
 head(permits)
 ```
 
-`where` uses ArcGIS SQL, and `fields` uses exact source names. By default,
-`limit = Inf` retrieves every match. A finite limit returns a subset and
-provenance marks it incomplete if more records match. `order_by` requests
-server ordering where supported; `get_permits()` is a shortcut for this
+`where` uses ArcGIS SQL rather than Socrata SoQL, and `fields` uses exact source
+names. By default, `limit = Inf` retrieves every match. A finite limit returns a
+subset, and provenance marks it incomplete if more records match. `order_by`
+requests server ordering where supported; `get_permits()` is a shortcut for this
 dataset. See `?get_dataset` for other filters and limits.
 
 Results retain source field names and strings. Declared date fields become
 UTC `POSIXct` when their time-zone meaning is known. Dates with unknown
 time-zone semantics remain raw milliseconds with a warning.
+
+You can also retrieve a compatible public ArcGIS layer directly by its URL:
+
+```{r direct-layer}
+direct <- get_arcgis_layer(
+  "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/4",
+  limit = 10
+)
+dataset_provenance(direct)$validation_status # "not_checked" for direct URL access
+```
 
 ## Explore the results
 
@@ -171,9 +216,10 @@ saveRDS(
 )
 ```
 
-Provenance includes the publisher, source URL, query endpoint, retrieval time,
-row counts, and completeness. Save it separately with your data because later
-R transformations may discard custom attributes.
+Provenance includes the publisher, source URL, portal and item ID when known,
+validation status, query endpoint, retrieval time, row counts, and
+completeness. Save it separately with your data because later R transformations
+may discard custom attributes.
 
 ## Important limitations
 
@@ -190,5 +236,7 @@ For a temporary service failure, check the source URL and retry. Queries
 matching more than one million records are rejected because a complete
 object-ID manifest is required; narrow `where` first.
 
-When using City data for analysis, keep its provenance and revisit the
-dataset's stated scope before sharing conclusions.
+Discovered items may lack clear reuse terms or may be stale in the portal
+index. Review each item's source and terms before analysis; the package does
+not verify those terms. The package's MIT
+license applies to its code, not to data from either source organization.

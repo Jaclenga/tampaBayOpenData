@@ -70,6 +70,9 @@
   entry <- found[[1L]]
   entry$tags <- unlist(entry$tags, use.names = FALSE) %||% character()
   entry$date_fields <- unlist(entry$date_fields, use.names = FALSE) %||% character()
+  entry$validation_status <- "checked"
+  entry$portal <- if (!is.null(entry$item_id))
+    "https://www.arcgis.com/sharing/rest" else NULL
   entry
 }
 
@@ -82,5 +85,18 @@
   cols$date_fields <- lapply(entries, function(x) unlist(x$date_fields, use.names = FALSE) %||% character())
   cols$tags <- lapply(entries, function(x) unlist(x$tags, use.names = FALSE) %||% character())
   cols$verified <- as.Date(cols$verified)
+  cols$item_id <- vapply(entries, function(x) x$item_id %||% NA_character_, character(1))
+  cols$portal <- ifelse(is.na(cols$item_id), NA_character_,
+                        "https://www.arcgis.com/sharing/rest")
+  cols$validation_status <- rep("checked", length(entries))
+  modified <- vapply(entries, function(x) x$upstream_modified %||% NA_character_,
+                     character(1))
+  cols$modified <- as.POSIXct(sub("\\+00:00$", "", modified),
+                              format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+  cols$service_type <- ifelse(grepl("/FeatureServer$", cols$service_url),
+                              "FeatureServer", "MapServer")
+  cols$layer_type <- ifelse(cols$geometry_type == "none", "Table", "Feature Layer")
+  cols$categories <- lapply(entries, function(x) x$category)
+  cols$original_metadata <- entries
   tibble::as_tibble(cols)
 }

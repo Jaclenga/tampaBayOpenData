@@ -3,7 +3,7 @@ test_that("new source schemas retrieve point, line, and polygon geometry with mi
   snapshots <- jsonlite::fromJSON(test_path("fixtures", "tampa-layer-schemas.json"),
                                   simplifyVector = FALSE)
   cases <- list(
-    list(id = "fire-stations", field = "GIS.FacilitySitePoint.NAME",
+    list(id = "fire-stations", field = "NAME",
          geometry = list(x = -9180000, y = 3220000), type = "POINT"),
     list(id = "bike-lanes", field = "ROADWAY",
          geometry = list(paths = list(list(c(0, 0), c(10, 10)))),

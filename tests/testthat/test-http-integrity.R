@@ -52,3 +52,26 @@ test_that("the retry loop recovers from consecutive gateway failures", {
   expect_true(length(waits) >= 2L)
   expect_true(all(is.finite(waits) & waits >= 0))
 })
+
+test_that("the retry loop recovers from a transient transport failure", {
+  attempts <- 0L
+  waits <- numeric()
+  local_mocked_bindings(
+    req_perform = fixture_req_perform,
+    req_perform1 = function(req, ...) {
+      attempts <<- attempts + 1L
+      # httr2's transport returns a curl error condition for retry handling.
+      if (attempts == 1L) return(simpleError("synthetic connection reset"))
+      httr2::response(status_code = 200L, url = req$url,
+                      body = charToRaw('{"count":1}'))
+    },
+    sys_sleep = function(seconds, ...) waits <<- c(waits, seconds),
+    .package = "httr2"
+  )
+  response <- arcgis_http("https://example.invalid/FeatureServer/0",
+                          list(f = "json"), 1)
+  expect_identical(response$status, 200L)
+  expect_identical(attempts, 2L)
+  expect_gte(length(waits), 2L)
+  expect_true(all(is.finite(waits) & waits >= 0))
+})

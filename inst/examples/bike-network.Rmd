@@ -17,12 +17,12 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 ## Find the source
 
-Catalog lookups do not contact the City.
+The checked catalog lookup does not contact the City.
 
 ```{r catalog}
 library(tampaBayOpenData)
 
-bike_catalog <- search_datasets("bike")
+bike_catalog <- search_datasets("bike", source = "checked")
 bike_catalog[, c("id", "title", "category", "verified")]
 
 bike_info <- dataset_info("bike-lanes")

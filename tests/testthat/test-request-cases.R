@@ -48,6 +48,43 @@ test_that("a rate limit is retried, while nontransient statuses fail immediately
   }
 })
 
+test_that("generic ArcGIS query failures retry without hiding specific errors", {
+  url <- "https://example.invalid/FeatureServer/0/query"
+  intermittent <- fixture_response(list(error = list(
+    code = 400L, message = "Unable to complete operation.", details = list())))
+  attempts <- 0L
+  waits <- integer()
+  local_mocked_bindings(
+    arcgis_http = function(...) {
+      attempts <<- attempts + 1L
+      if (attempts <= 2L) intermittent else fixture_response(list(count = 2L))
+    },
+    .arcgis_retry_pause = function(attempt) waits <<- c(waits, attempt),
+    .package = "tampaBayOpenData"
+  )
+  expect_identical(arcgis_request(url)$count, 2L)
+  expect_identical(attempts, 3L)
+  expect_identical(waits, 1:2)
+
+  attempts <- 0L
+  local_mocked_bindings(arcgis_http = function(...) {
+    attempts <<- attempts + 1L
+    intermittent
+  }, .package = "tampaBayOpenData")
+  expect_error(arcgis_request(url), "Unable to complete operation",
+               class = "tampa_arcgis_error")
+  expect_identical(attempts, 4L)
+
+  attempts <- 0L
+  local_mocked_bindings(arcgis_http = function(...) {
+    attempts <<- attempts + 1L
+    fixture_response(list(error = list(code = 400L,
+      message = "Invalid field", details = list("Unknown column"))))
+  }, .package = "tampaBayOpenData")
+  expect_error(arcgis_request(url), "Invalid field", class = "tampa_arcgis_error")
+  expect_identical(attempts, 1L)
+})
+
 test_that("object-ID manifests require JSON arrays, including for zero matches", {
   cases <- list(
     list(features = fixture_features(), change = function(payload) {

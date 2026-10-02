@@ -30,7 +30,21 @@ arcgis_http <- function(url, params, timeout) {
   min(max(delay, 0), 30)
 }
 
+# Some ArcGIS backends intermittently send an error JSON body with HTTP 200.
+# Retry only the generic query failure; specific ArcGIS errors remain immediate.
 arcgis_request <- function(url, params = list(), dataset = NULL, timeout = 30) {
+  for (attempt in seq_len(4L)) {
+    result <- tryCatch(.arcgis_request_once(url, params, dataset, timeout),
+                       tampa_arcgis_transient_error = identity)
+    if (!inherits(result, "tampa_arcgis_transient_error")) return(result)
+    if (attempt == 4L) stop(result)
+    .arcgis_retry_pause(attempt)
+  }
+}
+
+.arcgis_retry_pause <- function(attempt) Sys.sleep(0.25 * attempt)
+
+.arcgis_request_once <- function(url, params, dataset, timeout) {
   params$f <- "json"
   response <- tryCatch(arcgis_http(url, params, timeout), error = function(e) {
     .abort(paste0("The upstream ArcGIS service could not be reached: ", conditionMessage(e)),
@@ -69,10 +83,15 @@ arcgis_request <- function(url, params = list(), dataset = NULL, timeout = 30) {
         is.na(err$message)) {
       .abort("The upstream service returned a malformed ArcGIS error object.", dataset, url, "tampa_response_error")
     }
+    retryable <- grepl("/query$", url) && isTRUE(err$code == 400) &&
+      identical(err$message, "Unable to complete operation.") &&
+      !length(err$details)
     .abort(paste0("ArcGIS error ", err$code %||% "(unknown)", ": ",
                   err$message %||% "The query failed.",
                   if (length(err$details)) paste0(" ", paste(unlist(err$details), collapse = "; "))),
-           dataset, url, "tampa_arcgis_error")
+           dataset, url, if (retryable)
+             c("tampa_arcgis_transient_error", "tampa_arcgis_error") else
+             "tampa_arcgis_error")
   }
   result
 }

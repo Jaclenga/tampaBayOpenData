@@ -1,6 +1,12 @@
-#' Retrieve a supported government dataset
+#' Retrieve a checked or discovered ArcGIS dataset
 #'
-#' Resolves the registry entry and requests the current ArcGIS layer schema,
+#' Accepts a checked package ID from [list_datasets()], a single discovery
+#' result row from [search_datasets()], or a stable `arcgis:<item-id>:<layer-id>`
+#' identifier. The latter two paths use current ArcGIS portal metadata; they
+#' have not received the package's curated source validation. For a compatible
+#' layer URL outside the discovery portal, use [get_arcgis_layer()].
+#'
+#' Requests the current ArcGIS layer schema,
 #' matching count, and object-ID manifest. Bounded requests are validated against
 #' that manifest. A missing or duplicate record, truncated manifest, unexpected
 #' response, or upstream error fails explicitly. With `limit = Inf`, all matching
@@ -27,8 +33,10 @@
 #' retry waits are capped at 30 seconds. Spatial WKT must be an inline definition.
 #' Keep native curl, GDAL, and PROJ libraries patched; these checks do not isolate
 #' native parsers or bound decompression memory on older curl builds.
-#' @param id Stable package dataset ID from [list_datasets()].
-#' @inheritParams list_datasets
+#' @param id Checked package dataset ID, one-row discovered dataset descriptor,
+#'   or stable `arcgis:<32-hex-item-id>:<nonnegative-layer-id>` identifier.
+#' @param jurisdiction Checked-registry jurisdiction. Omit for a discovered
+#'   result or stable ArcGIS ID so its source jurisdiction is used.
 #' @param where ArcGIS SQL WHERE clause, using actual source field names.
 #'   Defaults to `"1=1"` (all records). See [dataset_info()] with `refresh = TRUE`.
 #' @param fields Character vector of exact source field names, or NULL/`"*"` for
@@ -53,8 +61,8 @@
 #'   Values can be scalars or JSON-style lists. Response format, field selection,
 #'   aggregation, geometry simplification, and pagination parameters are protected.
 #' @param timeout Timeout in seconds for each HTTP attempt. Transient transport
-#'   and service errors receive up to three attempts; this is not an overall
-#'   retrieval deadline.
+#'   and HTTP failures may receive three attempts; one generic ArcGIS query
+#'   error may receive four. This is not an overall retrieval deadline.
 #' @return A tibble, or an sf object when spatial retrieval is requested. Source
 #'   metadata are attached as `source`, `dataset_id`, `jurisdiction`, and
 #'   `retrieved_at` attributes; [dataset_provenance()] returns the full record.
@@ -81,13 +89,36 @@ get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL
     if (!spatial) .abort("`out_sr` requires `spatial = TRUE`.")
   }
   query_params <- .query_params(query)
-  dataset <- .lookup_dataset(id, jurisdiction)
+  requested_jurisdiction <- if (missing(jurisdiction) &&
+                                (!is.character(id) ||
+                                 (length(id) == 1L && !is.na(id) &&
+                                  startsWith(id, "arcgis:")))) {
+    NULL
+  } else jurisdiction
+  dataset <- .resolve_dataset(id, requested_jurisdiction, timeout)
+  .retrieve_dataset(dataset, where, fields, spatial, out_sr, order_by,
+                    limit, page_size, query, query_params, timeout)
+}
+
+# The checked catalog, portal discovery, and direct URL entry points share all
+# query, parsing, spatial, and provenance behavior after descriptor resolution.
+.retrieve_dataset <- function(dataset, where, fields, spatial, out_sr, order_by,
+                              limit, page_size, query, query_params, timeout) {
   started_at <- .utc_now()
   tryCatch({
     if (spatial && !arcgis_has_sf()) {
       .abort("Spatial retrieval requires the sf package. Install it with install.packages('sf').")
     }
     metadata <- arcgis_layer(dataset, timeout)
+    geometry_type <- metadata$geometryType
+    if (spatial && (!is.character(geometry_type) || length(geometry_type) != 1L ||
+                    is.na(geometry_type) ||
+                    !geometry_type %in% c("esriGeometryPoint", "esriGeometryMultipoint",
+                                          "esriGeometryPolyline", "esriGeometryPolygon"))) {
+      .abort("This layer has no supported spatial geometry type. Request a table with spatial = FALSE.",
+             dataset, paste0(dataset$service_url, "/", dataset$layer_id),
+             "tampa_spatial_error")
+    }
     selected <- .selected_fields(fields, metadata)
     fetched <- arcgis_fetch(dataset, metadata, where, selected, spatial, out_sr,
                             order_by, limit, page_size, query_params, timeout)
@@ -105,4 +136,33 @@ get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL
     }
     stop(e)
   })
+}
+
+#' Retrieve a compatible ArcGIS layer by URL
+#'
+#' Reads a public HTTPS ArcGIS FeatureServer or MapServer layer through the same
+#' checked pagination and parsing engine as [get_dataset()]. Pass a layer URL
+#' ending in `/FeatureServer/<id>` or `/MapServer/<id>`. This direct path is
+#' marked `not_checked` in [dataset_provenance()]; it has no portal item ID.
+#' A table without geometry can be retrieved with `spatial = FALSE`.
+#'
+#' @param url Public HTTPS ArcGIS layer URL.
+#' @inheritParams get_dataset
+#' @return A tibble, or an sf object when `spatial = TRUE`.
+#' @export
+#' @examples
+#' \dontrun{
+#' data <- get_arcgis_layer(
+#'   "https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer/0",
+#'   limit = 10)
+#' dataset_provenance(data)
+#' }
+get_arcgis_layer <- function(url, where = "1=1", fields = NULL,
+                             spatial = FALSE, out_sr = NULL, order_by = NULL,
+                             limit = Inf, page_size = NULL, query = list(),
+                             timeout = 30) {
+  descriptor <- .direct_arcgis_descriptor(url)
+  get_dataset(descriptor, where = where, fields = fields, spatial = spatial,
+              out_sr = out_sr, order_by = order_by, limit = limit,
+              page_size = page_size, query = query, timeout = timeout)
 }

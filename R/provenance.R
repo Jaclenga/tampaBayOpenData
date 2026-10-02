@@ -15,6 +15,9 @@
     jurisdiction = dataset$jurisdiction, source_url = dataset$source_url,
     service_url = dataset$service_url, layer_id = dataset$layer_id,
     endpoint = paste0(dataset$service_url, "/", dataset$layer_id, "/query"),
+    item_id = dataset$item_id, portal = dataset$portal,
+    validation_status = dataset$validation_status %||% "checked",
+    original_metadata = dataset$original_metadata %||% dataset,
     terms = dataset$terms, endpoint_verified = dataset$verified,
     started_at = started_at, retrieved_at = retrieved,
     package_version = "0.1.0", query = query,
@@ -36,6 +39,9 @@
 #' Provenance is attached to both tabular and spatial retrieval results. It
 #' describes the government publisher, source URL, query endpoint, retrieval
 #' time, original query, expected and returned row counts, and completeness.
+#' `validation_status` is `checked` for bundled, maintainer-validated entries,
+#' `discovered` for live portal results, and `not_checked` for direct layer URLs.
+#' Item ID, portal, and original metadata are included when available.
 #' A successful full retrieval checks membership against an object-ID manifest;
 #' upstream attributes are not guaranteed to be a transactionally frozen snapshot.
 #' Attributes can be lost in subsequent R transformations; save provenance before

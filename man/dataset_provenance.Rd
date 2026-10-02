@@ -16,6 +16,9 @@ A named list containing source metadata and retrieval details.
 Provenance is attached to both tabular and spatial retrieval results. It
 describes the government publisher, source URL, query endpoint, retrieval
 time, original query, expected and returned row counts, and completeness.
+\code{validation_status} is \code{checked} for bundled, maintainer-validated entries,
+\code{discovered} for live portal results, and \code{not_checked} for direct layer URLs.
+Item ID, portal, and original metadata are included when available.
 A successful full retrieval checks membership against an object-ID manifest;
 upstream attributes are not guaranteed to be a transactionally frozen snapshot.
 Attributes can be lost in subsequent R transformations; save provenance before

@@ -6,15 +6,17 @@
 \alias{tampaBayOpenData-package}
 \title{Discover and retrieve City of Tampa public open data}
 \description{
-A small catalog-driven interface to authoritative City of Tampa ArcGIS
-feature and map services. Start with \code{\link[=list_datasets]{list_datasets()}}, \code{\link[=search_datasets]{search_datasets()}},
-and \code{\link[=dataset_info]{dataset_info()}}, then use \code{\link[=get_dataset]{get_dataset()}} to retrieve a tibble or an
-optional \code{sf} object. \code{\link[=dataset_provenance]{dataset_provenance()}} exposes the source and query.
+Search public City of Tampa and Tampa Bay Regional Planning Council ArcGIS
+services with \code{\link[=list_datasets]{list_datasets()}} or \code{\link[=search_datasets]{search_datasets()}}. The bundled catalog
+identifies 20 City layers checked by package maintainers. Use \code{\link[=get_dataset]{get_dataset()}}
+for a checked ID or discovered layer, or \code{\link[=get_arcgis_layer]{get_arcgis_layer()}} for a direct
+compatible URL. Results are tibbles or optional \code{sf} objects;
+\code{\link[=dataset_provenance]{dataset_provenance()}} exposes the source, validation status, and query.
 }
 \details{
-Only the City of Tampa is supported in version 0.1. This independent package
-was inspired by rOpenSci's nycOpenData; it is not affiliated with rOpenSci or
-any government publisher. Government datasets retain their upstream terms.
+This independent package was inspired by rOpenSci's nycOpenData; it is not
+affiliated with rOpenSci or any government publisher. Government datasets
+retain their upstream terms.
 }
 \author{
 \strong{Maintainer}: Jaclenga \email{jack3lenga@gmail.com}

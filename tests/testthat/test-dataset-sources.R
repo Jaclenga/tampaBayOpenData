@@ -212,7 +212,8 @@ test_that("Riverwalk and parks preserve expression field names and source codes"
                            LASTUPDATE = 1704153600000, `SHAPE.STLength()` = 12.75)),
     list(id = "parks",
          attributes = list(PARKNAME = "synthetic-park", SUBTYPE = 4L, PUBLIC_ = "Y",
-                           LASTUPDATE = 1704153600000, ACRES = 1.25,
+                           LASTUPDATE = 1704153600000,
+                           LASTEDITOR = "synthetic-editor", ACRES = 1.25,
                            `Shape.STArea()` = 2500.5, `Shape.STLength()` = 200.25))
   )
   for (case in cases) {
@@ -232,17 +233,15 @@ test_that("Riverwalk and parks preserve expression field names and source codes"
   }
 })
 
-test_that("fire stations use the qualified OID without offset pagination", {
-  oid <- "GIS.FacilitySitePoint.OBJECTID"
-  fields <- c("GIS.FacilitySitePoint.NAME", "GIS.FacilitySitePoint.MAPID",
-              "GIS.FacilitySitePoint.LASTUPDATE", "GIS.GovServiceInfo.OPERDAYS",
-              "GIS.GovServiceInfo.OBJECTID")
+test_that("fire stations use the unjoined Fire source and support ordering", {
+  oid <- "OBJECTID"
+  fields <- c("NAME", "MAPID", "LASTUPDATE", "FULLADDR")
   features <- list(
     source_fixture_feature(setNames(
-      list(41L, "synthetic-north", 3L, 1704153600000, "Monday-Friday", 901L),
+      list(41L, "synthetic-north", 3L, 1704153600000, "synthetic-address-north"),
       c(oid, fields))),
     source_fixture_feature(setNames(
-      list(7L, "synthetic-south", NULL, NULL, "Weekends", 902L),
+      list(7L, "synthetic-south", NULL, NULL, "synthetic-address-south"),
       c(oid, fields)))
   )
   transport <- source_fixture_transport("fire-stations", features)
@@ -253,8 +252,8 @@ test_that("fire stations use the qualified OID without offset pagination", {
   expect_identical(result[[fields[[2L]]]], c(NA_integer_, 3L))
   expect_identical(result[[fields[[3L]]]],
                    as.POSIXct(c(NA_character_, "2024-01-02"), tz = "UTC"))
-  expect_identical(result[[fields[[4L]]]], c("Weekends", "Monday-Friday"))
-  expect_identical(result[[fields[[5L]]]], c(902L, 901L))
+  expect_identical(result[[fields[[4L]]]],
+                   c("synthetic-address-south", "synthetic-address-north"))
   queries <- fixture_queries(transport, "features")
   expect_identical(vapply(queries, function(x) x$params$objectIds, character(1)),
                    c("7", "41"))
@@ -264,10 +263,17 @@ test_that("fire stations use the qualified OID without offset pagination", {
   expect_identical(dataset_provenance(result)$pagination, "object-id batches")
   expect_source_routing(result, transport, "fire-stations", fields)
 
-  expect_error(get_dataset("fire-stations", fields = fields,
-                           order_by = paste(fields[[1L]], "ASC")),
-               "does not support reliable server-side ordering")
-  expect_length(fixture_queries(transport, "features"), 2L)
+  ordered <- get_dataset("fire-stations", fields = fields,
+                         order_by = "NAME DESC", page_size = 1)
+  expect_identical(ordered$NAME, c("synthetic-south", "synthetic-north"))
+  expect_identical(dataset_provenance(ordered)$pagination, "ordered offsets")
+  ordered_queries <- tail(fixture_queries(transport, "features"), 2L)
+  expect_identical(vapply(ordered_queries, function(x) as.character(x$params$resultOffset),
+                          character(1)), c("0", "1"))
+  expect_true(all(vapply(ordered_queries, function(x)
+    identical(x$params$orderByFields, "NAME DESC,OBJECTID ASC"), logical(1))))
+  expect_error(get_dataset("fire-stations", fields = "GIS.GovServiceInfo.OPERDAYS"),
+               "Unknown source field")
 })
 
 test_that("bike lanes preserve measured lengths, dates, and source strings", {
@@ -319,4 +325,152 @@ test_that("recycling pickup keeps collection labels and typed area", {
   expect_identical(result$LASTUPDATE, as.POSIXct("2024-01-02", tz = "UTC"))
   expect_identical(result[["SHAPE.STArea()"]], 1500.25)
   expect_source_routing(result, transport, "recycling-pickup", fields)
+})
+
+test_that("nine additional City schemas preserve their distinct field types", {
+  inspected <- as.POSIXct("2024-01-02", tz = "UTC")
+  cases <- list(
+    list(id = "community-redevelopment",
+         attributes = list(CRA_Name = "synthetic-area", Acres = 15.25,
+                           LASTUPDATE = 1704153600000),
+         expected = list(CRA_Name = "synthetic-area", Acres = 15.25,
+                         LASTUPDATE = inspected)),
+    list(id = "high-injury-network",
+         attributes = list(ONST = "synthetic-street", KSI = 3L,
+                           HINYEAR = "2024", MILES = 1.25),
+         expected = list(ONST = "synthetic-street", KSI = 3L,
+                         HINYEAR = "2024", MILES = 1.25)),
+    list(id = "historic-district-local",
+         attributes = list(HISTORIC_BNDY = "synthetic-district", LIST_YR = "1998",
+                           LASTUPDATE = 1704153600000),
+         expected = list(HISTORIC_BNDY = "synthetic-district", LIST_YR = "1998",
+                         LASTUPDATE = inspected)),
+    list(id = "historic-landmarks-local",
+         attributes = list(LANDMARK_D = "synthetic-landmark", NUMBER = 2.5,
+                           ORD_DATE = "01/02/2024", LASTUPDATE = 1704153600000),
+         expected = list(LANDMARK_D = "synthetic-landmark", NUMBER = 2.5,
+                         ORD_DATE = "01/02/2024", LASTUPDATE = inspected)),
+    list(id = "police-districts",
+         attributes = list(TPD_DISTRI = 3.0, LASTUPDATE = 1704153600000),
+         expected = list(TPD_DISTRI = 3.0, LASTUPDATE = inspected)),
+    list(id = "street-speed-reductions",
+         attributes = list(FULLNAME = "synthetic-road", SPEEDLIMIT = "25",
+                           MAINTBY = 2L, DATEREDUCED = 1704153600000),
+         expected = list(FULLNAME = "synthetic-road", SPEEDLIMIT = "25",
+                         MAINTBY = 2L, DATEREDUCED = inspected)),
+    list(id = "truck-routes",
+         attributes = list(STREETNAME = "synthetic-road", ROUTETYPE = "local",
+                           `SHAPE.STLength()` = 123.75),
+         expected = list(STREETNAME = "synthetic-road", ROUTETYPE = "local",
+                         `SHAPE.STLength()` = 123.75)),
+    list(id = "water-service-area",
+         attributes = list(SERVICEBY = "synthetic-provider",
+                           `SHAPE.STArea()` = 2000.5,
+                           CREATEDDATE = 1704153600000),
+         expected = list(SERVICEBY = "synthetic-provider",
+                         `SHAPE.STArea()` = 2000.5,
+                         CREATEDDATE = inspected)),
+    list(id = "zoning-districts",
+         attributes = list(ZONECLASS = "synthetic-zone", BASEELEV = 2.25,
+                           HEIGHT = 35.5),
+         expected = list(ZONECLASS = "synthetic-zone", BASEELEV = 2.25,
+                         HEIGHT = 35.5))
+  )
+
+  for (case in cases) {
+    fields <- names(case$attributes)
+    feature <- source_fixture_feature(c(list(OBJECTID = 26L), case$attributes))
+    transport <- source_fixture_transport(case$id, list(feature))
+    local_mocked_bindings(arcgis_http = transport$http,
+                          .package = "tampaBayOpenData")
+    result <- get_dataset(case$id, fields = fields, page_size = 1)
+    expect_identical(names(result), fields, info = case$id)
+    expect_identical(nrow(result), 1L, info = case$id)
+    for (field in fields) {
+      expect_identical(result[[field]], case$expected[[field]],
+                       info = paste(case$id, field))
+    }
+    expect_identical(fixture_queries(transport, "features")[[1L]]$params$outFields,
+                     paste(c(fields, "OBJECTID"), collapse = ","), info = case$id)
+    expect_source_routing(result, transport, case$id, fields)
+  }
+})
+
+test_that("new point, line, and polygon layers use their advertised native CRS", {
+  skip_if_not_installed("sf")
+  cases <- list(
+    list(id = "historic-landmarks-local", field = "NAME", type = "POINT",
+         epsg = 3857, geometry = list(x = -9180000, y = 3240000)),
+    list(id = "high-injury-network", field = "ONST", type = "LINESTRING",
+         epsg = 3857,
+         geometry = list(paths = list(list(c(-9180000, 3240000),
+                                           c(-9179000, 3241000))))),
+    list(id = "water-service-area", field = "SERVICEBY", type = "POLYGON",
+         epsg = 2237,
+         geometry = list(rings = list(list(c(500000, 1300000),
+                                           c(500000, 1300100),
+                                           c(500100, 1300100),
+                                           c(500100, 1300000),
+                                           c(500000, 1300000)))))
+  )
+  for (case in cases) {
+    features <- list(
+      source_fixture_feature(setNames(list(14L, "present"),
+                                      c("OBJECTID", case$field)), case$geometry),
+      source_fixture_feature(setNames(list(2L, "missing"),
+                                      c("OBJECTID", case$field)))
+    )
+    transport <- source_fixture_transport(case$id, features)
+    local_mocked_bindings(arcgis_http = transport$http,
+                          .package = "tampaBayOpenData")
+    result <- get_dataset(case$id, fields = case$field, spatial = TRUE,
+                          page_size = 1)
+    expect_s3_class(result, "sf")
+    expect_identical(result[[case$field]], c("missing", "present"), info = case$id)
+    expect_identical(sf::st_is_empty(result), c(TRUE, FALSE), info = case$id)
+    expect_identical(as.character(sf::st_geometry_type(result)[2L]), case$type,
+                     info = case$id)
+    expect_equal(sf::st_crs(result)$epsg, case$epsg, info = case$id)
+    expect_identical(dataset_provenance(result)$returned_rows, 2L)
+    expect_source_routing(result, transport, case$id, case$field)
+  }
+})
+
+test_that("water service polygons accept a server-confirmed WGS 84 projection", {
+  skip_if_not_installed("sf")
+  source_polygon <- list(rings = list(list(c(500000, 1300000),
+                                           c(500000, 1300100),
+                                           c(500100, 1300100),
+                                           c(500100, 1300000),
+                                           c(500000, 1300000))))
+  projected_polygon <- list(rings = list(list(c(-82.5, 27.9),
+                                              c(-82.5, 28.0),
+                                              c(-82.4, 28.0),
+                                              c(-82.4, 27.9),
+                                              c(-82.5, 27.9))))
+  feature <- source_fixture_feature(
+    list(OBJECTID = 7L, SERVICEBY = "synthetic-provider"), source_polygon)
+  metadata <- source_schema_fixture("water-service-area")$metadata
+  transport <- fixture_transport(features = list(feature), metadata = metadata,
+    transform = function(payload, params, url, request_number) {
+      if (identical(params$outSR, "4326") && !is.null(payload$features)) {
+        payload$features[[1L]]$geometry <- projected_polygon
+      }
+      payload
+    })
+  local_mocked_bindings(arcgis_http = transport$http,
+                        .package = "tampaBayOpenData")
+
+  native <- get_dataset("water-service-area", fields = "SERVICEBY", spatial = TRUE)
+  projected <- get_dataset("water-service-area", fields = "SERVICEBY",
+                           spatial = TRUE, out_sr = 4326)
+  expect_equal(sf::st_crs(native)$epsg, 2237)
+  expect_equal(sf::st_crs(projected)$epsg, 4326)
+  expect_identical(as.character(sf::st_geometry_type(projected)), "POLYGON")
+  expect_equal(unname(sf::st_bbox(projected)[c("xmin", "ymin", "xmax", "ymax")]),
+               c(-82.5, 27.9, -82.4, 28.0))
+  queries <- fixture_queries(transport, "features")
+  expect_null(queries[[1L]]$params$outSR)
+  expect_identical(queries[[2L]]$params$outSR, "4326")
+  expect_identical(dataset_provenance(projected)$query$out_sr, 4326)
 })

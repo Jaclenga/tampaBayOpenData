@@ -2,22 +2,51 @@
 % Please edit documentation in R/catalog.R
 \name{list_datasets}
 \alias{list_datasets}
-\title{List the supported public-data catalog}
+\title{List Tampa Bay ArcGIS datasets}
 \usage{
-list_datasets(jurisdiction = "tampa")
+list_datasets(
+  jurisdiction = "tampa",
+  source = "all",
+  portals = "all",
+  max_items = Inf,
+  timeout = 30
+)
 }
 \arguments{
-\item{jurisdiction}{Government provider. v0.1 supports only \code{"tampa"}.}
+\item{jurisdiction}{Checked-registry jurisdiction. v0.1 has City of Tampa
+checked entries. Live organizations are selected with \code{portals}.}
+
+\item{source}{\code{"all"} (default) combines live discovery with the checked
+registry; \code{"live"} returns layers found through the portal with checked
+matches marked; \code{"checked"} reads only the offline registry.}
+
+\item{portals}{Live ArcGIS organizations to search: \code{"city"}, \code{"tbrpc"}
+(Tampa Bay Regional Planning Council), or \code{"all"} (default). A character
+vector of \code{"city"} and \code{"tbrpc"} is also accepted. This does not filter the
+bundled checked catalog.}
+
+\item{max_items}{Maximum number of portal service items to scan per selected
+organization. \code{Inf} (default) follows all available search pages. This
+limits items, not expanded layers.}
+
+\item{timeout}{Timeout in seconds for each HTTP attempt.}
 }
 \value{
-A tibble of dataset metadata, including source and service URLs,
-verification dates, and list columns for tags and declared date fields.
+A tibble with stable IDs, service and layer locations, portal and
+item IDs when available, and \code{validation_status} of \code{"checked"} or
+\code{"discovered"}. The latter means the package has not checked that layer.
+Skipped item errors are attached as \code{attr(result, "discovery_issues")};
+failed portal names are in \code{attr(result, "discovery_failed_portals")}.
 }
 \description{
-Discovery reads the versioned registry bundled with the package and does not
-contact government services. The catalog contains supported datasets, rather
-than every dataset in the City's portal.
+Live discovery searches the City of Tampa and Tampa Bay Regional Planning
+Council ArcGIS organizations and expands public services into candidate
+layers and tables. Retrieval checks each layer's current Query capability.
+The bundled registry supplies a separate
+\code{"checked"} validation layer and remains available without a network request.
+A portal item can be stale or a layer can change after discovery.
 }
 \examples{
-list_datasets()
+list_datasets(source = "checked")
+\dontrun{list_datasets()}
 }

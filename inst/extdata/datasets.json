@@ -330,9 +330,9 @@
     "description": "Park polygon coverage published by City of Tampa GIS, with names, address, ownership, acreage, and descriptive source attributes.",
     "jurisdiction": "tampa",
     "publisher": "City of Tampa",
-    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=a8488dc7a4fa4cc5a7dcc4f3840d307a",
-    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Location/MapServer",
-    "layer_id": 10,
+    "source_url": "https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer/0",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer",
+    "layer_id": 0,
     "layer_name": "Park Polygons",
     "geometry_type": "esriGeometryPolygon",
     "date_fields": [
@@ -344,16 +344,16 @@
       "recreation",
       "polygons"
     ],
-    "verified": "2026-09-29",
-    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/a8488dc7a4fa4cc5a7dcc4f3840d307a?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "verified": "2026-10-02",
+    "terms": "No explicit dataset license was found for this exact MapServer; its service iteminfo licenseInfo is empty. A separate City ArcGIS item for the older Location service states CC0, but that item's license is not assigned to this endpoint. Source: https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer/info/iteminfo?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
     "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
-    "license_info": "CC0",
-    "license_source": "https://www.arcgis.com/sharing/rest/content/items/a8488dc7a4fa4cc5a7dcc4f3840d307a?f=pjson",
-    "item_id": "a8488dc7a4fa4cc5a7dcc4f3840d307a",
+    "license_info": null,
+    "license_source": null,
+    "item_id": null,
     "publisher_evidence": [
       "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
       "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
-      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Location/MapServer?f=pjson"
+      "https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer?f=pjson"
     ],
     "spatial_reference": {
       "wkid": 102100,
@@ -363,7 +363,7 @@
     "max_record_count": 2000,
     "supports_pagination": true,
     "supports_order_by": true,
-    "upstream_modified": "2018-03-05T19:01:22+00:00",
+    "upstream_modified": null,
     "date_time_reference": null,
     "scope_note": "The source includes OWNER, OWNERTYPE, and PUBLIC_ attributes; publisher City of Tampa does not imply every mapped park is City-owned."
   },
@@ -373,14 +373,13 @@
     "description": "Mapped City of Tampa fire station locations and source facility attributes.",
     "jurisdiction": "tampa",
     "publisher": "City of Tampa",
-    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=c35091a5fb9a4e69986e8a2382c9939c",
-    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Location/MapServer",
-    "layer_id": 1,
+    "source_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Fire/MapServer/10",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Fire/MapServer",
+    "layer_id": 10,
     "layer_name": "Fire Stations City of Tampa",
     "geometry_type": "esriGeometryPoint",
     "date_fields": [
-      "GIS.FacilitySitePoint.LASTUPDATE",
-      "GIS.GovServiceInfo.LASTUPDATE"
+      "LASTUPDATE"
     ],
     "category": "Public safety",
     "tags": [
@@ -389,27 +388,27 @@
       "emergency services"
     ],
     "verified": "2026-10-02",
-    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/c35091a5fb9a4e69986e8a2382c9939c?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms": "The selected City Fire layer iteminfo says there are no access and use limitations; no separate CC0 designation was verified for this exact layer. Source: https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Fire/MapServer/10/iteminfo?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
     "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
-    "license_info": "CC0",
-    "license_source": "https://www.arcgis.com/sharing/rest/content/items/c35091a5fb9a4e69986e8a2382c9939c?f=pjson",
-    "item_id": "c35091a5fb9a4e69986e8a2382c9939c",
+    "license_info": null,
+    "license_source": null,
+    "item_id": null,
     "publisher_evidence": [
       "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
       "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
-      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Location/MapServer?f=pjson"
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Fire/MapServer?f=pjson"
     ],
     "spatial_reference": {
       "wkid": 102100,
       "latestWkid": 3857
     },
-    "object_id_field": "GIS.FacilitySitePoint.OBJECTID",
+    "object_id_field": "OBJECTID",
     "max_record_count": 2000,
-    "supports_pagination": false,
-    "supports_order_by": false,
-    "upstream_modified": "2018-03-05T18:54:47+00:00",
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": null,
     "date_time_reference": null,
-    "scope_note": "The layer maps station locations; it does not establish current operational status, incidents, or response coverage. This joined layer uses qualified source field names and does not advertise ordering or offset pagination."
+    "scope_note": "The Fire service base layer maps station locations; it does not establish current operational status, incidents, or response coverage. It has unqualified field names and omits the GovServiceInfo attributes previously exposed by the joined Location layer. Existing requests using GIS.FacilitySitePoint.* or GIS.GovServiceInfo.* fields must be updated."
   },
   {
     "id": "bike-lanes",
@@ -500,5 +499,403 @@
     "upstream_modified": "2026-02-10T18:32:12+00:00",
     "date_time_reference": null,
     "scope_note": "These are GIS schedule service areas, not an address-level guarantee of a current pickup day. Confirm operational collection information with the City."
+  },
+  {
+    "id": "community-redevelopment",
+    "title": "Community redevelopment areas",
+    "description": "City of Tampa community redevelopment area polygons and source ordinance attributes.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=f7e626e1cc4f4661880200fce38df2e4",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer",
+    "layer_id": 0,
+    "layer_name": "Community Redevelopment",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "LASTUPDATE"
+    ],
+    "category": "Planning",
+    "tags": [
+      "redevelopment",
+      "community",
+      "areas",
+      "boundaries"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/f7e626e1cc4f4661880200fce38df2e4?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "CC0",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/f7e626e1cc4f4661880200fce38df2e4?f=pjson",
+    "item_id": "f7e626e1cc4f4661880200fce38df2e4",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2023-01-11T17:33:00+00:00",
+    "date_time_reference": null,
+    "scope_note": "These are GIS representations of community redevelopment areas. Confirm operative boundaries and ordinances with the City; the catalog item modification date is not a feature update date."
+  },
+  {
+    "id": "high-injury-network",
+    "title": "High Injury Network road segments",
+    "description": "Tampa road segments in the City High Injury Network, with source crash-severity and network-year attributes.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=26f3a52af49840fd8192017fbf0a948b",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer",
+    "layer_id": 10,
+    "layer_name": "High Injury Network",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [
+      "CREATEDDATE",
+      "LASTUPDATE"
+    ],
+    "category": "Transportation",
+    "tags": [
+      "high injury network",
+      "road safety",
+      "streets",
+      "segments"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/26f3a52af49840fd8192017fbf0a948b?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "CC0",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/26f3a52af49840fd8192017fbf0a948b?f=pjson",
+    "item_id": "26f3a52af49840fd8192017fbf0a948b",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2023-03-09T13:40:04+00:00",
+    "date_time_reference": null,
+    "scope_note": "This is a source-defined safety screening network, not a complete crash record or a live prediction of roadway risk. FATAL, INCAP, KSI, and HINYEAR are source attributes; consult the City for methodology before comparing segments or years."
+  },
+  {
+    "id": "historic-district-local",
+    "title": "Local historic districts",
+    "description": "Polygons for locally designated historic districts within the City of Tampa.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=cdb8c1ac06c64b0c8ef81dd79957fd43",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer",
+    "layer_id": 1,
+    "layer_name": "Historic District Local",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "LASTUPDATE"
+    ],
+    "category": "Planning",
+    "tags": [
+      "historic districts",
+      "local designation",
+      "preservation",
+      "boundaries"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/cdb8c1ac06c64b0c8ef81dd79957fd43?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "CC0",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/cdb8c1ac06c64b0c8ef81dd79957fd43?f=pjson",
+    "item_id": "cdb8c1ac06c64b0c8ef81dd79957fd43",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2023-01-11T17:31:27+00:00",
+    "date_time_reference": null,
+    "scope_note": "This is a local historic district layer, not a national designation inventory. Confirm current designation, boundaries, and applicable rules with the City."
+  },
+  {
+    "id": "historic-landmarks-local",
+    "title": "Local historic landmarks",
+    "description": "Point locations for City of Tampa local historic landmarks and source designation attributes.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=57cc463185ba4c928024ed0231c83c01",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer",
+    "layer_id": 29,
+    "layer_name": "Historic Landmark Local ",
+    "geometry_type": "esriGeometryPoint",
+    "date_fields": [
+      "LASTUPDATE"
+    ],
+    "category": "Planning",
+    "tags": [
+      "historic landmarks",
+      "local designation",
+      "preservation",
+      "locations"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/57cc463185ba4c928024ed0231c83c01?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "CC0",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/57cc463185ba4c928024ed0231c83c01?f=pjson",
+    "item_id": "57cc463185ba4c928024ed0231c83c01",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2023-12-07T13:10:13+00:00",
+    "date_time_reference": null,
+    "scope_note": "ORD_DATE is a string in the source schema, despite its date-like name; LASTUPDATE is the advertised date field. Points do not establish the full extent of designated properties; confirm legal designations with the City."
+  },
+  {
+    "id": "police-districts",
+    "title": "Police districts",
+    "description": "City of Tampa Police Department district polygons with source district identifiers.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=41ac9e149731446f9c2f4287370fc94d",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/LawEnforcement/MapServer",
+    "layer_id": 1,
+    "layer_name": "Police Districts",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "LASTUPDATE"
+    ],
+    "category": "Public safety",
+    "tags": [
+      "police",
+      "districts",
+      "boundaries"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/41ac9e149731446f9c2f4287370fc94d?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "CC0",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/41ac9e149731446f9c2f4287370fc94d?f=pjson",
+    "item_id": "41ac9e149731446f9c2f4287370fc94d",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/LawEnforcement/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2018-03-05T19:04:26+00:00",
+    "date_time_reference": null,
+    "scope_note": "These are GIS district boundaries, not station locations, incident data, or a guarantee of current response coverage."
+  },
+  {
+    "id": "street-speed-reductions",
+    "title": "Street speed limit reductions",
+    "description": "Tampa street segments mapped for speed limit reductions, with source speed, status, and reduction-date attributes.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=be693f2c9624459bb11d1a90f53bca27",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer",
+    "layer_id": 4,
+    "layer_name": "Street Speed Limit Reduction",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [
+      "LASTUPDATE",
+      "DATEREDUCED",
+      "CREATEDDATE"
+    ],
+    "category": "Transportation",
+    "tags": [
+      "speed limits",
+      "speed reductions",
+      "streets",
+      "traffic safety"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/be693f2c9624459bb11d1a90f53bca27?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "CC0",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/be693f2c9624459bb11d1a90f53bca27?f=pjson",
+    "item_id": "be693f2c9624459bb11d1a90f53bca27",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2023-08-04T12:54:14+00:00",
+    "date_time_reference": null,
+    "scope_note": "SPEEDLIMIT, REDUCEDSPEED, PROPSPEED, and SPEEDLIMITSTATUS are source strings; DATEREDUCED is a date field. Confirm current legally posted limits from City signage or records before operational use."
+  },
+  {
+    "id": "truck-routes",
+    "title": "Truck routes",
+    "description": "City of Tampa truck-route line segments with the source route-type attribute.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=4b5e9c1f1d234b8aaa49e1c01631f7a0",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer",
+    "layer_id": 5,
+    "layer_name": "Truck Routes",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [
+      "LASTUPDATE"
+    ],
+    "category": "Transportation",
+    "tags": [
+      "truck routes",
+      "freight",
+      "streets"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/4b5e9c1f1d234b8aaa49e1c01631f7a0?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "CC0",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/4b5e9c1f1d234b8aaa49e1c01631f7a0?f=pjson",
+    "item_id": "4b5e9c1f1d234b8aaa49e1c01631f7a0",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2023-03-09T13:42:40+00:00",
+    "date_time_reference": null,
+    "scope_note": "This GIS route layer does not establish current signage, vehicle-specific restrictions, or permit requirements. Check City rules for operational routing."
+  },
+  {
+    "id": "water-service-area",
+    "title": "Tampa water service area",
+    "description": "Polygons representing the City of Tampa water service area and source service-provider attributes.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=1737b1233358432a93efb61663e3919c",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/UtilityWater/MapServer",
+    "layer_id": 1,
+    "layer_name": "Water Service Area",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "CREATEDDATE",
+      "LASTUPDATE"
+    ],
+    "category": "Utilities",
+    "tags": [
+      "water",
+      "service area",
+      "utilities",
+      "boundaries"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/1737b1233358432a93efb61663e3919c?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "CC0",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/1737b1233358432a93efb61663e3919c?f=pjson",
+    "item_id": "1737b1233358432a93efb61663e3919c",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/UtilityWater/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2024-12-18T19:47:57+00:00",
+    "date_time_reference": null,
+    "scope_note": "The water service area may extend beyond incorporated City limits; it is not a city-boundary layer or address-specific proof of service. The item says no data update is planned while its feed is refreshed daily, so refresh frequency does not establish geometry freshness. Coordinates use ArcGIS WKID 102659 / latestWKID 2237, in feet."
+  },
+  {
+    "id": "zoning-districts",
+    "title": "Zoning districts",
+    "description": "City of Tampa zoning district polygons with source zoning class, description, and reference attributes.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=4998fcab196544d789e38cde69a84217",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer",
+    "layer_id": 28,
+    "layer_name": "Zoning District",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "LASTUPDATE"
+    ],
+    "category": "Planning",
+    "tags": [
+      "zoning",
+      "districts",
+      "land use",
+      "boundaries"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/4998fcab196544d789e38cde69a84217?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "CC0",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/4998fcab196544d789e38cde69a84217?f=pjson",
+    "item_id": "4998fcab196544d789e38cde69a84217",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2023-02-24T18:17:04+00:00",
+    "date_time_reference": null,
+    "scope_note": "This GIS layer is a planning reference, not an official legal determination of parcel zoning or permitted use. Confirm current zoning and ordinances with the City; the catalog item modification date does not establish feature freshness."
   }
 ]

@@ -2,7 +2,7 @@
 % Please edit documentation in R/datasets.R
 \name{get_dataset}
 \alias{get_dataset}
-\title{Retrieve a supported government dataset}
+\title{Retrieve a checked or discovered ArcGIS dataset}
 \usage{
 get_dataset(
   id,
@@ -19,9 +19,11 @@ get_dataset(
 )
 }
 \arguments{
-\item{id}{Stable package dataset ID from \code{\link[=list_datasets]{list_datasets()}}.}
+\item{id}{Checked package dataset ID, one-row discovered dataset descriptor,
+or stable \verb{arcgis:<32-hex-item-id>:<nonnegative-layer-id>} identifier.}
 
-\item{jurisdiction}{Government provider. v0.1 supports only \code{"tampa"}.}
+\item{jurisdiction}{Checked-registry jurisdiction. Omit for a discovered
+result or stable ArcGIS ID so its source jurisdiction is used.}
 
 \item{where}{ArcGIS SQL WHERE clause, using actual source field names.
 Defaults to \code{"1=1"} (all records). See \code{\link[=dataset_info]{dataset_info()}} with \code{refresh = TRUE}.}
@@ -55,8 +57,8 @@ Values can be scalars or JSON-style lists. Response format, field selection,
 aggregation, geometry simplification, and pagination parameters are protected.}
 
 \item{timeout}{Timeout in seconds for each HTTP attempt. Transient transport
-and service errors receive up to three attempts; this is not an overall
-retrieval deadline.}
+and HTTP failures may receive three attempts; one generic ArcGIS query
+error may receive four. This is not an overall retrieval deadline.}
 }
 \value{
 A tibble, or an sf object when spatial retrieval is requested. Source
@@ -64,14 +66,20 @@ metadata are attached as \code{source}, \code{dataset_id}, \code{jurisdiction}, 
 \code{retrieved_at} attributes; \code{\link[=dataset_provenance]{dataset_provenance()}} returns the full record.
 }
 \description{
-Resolves the registry entry and requests the current ArcGIS layer schema,
+Accepts a checked package ID from \code{\link[=list_datasets]{list_datasets()}}, a single discovery
+result row from \code{\link[=search_datasets]{search_datasets()}}, or a stable \verb{arcgis:<item-id>:<layer-id>}
+identifier. The latter two paths use current ArcGIS portal metadata; they
+have not received the package's curated source validation. For a compatible
+layer URL outside the discovery portal, use \code{\link[=get_arcgis_layer]{get_arcgis_layer()}}.
+}
+\details{
+Requests the current ArcGIS layer schema,
 matching count, and object-ID manifest. Bounded requests are validated against
 that manifest. A missing or duplicate record, truncated manifest, unexpected
 response, or upstream error fails explicitly. With \code{limit = Inf}, all matching
 records are retrieved. Queries matching more than one million records must be
 narrowed with filters because the client requires a complete object-ID manifest.
-}
-\details{
+
 Source column names, strings, coded values, and date-looking strings are
 preserved. Declared ArcGIS date fields are converted from epoch milliseconds
 to UTC POSIXct. If the source declares an unknown time zone, affected dates

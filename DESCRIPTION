@@ -3,11 +3,11 @@ Title: An R Interface to Tampa Bay Public Open Data
 Version: 0.1.0
 Authors@R: person("Jaclenga", role = c("aut", "cre"),
     email = "jack3lenga@gmail.com")
-Description: Discover, inspect, and retrieve authoritative public datasets
-    through a small catalog-driven interface. The initial release supports
-    City of Tampa ArcGIS feature and map services, with verified dataset
-    metadata, checked pagination, server-side filtering, typed tabular
-    results, optional spatial objects, and attached source provenance.
+Description: Discover public ArcGIS layers in the City of Tampa and Tampa Bay
+    Regional Planning Council organizations through live portal search. A
+    bundled registry identifies City layers checked by package maintainers.
+    Retrieve queryable layers with checked pagination, server-side filtering,
+    typed tabular results, optional spatial objects, and source provenance.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
