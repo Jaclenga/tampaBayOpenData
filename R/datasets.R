@@ -89,12 +89,8 @@ get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL
     if (!spatial) .abort("`out_sr` requires `spatial = TRUE`.")
   }
   query_params <- .query_params(query)
-  requested_jurisdiction <- if (missing(jurisdiction) &&
-                                (!is.character(id) ||
-                                 (length(id) == 1L && !is.na(id) &&
-                                  startsWith(id, "arcgis:")))) {
-    NULL
-  } else jurisdiction
+  requested_jurisdiction <- .requested_jurisdiction(
+    id, jurisdiction, missing(jurisdiction))
   dataset <- .resolve_dataset(id, requested_jurisdiction, timeout)
   .retrieve_dataset(dataset, where, fields, spatial, out_sr, order_by,
                     limit, page_size, query, query_params, timeout)
@@ -110,7 +106,7 @@ get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL
       .abort("Spatial retrieval requires the sf package. Install it with install.packages('sf').")
     }
     metadata <- arcgis_layer(dataset, timeout)
-    geometry_type <- metadata$geometryType
+    geometry_type <- metadata[["geometryType", exact = TRUE]]
     if (spatial && (!is.character(geometry_type) || length(geometry_type) != 1L ||
                     is.na(geometry_type) ||
                     !geometry_type %in% c("esriGeometryPoint", "esriGeometryMultipoint",

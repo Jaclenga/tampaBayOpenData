@@ -28,8 +28,10 @@ Before editing `inst/extdata/datasets.json`, verify the City of Tampa source
 page, layer metadata, and a small query. Record source and service URLs, layer
 ID, publisher, stable ID, geometry, useful date fields, data terms, and
 verification date. Add a fixture or test when a new schema exercises different
-behavior. Version 0.1 supports City of Tampa sources only; convenience
-functions should delegate to `get_dataset()`.
+behavior. The checked registry currently covers City of Tampa layers. Live
+discovery supports the City and Tampa Bay Regional Planning Council public
+ArcGIS organizations, and `get_arcgis_layer()` accepts compatible direct
+public layer URLs. Convenience functions should delegate to `get_dataset()`.
 
 Preserve source field names and values. Parse types from ArcGIS metadata,
 handle nulls and empty results, and report uncertain date or CRS semantics.

@@ -37,6 +37,49 @@ test_that("malformed timezone and capability metadata cannot change parsing sile
   }
 })
 
+test_that("Query support requires a complete capability token", {
+  for (capabilities in c("NotQuery", "QueryOnly", "MapQuery", "Map,NotQuery,Data", "")) {
+    metadata <- fixture_metadata()
+    metadata$capabilities <- capabilities
+    transport <- fixture_transport(metadata = metadata)
+    local_mocked_bindings(arcgis_http = transport$http,
+                          .package = "tampaBayOpenData")
+    expect_error(get_dataset("construction-permits"),
+                 "no longer advertises query support", class = "tampa_data_error")
+    expect_length(fixture_queries(transport), 0L)
+  }
+
+  for (capabilities in c("Query", "Map, Query, Data", "map,query,data")) {
+    metadata <- fixture_metadata()
+    metadata$capabilities <- capabilities
+    transport <- fixture_transport(metadata = metadata)
+    local_mocked_bindings(arcgis_http = transport$http,
+                          .package = "tampaBayOpenData")
+    expect_identical(get_dataset("construction-permits")$OBJECTID, 1:5)
+  }
+
+  metadata <- fixture_metadata()
+  metadata$capabilities <- NULL
+  metadata$capabilitiesExtra <- "Map"
+  transport <- fixture_transport(metadata = metadata)
+  local_mocked_bindings(arcgis_http = transport$http,
+                        .package = "tampaBayOpenData")
+  expect_identical(get_dataset("construction-permits")$OBJECTID, 1:5)
+})
+
+test_that("response spatial reference requires an exact JSON key", {
+  metadata <- fixture_metadata()
+  feature <- fixture_features(1L)[[1L]]
+  response <- list(features = list(feature),
+                   spatialReferenceExtra = list(wkid = 4326L))
+  page <- .page_features(response, metadata, NULL, "probe")
+  expect_null(page$spatial_reference)
+
+  response$spatialReference <- list(wkid = 3857L)
+  page <- .page_features(response, metadata, NULL, "probe")
+  expect_identical(page$spatial_reference, list(wkid = 3857L))
+})
+
 test_that("a missing optional spatial dependency fails before contacting a source", {
   transport <- fixture_transport()
   local_mocked_bindings(arcgis_has_sf = function() FALSE,

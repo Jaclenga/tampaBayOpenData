@@ -145,17 +145,19 @@ arcgis_layer <- function(dataset, timeout = 30) {
     .abort("Layer metadata contains a malformed unknown-time-zone flag.",
            dataset, url, "tampa_response_error")
   }
-  if (!is.null(metadata$capabilities) &&
-      (!is.character(metadata$capabilities) || length(metadata$capabilities) != 1L ||
-       is.na(metadata$capabilities))) {
+  capabilities <- metadata[["capabilities", exact = TRUE]]
+  if (!is.null(capabilities) &&
+      (!is.character(capabilities) || length(capabilities) != 1L ||
+       is.na(capabilities))) {
     .abort("Layer metadata contains malformed query capabilities.",
            dataset, url, "tampa_response_error")
   }
-  if (!is.null(metadata$capabilities) &&
-      !grepl("Query", metadata$capabilities, ignore.case = TRUE)) {
+  if (!is.null(capabilities) &&
+      !any(tolower(trimws(strsplit(capabilities, ",", fixed = TRUE)[[1L]])) == "query")) {
     .abort("This layer no longer advertises query support.", dataset, url)
   }
-  oid <- metadata$objectIdField %||% metadata$objectIdFieldName
+  oid <- metadata[["objectIdField", exact = TRUE]] %||%
+    metadata[["objectIdFieldName", exact = TRUE]]
   if (is.null(oid) || identical(oid, "")) {
     oid_fields <- Filter(function(x) identical(x$type, "esriFieldTypeOID"), metadata$fields)
     if (length(oid_fields) == 1L) oid <- oid_fields[[1L]]$name
@@ -253,7 +255,7 @@ arcgis_layers <- function(service_url, timeout = 30) {
 }
 
 .transfer_limit <- function(response, dataset, url) {
-  flag <- response$exceededTransferLimit
+  flag <- response[["exceededTransferLimit", exact = TRUE]]
   if (!is.null(flag) &&
       (!is.logical(flag) || length(flag) != 1L || is.na(flag))) {
     .abort("The response contains an invalid transfer-limit flag.", dataset, url,
@@ -263,16 +265,17 @@ arcgis_layers <- function(service_url, timeout = 30) {
 }
 
 .check_object_id_field <- function(response, metadata, dataset, url) {
-  if (!is.null(response$objectIdFieldName) &&
-      !identical(response$objectIdFieldName, metadata$objectIdField)) {
+  oid <- response[["objectIdFieldName", exact = TRUE]]
+  if (!is.null(oid) && !identical(oid, metadata[["objectIdField", exact = TRUE]])) {
     .abort("The service's object-ID field changed during retrieval.", dataset, url,
            "tampa_integrity_error")
   }
 }
 
 .manifest <- function(url, params, metadata, dataset, timeout) {
-  count <- arcgis_request(url, c(params, list(returnCountOnly = "true", returnGeometry = "false")),
-                          dataset, timeout)$count
+  count_response <- arcgis_request(url, c(params, list(returnCountOnly = "true", returnGeometry = "false")),
+                                   dataset, timeout)
+  count <- count_response[["count", exact = TRUE]]
   if (!is.numeric(count) || length(count) != 1L || is.na(count) || !is.finite(count) ||
       count < 0 || count != floor(count)) {
     .abort("The service returned an invalid matching-record count.", dataset, url, "tampa_response_error")
@@ -288,7 +291,7 @@ arcgis_layers <- function(service_url, timeout = 30) {
     .abort("The service did not return a complete object-ID manifest.", dataset, url, "tampa_integrity_error")
   }
   .check_object_id_field(response, metadata, dataset, url)
-  ids <- .object_ids(response$objectIds, dataset, url)
+  ids <- .object_ids(response[["objectIds", exact = TRUE]], dataset, url)
   if (length(ids) != count) {
     .abort("The matching count and object-ID manifest disagree. The service may have changed; retry the query.",
            dataset, url, "tampa_integrity_error")
@@ -299,34 +302,38 @@ arcgis_layers <- function(service_url, timeout = 30) {
 .page_features <- function(response, metadata, dataset, url) {
   .transfer_limit(response, dataset, url)
   .check_object_id_field(response, metadata, dataset, url)
-  if (!is.null(response$geometryType) && !identical(response$geometryType, metadata$geometryType)) {
+  geometry_type <- response[["geometryType", exact = TRUE]]
+  if (!is.null(geometry_type) &&
+      !identical(geometry_type, metadata[["geometryType", exact = TRUE]])) {
     .abort("The response geometry type differs from the layer metadata.", dataset, url, "tampa_response_error")
   }
-  if (!is.null(response$spatialReference) &&
-      (!is.list(response$spatialReference) || is.null(names(response$spatialReference)))) {
+  spatial_reference <- response[["spatialReference", exact = TRUE]]
+  if (!is.null(spatial_reference) &&
+      (!is.list(spatial_reference) || is.null(names(spatial_reference)))) {
     .abort("The response contains a malformed spatial reference.", dataset, url, "tampa_response_error")
   }
-  if (!"features" %in% names(response) || !is.list(response$features) ||
-      !is.null(names(response$features))) {
+  features <- response[["features", exact = TRUE]]
+  oid_field <- metadata[["objectIdField", exact = TRUE]]
+  if (!"features" %in% names(response) || !is.list(features) ||
+      !is.null(names(features))) {
     .abort("The query response does not contain a valid feature array.", dataset, url, "tampa_response_error")
   }
-  features <- response$features
   if (!all(vapply(features, function(x) {
     if (!is.list(x) || !"attributes" %in% names(x)) return(FALSE)
     attributes <- x[["attributes"]]
     is.list(attributes) && !anyDuplicated(names(attributes)) &&
-      metadata$objectIdField %in% names(attributes)
+      oid_field %in% names(attributes)
   }, logical(1)))) {
     .abort("A feature is missing its attributes or object ID.", dataset, url, "tampa_response_error")
   }
-  if (any(vapply(features, function(x) is.null(x[["attributes"]][[metadata$objectIdField]]), logical(1)))) {
+  if (any(vapply(features, function(x) is.null(x[["attributes"]][[oid_field]]), logical(1)))) {
     .abort("A feature contains a null object ID.", dataset, url, "tampa_integrity_error")
   }
-  if (any(!vapply(features, function(x) is.numeric(x[["attributes"]][[metadata$objectIdField]]) &&
-                  length(x[["attributes"]][[metadata$objectIdField]]) == 1L, logical(1)))) {
+  if (any(!vapply(features, function(x) is.numeric(x[["attributes"]][[oid_field]]) &&
+                  length(x[["attributes"]][[oid_field]]) == 1L, logical(1)))) {
     .abort("A feature contains a malformed object ID.", dataset, url, "tampa_response_error")
   }
-  ids <- .object_ids(lapply(features, function(x) x[["attributes"]][[metadata$objectIdField]]), dataset, url)
+  ids <- .object_ids(lapply(features, function(x) x[["attributes"]][[oid_field]]), dataset, url)
   if (length(ids) != length(features)) .abort("A feature contains a null object ID.", dataset, url, "tampa_integrity_error")
-  list(features = features, ids = ids, spatial_reference = response$spatialReference)
+  list(features = features, ids = ids, spatial_reference = spatial_reference)
 }

@@ -201,6 +201,39 @@
   rows[order(tolower(rows$title), rows$source_url), , drop = FALSE]
 }
 
+# Scan one provider, retaining rows and item issues if a later search page fails.
+.discover_portal <- function(key, query, max_items, timeout, cache) {
+  config <- .discovery_portals[[key]]
+  search <- .discovery_query(query, config$org_id)
+  rows <- list()
+  issues <- character()
+  start <- 1L
+  seen <- 0L
+  repeat {
+    num <- if (is.infinite(max_items)) 100L else as.integer(min(100, max_items - seen))
+    if (num <= 0L) break
+    page <- tryCatch(.discovery_page(search, start, num, timeout, config$root),
+                     error = identity)
+    if (inherits(page, "error")) {
+      return(list(rows = rows, issues = issues, error = page))
+    }
+    for (item in page$results) {
+      item_rows <- tryCatch(.discovery_item_rows(item, timeout, cache, config),
+                            error = identity)
+      if (inherits(item_rows, "error")) {
+        item_id <- if (is.list(item)) .discovery_scalar(item$id, "unknown") else "unknown"
+        issues <- c(issues, paste0(key, "/", item_id, ": ", conditionMessage(item_rows)))
+      } else if (nrow(item_rows)) {
+        rows[[length(rows) + 1L]] <- item_rows
+      }
+    }
+    seen <- seen + length(page$results)
+    if (page$nextStart == -1L) break
+    start <- as.integer(page$nextStart)
+  }
+  list(rows = rows, issues = issues, error = NULL)
+}
+
 # Return public provider layers represented by portal items. max_items limits
 # portal *items per provider*, not expanded layer rows. A bad item is isolated;
 # an invalid search page remains a visible error.
@@ -214,44 +247,17 @@
   rows <- list()
   issues <- character()
   failed_portals <- character()
-  completed <- 0L
   cache <- new.env(parent = emptyenv())
   for (key in keys) {
-    config <- .discovery_portals[[key]]
-    search <- .discovery_query(query, config$org_id)
-    start <- 1L
-    seen <- 0L
-    page_error <- NULL
-    repeat {
-      num <- if (is.infinite(max_items)) 100L else as.integer(min(100, max_items - seen))
-      if (num <= 0L) break
-      page <- tryCatch(.discovery_page(search, start, num, timeout, config$root),
-                       error = identity)
-      if (inherits(page, "error")) {
-        page_error <- page
-        break
-      }
-      for (item in page$results) {
-        item_rows <- tryCatch(.discovery_item_rows(item, timeout, cache, config),
-                              error = function(e) {
-          item_id <- if (is.list(item)) .discovery_scalar(item$id, "unknown") else "unknown"
-          issues <<- c(issues, paste0(key, "/", item_id, ": ", conditionMessage(e)))
-          .empty_discovery()
-        })
-        if (nrow(item_rows)) rows[[length(rows) + 1L]] <- item_rows
-      }
-      seen <- seen + length(page$results)
-      if (page$nextStart == -1L) break
-      start <- as.integer(page$nextStart)
-    }
-    if (is.null(page_error)) {
-      completed <- completed + 1L
-    } else {
+    portal <- .discover_portal(key, query, max_items, timeout, cache)
+    rows <- c(rows, portal$rows)
+    issues <- c(issues, portal$issues)
+    if (!is.null(portal$error)) {
       failed_portals <- c(failed_portals, key)
-      issues <- c(issues, paste0("Portal ", key, ": ", conditionMessage(page_error)))
+      issues <- c(issues, paste0("Portal ", key, ": ", conditionMessage(portal$error)))
     }
   }
-  if (!completed) {
+  if (length(failed_portals) == length(keys)) {
     .abort(paste0("All selected ArcGIS portals failed during discovery. ",
                   paste(issues, collapse = " | ")),
            subclass = "tampa_discovery_error")

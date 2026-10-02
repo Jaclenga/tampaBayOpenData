@@ -1,7 +1,8 @@
 # Dated validation record
 
-These are local results on Windows 11 with R 4.5.1. Each result describes the
-source and dependencies used for that run; live City services can change.
+These are local results on Windows 11. Earlier runs used R 4.5.1; the later
+October 2 run used R 4.6.1. Each result describes the source and
+dependencies used for that run; live services can change.
 
 | Date | Offline testthat | Build and local check |
 | --- | --- | --- |
@@ -14,12 +15,38 @@ source and dependencies used for that run; live City services can change.
 | 2026-10-02, live recheck and retry fix | 2,085 passed; zero failures or warnings; five opt-in live tests skipped. | Source archive built with the vignette; `R CMD check --no-manual` reported Status: OK with zero errors, warnings, or notes. |
 | 2026-10-02, Location source migration | 2,088 passed; zero failures or warnings; five opt-in live tests skipped. | Source archive built with the vignette; `R CMD check --no-manual` reported Status: OK with zero errors, warnings, or notes. |
 | 2026-10-02, live discovery refactor | 2,228 passed; zero failures or warnings; six opt-in live tests skipped. | Source archive built with the offline vignette; `R CMD check --no-manual` reported Status: OK with zero errors, warnings, or notes. |
+| 2026-10-02, catalog and parsing bug fixes | 2,271 assertions passed; zero failures or test warnings; six opt-in live tests skipped. | Build and package check have not yet been rerun for this revision. |
+| 2026-10-02, CRS alias regression | 2,275 assertions passed on R 4.6.1; zero test failures or warnings; six opt-in live tests skipped. | Source archive built with its vignette. A full `R CMD check --as-cran` ran; final status awaits follow-up on manual-generation tooling. |
 
 The September 30 follow-up included fixes for UTC editor tracking dates,
 response `attributes` validation, transient HTTP retries, and registry shape
 checks. The September 29 work included the [bug scan](bug-scan.md) and
 [security audit](security-audit.md). Those reports retain the finding-level
 evidence and their own historical assertion counts.
+
+The later October 2 offline run added regression coverage for checked-layer
+labels in live search, incomplete spatial coordinates, exact geometry and CRS
+response keys, and exact Query capability tokens. The build and package check
+in the preceding table row predate those fixes.
+
+The R 4.6.1 run added coverage for the water-service-area layer's legacy and
+latest WKID aliases after a previous Linux and macOS CI run treated the two
+identifiers as conflicting. The package tests, examples, and vignettes passed
+in the current full check; manual-generation tooling is being resolved.
+
+A bounded live smoke test of the current working source passed on October 2
+with R 4.6.1, after the CRS alias fix. All 20
+checked City IDs returned one or two `sf` records in EPSG:4326 with unique
+object IDs and consistent count, ID-manifest, and provenance checks. A native
+EPSG:6443 capital-projects sample agreed with the service's EPSG:4326
+projection within 1e-5. A City housing search and a regional live listing,
+each limited to two portal items, returned three and two layers respectively,
+with no recorded discovery issues or failed portals. Two-row spatial retrieval
+succeeded from both discovery descriptors, a City stable ArcGIS ID, and a
+regional direct layer URL; the direct result was marked `not_checked`. The
+smoke test used `limit = 2` and `page_size = 1` for checked layers, so it did
+not repeat full feature downloads. The client still fetched matching counts
+and full object-ID manifests for those requests.
 
 On October 2, the three new catalog entries were checked against public City
 metadata, counts, object-ID manifests, and bounded R client queries. A

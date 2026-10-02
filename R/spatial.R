@@ -12,7 +12,7 @@ arcgis_as_sf <- function(data, features, metadata, spatial_reference = NULL,
            subclass = "tampa_spatial_error")
   }
 
-  geometry_type <- metadata$geometryType
+  geometry_type <- metadata[["geometryType"]]
   supported <- c("esriGeometryPoint", "esriGeometryMultipoint",
                  "esriGeometryPolyline", "esriGeometryPolygon")
   if (!is.character(geometry_type) || length(geometry_type) != 1L ||
@@ -46,9 +46,10 @@ arcgis_as_sf <- function(data, features, metadata, spatial_reference = NULL,
       .abort(sprintf("Malformed ArcGIS feature at row %d.", i),
              subclass = "tampa_spatial_error")
     }
-    geometry <- feature$geometry
-    if (is.list(geometry) && !is.null(geometry$spatialReference) &&
-        !isTRUE(arcgis_spatial_crs(geometry$spatialReference) == crs)) {
+    geometry <- feature[["geometry"]]
+    geometry_reference <- if (is.list(geometry)) geometry[["spatialReference"]] else NULL
+    if (!is.null(geometry_reference) &&
+        !isTRUE(arcgis_spatial_crs(geometry_reference) == crs)) {
       .abort(sprintf("ArcGIS geometry at row %d has a different CRS from the response.", i),
              subclass = "tampa_spatial_error")
     }
@@ -72,8 +73,10 @@ arcgis_as_sf <- function(data, features, metadata, spatial_reference = NULL,
 }
 
 arcgis_native_reference <- function(metadata) {
-  metadata$spatialReference %||% metadata$extent$spatialReference %||%
-    metadata$sourceSpatialReference
+  extent <- metadata[["extent"]]
+  extent_reference <- if (is.list(extent)) extent[["spatialReference"]] else NULL
+  metadata[["spatialReference"]] %||% extent_reference %||%
+    metadata[["sourceSpatialReference"]]
 }
 
 # The only attribute passed through GDAL is an internal row number. All user
@@ -170,8 +173,8 @@ arcgis_spatial_crs <- function(reference) {
   resolved <- list()
   # Custom definitions may have only WKT. Prefer the explicit definition when
   # present, and otherwise use latestWkid before the original ArcGIS alias.
-  if (!is.null(reference$wkt)) {
-    wkt <- .inline_arcgis_wkt(reference$wkt)
+  if (!is.null(reference[["wkt"]])) {
+    wkt <- .inline_arcgis_wkt(reference[["wkt"]])
     resolved$wkt <- .resolve_arcgis_crs(list(wkt))
   }
   for (field in c("latestWkid", "wkid")) {
@@ -182,7 +185,8 @@ arcgis_spatial_crs <- function(reference) {
       .abort("The ArcGIS spatial reference contains a malformed WKID.",
              subclass = "tampa_spatial_error")
     }
-    aliases <- c(`102100` = 3857L, `102113` = 3857L, `103023` = 6443L)
+    aliases <- c(`102100` = 3857L, `102113` = 3857L, `102659` = 2237L,
+                 `103023` = 6443L)
     candidates <- list(paste0("EPSG:", format(code, scientific = FALSE)),
                        paste0("ESRI:", format(code, scientific = FALSE)))
     if (as.character(code) %in% names(aliases)) {
@@ -195,7 +199,7 @@ arcgis_spatial_crs <- function(reference) {
     .abort("The ArcGIS spatial reference contains conflicting WKID identifiers.",
            subclass = "tampa_spatial_error")
   }
-  crs <- resolved$wkt %||% resolved$latestWkid %||% resolved$wkid
+  crs <- resolved[["wkt"]] %||% resolved[["latestWkid"]] %||% resolved[["wkid"]]
   if (!is.null(crs)) return(crs)
   .abort("The ArcGIS spatial reference could not be resolved by sf/GDAL.",
          subclass = "tampa_spatial_error")
@@ -253,11 +257,13 @@ arcgis_geometry_2d <- function(geometry, type, row) {
     !is.na(x) && is.finite(x)
   if (type == "esriGeometryPoint") {
     if (!"x" %in% names(geometry)) fail("point has no x coordinate.")
-    if (is.null(geometry$x)) return(NULL)
-    if (!scalar(geometry$x) || !scalar(geometry$y)) {
+    x <- geometry[["x"]]
+    y <- geometry[["y"]]
+    if (is.null(x) && is.null(y)) return(NULL)
+    if (!scalar(x) || !scalar(y)) {
       fail("point coordinates must be finite numbers.")
     }
-    return(list(x = geometry$x, y = geometry$y))
+    return(list(x = x, y = y))
   }
   key <- expected_keys[[1L]]
   if (!key %in% names(geometry) || !is.list(geometry[[key]]) ||
@@ -288,8 +294,9 @@ arcgis_array_geometry_2d <- function(parts, type, fail, scalar) {
   if (type == "esriGeometryMultipoint") {
     points <- lapply(parts, function(coordinate) {
       # The ArcGIS specification excludes an empty point inside a multipoint.
-      if (is.list(coordinate) && is.null(names(coordinate)) && length(coordinate) > 0L &&
-          length(coordinate) <= 4L && is.null(coordinate[[1L]])) return(NULL)
+      if (is.list(coordinate) && is.null(names(coordinate)) &&
+          length(coordinate) >= 2L && length(coordinate) <= 4L &&
+          all(vapply(coordinate, is.null, logical(1)))) return(NULL)
       xy(coordinate)
     })
     return(Filter(Negate(is.null), points))

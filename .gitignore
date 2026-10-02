@@ -8,3 +8,4 @@
 .artifacts/
 *.tar.gz
 *.Rcheck/
+development-cases.rds
