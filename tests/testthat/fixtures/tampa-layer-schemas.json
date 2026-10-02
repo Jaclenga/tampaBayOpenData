@@ -1323,5 +1323,560 @@
         "supportsOrderBy": true
       }
     }
+  },
+  "fire-stations": {
+    "verified": "2026-10-02",
+    "metadata_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Location/MapServer/1",
+    "original_file": "fire-stations-layer.json",
+    "metadata": {
+      "name": "Fire Stations City of Tampa",
+      "type": "Feature Layer",
+      "capabilities": "Map,Query,Data",
+      "geometryType": "esriGeometryPoint",
+      "maxRecordCount": 2000,
+      "supportedQueryFormats": "JSON, geoJSON, PBF",
+      "datesInUnknownTimezone": false,
+      "dateFieldsTimeReference": null,
+      "fields": [
+        {
+          "name": "GIS.FacilitySitePoint.OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.FACILITYID",
+          "type": "esriFieldTypeString",
+          "alias": "Facility Identifier"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.NAME",
+          "type": "esriFieldTypeString",
+          "alias": "Name of Facility"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.OWNER",
+          "type": "esriFieldTypeString",
+          "alias": "Owner Name"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.OWNTYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Owner Type"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.SUBTYPEFIELD",
+          "type": "esriFieldTypeInteger",
+          "alias": "Subtype Field"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.FEATURECODE",
+          "type": "esriFieldTypeString",
+          "alias": "Feature Code"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.FULLADDR",
+          "type": "esriFieldTypeString",
+          "alias": "Full Address"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.MUNICIPALITY",
+          "type": "esriFieldTypeString",
+          "alias": "Municipality Name"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.STATE",
+          "type": "esriFieldTypeString",
+          "alias": "State Name"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.ZIPCODE",
+          "type": "esriFieldTypeString",
+          "alias": "Zip Code"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.DESCRIPTION",
+          "type": "esriFieldTypeString",
+          "alias": "Description"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.CAPTUREMETH",
+          "type": "esriFieldTypeString",
+          "alias": "Capture Method"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.LOCATIONTYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Location Type"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.LASTUPDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "Last Update"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.LASTEDITOR",
+          "type": "esriFieldTypeString",
+          "alias": "Last Editor"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.USNG",
+          "type": "esriFieldTypeString",
+          "alias": "USNG"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.WEBSITE",
+          "type": "esriFieldTypeString",
+          "alias": "Website"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.GlobalID",
+          "type": "esriFieldTypeGlobalID",
+          "alias": "GlobalID"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.ESN",
+          "type": "esriFieldTypeString",
+          "alias": "ESN"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Type"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.MAPID",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Map ID"
+        },
+        {
+          "name": "GIS.FacilitySitePoint.SHAPE",
+          "type": "esriFieldTypeGeometry",
+          "alias": "SHAPE"
+        },
+        {
+          "name": "GIS.GovServiceInfo.OBJECTID",
+          "type": "esriFieldTypeInteger",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "GIS.GovServiceInfo.FACILITYID",
+          "type": "esriFieldTypeString",
+          "alias": "Facility ID"
+        },
+        {
+          "name": "GIS.GovServiceInfo.AGENCYURL",
+          "type": "esriFieldTypeString",
+          "alias": "Website"
+        },
+        {
+          "name": "GIS.GovServiceInfo.OPERDAYS",
+          "type": "esriFieldTypeString",
+          "alias": "Operational Days"
+        },
+        {
+          "name": "GIS.GovServiceInfo.OPERHOURS",
+          "type": "esriFieldTypeString",
+          "alias": "Operational Hours"
+        },
+        {
+          "name": "GIS.GovServiceInfo.CONTACT",
+          "type": "esriFieldTypeString",
+          "alias": "Contact Name"
+        },
+        {
+          "name": "GIS.GovServiceInfo.PHONE",
+          "type": "esriFieldTypeString",
+          "alias": "Phone"
+        },
+        {
+          "name": "GIS.GovServiceInfo.EMAIL",
+          "type": "esriFieldTypeString",
+          "alias": "Email"
+        },
+        {
+          "name": "GIS.GovServiceInfo.DESCRIPT",
+          "type": "esriFieldTypeString",
+          "alias": "Additional Information"
+        },
+        {
+          "name": "GIS.GovServiceInfo.LASTUPDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "Last Update Date"
+        },
+        {
+          "name": "GIS.GovServiceInfo.LASTEDITOR",
+          "type": "esriFieldTypeString",
+          "alias": "Last Editor"
+        }
+      ],
+      "spatialReference": {
+        "wkid": 102100,
+        "latestWkid": 3857
+      },
+      "sourceSpatialReference": {
+        "wkid": 102659,
+        "latestWkid": 2237
+      },
+      "extent": {
+        "spatialReference": {
+          "wkid": 102100,
+          "latestWkid": 3857
+        }
+      },
+      "advancedQueryCapabilities": {
+        "supportsPagination": false,
+        "supportsOrderBy": false
+      }
+    }
+  },
+  "bike-lanes": {
+    "verified": "2026-10-02",
+    "metadata_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/0",
+    "original_file": "bike-lanes-layer.json",
+    "metadata": {
+      "name": "Bike Lanes",
+      "type": "Feature Layer",
+      "capabilities": "Query,Map,Data",
+      "geometryType": "esriGeometryPolyline",
+      "maxRecordCount": 2000,
+      "supportedQueryFormats": "JSON, geoJSON, PBF",
+      "datesInUnknownTimezone": false,
+      "dateFieldsTimeReference": null,
+      "fields": [
+        {
+          "name": "FACILITYID",
+          "type": "esriFieldTypeString",
+          "alias": "Facility ID"
+        },
+        {
+          "name": "ROADWAY",
+          "type": "esriFieldTypeString",
+          "alias": "Roadway"
+        },
+        {
+          "name": "COMMENTS",
+          "type": "esriFieldTypeString",
+          "alias": "Comments"
+        },
+        {
+          "name": "WIDTH",
+          "type": "esriFieldTypeDouble",
+          "alias": "Width"
+        },
+        {
+          "name": "INSTALLDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "Install Date"
+        },
+        {
+          "name": "OWNEDBY",
+          "type": "esriFieldTypeString",
+          "alias": "Owned By"
+        },
+        {
+          "name": "MAINTBY",
+          "type": "esriFieldTypeString",
+          "alias": "Maintained By"
+        },
+        {
+          "name": "BUFFERDESC",
+          "type": "esriFieldTypeString",
+          "alias": "BUFFERDESC"
+        },
+        {
+          "name": "CYCLETRACK",
+          "type": "esriFieldTypeString",
+          "alias": "Cycle Track"
+        },
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "FROM_ST",
+          "type": "esriFieldTypeString",
+          "alias": "From Street"
+        },
+        {
+          "name": "TO_ST",
+          "type": "esriFieldTypeString",
+          "alias": "To Street"
+        },
+        {
+          "name": "CONN_TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Connection Type"
+        },
+        {
+          "name": "SHARROWS",
+          "type": "esriFieldTypeString",
+          "alias": "Sharrows"
+        },
+        {
+          "name": "ONEWAY",
+          "type": "esriFieldTypeString",
+          "alias": "Travel Direction"
+        },
+        {
+          "name": "SHAPE.STLength()",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Length"
+        },
+        {
+          "name": "SHAPE",
+          "type": "esriFieldTypeGeometry",
+          "alias": "Shape"
+        },
+        {
+          "name": "CREATED",
+          "type": "esriFieldTypeString",
+          "alias": "Created By"
+        },
+        {
+          "name": "CREATEDDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "Created Date"
+        },
+        {
+          "name": "LASTEDITOR",
+          "type": "esriFieldTypeString",
+          "alias": "Last Editor"
+        },
+        {
+          "name": "LASTUPDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "last Update"
+        },
+        {
+          "name": "MULTIPLIER",
+          "type": "esriFieldTypeDouble",
+          "alias": "Multiplier"
+        },
+        {
+          "name": "MILEAGE",
+          "type": "esriFieldTypeDouble",
+          "alias": "Mileage"
+        }
+      ],
+      "spatialReference": {
+        "wkid": 102100,
+        "latestWkid": 3857
+      },
+      "sourceSpatialReference": {
+        "wkid": 102659,
+        "latestWkid": 2237
+      },
+      "extent": {
+        "spatialReference": {
+          "wkid": 102100,
+          "latestWkid": 3857
+        }
+      },
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      }
+    }
+  },
+  "recycling-pickup": {
+    "verified": "2026-10-02",
+    "metadata_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/3",
+    "original_file": "recycling-pickup-layer.json",
+    "metadata": {
+      "name": "Recycling Pickup",
+      "type": "Feature Layer",
+      "capabilities": "Map,Query,Data",
+      "geometryType": "esriGeometryPolygon",
+      "maxRecordCount": 2000,
+      "supportedQueryFormats": "JSON, geoJSON, PBF",
+      "datesInUnknownTimezone": false,
+      "dateFieldsTimeReference": null,
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "DISTRICTID",
+          "type": "esriFieldTypeString",
+          "alias": "District ID"
+        },
+        {
+          "name": "NAME",
+          "type": "esriFieldTypeString",
+          "alias": "District Name"
+        },
+        {
+          "name": "AGENCY",
+          "type": "esriFieldTypeString",
+          "alias": "Agency"
+        },
+        {
+          "name": "AGENCYURL",
+          "type": "esriFieldTypeString",
+          "alias": "Website"
+        },
+        {
+          "name": "CONTACT",
+          "type": "esriFieldTypeString",
+          "alias": "Contact Name"
+        },
+        {
+          "name": "PHONE",
+          "type": "esriFieldTypeString",
+          "alias": "Phone"
+        },
+        {
+          "name": "EMAIL",
+          "type": "esriFieldTypeString",
+          "alias": "Email"
+        },
+        {
+          "name": "SUBTYPEFIELD",
+          "type": "esriFieldTypeInteger",
+          "alias": "Subtype Field"
+        },
+        {
+          "name": "SCHEDULE",
+          "type": "esriFieldTypeString",
+          "alias": "Schedule"
+        },
+        {
+          "name": "DESCRIPT",
+          "type": "esriFieldTypeString",
+          "alias": "Additional Information"
+        },
+        {
+          "name": "MONDAY",
+          "type": "esriFieldTypeString",
+          "alias": "Monday"
+        },
+        {
+          "name": "TUESDAY",
+          "type": "esriFieldTypeString",
+          "alias": "Tuesday"
+        },
+        {
+          "name": "WEDNESDAY",
+          "type": "esriFieldTypeString",
+          "alias": "Wednesday"
+        },
+        {
+          "name": "THURSDAY",
+          "type": "esriFieldTypeString",
+          "alias": "Thursday"
+        },
+        {
+          "name": "FRIDAY",
+          "type": "esriFieldTypeString",
+          "alias": "Friday"
+        },
+        {
+          "name": "SATURDAY",
+          "type": "esriFieldTypeString",
+          "alias": "Saturday"
+        },
+        {
+          "name": "SUNDAY",
+          "type": "esriFieldTypeString",
+          "alias": "Sunday"
+        },
+        {
+          "name": "WEEKONE",
+          "type": "esriFieldTypeString",
+          "alias": "Week One"
+        },
+        {
+          "name": "WEEKTWO",
+          "type": "esriFieldTypeString",
+          "alias": "Week Two"
+        },
+        {
+          "name": "WEEKTHREE",
+          "type": "esriFieldTypeString",
+          "alias": "Week Three"
+        },
+        {
+          "name": "WEEKFOUR",
+          "type": "esriFieldTypeString",
+          "alias": "Week Four"
+        },
+        {
+          "name": "LASTUPDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "Last Update Date"
+        },
+        {
+          "name": "LASTEDITOR",
+          "type": "esriFieldTypeString",
+          "alias": "Last Editor"
+        },
+        {
+          "name": "GlobalID",
+          "type": "esriFieldTypeGlobalID",
+          "alias": "GlobalID"
+        },
+        {
+          "name": "MILES",
+          "type": "esriFieldTypeString",
+          "alias": "Miles"
+        },
+        {
+          "name": "ZONE",
+          "type": "esriFieldTypeString",
+          "alias": "Zone"
+        },
+        {
+          "name": "SHAPE",
+          "type": "esriFieldTypeGeometry",
+          "alias": "SHAPE"
+        },
+        {
+          "name": "SHAPE.STArea()",
+          "type": "esriFieldTypeDouble",
+          "alias": "SHAPE.STArea()"
+        },
+        {
+          "name": "SHAPE.STLength()",
+          "type": "esriFieldTypeDouble",
+          "alias": "SHAPE.STLength()"
+        },
+        {
+          "name": "DISTRICTID2",
+          "type": "esriFieldTypeString",
+          "alias": "District ID 2"
+        },
+        {
+          "name": "NAME2",
+          "type": "esriFieldTypeString",
+          "alias": "District Name 2"
+        },
+        {
+          "name": "COLLECTIONDAYS",
+          "type": "esriFieldTypeString",
+          "alias": "Collection Days"
+        }
+      ],
+      "spatialReference": {
+        "wkid": 102100,
+        "latestWkid": 3857
+      },
+      "sourceSpatialReference": {
+        "wkid": 102659,
+        "latestWkid": 2237
+      },
+      "extent": {
+        "spatialReference": {
+          "wkid": 102100,
+          "latestWkid": 3857
+        }
+      },
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      }
+    }
   }
 }

@@ -366,5 +366,139 @@
     "upstream_modified": "2018-03-05T19:01:22+00:00",
     "date_time_reference": null,
     "scope_note": "The source includes OWNER, OWNERTYPE, and PUBLIC_ attributes; publisher City of Tampa does not imply every mapped park is City-owned."
+  },
+  {
+    "id": "fire-stations",
+    "title": "City of Tampa fire stations",
+    "description": "Mapped City of Tampa fire station locations and source facility attributes.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=c35091a5fb9a4e69986e8a2382c9939c",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Location/MapServer",
+    "layer_id": 1,
+    "layer_name": "Fire Stations City of Tampa",
+    "geometry_type": "esriGeometryPoint",
+    "date_fields": [
+      "GIS.FacilitySitePoint.LASTUPDATE",
+      "GIS.GovServiceInfo.LASTUPDATE"
+    ],
+    "category": "Public safety",
+    "tags": [
+      "fire stations",
+      "facilities",
+      "emergency services"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/c35091a5fb9a4e69986e8a2382c9939c?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "CC0",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/c35091a5fb9a4e69986e8a2382c9939c?f=pjson",
+    "item_id": "c35091a5fb9a4e69986e8a2382c9939c",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Location/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "GIS.FacilitySitePoint.OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": false,
+    "supports_order_by": false,
+    "upstream_modified": "2018-03-05T18:54:47+00:00",
+    "date_time_reference": null,
+    "scope_note": "The layer maps station locations; it does not establish current operational status, incidents, or response coverage. This joined layer uses qualified source field names and does not advertise ordering or offset pagination."
+  },
+  {
+    "id": "bike-lanes",
+    "title": "Bicycle network segments",
+    "description": "Mapped Tampa bicycle network lines categorized as bike lanes, shared roadways, paths, trails, and other connections.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=d54aac9d4559488fa439e454df5f09ce",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer",
+    "layer_id": 0,
+    "layer_name": "Bike Lanes",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [
+      "INSTALLDATE",
+      "CREATEDDATE",
+      "LASTUPDATE"
+    ],
+    "category": "Transportation",
+    "tags": [
+      "bicycles",
+      "bike lanes",
+      "routes",
+      "trails"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/d54aac9d4559488fa439e454df5f09ce?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "CC0",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/d54aac9d4559488fa439e454df5f09ce?f=pjson",
+    "item_id": "d54aac9d4559488fa439e454df5f09ce",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-02-09T19:05:42+00:00",
+    "date_time_reference": null,
+    "scope_note": "CONN_TYPE includes shared roadways, paths, trails, and other connections; not every segment is a dedicated bike lane. The item modification date does not establish feature freshness."
+  },
+  {
+    "id": "recycling-pickup",
+    "title": "Recycling pickup service areas",
+    "description": "City GIS polygons identifying service-area schedules for curbside recycling pickup.",
+    "jurisdiction": "tampa",
+    "publisher": "City of Tampa",
+    "source_url": "https://tampa.maps.arcgis.com/home/item.html?id=4613a763db274503ae76440167cd80d8",
+    "service_url": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer",
+    "layer_id": 3,
+    "layer_name": "Recycling Pickup",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "LASTUPDATE"
+    ],
+    "category": "Solid waste",
+    "tags": [
+      "recycling",
+      "pickup",
+      "collection",
+      "service areas"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City ArcGIS dataset item states CC0 in licenseInfo. Source: https://www.arcgis.com/sharing/rest/content/items/4613a763db274503ae76440167cd80d8?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use.",
+    "terms_url": "https://www.tampa.gov/about-us/tampagov/conditions-and-use",
+    "license_info": "<p>CC0</p>",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/4613a763db274503ae76440167cd80d8?f=pjson",
+    "item_id": "4613a763db274503ae76440167cd80d8",
+    "publisher_evidence": [
+      "https://www.tampa.gov/technology-and-innovation/geographic-information-systems",
+      "https://tampa.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-02-10T18:32:12+00:00",
+    "date_time_reference": null,
+    "scope_note": "These are GIS schedule service areas, not an address-level guarantee of a current pickup day. Confirm operational collection information with the City."
   }
 ]

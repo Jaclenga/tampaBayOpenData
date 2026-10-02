@@ -57,9 +57,18 @@ fixture_response <- function(payload, status = 200L) {
 fixture_transport <- function(features = fixture_features(),
                               metadata = fixture_metadata(),
                               count = length(features),
-                              ids = vapply(features, function(x) x$attributes$OBJECTID,
-                                           numeric(1)),
+                              ids = NULL,
                               transform = NULL) {
+  oid <- metadata$objectIdField %||% metadata$objectIdFieldName
+  if (is.null(oid)) {
+    oid_fields <- Filter(function(x) identical(x$type, "esriFieldTypeOID"), metadata$fields)
+    if (length(oid_fields) == 1L) oid <- oid_fields[[1L]]$name
+  }
+  feature_oid <- if (length(features) && !is.null(oid) &&
+                     !is.null(features[[1L]]$attributes[[oid]])) oid else "OBJECTID"
+  if (is.null(ids)) {
+    ids <- vapply(features, function(x) x$attributes[[feature_oid]], numeric(1))
+  }
   state <- new.env(parent = emptyenv())
   state$requests <- list()
   http <- function(url, params, timeout) {
@@ -70,13 +79,13 @@ fixture_transport <- function(features = fixture_features(),
     } else if (identical(params$returnCountOnly, "true")) {
       payload <- list(count = count)
     } else if (identical(params$returnIdsOnly, "true")) {
-      payload <- list(objectIdFieldName = metadata$objectIdField %||% "OBJECTID",
+      payload <- list(objectIdFieldName = oid,
                       objectIds = as.list(ids))
     } else {
       selected <- features
       if (!is.null(params$objectIds)) {
         requested <- as.numeric(strsplit(params$objectIds, ",", fixed = TRUE)[[1L]])
-        selected <- Filter(function(x) x$attributes$OBJECTID %in% requested, selected)
+        selected <- Filter(function(x) x$attributes[[oid]] %in% requested, selected)
       }
       if (!is.null(params$orderByFields)) {
         terms <- trimws(strsplit(params$orderByFields, ",", fixed = TRUE)[[1L]])
@@ -84,7 +93,7 @@ fixture_transport <- function(features = fixture_features(),
           field <- sub("[[:space:]]+(ASC|DESC)$", "", term, ignore.case = TRUE)
           values <- vapply(selected, function(x) as.character(x$attributes[[field]]),
                            character(1))
-          if (identical(field, "OBJECTID")) values <- as.numeric(values)
+          if (identical(field, oid)) values <- as.numeric(values)
           key <- xtfrm(values)
           if (grepl("[[:space:]]DESC$", term, ignore.case = TRUE)) -key else key
         })
@@ -108,7 +117,7 @@ fixture_transport <- function(features = fixture_features(),
           feature
         })
       }
-      payload <- list(objectIdFieldName = "OBJECTID", features = selected)
+      payload <- list(objectIdFieldName = oid, features = selected)
       if (identical(params$returnGeometry, "true")) {
         payload$geometryType <- metadata$geometryType
         payload$spatialReference <- if (!is.null(params$outSR))

@@ -68,7 +68,7 @@ dataset_info <- function(id, jurisdiction = "tampa", refresh = FALSE, timeout = 
       type = vapply(metadata$fields, function(x) x$type, character(1)),
       alias = vapply(metadata$fields, function(x) x$alias %||% x$name, character(1)))
     entry$metadata <- metadata
-    entry$inspected_at <- as.POSIXct(Sys.time(), tz = "UTC")
+    entry$inspected_at <- .utc_now()
   }
   entry
 }

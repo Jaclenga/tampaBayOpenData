@@ -1,0 +1,97 @@
+---
+title: "Explore Tampa bicycle network data"
+output: rmarkdown::html_notebook
+params:
+  live: false
+---
+
+This notebook uses the `bike-lanes` entry in `tampaBayOpenData`. It renders
+offline by default. To fetch a small live subset, set `live: true` above or run
+`rmarkdown::render("bike-network.Rmd", params = list(live = TRUE))` from the
+directory containing this file. Live chunks need an internet connection;
+the map also needs the optional `sf` package.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## Find the source
+
+Catalog lookups do not contact the City.
+
+```{r catalog}
+library(tampaBayOpenData)
+
+bike_catalog <- search_datasets("bike")
+bike_catalog[, c("id", "title", "category", "verified")]
+
+bike_info <- dataset_info("bike-lanes")
+bike_info[c("title", "source_url", "verified", "scope_note")]
+```
+
+The `verified` date records a catalog endpoint check, not feature freshness.
+Review `bike_info$terms` before using the data. The layer includes shared
+roadways, paths, and trails as well as dedicated lanes.
+
+## Retrieve and inspect 20 segments
+
+This request uses exact source field names and orders by object ID so the
+subset is reproducible while the source remains unchanged. The service is live,
+so its records may change later.
+
+```{r retrieve, eval=params$live}
+bike <- get_dataset(
+  "bike-lanes",
+  fields = c("OBJECTID", "ROADWAY", "CONN_TYPE"),
+  order_by = "OBJECTID ASC",
+  limit = 20,
+  page_size = 10
+)
+head(bike)
+```
+
+Provenance records the source, retrieval time, and whether the result covers
+all matching records. A 20-record limit normally produces an incomplete subset.
+
+```{r provenance, eval=params$live}
+bike_source <- dataset_provenance(bike)
+bike_source[c("source_url", "retrieved_at", "matched_rows", "returned_rows", "complete")]
+```
+
+The chart counts connection types **within the retrieved subset**. It is not
+an estimate of the whole bicycle network.
+
+```{r connection-types, eval=params$live}
+connection_counts <- sort(table(bike$CONN_TYPE, useNA = "ifany"),
+                          decreasing = TRUE)
+connection_counts
+if (length(connection_counts)) {
+  barplot(connection_counts, las = 2, cex.names = 0.8,
+          ylab = "Segments in retrieved subset",
+          main = "Connection types in retrieved segments")
+}
+```
+
+## Map the same subset (optional)
+
+This makes a second live request. Its records can differ if the City updates
+the layer between requests. `out_sr = 4326` asks the service for WGS 84
+coordinates.
+
+```{r map, eval=params$live}
+if (requireNamespace("sf", quietly = TRUE)) {
+  bike_map <- get_dataset(
+    "bike-lanes",
+    fields = c("OBJECTID", "ROADWAY", "CONN_TYPE"),
+    order_by = "OBJECTID ASC",
+    limit = 20,
+    page_size = 10,
+    spatial = TRUE,
+    out_sr = 4326
+  )
+  sf::st_crs(bike_map)$epsg
+  plot(sf::st_geometry(bike_map), main = "Retrieved bicycle network segments")
+} else {
+  message("Install sf to draw the map.")
+}
+```

@@ -68,8 +68,8 @@ Resolves the registry entry and requests the current ArcGIS layer schema,
 matching count, and object-ID manifest. Bounded requests are validated against
 that manifest. A missing or duplicate record, truncated manifest, unexpected
 response, or upstream error fails explicitly. With \code{limit = Inf}, all matching
-records are retrieved. Services matching more than one million records must be
-narrowed with filters because ArcGIS limits object-ID manifests.
+records are retrieved. Queries matching more than one million records must be
+narrowed with filters because the client requires a complete object-ID manifest.
 }
 \details{
 Source column names, strings, coded values, and date-looking strings are

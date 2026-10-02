@@ -2,6 +2,8 @@
 
 - Introduces an offline, verified City of Tampa dataset registry and the
   `list_datasets()`, `search_datasets()`, and `dataset_info()` discovery API.
+- Adds fire stations, bicycle network segments, and recycling pickup service
+  areas, bringing the curated catalog to 11 layers.
 - Adds generic retrieval from ArcGIS FeatureServer and queryable MapServer
   layers, field selection, server-side filters, ordering, and explicit row limits.
 - Checks matching counts and object-ID manifests against retrieved batches to
@@ -14,7 +16,7 @@
   projects.
 - Includes deterministic tests, an offline-safe introductory vignette, platform
   checks, and a separate manual workflow for live integration tests.
-- Exercises HTTP request construction and all eight verified source schemas
+- Exercises HTTP request construction and all 11 verified source schemas
   offline, and rejects malformed timezone and query-capability metadata before
   retrieving features.
 - Separates pagination, declared-type parsing, and geometry decoding into

@@ -1,85 +1,53 @@
-# v0.1.0 validation
+# Dated validation record
 
-## 2026-09-30 follow-up
+These are local results on Windows 11 with R 4.5.1. Each result describes the
+source and dependencies used for that run; live City services can change.
 
-The client now retains UTC editor tracking dates when other layer dates have
-unknown time zones, requires the exact `attributes` response key, retries HTTP
-500/502/504 alongside 429/503, and validates registry array types and layer-ID
-range before catalog conversion. The root source archive was rebuilt from these
-changes.
+| Date | Offline testthat | Build and local check |
+| --- | --- | --- |
+| 2026-09-29 | 967 assertions; no failures or test warnings; two opt-in live tests skipped | `R CMD build .` succeeded, including the offline vignette. `R CMD check --no-manual` on the source archive reported zero errors, warnings, and notes. |
+| 2026-09-30 | 1,037 assertions; no failures or test warnings; two opt-in live tests skipped | Rebuilt source archive and `R CMD check --no-manual` reported Status: OK. |
+| 2026-10-02, before catalog expansion | 1,037 passed; zero failures or warnings; two live tests skipped. | Build and package check were not rerun for this result. |
+| 2026-10-02, 11-layer catalog | 1,195 passed; zero failures or warnings; three opt-in live tests skipped. | Source archive built with the vignette; `R CMD check --no-manual` reported Status: OK. |
+| 2026-10-02, expanded offline cases | 1,642 passed; zero failures or warnings; three opt-in live tests skipped. | Source archive built with the vignette; `R CMD check --no-manual` reported Status: OK with `LC_ALL=C` on Windows. |
 
-- The deterministic offline suite passes **1,037 assertions**, with zero
-  failures or test warnings. The two opt-in live tests are skipped.
-- `R CMD build` succeeds, including the vignette.
-- `R CMD check --no-manual` on the rebuilt archive reports **Status: OK**.
+The September 30 follow-up included fixes for UTC editor tracking dates,
+response `attributes` validation, transient HTTP retries, and registry shape
+checks. The September 29 work included the [bug scan](bug-scan.md) and
+[security audit](security-audit.md). Those reports retain the finding-level
+evidence and their own historical assertion counts.
 
-## Original 2026-09-29 validation
+On October 2, the three new catalog entries were checked against public City
+metadata, counts, object-ID manifests, and bounded R client queries. A
+projected fire-station sample returned EPSG:4326 geometry. The opt-in live
+suite then passed 58 assertions with no failures or skips. Its observed counts
+and source limits are in [Tampa source research](research-tampa.md); live
+results do not guarantee future availability or fixed row counts.
 
-Validated on 2026-09-29 using R 4.5.1 on Windows 11. The source archive was
-built as `tampaBayOpenData_0.1.0.tar.gz` and refreshed on 2026-09-30.
+The later offline expansion exercised registry boundaries and all 11 saved
+source schemas, retry and response variants, malformed ID manifests, page and
+limit boundaries, and point, line, and polygon results for the three new layers.
+The package check used the saved fixtures; it did not repeat the live suite.
 
-- `R CMD build .` succeeds, including the offline introductory HTML vignette.
-- `R CMD check --no-manual tampaBayOpenData_0.1.0.tar.gz` reports **Status: OK**:
-  zero errors, warnings, and notes. PDF manual generation was not requested.
-- The deterministic testthat suite passes **967 assertions**, with no failures
-  or test warnings. The two live integration cases are skipped during ordinary
-  checks and were separately run successfully with `TAMPA_OPEN_DATA_LIVE=true`.
-  That live run passed 28 assertions after the bug fixes.
-- Deterministic R code coverage measured with covr is **98.69%**. HTTP tests use
-  real httr2 requests and responses with mocked dispatch, covering request
-  encoding, timeout/retry configuration, response decoding, and source-aware
-  failures. Ordinary tests block accidental live dispatch.
-- The minimum httr2 1.2.3 was separately installed from its official source tag
-  into an isolated library. All 64 HTTP assertions pass with `LC_CTYPE=C`;
-  prepared POST bytes retain Unicode filters and full geometry precision.
-- Representative fixtures cover the verified schemas and routing of all eight
-  datasets using synthetic feature values. Metadata regressions verify that
-  malformed timezone and capability declarations fail before feature queries.
-- The internal refactor preserved the public API and the original 675 assertions while
-  separating pagination, type parsing, and geometry decoding. The largest
-  function shrank from 124 to 67 source lines; `arcgis_fetch()` from 94 to 50,
-  and `arcgis_parse()` from 69 to 11. Pagination no longer uses `<<-` to mutate
-  enclosing state. Before the subsequent bug fixes, a separate comparison of
-  1,188 parser cases found identical outputs, warnings, and error messages/classes.
-- The [bug scan](bug-scan.md) added 216 regression assertions and corrected
-  numeric rounding, polygon closure, response-integrity, metadata, CRS, and
-  dependency-version issues. All regressions run offline.
-- The [security audit](security-audit.md) adds 76 assertions and corrects literal
-  JSON/WKT handling, redirects, retry waits, and recursive validation. It also
-  hardens response-size checks and pins CI actions. The isolated httr2 1.2.3
-  run passes all 140 HTTP/security assertions. Native dependency risks remain
-  documented separately from the package's passing validation.
-- Full spatial retrieval through the R client succeeds for all eight registered
-  sources, with each result checked against its matching count and ID manifest.
-- Filtering, selected fields, ordered offset pagination, and projected point,
-  line, and polygon retrieval were also checked against the live City services.
-- roxygen2 help, namespace, vignette rebuild, and source whitespace checks pass.
+Additional September 29 checks:
 
-Observed live results are verification evidence, not fixed counts or guarantees
-of future service availability:
+- The two opt-in live tests passed 28 assertions. Full spatial retrieval
+  succeeded for all eight registered layers; each result was checked against
+  its count and ID manifest. Filtering, field selection, ordered pagination,
+  and point, line, and polygon projection were also exercised. The observed
+  counts and CRS are in [Tampa source research](research-tampa.md).
+- Deterministic coverage was 98.69% with `covr`. HTTP tests used real `httr2`
+  request construction with mocked dispatch; ordinary tests blocked accidental
+  live requests.
+- An isolated installation of the required minimum `httr2` 1.2.3 passed 64
+  HTTP assertions with `LC_CTYPE=C`. Prepared POST bodies retained Unicode
+  filters and geometry precision.
+- Schema fixtures for all eight datasets used synthetic feature values. No
+  bulk government datasets were packaged.
 
-| Dataset | Retrieved features | Native EPSG | Observed geometry |
-| --- | ---: | ---: | --- |
-| `construction-permits` | 2,594 | 3857 | POINT |
-| `development-cases` | 287 | 3857 | POINT |
-| `capital-projects` | 193 | 6443 | POINT |
-| `city-boundary` | 1 | 3857 | MULTIPOLYGON |
-| `neighborhoods` | 160 | 3857 | MULTIPOLYGON |
-| `council-districts` | 4 | 3857 | MULTIPOLYGON |
-| `riverwalk` | 21 | 3857 | LINESTRING |
-| `parks` | 208 | 3857 | MULTIPOLYGON |
-
-No bulk government datasets are stored in the package. Native/projected capital
-project coordinates also agree with sf's transformation within the live test's
-tolerance. The archive contains built vignette documentation and all tests;
-workspace libraries, downloaded research material, and check output are excluded.
-
-CI is configured for Linux release/devel/oldrel, Windows release, and macOS
-release, plus a manually triggered live workflow. Remote CI has not been run
-from this workspace; local validation does not claim results on those platforms.
-
-Local check logs, coverage objects, test summaries, observed counts, and the
-archive SHA-256 checksum are under the ignored `.check/` and `.artifacts/`
-directories. Reproduction commands, coverage details, and opt-in live
-instructions are in the [test suite guide](../tests/README.md) and
-[CONTRIBUTING.md](../CONTRIBUTING.md).
+The local archive included built vignette documentation and tests. The
+configured [CI workflow](../.github/workflows/R-CMD-check.yaml) checks Linux
+release/devel/oldrel-1, Windows release, and macOS release; a separate manual
+[workflow](../.github/workflows/live-check.yaml) runs live tests. Remote CI
+results were not established by these local checks. Reproduction commands and
+current test scope are in the [test suite guide](../tests/README.md).

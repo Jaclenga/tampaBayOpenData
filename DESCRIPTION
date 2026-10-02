@@ -14,12 +14,12 @@ Depends: R (>= 4.1.0)
 Imports:
     httr2 (>= 1.2.3),
     jsonlite (>= 1.6.0),
-    tibble
+    tibble (>= 3.0.0)
 Suggests:
     knitr,
     rmarkdown,
     sf (>= 1.0.0),
-    testthat (>= 3.2.0)
+    testthat (>= 3.2.1)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)

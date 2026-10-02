@@ -14,7 +14,7 @@ A named list containing source metadata and retrieval details.
 }
 \description{
 Provenance is attached to both tabular and spatial retrieval results. It
-describes the government publisher, source page, query endpoint, retrieval
+describes the government publisher, source URL, query endpoint, retrieval
 time, original query, expected and returned row counts, and completeness.
 A successful full retrieval checks membership against an object-ID manifest;
 upstream attributes are not guaranteed to be a transactionally frozen snapshot.

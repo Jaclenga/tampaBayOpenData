@@ -50,6 +50,33 @@ expect_source_routing <- function(result, transport, id, fields) {
   expect_true(provenance$complete)
 }
 
+test_that("every catalog entry matches its recorded source schema", {
+  entries <- .read_registry()
+  snapshots <- jsonlite::fromJSON(test_path("fixtures", "tampa-layer-schemas.json"),
+                                  simplifyVector = FALSE)
+  expect_setequal(names(snapshots), vapply(entries, `[[`, character(1), "id"))
+  for (entry in entries) {
+    snapshot <- snapshots[[entry$id]]
+    metadata <- snapshot$metadata
+    expect_identical(snapshot$metadata_url,
+                     paste0(entry$service_url, "/", entry$layer_id))
+    expect_identical(snapshot$verified, entry$verified)
+    expect_identical(metadata$geometryType, entry$geometry_type)
+    expect_equal(metadata$maxRecordCount, entry$max_record_count)
+    oid_fields <- Filter(function(x) x$type == "esriFieldTypeOID", metadata$fields)
+    expect_length(oid_fields, 1L)
+    expect_identical(oid_fields[[1L]]$name, entry$object_id_field)
+    date_fields <- vapply(Filter(function(x) x$type == "esriFieldTypeDate",
+                                 metadata$fields), `[[`, character(1), "name")
+    expect_identical(date_fields, unlist(entry$date_fields, use.names = FALSE))
+    expect_identical(metadata$advancedQueryCapabilities$supportsPagination,
+                     entry$supports_pagination)
+    expect_identical(metadata$advancedQueryCapabilities$supportsOrderBy,
+                     entry$supports_order_by)
+    expect_equal(metadata$spatialReference, entry$spatial_reference)
+  }
+})
+
 test_that("the distinct FeatureServer record schemas preserve literal date strings", {
   cases <- list(
     list(id = "construction-permits", record_field = "RECORD_ID",
@@ -203,4 +230,93 @@ test_that("Riverwalk and parks preserve expression field names and source codes"
                      paste(c(fields, "OBJECTID"), collapse = ","))
     expect_source_routing(result, transport, case$id, fields)
   }
+})
+
+test_that("fire stations use the qualified OID without offset pagination", {
+  oid <- "GIS.FacilitySitePoint.OBJECTID"
+  fields <- c("GIS.FacilitySitePoint.NAME", "GIS.FacilitySitePoint.MAPID",
+              "GIS.FacilitySitePoint.LASTUPDATE", "GIS.GovServiceInfo.OPERDAYS",
+              "GIS.GovServiceInfo.OBJECTID")
+  features <- list(
+    source_fixture_feature(setNames(
+      list(41L, "synthetic-north", 3L, 1704153600000, "Monday-Friday", 901L),
+      c(oid, fields))),
+    source_fixture_feature(setNames(
+      list(7L, "synthetic-south", NULL, NULL, "Weekends", 902L),
+      c(oid, fields)))
+  )
+  transport <- source_fixture_transport("fire-stations", features)
+  local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+  result <- get_dataset("fire-stations", fields = fields, page_size = 1)
+  expect_identical(names(result), fields)
+  expect_identical(result[[fields[[1L]]]], c("synthetic-south", "synthetic-north"))
+  expect_identical(result[[fields[[2L]]]], c(NA_integer_, 3L))
+  expect_identical(result[[fields[[3L]]]],
+                   as.POSIXct(c(NA_character_, "2024-01-02"), tz = "UTC"))
+  expect_identical(result[[fields[[4L]]]], c("Weekends", "Monday-Friday"))
+  expect_identical(result[[fields[[5L]]]], c(902L, 901L))
+  queries <- fixture_queries(transport, "features")
+  expect_identical(vapply(queries, function(x) x$params$objectIds, character(1)),
+                   c("7", "41"))
+  expect_true(all(vapply(queries, function(x)
+    is.null(x$params$resultOffset) && is.null(x$params$orderByFields), logical(1))))
+  expect_identical(queries[[1L]]$params$outFields, paste(c(fields, oid), collapse = ","))
+  expect_identical(dataset_provenance(result)$pagination, "object-id batches")
+  expect_source_routing(result, transport, "fire-stations", fields)
+
+  expect_error(get_dataset("fire-stations", fields = fields,
+                           order_by = paste(fields[[1L]], "ASC")),
+               "does not support reliable server-side ordering")
+  expect_length(fixture_queries(transport, "features"), 2L)
+})
+
+test_that("bike lanes preserve measured lengths, dates, and source strings", {
+  fields <- c("ROADWAY", "WIDTH", "INSTALLDATE", "SHAPE.STLength()",
+              "MILEAGE", "CREATED")
+  features <- list(
+    source_fixture_feature(c(list(OBJECTID = 14L),
+      setNames(list("synthetic-z", 5.5, 1704240000000, 25.75, 0.8, "source-string"),
+               fields))),
+    source_fixture_feature(c(list(OBJECTID = 2L),
+      setNames(list("synthetic-a", 3.25, NULL, 10.5, 0.3, "another-string"),
+               fields)))
+  )
+  transport <- source_fixture_transport("bike-lanes", features)
+  local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+  result <- get_dataset("bike-lanes", fields = fields, page_size = 1,
+                        order_by = "ROADWAY ASC")
+  expect_identical(names(result), fields)
+  expect_identical(result$ROADWAY, c("synthetic-a", "synthetic-z"))
+  expect_identical(result$WIDTH, c(3.25, 5.5))
+  expect_identical(result$INSTALLDATE,
+                   as.POSIXct(c(NA_character_, "2024-01-03"), tz = "UTC"))
+  expect_identical(result[["SHAPE.STLength()"]], c(10.5, 25.75))
+  expect_identical(result$MILEAGE, c(0.3, 0.8))
+  expect_identical(result$CREATED, c("another-string", "source-string"))
+  queries <- fixture_queries(transport, "features")
+  expect_identical(vapply(queries, function(x) x$params$orderByFields,
+                          character(1)), rep("ROADWAY ASC,OBJECTID ASC", 2L))
+  expect_identical(vapply(queries, function(x) x$params$resultOffset,
+                          numeric(1)), c(0, 1))
+  expect_identical(dataset_provenance(result)$pagination, "ordered offsets")
+  expect_source_routing(result, transport, "bike-lanes", fields)
+})
+
+test_that("recycling pickup keeps collection labels and typed area", {
+  fields <- c("NAME", "SCHEDULE", "COLLECTIONDAYS", "WEEKONE", "MILES",
+              "LASTUPDATE", "SHAPE.STArea()")
+  feature <- source_fixture_feature(c(list(OBJECTID = 32L),
+    setNames(list("synthetic-zone", "synthetic-cycle", "Tuesday", "Y", "5.5",
+                  1704153600000, 1500.25), fields)))
+  transport <- source_fixture_transport("recycling-pickup", list(feature))
+  local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+  result <- get_dataset("recycling-pickup", fields = fields)
+  expect_identical(names(result), fields)
+  expect_identical(result$SCHEDULE, "synthetic-cycle")
+  expect_identical(result$COLLECTIONDAYS, "Tuesday")
+  expect_identical(result$WEEKONE, "Y")
+  expect_identical(result$MILES, "5.5")
+  expect_identical(result$LASTUPDATE, as.POSIXct("2024-01-02", tz = "UTC"))
+  expect_identical(result[["SHAPE.STArea()"]], 1500.25)
+  expect_source_routing(result, transport, "recycling-pickup", fields)
 })

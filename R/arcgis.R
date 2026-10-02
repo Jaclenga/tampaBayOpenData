@@ -218,7 +218,9 @@ arcgis_layers <- function(service_url, timeout = 30) {
 }
 
 .object_ids <- function(value, dataset, url) {
-  if (is.list(value) && any(!vapply(value, function(x) is.numeric(x) && length(x) == 1L, logical(1)))) {
+  if (is.null(value) || !is.list(value) || !is.null(names(value)) ||
+      any(!vapply(value, function(x) is.numeric(x) && length(x) == 1L,
+                  logical(1)))) {
     .abort("The service returned malformed or duplicate object IDs.", dataset, url, "tampa_integrity_error")
   }
   ids <- unlist(value, use.names = FALSE)

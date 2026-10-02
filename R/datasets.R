@@ -4,8 +4,8 @@
 #' matching count, and object-ID manifest. Bounded requests are validated against
 #' that manifest. A missing or duplicate record, truncated manifest, unexpected
 #' response, or upstream error fails explicitly. With `limit = Inf`, all matching
-#' records are retrieved. Services matching more than one million records must be
-#' narrowed with filters because ArcGIS limits object-ID manifests.
+#' records are retrieved. Queries matching more than one million records must be
+#' narrowed with filters because the client requires a complete object-ID manifest.
 #'
 #' Source column names, strings, coded values, and date-looking strings are
 #' preserved. Declared ArcGIS date fields are converted from epoch milliseconds
@@ -82,7 +82,7 @@ get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL
   }
   query_params <- .query_params(query)
   dataset <- .lookup_dataset(id, jurisdiction)
-  started_at <- as.POSIXct(Sys.time(), tz = "UTC")
+  started_at <- .utc_now()
   tryCatch({
     if (spatial && !arcgis_has_sf()) {
       .abort("Spatial retrieval requires the sf package. Install it with install.packages('sf').")

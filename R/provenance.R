@@ -1,5 +1,9 @@
+.utc_now <- function() {
+  as.POSIXct(as.numeric(Sys.time()), origin = "1970-01-01", tz = "UTC")
+}
+
 .attach_provenance <- function(x, dataset, metadata, fetched, query, started_at) {
-  retrieved <- as.POSIXct(Sys.time(), tz = "UTC")
+  retrieved <- .utc_now()
   reference <- NULL
   if (isTRUE(query$spatial)) {
     requested <- if (!is.null(query$out_sr) && nrow(x) == 0L) list(wkid = query$out_sr)
@@ -30,7 +34,7 @@
 #' Read the source and retrieval provenance of a result
 #'
 #' Provenance is attached to both tabular and spatial retrieval results. It
-#' describes the government publisher, source page, query endpoint, retrieval
+#' describes the government publisher, source URL, query endpoint, retrieval
 #' time, original query, expected and returned row counts, and completeness.
 #' A successful full retrieval checks membership against an object-ID manifest;
 #' upstream attributes are not guaranteed to be a transactionally frozen snapshot.
