@@ -49,7 +49,12 @@
 #' exporting data or transforming objects with tools that discard attributes.
 #' @param x A retrieval result or a chunk read from [download_dataset()] or
 #'   [download_arcgis_layer()].
-#' @return A named list containing source metadata and retrieval details.
+#' @return A named list with `dataset_id`, `publisher`, `jurisdiction`,
+#'   `source_url`, the query `endpoint`, `validation_status`, UTC `started_at`
+#'   and `retrieved_at` times, the submitted `query`, `matched_rows`,
+#'   `returned_rows`, `complete`, and `integrity`.
+#'   Download chunks also include a `download` entry with the chunk number and
+#'   object IDs. The list is the result's attached `source` attribute.
 #' @export
 #' @examples
 #' \dontrun{

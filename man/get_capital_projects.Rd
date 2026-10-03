@@ -10,7 +10,9 @@ get_capital_projects(...)
 \item{...}{Arguments passed unchanged to \code{\link[=get_dataset]{get_dataset()}}, excluding \code{id}.}
 }
 \value{
-A tibble or sf object with source provenance.
+A tibble, or an sf object when spatial retrieval is requested. Source
+metadata are attached as \code{source}, \code{dataset_id}, \code{jurisdiction}, and
+\code{retrieved_at} attributes; \code{\link[=dataset_provenance]{dataset_provenance()}} returns the full record.
 }
 \description{
 A thin wrapper for \code{get_dataset("capital-projects", ...)}. The City service

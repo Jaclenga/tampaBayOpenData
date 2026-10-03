@@ -11,7 +11,12 @@ dataset_provenance(x)
 \code{\link[=download_arcgis_layer]{download_arcgis_layer()}}.}
 }
 \value{
-A named list containing source metadata and retrieval details.
+A named list with \code{dataset_id}, \code{publisher}, \code{jurisdiction},
+\code{source_url}, the query \code{endpoint}, \code{validation_status}, UTC \code{started_at}
+and \code{retrieved_at} times, the submitted \code{query}, \code{matched_rows},
+\code{returned_rows}, \code{complete}, and \code{integrity}.
+Download chunks also include a \code{download} entry with the chunk number and
+object IDs. The list is the result's attached \code{source} attribute.
 }
 \description{
 Provenance is attached to both tabular and spatial retrieval results. It

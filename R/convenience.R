@@ -4,7 +4,7 @@
 #' the City's PermitsAll layer used by its active-permits viewer, not a guaranteed
 #' historical archive of every permit. Source values and scope are preserved.
 #' @param ... Arguments passed unchanged to [get_dataset()], excluding `id`.
-#' @return A tibble or sf object with source provenance.
+#' @inherit get_dataset return
 #' @export
 #' @examples
 #' \dontrun{get_permits(limit = 10)}

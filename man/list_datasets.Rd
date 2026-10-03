@@ -95,6 +95,7 @@ scan can miss matching older items; inspect \code{discovery_complete} and use
 \code{max_items = Inf} with an appropriate time budget for an exhaustive scan.
 }
 \examples{
-list_datasets(source = "checked")
+checked <- list_datasets(source = "checked")
+checked[, c("id", "title", "jurisdiction", "validation_status")]
 \dontrun{list_datasets()}
 }

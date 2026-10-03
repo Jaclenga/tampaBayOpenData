@@ -57,7 +57,9 @@ available for a later resume.}
 \item{resume}{Reuse a matching saved download and skip validated chunks.}
 }
 \value{
-The download summary described in \code{\link[=download_dataset]{download_dataset()}}.
+A named list with \code{path}, ordered chunk \code{files}, \code{matched_rows},
+\code{returned_rows}, \code{complete}, and summary \code{source} provenance, as described
+in \code{\link[=download_dataset]{download_dataset()}}. Direct URLs have \code{not_checked} provenance.
 }
 \description{
 Uses the same resumable, bounded-memory path as \code{\link[=download_dataset]{download_dataset()}}. A direct

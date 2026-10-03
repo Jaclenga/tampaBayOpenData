@@ -1,0 +1,27 @@
+name: pkgcheck
+
+"on":
+  workflow_run:
+    workflows: [R-CMD-check]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pkgcheck:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      TAMPA_OPEN_DATA_LIVE: "false"
+    steps:
+      - uses: ropensci-review-tools/pkgcheck-action@main
+        with:
+          post-to-issue: "false"

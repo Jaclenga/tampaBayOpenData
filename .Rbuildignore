@@ -13,3 +13,5 @@
 ^.*\.Rcheck$
 ^.*\.tar\.gz$
 ^development-cases\.rds$
+^cobertura\.xml$
+^cran-comments\.md$

@@ -3,13 +3,18 @@
 [![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](DESCRIPTION)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 
-`tampaBayOpenData` discovers public ArcGIS datasets from Tampa, St. Petersburg,
-Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional
-Planning Council, then retrieves records as tibbles or optional `sf` objects.
-A bundled catalog of 26 layers across the three cities identifies datasets
-the package maintainers have checked.
-Live discovery can find other layers; each result records its source and
-validation status.
+Public data for the Tampa Bay region is spread across separate ArcGIS portals.
+Finding a layer, retrieving all its records, and recording where they came from
+can make regional analysis hard to repeat. `tampaBayOpenData` gives researchers,
+planners, journalists, and civic technologists one R interface to discover and
+retrieve public data from Tampa, St. Petersburg, Clearwater, Hillsborough
+County, Pinellas County, and the Tampa Bay Regional Planning Council.
+
+Search a bundled catalog of 26 maintainer-checked city layers offline, or
+discover other layers on the live portals. Retrieve records as tibbles or
+optional `sf` objects, with source provenance and validation status attached.
+The package focuses on reproducible access to these regional sources; the
+publishers remain responsible for their data and its reuse terms.
 
 ## Install
 
@@ -199,6 +204,14 @@ In that case they remain raw milliseconds with a warning; UTC editor-tracking
 creation and edit dates identified by the layer metadata are still converted.
 Date-only fields become `Date`; time-only and timestamp-offset fields remain
 strings.
+
+## How this relates to other tools
+
+| Tool | When to use it | What `tampaBayOpenData` adds |
+| --- | --- | --- |
+| [`nycOpenData`](https://docs.ropensci.org/nycOpenData/) | Access New York City's Socrata Open Data API. | A Tampa Bay focus and discovery and retrieval from multiple ArcGIS publishers, using ArcGIS queries rather than Socrata SoQL. |
+| [ArcGIS REST API](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer/) | Work directly with a known ArcGIS service and its query parameters. | A regional publisher registry, checked dataset IDs, bounded discovery, typed R results, provenance, and resumable downloads. `get_arcgis_layer()` also accepts a direct layer URL. |
+| [`arcgislayers`](https://r.esri.com/arcgislayers/) | Work broadly with ArcGIS data services, including feature layers, imagery, and portal items. | A focused Tampa Bay catalog and workflow for finding public regional layers, distinguishing checked from discovered results, and recording retrieval provenance. |
 
 ## Spatial results
 

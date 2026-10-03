@@ -168,7 +168,10 @@ get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL
 #'
 #' @param url Public HTTPS ArcGIS layer URL.
 #' @inheritParams get_dataset
-#' @return A tibble, or an sf object when `spatial = TRUE`.
+#' @return A tibble, or an sf object when `spatial = TRUE`, with source,
+#'   retrieval, and completeness details attached as attributes. Use
+#'   [dataset_provenance()] to read the full provenance record; its
+#'   `validation_status` is `not_checked` for a direct URL.
 #' @export
 #' @examples
 #' \dontrun{

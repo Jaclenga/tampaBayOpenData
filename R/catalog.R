@@ -57,7 +57,8 @@
 #'   failed. These attributes describe live discovery, not checked coverage.
 #' @export
 #' @examples
-#' list_datasets(source = "checked")
+#' checked <- list_datasets(source = "checked")
+#' checked[, c("id", "title", "jurisdiction", "validation_status")]
 #' \dontrun{list_datasets()}
 list_datasets <- function(jurisdiction = "all", source = "all",
                           portals = "all", max_items = 25, timeout = 30,
@@ -81,10 +82,13 @@ list_datasets <- function(jurisdiction = "all", source = "all",
 #' @param query A single search string. Checked matching treats punctuation
 #'   literally; live matching uses the ArcGIS portal search index.
 #' @inheritParams list_datasets
-#' @return A tibble with the same columns as [list_datasets()].
+#' @return A tibble with the catalog columns and, for live searches, the
+#'   discovery attributes described in [list_datasets()]. A checked-only
+#'   search reads the bundled registry without network access.
 #' @export
 #' @examples
-#' search_datasets("permit", source = "checked")
+#' permits <- search_datasets("permit", source = "checked")
+#' permits[, c("id", "title", "jurisdiction")]
 #' \dontrun{search_datasets("housing")}
 search_datasets <- function(query, jurisdiction = "all", source = "all",
                             portals = "all", max_items = 25, timeout = 30,
@@ -228,11 +232,14 @@ search_datasets <- function(query, jurisdiction = "all", source = "all",
 #' @param timeout Per-request timeout in seconds.
 #' @param total_timeout Maximum elapsed seconds for inspection, including
 #'   metadata requests and retries. Defaults to 60; `Inf` disables this limit.
-#' @return A named list of dataset metadata. Live inspection adds `fields`
-#'   (a tibble), `metadata` (the raw layer metadata), and `inspected_at` (UTC).
+#' @return A named list of dataset metadata, including its ID, title, publisher,
+#'   jurisdiction, source URL, and service URL. With `refresh = TRUE`, the list
+#'   also contains `fields` (a tibble of source field names, types, and aliases),
+#'   `metadata` (raw ArcGIS layer metadata), and `inspected_at` (UTC).
 #' @export
 #' @examples
-#' dataset_info("construction-permits")
+#' info <- dataset_info("construction-permits")
+#' info[c("id", "title", "publisher", "source_url")]
 #' \dontrun{
 #' info <- dataset_info("construction-permits", refresh = TRUE)
 #' info$fields

@@ -28,8 +28,10 @@ ArcGIS ID, omission uses its source jurisdiction.}
 metadata requests and retries. Defaults to 60; \code{Inf} disables this limit.}
 }
 \value{
-A named list of dataset metadata. Live inspection adds \code{fields}
-(a tibble), \code{metadata} (the raw layer metadata), and \code{inspected_at} (UTC).
+A named list of dataset metadata, including its ID, title, publisher,
+jurisdiction, source URL, and service URL. With \code{refresh = TRUE}, the list
+also contains \code{fields} (a tibble of source field names, types, and aliases),
+\code{metadata} (raw ArcGIS layer metadata), and \code{inspected_at} (UTC).
 }
 \description{
 A checked package ID reads the offline registry. A one-row discovery result
@@ -41,7 +43,8 @@ Registry verification dates are endpoint checks, not dates when government
 records were updated.
 }
 \examples{
-dataset_info("construction-permits")
+info <- dataset_info("construction-permits")
+info[c("id", "title", "publisher", "source_url")]
 \dontrun{
 info <- dataset_info("construction-permits", refresh = TRUE)
 info$fields

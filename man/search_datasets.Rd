@@ -73,7 +73,9 @@ either bound is supplied. Modification is an item or checked snapshot
 timestamp, not record freshness; \code{modified_source} identifies its origin.}
 }
 \value{
-A tibble with the same columns as \code{\link[=list_datasets]{list_datasets()}}.
+A tibble with the catalog columns and, for live searches, the
+discovery attributes described in \code{\link[=list_datasets]{list_datasets()}}. A checked-only
+search reads the bundled registry without network access.
 }
 \description{
 Live searches use the selected public ArcGIS portal indexes. Checked entries are
@@ -82,6 +84,7 @@ description, category, and tags. Portal search can include other indexed
 fields, so its results need not follow the checked catalog's literal matching.
 }
 \examples{
-search_datasets("permit", source = "checked")
+permits <- search_datasets("permit", source = "checked")
+permits[, c("id", "title", "jurisdiction")]
 \dontrun{search_datasets("housing")}
 }

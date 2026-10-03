@@ -118,7 +118,9 @@ download_dataset <- function(id, path, jurisdiction = "tampa", where = "1=1",
 #' layer URL retains `not_checked` provenance and no inferred publisher identity.
 #' @param url Public HTTPS ArcGIS FeatureServer or MapServer layer URL.
 #' @inheritParams download_dataset
-#' @return The download summary described in [download_dataset()].
+#' @return A named list with `path`, ordered chunk `files`, `matched_rows`,
+#'   `returned_rows`, `complete`, and summary `source` provenance, as described
+#'   in [download_dataset()]. Direct URLs have `not_checked` provenance.
 #' @export
 #' @examples
 #' \dontrun{

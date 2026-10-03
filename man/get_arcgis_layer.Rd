@@ -70,7 +70,10 @@ A zero limit requests only the count. Provenance records the verification
 method and never labels a deliberate subset complete.}
 }
 \value{
-A tibble, or an sf object when \code{spatial = TRUE}.
+A tibble, or an sf object when \code{spatial = TRUE}, with source,
+retrieval, and completeness details attached as attributes. Use
+\code{\link[=dataset_provenance]{dataset_provenance()}} to read the full provenance record; its
+\code{validation_status} is \code{not_checked} for a direct URL.
 }
 \description{
 Reads a public HTTPS ArcGIS FeatureServer or MapServer layer through the same

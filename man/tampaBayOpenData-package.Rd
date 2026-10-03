@@ -33,11 +33,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jaclenga \email{jack3lenga@gmail.com}
+\strong{Maintainer}: Jack Lenga \email{jack3lenga@gmail.com} [copyright holder]
 
 Authors:
 \itemize{
-  \item Jaclenga \email{jack3lenga@gmail.com}
+  \item Jack Lenga \email{jack3lenga@gmail.com} [copyright holder]
 }
 
 }
