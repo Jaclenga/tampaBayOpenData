@@ -11,3 +11,23 @@ object ID and supported ordering/offset pagination, capital projects' WKID 10302
 6443, and the water service area's native WKID 102659 / latest WKID 2237. To
 update a fixture, check its recorded endpoint and compare the current schema
 before changing the snapshot.
+
+## Other Tampa Bay city schemas
+
+`tampa-bay-city-layer-schemas.json` contains selected source fields and query,
+spatial, and date metadata verified on October 2, 2026:
+
+- [St. Petersburg recreation centers](https://egis.stpete.org/arcgis/rest/services/ServicesDOTS/GoogleGen/MapServer/4):
+  point geometry, integer ZIP codes, and creation dates.
+- [Clearwater park buffers](https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/0):
+  polygon buffers, acreage, integer buffer distances, and creation dates. These
+  polygons describe buffers around parks rather than exact park footprints.
+
+Both MapServer layers omit `objectIdField` and `objectIdFieldName` in metadata,
+declare an `OBJECTID` field of type `esriFieldTypeOID`, and use native
+EPSG:2882. The fixture preserves those differences instead of substituting the
+Tampa permit schema. All offline attribute values and coordinates are synthetic;
+no source feature records are bundled. The live tests share these URLs and
+selected fields but assert neither fixed counts nor fixed record IDs. These
+are direct-URL compatibility cases, not checked registry entries or additional
+portal discovery sources.

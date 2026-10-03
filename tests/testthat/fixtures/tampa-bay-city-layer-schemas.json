@@ -1,0 +1,128 @@
+{
+  "st-petersburg-recreation": {
+    "city": "St. Petersburg",
+    "verified": "2026-10-02",
+    "metadata_url": "https://egis.stpete.org/arcgis/rest/services/ServicesDOTS/GoogleGen/MapServer/4",
+    "publisher": "City of St. Petersburg",
+    "publisher_url": "https://egis.stpete.org/arcgis/rest/services/ServicesDOTS/GoogleGen/MapServer",
+    "native_epsg": 2882,
+    "object_id_field": "OBJECTID",
+    "label_field": "ASSETNAME",
+    "integer_field": "ZIP",
+    "date_field": "CREATED_DATE",
+    "geometry_pattern": "^POINT$",
+    "metadata": {
+      "name": "Recreation Centers",
+      "type": "Feature Layer",
+      "capabilities": "Query,Map,Data",
+      "geometryType": "esriGeometryPoint",
+      "maxRecordCount": 2000,
+      "supportedQueryFormats": "JSON, geoJSON, PBF",
+      "datesInUnknownTimezone": false,
+      "dateFieldsTimeReference": null,
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "ASSETNAME",
+          "type": "esriFieldTypeString",
+          "alias": "Name"
+        },
+        {
+          "name": "ZIP",
+          "type": "esriFieldTypeInteger",
+          "alias": "Zip"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "CREATED_DATE"
+        }
+      ],
+      "spatialReference": {
+        "wkid": 2882,
+        "latestWkid": 2882
+      },
+      "sourceSpatialReference": {
+        "wkid": 2882,
+        "latestWkid": 2882
+      },
+      "extent": {
+        "spatialReference": {
+          "wkid": 2882,
+          "latestWkid": 2882
+        }
+      },
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      }
+    }
+  },
+  "clearwater-park-buffers": {
+    "city": "Clearwater",
+    "verified": "2026-10-02",
+    "metadata_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/0",
+    "publisher": "City of Clearwater",
+    "publisher_url": "https://www.myclearwater.com/My-Government/About-Clearwater/Maps-GIS",
+    "native_epsg": 2882,
+    "object_id_field": "OBJECTID",
+    "label_field": "Site_Name",
+    "integer_field": "Buf_Distance",
+    "double_field": "Acreage",
+    "date_field": "created_date",
+    "geometry_pattern": "^(POLYGON|MULTIPOLYGON)$",
+    "metadata": {
+      "name": "Clearwater_Park_Buffers",
+      "type": "Feature Layer",
+      "capabilities": "Map,Query,Data",
+      "geometryType": "esriGeometryPolygon",
+      "maxRecordCount": 2000,
+      "supportedQueryFormats": "JSON, AMF, geoJSON",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "Site_Name",
+          "type": "esriFieldTypeString",
+          "alias": "Site_Name"
+        },
+        {
+          "name": "Acreage",
+          "type": "esriFieldTypeDouble",
+          "alias": "Acreage"
+        },
+        {
+          "name": "created_date",
+          "type": "esriFieldTypeDate",
+          "alias": "created_date"
+        },
+        {
+          "name": "Buf_Distance",
+          "type": "esriFieldTypeInteger",
+          "alias": "Buf_Distance"
+        }
+      ],
+      "sourceSpatialReference": {
+        "wkid": 2882,
+        "latestWkid": 2882
+      },
+      "extent": {
+        "spatialReference": {
+          "wkid": 2882,
+          "latestWkid": 2882
+        }
+      },
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      }
+    }
+  }
+}

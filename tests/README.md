@@ -16,6 +16,7 @@ testthat::test_local(filter = "http", stop_on_failure = TRUE)
 testthat::test_local(filter = "dataset-sources", stop_on_failure = TRUE)
 testthat::test_local(filter = "live-discovery", stop_on_failure = TRUE)
 testthat::test_local(filter = "generic-retrieval", stop_on_failure = TRUE)
+testthat::test_local(filter = "other-cities", stop_on_failure = TRUE)
 ```
 
 The suite covers the 20 checked source schemas, live portal paging and
@@ -40,6 +41,13 @@ with `req_perform()` mocked. The retry tests in
 [test-security.R](testthat/test-security.R) exercise retry handling with network
 calls and waits mocked.
 
+[Other-city tests](testthat/test-other-cities.R) use verified St. Petersburg
+recreation-center and Clearwater park-buffer schemas with synthetic records.
+They cover MapServer object-ID inference, typed attributes and dates, complete
+and ordered pagination, zero limits, empty filters, native EPSG:2882 geometry,
+missing geometry, and direct-URL provenance. These compatibility tests do not
+add either city to automatic portal discovery or the checked catalog.
+
 ## Fixtures
 
 [helper-fixtures.R](testthat/helper-fixtures.R) generates synthetic responses;
@@ -61,11 +69,18 @@ testthat::test_local(filter = "live", stop_on_failure = TRUE)
 Sys.unsetenv("TAMPA_OPEN_DATA_LIVE")
 ```
 
+Use `filter = "live-other-cities"` to run only the municipal checks.
+
 The manual [live-check workflow](../.github/workflows/live-check.yaml) runs
-opt-in checks against current City and regional ArcGIS services. Its bounded
-samples cover all 20 checked layers, a live portal discovery case, and a
-complete multi-page permit download. The
-[R-CMD-check workflow](../.github/workflows/R-CMD-check.yaml) runs offline
+opt-in checks against current Tampa, regional, St. Petersburg, and Clearwater
+ArcGIS services. It covers all 20 checked layers, a live portal discovery case,
+and a complete multi-page permit download. The
+[other-city live tests](testthat/test-live-other-cities.R) retrieve at most two
+features per call, check a complete filter using IDs from the current run, and
+compare native geometry with server projection to EPSG:4326. The client still
+fetches matching counts and complete object-ID manifests. Those tests use no
+fixed upstream counts or record IDs; an upstream failure fails the opted-in run.
+The [R-CMD-check workflow](../.github/workflows/R-CMD-check.yaml) runs offline
 package checks. To build and check a source archive locally:
 
 ```sh

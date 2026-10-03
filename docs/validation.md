@@ -17,6 +17,7 @@ dependencies used for that run; live services can change.
 | 2026-10-02, live discovery refactor | 2,228 passed; zero failures or warnings; six opt-in live tests skipped. | Source archive built with the offline vignette; `R CMD check --no-manual` reported Status: OK with zero errors, warnings, or notes. |
 | 2026-10-02, catalog and parsing bug fixes | 2,271 assertions passed; zero failures or test warnings; six opt-in live tests skipped. | No build or package check was run for this interim revision. |
 | 2026-10-02, CRS alias regression | 2,275 assertions passed on R 4.6.1; zero test failures or warnings; six opt-in live tests skipped. | Source archive built with its vignette. Full `R CMD check --as-cran`, including PDF and HTML manual checks, reported zero errors, zero warnings, and one `New submission` NOTE. |
+| 2026-10-02, other-city compatibility tests | 2,416 assertions passed on R 4.6.1; zero failures or warnings; ten opt-in live tests skipped. | No build or package check was rerun for this test expansion. The four new municipal live tests passed 214 assertions without failures, warnings, or skips. |
 
 The September 30 follow-up included fixes for UTC editor tracking dates,
 response `attributes` validation, transient HTTP retries, and registry shape
@@ -144,3 +145,34 @@ passed all five `--as-cran --no-manual` jobs for source commit
 oldrel-1; Windows release; and macOS release. These CI jobs did not check the
 PDF manual. Reproduction commands and current test scope are in the
 [test suite guide](../tests/README.md).
+
+## Other-city compatibility checks (2026-10-02)
+
+The added [offline tests](../tests/testthat/test-other-cities.R) use selected
+schemas from [St. Petersburg recreation centers](https://egis.stpete.org/arcgis/rest/services/ServicesDOTS/GoogleGen/MapServer/4)
+and [Clearwater park buffers](https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/0).
+Both MapServer layers omit the object-ID metadata member but declare an OID
+field, exercising inference from their actual schemas. Synthetic records
+exercise field capitalization, strings, integer and double attributes, UTC
+dates, ID batches, ordered offsets, limits, empty filters, native EPSG:2882
+point and polygon geometry, and missing geometry. No retrieved feature records
+were added to the repository. The new offline cases passed 141 assertions;
+the complete offline suite passed 2,416 with zero failures or warnings and ten
+expected opt-in live skips in 65.1 seconds.
+
+The four [municipal live tests](../tests/testthat/test-live-other-cities.R)
+passed 214 assertions with zero failures, warnings, or skips in 10.6 seconds.
+Every retrieval requested at most two feature rows with `page_size = 1` and a
+15-second per-attempt timeout. The client also fetched matching counts and
+object-ID manifests. Each test selected current object IDs for a complete
+bounded filter rather than assuming fixed upstream counts or IDs. Native
+EPSG:2882 geometry agreed with each server's EPSG:4326 projection within the
+tests' 1e-5 coordinate comparison tolerance. Both runs used R 4.6.1, sf 1.1.3,
+testthat 3.3.2, and `LC_ALL=C`.
+
+These checks exercise `get_arcgis_layer()` compatibility. Both sources retain
+`not_checked` provenance; the checked catalog and automatic discovery sources
+were not expanded. The manual live workflow's existing `filter = "live"`
+includes the new tests. Package checks and cross-platform CI were not rerun
+for this test expansion; their earlier results above describe earlier source
+revisions.
