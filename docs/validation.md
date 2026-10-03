@@ -17,7 +17,6 @@ dependencies used for that run; live services can change.
 | 2026-10-02, live discovery refactor | 2,228 passed; zero failures or warnings; six opt-in live tests skipped. | Source archive built with the offline vignette; `R CMD check --no-manual` reported Status: OK with zero errors, warnings, or notes. |
 | 2026-10-02, catalog and parsing bug fixes | 2,271 assertions passed; zero failures or test warnings; six opt-in live tests skipped. | No build or package check was run for this interim revision. |
 | 2026-10-02, CRS alias regression | 2,275 assertions passed on R 4.6.1; zero test failures or warnings; six opt-in live tests skipped. | Source archive built with its vignette. Full `R CMD check --as-cran`, including PDF and HTML manual checks, reported zero errors, zero warnings, and one `New submission` NOTE. |
-| 2026-10-02, CRAN metadata review | 2,275 assertions passed on R 4.6.1; zero test failures or warnings; six opt-in live tests skipped. | Rebuilt source archive with revised DESCRIPTION and package overview. Full `R CMD check --as-cran`, including URL, PDF manual, and HTML manual checks, reported zero errors, zero warnings, and one `New submission` NOTE. |
 
 The September 30 follow-up included fixes for UTC editor tracking dates,
 response `attributes` validation, transient HTTP retries, and registry shape
@@ -32,30 +31,20 @@ check predated those fixes.
 
 The R 4.6.1 run added coverage for the water-service-area layer's legacy and
 latest WKID aliases after a previous Linux and macOS CI run treated the two
-identifiers as conflicting. The first R 4.6.1 full check used a fresh library
+identifiers as conflicting. The final full check used a fresh R 4.6.1 library
 with httr2 1.3.0, jsonlite 2.0.0, tibble 3.3.1, sf 1.1.3, and testthat 3.3.2.
 Package tests, examples, vignettes, and both manual formats passed. Online
 incoming and future-timestamp checks were enabled; the only NOTE identified
 the package as a new submission.
 
-The pre-metadata full check ran with `LC_ALL=C`, qpdf 12.4.2, Pandoc 3.1.1,
-HTML Tidy 5.8.0, and TinyTeX with the Courier font and index builder available.
-It started at 2026-10-03 00:00:29 UTC (October 2 in America/New_York). The fresh
+The final check ran with `LC_ALL=C`, qpdf 12.4.2, Pandoc 3.1.1, HTML Tidy
+5.8.0, and TinyTeX with the Courier font and index builder available. It
+started at 2026-10-03 00:00:29 UTC (October 2 in America/New_York). The fresh
 archive excludes `development-cases.rds`; Git and package-build ignores now
-exclude future copies. The pre-metadata-review `tampaBayOpenData_0.1.0.tar.gz`
-had SHA-256
+exclude future copies. The checked `tampaBayOpenData_0.1.0.tar.gz` has SHA-256
 `3736b68db7045e50fe391e68bf3afef59f5ac8d1a9484843ef2086b5802a209a`.
 
-The subsequent metadata review quoted 'ArcGIS' in DESCRIPTION and added the
-public repository URL and issue tracker as `URL` and `BugReports`. The rebuilt
-archive also includes the regenerated package overview. Its full R 4.6.1
-`--as-cran` check started at 2026-10-03 00:16:54 UTC (October 2 in
-America/New_York) and passed all package, vignette, URL, and manual checks.
-The sole NOTE was the expected new-submission notice. The checked archive now
-at `tampaBayOpenData_0.1.0.tar.gz` has SHA-256
-`0e8bbe74bfe8b78376b3322b7f4c29b677075e892f5a141f781c297ef5fec195`.
-
-A bounded live smoke test of the post-CRS code passed on October 2
+A bounded live smoke test of the current working source passed on October 2
 with R 4.6.1, after the CRS alias fix. All 20 checked City IDs returned one or
 two `sf` records in EPSG:4326, with unique object IDs and consistent count,
 ID-manifest, and provenance checks. A native
@@ -153,7 +142,5 @@ release/devel/oldrel-1, Windows release, and macOS release; a separate manual
 passed all five `--as-cran --no-manual` jobs for source commit
 `7287b65c284141d5d9353d014ce8c66fbccc2203`: Linux release, devel, and
 oldrel-1; Windows release; and macOS release. These CI jobs did not check the
-PDF manual. The later metadata-only DESCRIPTION and package-overview edits
-were checked locally and were not rerun in that CI matrix. Reproduction
-commands and current test scope are in the
+PDF manual. Reproduction commands and current test scope are in the
 [test suite guide](../tests/README.md).
