@@ -3,6 +3,7 @@
 This 2026-09-29 audit inspected [rOpenSci/nycOpenData commit
 `39e9fd47`](https://github.com/ropensci/nycOpenData/commit/39e9fd47f386b469c11f3949b47bfcafc30c1ebb),
 version 0.2.3. It describes that checkout; upstream tests and CI were not run.
+For current usage guidance, see the [nycOpenData documentation](https://docs.ropensci.org/nycOpenData/).
 
 ## API and retrieval
 

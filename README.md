@@ -322,5 +322,6 @@ of those organizations and rOpenSci.
 - [Dated validation record](docs/validation.md) and
   [security audit](docs/security-audit.md): checks and known limitations.
 
-The design was inspired by [rOpenSci's `nycOpenData`](https://github.com/ropensci/nycOpenData);
-the ArcGIS client was implemented independently.
+The design was inspired by rOpenSci's [`nycOpenData`](https://docs.ropensci.org/nycOpenData/)
+([source code](https://github.com/ropensci/nycOpenData)); the ArcGIS client was
+implemented independently.
