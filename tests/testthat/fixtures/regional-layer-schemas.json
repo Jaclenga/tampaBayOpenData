@@ -1,0 +1,916 @@
+{
+  "stpete-parks": {
+    "metadata_url": "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Parks_view/FeatureServer/0",
+    "jurisdiction": "stpete",
+    "publisher": "City of St. Petersburg",
+    "native_epsg": 2882,
+    "fields": [
+      "OBJECTID",
+      "NAME",
+      "Shape__Area"
+    ],
+    "label_field": "NAME",
+    "metadata": {
+      "id": 0,
+      "name": "Parks",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPolygon",
+      "objectIdField": "OBJECTID",
+      "fields": [
+        {
+          "name": "GLOBALID",
+          "type": "esriFieldTypeGlobalID",
+          "alias": "GLOBALID",
+          "length": 38
+        },
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "FULLADDR",
+          "type": "esriFieldTypeString",
+          "alias": "Full Address",
+          "length": 255
+        },
+        {
+          "name": "NAME",
+          "type": "esriFieldTypeString",
+          "alias": "Park Name",
+          "length": 255
+        },
+        {
+          "name": "Shape__Area",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Area"
+        },
+        {
+          "name": "Shape__Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Length"
+        }
+      ],
+      "maxRecordCount": 2000,
+      "capabilities": "Query,Extract",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkid": 2882,
+        "latestWkid": 2882
+      },
+      "extent": {
+        "xmin": 418826.0305353676,
+        "ymin": 1248903.8077450113,
+        "xmax": 452809.9325993033,
+        "ymax": 1269668.9731598422,
+        "spatialReference": {
+          "wkid": 2882,
+          "latestWkid": 2882
+        }
+      },
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      },
+      "editFieldsInfo": {
+        "creationDateField": "",
+        "creatorField": "",
+        "editDateField": "LASTUPDATE",
+        "editorField": "LASTEDITOR"
+      },
+      "editingInfo": {
+        "lastEditDate": 1790575308480,
+        "schemaLastEditDate": 1790575308480,
+        "dataLastEditDate": 1790575308480
+      }
+    },
+    "verified": "2026-10-02"
+  },
+  "stpete-city-boundary": {
+    "metadata_url": "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/CityLimits_view/FeatureServer/0",
+    "jurisdiction": "stpete",
+    "publisher": "City of St. Petersburg",
+    "native_epsg": 2882,
+    "fields": [
+      "OBJECTID",
+      "NAME",
+      "Shape__Area"
+    ],
+    "label_field": "NAME",
+    "metadata": {
+      "id": 0,
+      "name": "City Limits",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPolygon",
+      "objectIdField": "OBJECTID",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "NAME",
+          "type": "esriFieldTypeString",
+          "alias": "Municipality Name",
+          "length": 50
+        },
+        {
+          "name": "MUNITYP",
+          "type": "esriFieldTypeString",
+          "alias": "Municipal Type",
+          "length": 50
+        },
+        {
+          "name": "LOCALFIPS",
+          "type": "esriFieldTypeString",
+          "alias": "Local FIPS",
+          "length": 5
+        },
+        {
+          "name": "GLOBALID",
+          "type": "esriFieldTypeGlobalID",
+          "alias": "GLOBALID",
+          "length": 38
+        },
+        {
+          "name": "Shape__Area",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Area"
+        },
+        {
+          "name": "Shape__Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Length"
+        }
+      ],
+      "maxRecordCount": 2000,
+      "capabilities": "Query,Extract",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkid": 2882,
+        "latestWkid": 2882
+      },
+      "extent": null,
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      },
+      "editFieldsInfo": {
+        "creationDateField": "",
+        "creatorField": "",
+        "editDateField": "LASTUPDATE",
+        "editorField": "LASTEDITOR"
+      },
+      "editingInfo": {
+        "lastEditDate": 1790575324740,
+        "schemaLastEditDate": 1790575324740,
+        "dataLastEditDate": 1790575324740
+      }
+    },
+    "verified": "2026-10-02"
+  },
+  "stpete-streets": {
+    "metadata_url": "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Streets_view/FeatureServer/0",
+    "jurisdiction": "stpete",
+    "publisher": "City of St. Petersburg",
+    "native_epsg": 2882,
+    "fields": [
+      "OBJECTID",
+      "FULLNAME",
+      "MAINTBY",
+      "RECLENGTH"
+    ],
+    "label_field": "FULLNAME",
+    "metadata": {
+      "id": 0,
+      "name": "Streets",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPolyline",
+      "objectIdField": "OBJECTID",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "Object ID"
+        },
+        {
+          "name": "FULLNAME",
+          "type": "esriFieldTypeString",
+          "alias": "Full Name",
+          "length": 255
+        },
+        {
+          "name": "FEDROUTE",
+          "type": "esriFieldTypeString",
+          "alias": "Federal Route",
+          "length": 255
+        },
+        {
+          "name": "STROUTE",
+          "type": "esriFieldTypeString",
+          "alias": "State Route",
+          "length": 255
+        },
+        {
+          "name": "CTYROUTE",
+          "type": "esriFieldTypeString",
+          "alias": "County Route",
+          "length": 255
+        },
+        {
+          "name": "RECLENGTH",
+          "type": "esriFieldTypeDouble",
+          "alias": "Street Length"
+        },
+        {
+          "name": "MAINTBY",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Maintained By"
+        },
+        {
+          "name": "EVALMONTH",
+          "type": "esriFieldTypeString",
+          "alias": "Evaluation Month",
+          "length": 255
+        },
+        {
+          "name": "EVALYEAR",
+          "type": "esriFieldTypeString",
+          "alias": "Evaluation Year",
+          "length": 255
+        },
+        {
+          "name": "PROJNUM",
+          "type": "esriFieldTypeString",
+          "alias": "Project Number",
+          "length": 255
+        },
+        {
+          "name": "BASEDEPTH",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Base Depth"
+        },
+        {
+          "name": "BASETYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Base Type",
+          "length": 255
+        },
+        {
+          "name": "SURFACETYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Top Surface Type",
+          "length": 255
+        },
+        {
+          "name": "STWIDTH",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Street Width"
+        },
+        {
+          "name": "NUMLANES",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Number of Lanes"
+        },
+        {
+          "name": "SPEEDLIMIT",
+          "type": "esriFieldTypeString",
+          "alias": "Speed Limit",
+          "length": 255
+        },
+        {
+          "name": "ATLAS",
+          "type": "esriFieldTypeString",
+          "alias": "Plat Sheet",
+          "length": 255
+        },
+        {
+          "name": "ZONE",
+          "type": "esriFieldTypeString",
+          "alias": "Zone",
+          "length": 255
+        },
+        {
+          "name": "COUNCILDIST",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Council District"
+        },
+        {
+          "name": "TRAFFICFLOW",
+          "type": "esriFieldTypeString",
+          "alias": "Traffic Flow",
+          "length": 255
+        },
+        {
+          "name": "ROADTYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Road Type",
+          "length": 255
+        },
+        {
+          "name": "CURB1",
+          "type": "esriFieldTypeString",
+          "alias": "Curb 1",
+          "length": 255
+        },
+        {
+          "name": "CURB2",
+          "type": "esriFieldTypeString",
+          "alias": "Curb 2",
+          "length": 255
+        },
+        {
+          "name": "CURB1SIDE",
+          "type": "esriFieldTypeString",
+          "alias": "Curb 1 Side",
+          "length": 255
+        },
+        {
+          "name": "CURB2SIDE",
+          "type": "esriFieldTypeString",
+          "alias": "Curb 2 Side",
+          "length": 255
+        },
+        {
+          "name": "EVACROUTE",
+          "type": "esriFieldTypeString",
+          "alias": "Evacuation Route",
+          "length": 255
+        },
+        {
+          "name": "MAJORRD",
+          "type": "esriFieldTypeString",
+          "alias": "Major Road",
+          "length": 255
+        },
+        {
+          "name": "INMIDTOWN",
+          "type": "esriFieldTypeString",
+          "alias": "In Midtown",
+          "length": 255
+        },
+        {
+          "name": "STNAME",
+          "type": "esriFieldTypeString",
+          "alias": "Street Name",
+          "length": 255
+        },
+        {
+          "name": "STFNAME",
+          "type": "esriFieldTypeString",
+          "alias": "From",
+          "length": 255
+        },
+        {
+          "name": "STTNAME",
+          "type": "esriFieldTypeString",
+          "alias": "To",
+          "length": 255
+        },
+        {
+          "name": "NOTES",
+          "type": "esriFieldTypeString",
+          "alias": "Notes",
+          "length": 255
+        },
+        {
+          "name": "SQYARDS",
+          "type": "esriFieldTypeInteger",
+          "alias": "Sq Yards"
+        },
+        {
+          "name": "LASTYRMAINT",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Last Year Maintained"
+        },
+        {
+          "name": "PREVYEARMAINT",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Previous Year Maintained"
+        },
+        {
+          "name": "YEARMILLED",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Year Milled"
+        },
+        {
+          "name": "YEARRECLIMITED",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Year Reclamited"
+        },
+        {
+          "name": "EXISTINGLANES",
+          "type": "esriFieldTypeString",
+          "alias": "Existing Lane Config",
+          "length": 50
+        },
+        {
+          "name": "FUTURELANES",
+          "type": "esriFieldTypeString",
+          "alias": "Future Lane Config",
+          "length": 50
+        },
+        {
+          "name": "MEDIANTYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Median Type",
+          "length": 30
+        },
+        {
+          "name": "FREIGHTROUTE",
+          "type": "esriFieldTypeString",
+          "alias": "Freight Route",
+          "length": 30
+        },
+        {
+          "name": "SCHOOLZONE",
+          "type": "esriFieldTypeString",
+          "alias": "School Zone",
+          "length": 3
+        },
+        {
+          "name": "FUTUREMAJSTCAT",
+          "type": "esriFieldTypeString",
+          "alias": "Future Major Street Category",
+          "length": 250
+        },
+        {
+          "name": "RPM",
+          "type": "esriFieldTypeString",
+          "alias": "RPM",
+          "length": 4
+        },
+        {
+          "name": "EVALDAY",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Evaluation Day"
+        },
+        {
+          "name": "BIKEFACILITY",
+          "type": "esriFieldTypeString",
+          "alias": "On-Street Bike Facility",
+          "length": 25
+        },
+        {
+          "name": "BIKEFACILITYDOORZONE",
+          "type": "esriFieldTypeString",
+          "alias": "Bike Facility Door Zone",
+          "length": 3
+        },
+        {
+          "name": "BIKEFACILITYWIDTH",
+          "type": "esriFieldTypeDouble",
+          "alias": "Bike Facility Width"
+        },
+        {
+          "name": "GLOBALID",
+          "type": "esriFieldTypeGlobalID",
+          "alias": "GLOBALID",
+          "length": 38
+        },
+        {
+          "name": "Shape__Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Length"
+        }
+      ],
+      "maxRecordCount": 2000,
+      "capabilities": "Query,Extract",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkid": 2882,
+        "latestWkid": 2882
+      },
+      "extent": {
+        "xmin": 411412.57873572037,
+        "ymin": 1224524.771699734,
+        "xmax": 465837.31080275966,
+        "ymax": 1296058.2990720272,
+        "spatialReference": {
+          "wkid": 2882,
+          "latestWkid": 2882
+        }
+      },
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      },
+      "editFieldsInfo": {
+        "creationDateField": "",
+        "creatorField": "",
+        "editDateField": "LASTUPDATE",
+        "editorField": "LASTEDITOR"
+      },
+      "editingInfo": {
+        "lastEditDate": 1790575297510,
+        "schemaLastEditDate": 1790575297510,
+        "dataLastEditDate": 1790575297510
+      }
+    },
+    "verified": "2026-10-02"
+  },
+  "clearwater-park-buffers": {
+    "metadata_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/0",
+    "jurisdiction": "clearwater",
+    "publisher": "City of Clearwater",
+    "native_epsg": 2882,
+    "fields": [
+      "OBJECTID",
+      "Site_Name",
+      "Acreage",
+      "Buf_Distance",
+      "created_date"
+    ],
+    "label_field": "Site_Name",
+    "metadata": {
+      "id": 0,
+      "name": "Clearwater_Park_Buffers",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPolygon",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "Shape",
+          "type": "esriFieldTypeGeometry",
+          "alias": "Shape"
+        },
+        {
+          "name": "Site_Name",
+          "type": "esriFieldTypeString",
+          "alias": "Site_Name",
+          "length": 50
+        },
+        {
+          "name": "Address",
+          "type": "esriFieldTypeString",
+          "alias": "Address",
+          "length": 75
+        },
+        {
+          "name": "Type",
+          "type": "esriFieldTypeString",
+          "alias": "Type",
+          "length": 25
+        },
+        {
+          "name": "Acquisition",
+          "type": "esriFieldTypeString",
+          "alias": "Acquisition",
+          "length": 254
+        },
+        {
+          "name": "Acreage",
+          "type": "esriFieldTypeDouble",
+          "alias": "Acreage"
+        },
+        {
+          "name": "created_user",
+          "type": "esriFieldTypeString",
+          "alias": "created_user",
+          "length": 255
+        },
+        {
+          "name": "created_date",
+          "type": "esriFieldTypeDate",
+          "alias": "created_date",
+          "length": 8
+        },
+        {
+          "name": "last_edited_user",
+          "type": "esriFieldTypeString",
+          "alias": "last_edited_user",
+          "length": 255
+        },
+        {
+          "name": "last_edited_date",
+          "type": "esriFieldTypeDate",
+          "alias": "last_edited_date",
+          "length": 8
+        },
+        {
+          "name": "Buf_Distance",
+          "type": "esriFieldTypeInteger",
+          "alias": "Buf_Distance"
+        },
+        {
+          "name": "BUFF_DIST",
+          "type": "esriFieldTypeDouble",
+          "alias": "BUFF_DIST"
+        },
+        {
+          "name": "ORIG_FID",
+          "type": "esriFieldTypeInteger",
+          "alias": "ORIG_FID"
+        },
+        {
+          "name": "Shape_Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape_Length"
+        },
+        {
+          "name": "Shape_Area",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape_Area"
+        }
+      ],
+      "maxRecordCount": 2000,
+      "capabilities": "Map,Query,Data",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "sourceSpatialReference": {
+        "wkid": 2882,
+        "latestWkid": 2882,
+        "xyTolerance": 0.003280833333333333,
+        "zTolerance": 0.001,
+        "mTolerance": 0.001,
+        "falseX": -17791300,
+        "falseY": -41645400,
+        "xyUnits": 3048.0060960121928,
+        "falseZ": -100000,
+        "zUnits": 10000,
+        "falseM": -100000,
+        "mUnits": 10000
+      },
+      "extent": {
+        "xmin": 378588.05057116225,
+        "ymin": 1301454.6576280743,
+        "xmax": 446831.8337027468,
+        "ymax": 1361715.6696517393,
+        "spatialReference": {
+          "wkid": 2882,
+          "latestWkid": 2882,
+          "xyTolerance": 0.003280833333333333,
+          "zTolerance": 0.001,
+          "mTolerance": 0.001,
+          "falseX": -17791300,
+          "falseY": -41645400,
+          "xyUnits": 3048.0060960121928,
+          "falseZ": -100000,
+          "zUnits": 10000,
+          "falseM": -100000,
+          "mUnits": 10000
+        }
+      }
+    },
+    "verified": "2026-10-02"
+  },
+  "clearwater-zoning": {
+    "metadata_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Zoning_WGS84/MapServer/0",
+    "jurisdiction": "clearwater",
+    "publisher": "City of Clearwater",
+    "native_epsg": 3857,
+    "fields": [
+      "OBJECTID",
+      "ZONING",
+      "ZONING_DESC",
+      "created_date"
+    ],
+    "label_field": "ZONING",
+    "metadata": {
+      "id": 0,
+      "name": "Zoning Original",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPolygon",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "ZONING",
+          "type": "esriFieldTypeString",
+          "alias": "ZONING",
+          "length": 20
+        },
+        {
+          "name": "SPECIAL",
+          "type": "esriFieldTypeString",
+          "alias": "SPECIAL",
+          "length": 30
+        },
+        {
+          "name": "created_user",
+          "type": "esriFieldTypeString",
+          "alias": "created_user",
+          "length": 255
+        },
+        {
+          "name": "created_date",
+          "type": "esriFieldTypeDate",
+          "alias": "created_date",
+          "length": 8
+        },
+        {
+          "name": "last_edited_user",
+          "type": "esriFieldTypeString",
+          "alias": "last_edited_user",
+          "length": 255
+        },
+        {
+          "name": "last_edited_date",
+          "type": "esriFieldTypeDate",
+          "alias": "last_edited_date",
+          "length": 8
+        },
+        {
+          "name": "Shape",
+          "type": "esriFieldTypeGeometry",
+          "alias": "Shape"
+        },
+        {
+          "name": "Shape.STArea()",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape.STArea()"
+        },
+        {
+          "name": "Shape.STLength()",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape.STLength()"
+        },
+        {
+          "name": "Global_ID",
+          "type": "esriFieldTypeString",
+          "alias": "Global_ID",
+          "length": 100
+        },
+        {
+          "name": "ZONING_DESC",
+          "type": "esriFieldTypeString",
+          "alias": "ZONING_DESC",
+          "length": 255
+        }
+      ],
+      "maxRecordCount": 1000,
+      "capabilities": "Map,Query,Data",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "sourceSpatialReference": {
+        "wkid": 2882,
+        "latestWkid": 2882
+      },
+      "extent": {
+        "xmin": -9222317.000634344,
+        "ymin": 3240745.251545426,
+        "xmax": -9200354.476474889,
+        "ymax": 3255326.549840513,
+        "spatialReference": {
+          "wkid": 102100,
+          "latestWkid": 3857
+        }
+      },
+      "dateFieldsTimeReference": null
+    },
+    "verified": "2026-10-02"
+  },
+  "clearwater-libraries": {
+    "metadata_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/1",
+    "jurisdiction": "clearwater",
+    "publisher": "City of Clearwater",
+    "native_epsg": 3857,
+    "fields": [
+      "OBJECTID",
+      "NAME",
+      "FACILITYID",
+      "SUBTYPEFIELD"
+    ],
+    "label_field": "NAME",
+    "metadata": {
+      "id": 1,
+      "name": "Libraries",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPoint",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "SHAPE",
+          "type": "esriFieldTypeGeometry",
+          "alias": "SHAPE"
+        },
+        {
+          "name": "FACILITYID",
+          "type": "esriFieldTypeString",
+          "alias": "Facility Identifier",
+          "length": 50
+        },
+        {
+          "name": "NAME",
+          "type": "esriFieldTypeString",
+          "alias": "Name of Facility",
+          "length": 255
+        },
+        {
+          "name": "OWNER",
+          "type": "esriFieldTypeString",
+          "alias": "Owner Name",
+          "length": 50
+        },
+        {
+          "name": "OWNTYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Owner Type",
+          "length": 50
+        },
+        {
+          "name": "SUBTYPEFIELD",
+          "type": "esriFieldTypeInteger",
+          "alias": "Subtype Field"
+        },
+        {
+          "name": "FEATURECODE",
+          "type": "esriFieldTypeString",
+          "alias": "Feature Code",
+          "length": 100
+        },
+        {
+          "name": "FULLADDR",
+          "type": "esriFieldTypeString",
+          "alias": "Full Address",
+          "length": 250
+        },
+        {
+          "name": "AGENCYURL",
+          "type": "esriFieldTypeString",
+          "alias": "Website",
+          "length": 100
+        },
+        {
+          "name": "OPERDAYS",
+          "type": "esriFieldTypeString",
+          "alias": "Operational Days",
+          "length": 50
+        },
+        {
+          "name": "OPERHOURS",
+          "type": "esriFieldTypeString",
+          "alias": "Operational Hours",
+          "length": 50
+        },
+        {
+          "name": "CONTACT",
+          "type": "esriFieldTypeString",
+          "alias": "Contact Name",
+          "length": 50
+        },
+        {
+          "name": "PHONE",
+          "type": "esriFieldTypeString",
+          "alias": "Phone",
+          "length": 12
+        },
+        {
+          "name": "EMAIL",
+          "type": "esriFieldTypeString",
+          "alias": "Email",
+          "length": 100
+        }
+      ],
+      "maxRecordCount": 1000,
+      "capabilities": "Map,Query,Data",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "sourceSpatialReference": {
+        "wkid": 26759,
+        "latestWkid": 26759
+      },
+      "extent": {
+        "xmin": -9819250.240649678,
+        "ymin": 3232502.147069797,
+        "xmax": -9208740.3577031,
+        "ymax": 5151154.199258762,
+        "spatialReference": {
+          "wkid": 102100,
+          "latestWkid": 3857
+        }
+      }
+    },
+    "verified": "2026-10-02"
+  }
+}

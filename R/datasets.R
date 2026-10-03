@@ -7,15 +7,19 @@
 #' layer URL outside the discovery portal, use [get_arcgis_layer()].
 #'
 #' Requests the current ArcGIS layer schema,
-#' matching count, and object-ID manifest. Bounded requests are validated against
-#' that manifest. A missing or duplicate record, truncated manifest, unexpected
+#' matching count, and object-ID manifest. Full requests are validated against
+#' that manifest. Small previews of large queryable layers can validate only
+#' the returned IDs against the original filter. A missing or duplicate record,
+#' truncated manifest, unexpected
 #' response, or upstream error fails explicitly. With `limit = Inf`, all matching
 #' records are retrieved. Queries matching more than one million records must be
-#' narrowed with filters because the client requires a complete object-ID manifest.
+#' narrowed with filters for full retrieval because it requires a complete ID
+#' manifest. See `integrity` for previews and [download_dataset()] for downloads
+#' that save validated chunks to disk and can resume after interruption.
 #'
 #' Source column names, strings, coded values, and date-looking strings are
-#' preserved. Declared ArcGIS date fields are converted from epoch milliseconds
-#' to UTC POSIXct. If the source declares an unknown time zone, affected dates
+#' preserved. ArcGIS epoch-millisecond date fields are converted to UTC POSIXct.
+#' Date-only fields become Date. If the source declares an unknown time zone, affected dates
 #' remain raw milliseconds with a warning; UTC editor tracking dates identified
 #' by layer metadata are still converted. Integer fields become integers where
 #' safe, and
@@ -35,8 +39,9 @@
 #' native parsers or bound decompression memory on older curl builds.
 #' @param id Checked package dataset ID, one-row discovered dataset descriptor,
 #'   or stable `arcgis:<32-hex-item-id>:<nonnegative-layer-id>` identifier.
-#' @param jurisdiction Checked-registry jurisdiction. Omit for a discovered
-#'   result or stable ArcGIS ID so its source jurisdiction is used.
+#' @param jurisdiction Checked-registry jurisdiction: `"tampa"`, `"stpete"`,
+#'   `"clearwater"`, or `"all"`. Omit to resolve a unique checked ID across the
+#'   registry or to use a discovered result's or stable ArcGIS ID's jurisdiction.
 #' @param where ArcGIS SQL WHERE clause, using actual source field names.
 #'   Defaults to `"1=1"` (all records). See [dataset_info()] with `refresh = TRUE`.
 #' @param fields Character vector of exact source field names, or NULL/`"*"` for
@@ -62,7 +67,17 @@
 #'   aggregation, geometry simplification, and pagination parameters are protected.
 #' @param timeout Timeout in seconds for each HTTP attempt. Transient transport
 #'   and HTTP failures may receive three attempts; one generic ArcGIS query
-#'   error may receive four. This is not an overall retrieval deadline.
+#'   error may receive four.
+#' @param total_timeout Overall operation time budget in seconds. Defaults to
+#'   120; use Inf to disable it. Requests and retry waits use the remaining
+#'   budget. Parsing is checked after it finishes rather than interrupted.
+#' @param integrity `"auto"` (default) uses a bounded preview when a finite
+#'   limit is at most 1,000, more than 10,000 records match, and the layer supports
+#'   ordering and pagination. Returned IDs are verified against the original
+#'   filter, without retrieving all matching IDs. Full retrieval always uses
+#'   the full manifest. `"full"` requires that manifest even for a preview.
+#'   A zero limit requests only the count. Provenance records the verification
+#'   method and never labels a deliberate subset complete.
 #' @return A tibble, or an sf object when spatial retrieval is requested. Source
 #'   metadata are attached as `source`, `dataset_id`, `jurisdiction`, and
 #'   `retrieved_at` attributes; [dataset_provenance()] returns the full record.
@@ -78,11 +93,16 @@
 #' }
 get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL,
                         spatial = FALSE, out_sr = NULL, order_by = NULL,
-                        limit = Inf, page_size = NULL, query = list(), timeout = 30) {
+                        limit = Inf, page_size = NULL, query = list(), timeout = 30,
+                        total_timeout = 120, integrity = "auto") {
   .string(where, "where")
   .flag(spatial, "spatial")
   .number(limit, "limit", integer = TRUE, infinity = TRUE)
-  .number(timeout, "timeout", min = .Machine$double.eps)
+  timeout <- .operation_timeout(timeout, total_timeout)
+  .string(integrity, "integrity")
+  if (!integrity %in% c("auto", "full")) {
+    .abort("`integrity` must be 'auto' or 'full'.", subclass = "tampa_input_error")
+  }
   if (!is.null(page_size)) .number(page_size, "page_size", min = 1, integer = TRUE)
   if (!is.null(out_sr)) {
     .number(out_sr, "out_sr", min = 1, integer = TRUE)
@@ -93,13 +113,14 @@ get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL
     id, jurisdiction, missing(jurisdiction))
   dataset <- .resolve_dataset(id, requested_jurisdiction, timeout)
   .retrieve_dataset(dataset, where, fields, spatial, out_sr, order_by,
-                    limit, page_size, query, query_params, timeout)
+                    limit, page_size, query, query_params, timeout, integrity)
 }
 
 # The checked catalog, portal discovery, and direct URL entry points share all
 # query, parsing, spatial, and provenance behavior after descriptor resolution.
 .retrieve_dataset <- function(dataset, where, fields, spatial, out_sr, order_by,
-                              limit, page_size, query, query_params, timeout) {
+                              limit, page_size, query, query_params, timeout,
+                              integrity = "auto") {
   started_at <- .utc_now()
   tryCatch({
     if (spatial && !arcgis_has_sf()) {
@@ -117,15 +138,18 @@ get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL
     }
     selected <- .selected_fields(fields, metadata)
     fetched <- arcgis_fetch(dataset, metadata, where, selected, spatial, out_sr,
-                            order_by, limit, page_size, query_params, timeout)
+                            order_by, limit, page_size, query_params, timeout, integrity)
     data <- arcgis_parse(fetched$features, metadata, selected)
     if (spatial) {
       data <- arcgis_as_sf(data, fetched$features, metadata,
                            fetched$spatial_reference, out_sr)
     }
-    .attach_provenance(data, dataset, metadata, fetched,
+    data <- .attach_provenance(data, dataset, metadata, fetched,
       list(where = where, fields = selected, spatial = spatial, out_sr = out_sr,
-           order_by = order_by, limit = limit, query = query), started_at)
+           order_by = order_by, limit = limit, query = query,
+           integrity = integrity), started_at)
+    .check_operation_timeout(timeout, dataset)
+    data
   }, tampa_data_error = function(e) {
     if (is.null(e$dataset_id)) {
       .abort(conditionMessage(e), dataset, paste0(dataset$service_url, "/", dataset$layer_id), class(e)[1L])
@@ -156,9 +180,10 @@ get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL
 get_arcgis_layer <- function(url, where = "1=1", fields = NULL,
                              spatial = FALSE, out_sr = NULL, order_by = NULL,
                              limit = Inf, page_size = NULL, query = list(),
-                             timeout = 30) {
+                             timeout = 30, total_timeout = 120, integrity = "auto") {
   descriptor <- .direct_arcgis_descriptor(url)
   get_dataset(descriptor, where = where, fields = fields, spatial = spatial,
               out_sr = out_sr, order_by = order_by, limit = limit,
-              page_size = page_size, query = query, timeout = timeout)
+              page_size = page_size, query = query, timeout = timeout,
+              total_timeout = total_timeout, integrity = integrity)
 }

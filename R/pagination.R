@@ -53,7 +53,7 @@
                              resultOffset = length(result$ids),
                              resultRecordCount = requested))
     if (!length(page$ids) || length(page$ids) > requested ||
-        any(!page$ids %in% ids) || any(page$ids %in% result$ids)) {
+        (!is.null(ids) && any(!page$ids %in% ids)) || any(page$ids %in% result$ids)) {
       .abort("Ordered pagination returned an empty, repeated, oversized, or unexpected page. Retrieval is incomplete; retry the query.",
              dataset, url, "tampa_integrity_error")
     }
@@ -67,12 +67,13 @@
 }
 
 arcgis_fetch <- function(dataset, metadata, where, fields, spatial, out_sr,
-                         order_by, limit, page_size, query_params, timeout) {
+                         order_by, limit, page_size, query_params, timeout,
+                         integrity = "full") {
   url <- paste0(dataset$service_url, "/", dataset$layer_id, "/query")
   params <- c(list(where = where), query_params)
   if (.dates_unknown(metadata)) params$timeReferenceUnknownClient <- "true"
-  manifest <- .manifest(url, params, metadata, dataset, timeout)
-  target <- min(limit, manifest$count)
+  count <- .matching_count(url, params, dataset, timeout)
+  target <- min(limit, count)
   size <- min(page_size %||% 1000, metadata$maxRecordCount, 1000)
   feature_params <- c(params, list(
     outFields = paste(unique(c(fields, metadata$objectIdField)), collapse = ","),
@@ -80,6 +81,16 @@ arcgis_fetch <- function(dataset, metadata, where, fields, spatial, out_sr,
     returnZ = "false", returnM = "false"))
   if (!is.null(out_sr)) feature_params$outSR <- as.character(out_sr)
   order <- .ordering(order_by, metadata)
+  capabilities <- metadata$advancedQueryCapabilities
+  preview <- identical(integrity, "auto") && is.finite(limit) &&
+    target > 0 && target < count && limit <= 1000 && count > 10000 &&
+    isTRUE(capabilities$supportsPagination) && isTRUE(capabilities$supportsOrderBy)
+  manifest <- if (target == 0 && is.finite(limit)) {
+    list(ids = numeric(), count = count)
+  } else if (preview) {
+    list(ids = NULL, count = count)
+  } else .manifest(url, params, metadata, dataset, timeout, count = count)
+  if (preview && is.null(order)) order <- paste(metadata$objectIdField, "ASC")
 
   request_page <- function(paging) {
     response <- arcgis_request(url, c(feature_params, paging), dataset, timeout)
@@ -107,6 +118,16 @@ arcgis_fetch <- function(dataset, metadata, where, fields, spatial, out_sr,
     result <- .fetch_ordered_pages(order, target, size, manifest$ids,
                                    request_page, add_page, result, dataset, url)
   }
+  if (preview) {
+    subset_params <- c(params, list(objectIds = paste(
+      format(result$ids, scientific = FALSE, trim = TRUE), collapse = ",")))
+    verified_ids <- .matching_ids(url, subset_params, metadata, dataset, timeout,
+                                  length(result$ids))
+    if (!setequal(result$ids, verified_ids)) {
+      .abort("Preview records no longer match the requested filter. Retry the query.",
+             dataset, url, "tampa_integrity_error")
+    }
+  }
   if (length(result$ids) != target || anyDuplicated(result$ids) ||
       (target == manifest$count && !setequal(result$ids, manifest$ids))) {
     .abort("Retrieval did not cover the requested record manifest.", dataset, url, "tampa_integrity_error")
@@ -114,5 +135,8 @@ arcgis_fetch <- function(dataset, metadata, where, fields, spatial, out_sr,
   list(features = result$features, spatial_reference = result$spatial_reference,
        matched_rows = manifest$count, returned_rows = length(result$ids),
        complete = target == manifest$count,
-       pagination = if (is.null(order)) "object-id batches" else "ordered offsets")
+       integrity = if (target == 0 && is.finite(limit)) "count-only" else if
+         (preview) "subset-manifest" else "full-manifest",
+       pagination = if (preview) "ordered preview" else if (is.null(order))
+         "object-id batches" else "ordered offsets")
 }

@@ -23,6 +23,7 @@
     package_version = "0.1.0", query = query,
     matched_rows = fetched$matched_rows, returned_rows = fetched$returned_rows,
     complete = fetched$complete, pagination = fetched$pagination,
+    integrity = fetched$integrity %||% "full-manifest",
     field_schema = metadata$fields, date_fields_time_reference = metadata$dateFieldsTimeReference,
     dates_in_unknown_timezone = .dates_unknown(metadata),
     upstream_editing_info = metadata$editingInfo,
@@ -46,7 +47,8 @@
 #' upstream attributes are not guaranteed to be a transactionally frozen snapshot.
 #' Attributes can be lost in subsequent R transformations; save provenance before
 #' exporting data or transforming objects with tools that discard attributes.
-#' @param x An object returned by [get_dataset()] or a convenience wrapper.
+#' @param x A retrieval result or a chunk read from [download_dataset()] or
+#'   [download_arcgis_layer()].
 #' @return A named list containing source metadata and retrieval details.
 #' @export
 #' @examples

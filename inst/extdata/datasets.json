@@ -897,5 +897,272 @@
     "upstream_modified": "2023-02-24T18:17:04+00:00",
     "date_time_reference": null,
     "scope_note": "This GIS layer is a planning reference, not an official legal determination of parcel zoning or permitted use. Confirm current zoning and ordinances with the City; the catalog item modification date does not establish feature freshness."
+  },
+  {
+    "id": "stpete-parks",
+    "title": "St. Petersburg parks",
+    "description": "Public park polygons published by the City of St. Petersburg, with source park names and addresses.",
+    "jurisdiction": "stpete",
+    "publisher": "City of St. Petersburg",
+    "source_url": "https://csp.maps.arcgis.com/home/item.html?id=ff0015e3a49044ecbbd7a758e8098076",
+    "service_url": "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Parks_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "Parks",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [],
+    "category": "Recreation",
+    "tags": [
+      "parks",
+      "recreation",
+      "open space"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The publisher item provides data for personal use as is, disclaims accuracy and completeness, and advises against financial or other commitments based on the data. It does not declare CC0 or another unrestricted reuse license. Source: https://csp.maps.arcgis.com/sharing/rest/content/items/ff0015e3a49044ecbbd7a758e8098076?f=pjson",
+    "terms_url": "https://csp.maps.arcgis.com/sharing/rest/content/items/ff0015e3a49044ecbbd7a758e8098076?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://csp.maps.arcgis.com/sharing/rest/content/items/ff0015e3a49044ecbbd7a758e8098076?f=pjson",
+    "publisher_evidence": [
+      "https://csp.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Parks_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Park polygons are GIS reference data, not a guarantee of facilities, opening hours, public access, or legal property boundaries.",
+    "item_id": "ff0015e3a49044ecbbd7a758e8098076",
+    "portal": "https://csp.maps.arcgis.com/sharing/rest",
+    "upstream_modified": "2025-09-19T17:39:20+00:00"
+  },
+  {
+    "id": "stpete-city-boundary",
+    "title": "St. Petersburg city boundary",
+    "description": "Municipal boundary polygon published by the City of St. Petersburg, retaining municipal name and source identifiers.",
+    "jurisdiction": "stpete",
+    "publisher": "City of St. Petersburg",
+    "source_url": "https://csp.maps.arcgis.com/home/item.html?id=4baebb253f32402eb2ab5f44057c39e5",
+    "service_url": "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/CityLimits_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "City Limits",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [],
+    "category": "Boundaries",
+    "tags": [
+      "city limits",
+      "municipal boundary",
+      "planning"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The publisher item provides data for personal use as is, disclaims accuracy and completeness, and advises against financial or other commitments based on the data. It does not declare CC0 or another unrestricted reuse license. Source: https://csp.maps.arcgis.com/sharing/rest/content/items/4baebb253f32402eb2ab5f44057c39e5?f=pjson",
+    "terms_url": "https://csp.maps.arcgis.com/sharing/rest/content/items/4baebb253f32402eb2ab5f44057c39e5?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://csp.maps.arcgis.com/sharing/rest/content/items/4baebb253f32402eb2ab5f44057c39e5?f=pjson",
+    "publisher_evidence": [
+      "https://csp.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/CityLimits_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "This GIS municipal boundary is a geographic reference rather than an official legal determination of jurisdiction for a particular property.",
+    "item_id": "4baebb253f32402eb2ab5f44057c39e5",
+    "portal": "https://csp.maps.arcgis.com/sharing/rest",
+    "upstream_modified": "2025-09-19T17:33:38+00:00"
+  },
+  {
+    "id": "stpete-streets",
+    "title": "St. Petersburg streets",
+    "description": "City of St. Petersburg street linework with names and source roadway attributes.",
+    "jurisdiction": "stpete",
+    "publisher": "City of St. Petersburg",
+    "source_url": "https://csp.maps.arcgis.com/home/item.html?id=29b9e6ca03c942cc8d9bf77924020c29",
+    "service_url": "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Streets_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "Streets",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [],
+    "category": "Transportation",
+    "tags": [
+      "streets",
+      "roads",
+      "transportation"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The publisher item provides data for personal use as is, disclaims accuracy and completeness, and advises against financial or other commitments based on the data. It does not declare CC0 or another unrestricted reuse license. Source: https://csp.maps.arcgis.com/sharing/rest/content/items/29b9e6ca03c942cc8d9bf77924020c29?f=pjson",
+    "terms_url": "https://csp.maps.arcgis.com/sharing/rest/content/items/29b9e6ca03c942cc8d9bf77924020c29?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://csp.maps.arcgis.com/sharing/rest/content/items/29b9e6ca03c942cc8d9bf77924020c29?f=pjson",
+    "publisher_evidence": [
+      "https://csp.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Streets_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Street attributes are source GIS values; they do not establish current posted speed limits, closures, vehicle restrictions, or safe routing.",
+    "item_id": "29b9e6ca03c942cc8d9bf77924020c29",
+    "portal": "https://csp.maps.arcgis.com/sharing/rest",
+    "upstream_modified": "2025-09-19T17:50:35+00:00"
+  },
+  {
+    "id": "clearwater-park-buffers",
+    "title": "Clearwater park buffers",
+    "description": "City of Clearwater park buffer polygons with source site names, acreage, and buffer distances.",
+    "jurisdiction": "clearwater",
+    "publisher": "City of Clearwater",
+    "source_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/0",
+    "service_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer",
+    "layer_id": 0,
+    "layer_name": "Clearwater_Park_Buffers",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "created_date",
+      "last_edited_date"
+    ],
+    "category": "Recreation",
+    "tags": [
+      "parks",
+      "buffers",
+      "recreation"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The service item metadata states no explicit reuse license. Public access does not establish unrestricted reuse rights. Review publisher terms for the intended use. Source: https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/info/iteminfo?f=pjson",
+    "terms_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/info/iteminfo?f=pjson",
+    "license_info": "No explicit reuse license stated",
+    "license_source": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/info/iteminfo?f=pjson",
+    "publisher_evidence": [
+      "https://cityofclearwater.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882,
+      "xyTolerance": 0.003280833333333333,
+      "zTolerance": 0.001,
+      "mTolerance": 0.001,
+      "falseX": -17791300,
+      "falseY": -41645400,
+      "xyUnits": 3048.0060960121928,
+      "falseZ": -100000,
+      "zUnits": 10000,
+      "falseM": -100000,
+      "mUnits": 10000
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": null,
+    "scope_note": "These are park buffers rather than park property boundaries. Source buffer distances and acreage require the service metadata for their interpretation."
+  },
+  {
+    "id": "clearwater-zoning",
+    "title": "Clearwater zoning",
+    "description": "City of Clearwater zoning polygons with source district codes and descriptions.",
+    "jurisdiction": "clearwater",
+    "publisher": "City of Clearwater",
+    "source_url": "https://cityofclearwater.maps.arcgis.com/home/item.html?id=856740e69fa94bc3916f46bc9a01b254",
+    "service_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Zoning_WGS84/MapServer",
+    "layer_id": 0,
+    "layer_name": "Zoning Original",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "created_date",
+      "last_edited_date"
+    ],
+    "category": "Planning",
+    "tags": [
+      "zoning",
+      "planning",
+      "land use"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The City Engineering disclaimer describes the data as an informational reference, disclaims accuracy and warranties, and places use at the user's risk. The item does not declare an unrestricted reuse license. Source: https://cityofclearwater.maps.arcgis.com/sharing/rest/content/items/856740e69fa94bc3916f46bc9a01b254?f=pjson",
+    "terms_url": "https://cityofclearwater.maps.arcgis.com/sharing/rest/content/items/856740e69fa94bc3916f46bc9a01b254?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://cityofclearwater.maps.arcgis.com/sharing/rest/content/items/856740e69fa94bc3916f46bc9a01b254?f=pjson",
+    "publisher_evidence": [
+      "https://cityofclearwater.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Zoning_WGS84/MapServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": null,
+    "scope_note": "This GIS zoning layer is a planning reference. Confirm current zoning and permitted uses with the City; the service response uses Web Mercator rather than its stored source CRS.",
+    "item_id": "856740e69fa94bc3916f46bc9a01b254",
+    "portal": "https://cityofclearwater.maps.arcgis.com/sharing/rest"
+  },
+  {
+    "id": "clearwater-libraries",
+    "title": "Clearwater libraries",
+    "description": "Public library locations from the City of Clearwater services map, with source facility names and identifiers.",
+    "jurisdiction": "clearwater",
+    "publisher": "City of Clearwater",
+    "source_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/1",
+    "service_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer",
+    "layer_id": 1,
+    "layer_name": "Libraries",
+    "geometry_type": "esriGeometryPoint",
+    "date_fields": [],
+    "category": "Public facilities",
+    "tags": [
+      "libraries",
+      "public facilities",
+      "locations"
+    ],
+    "verified": "2026-10-02",
+    "terms": "The service item metadata states no explicit reuse license. Public access does not establish unrestricted reuse rights. Review publisher terms for the intended use. Source: https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/info/iteminfo?f=pjson",
+    "terms_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/info/iteminfo?f=pjson",
+    "license_info": "No explicit reuse license stated",
+    "license_source": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/info/iteminfo?f=pjson",
+    "publisher_evidence": [
+      "https://cityofclearwater.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/1?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": null,
+    "scope_note": "Library points are facility locations, not a guarantee of opening hours or currently available services. The response uses Web Mercator; the stored source CRS is different."
   }
 ]

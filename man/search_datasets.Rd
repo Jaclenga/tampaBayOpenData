@@ -6,34 +6,71 @@
 \usage{
 search_datasets(
   query,
-  jurisdiction = "tampa",
+  jurisdiction = "all",
   source = "all",
   portals = "all",
-  max_items = Inf,
-  timeout = 30
+  max_items = 25,
+  timeout = 30,
+  total_timeout = 90,
+  publisher = NULL,
+  validation_status = NULL,
+  spatial = NULL,
+  topic = NULL,
+  category = NULL,
+  modified_after = NULL,
+  modified_before = NULL
 )
 }
 \arguments{
 \item{query}{A single search string. Checked matching treats punctuation
 literally; live matching uses the ArcGIS portal search index.}
 
-\item{jurisdiction}{Checked-registry jurisdiction. v0.1 has City of Tampa
-checked entries. Live organizations are selected with \code{portals}.}
+\item{jurisdiction}{Jurisdiction code or vector of codes from \code{\link[=list_portals]{list_portals()}},
+or \code{"all"} (default). Filters checked and live results and narrows the portal
+scan. A supported jurisdiction may have no checked entries.}
 
 \item{source}{\code{"all"} (default) combines live discovery with the checked
 registry; \code{"live"} returns layers found through the portal with checked
 matches marked; \code{"checked"} reads only the offline registry.}
 
-\item{portals}{Live ArcGIS organizations to search: \code{"city"}, \code{"tbrpc"}
-(Tampa Bay Regional Planning Council), or \code{"all"} (default). A character
-vector of \code{"city"} and \code{"tbrpc"} is also accepted. This does not filter the
-bundled checked catalog.}
+\item{portals}{Live organization IDs from \code{\link[=list_portals]{list_portals()}}, or \code{"all"}
+(default). A character vector of IDs is also accepted. Intersects with
+jurisdiction and publisher filters before any portal requests.
+This does not filter the bundled checked catalog.}
 
 \item{max_items}{Maximum number of portal service items to scan per selected
-organization. \code{Inf} (default) follows all available search pages. This
-limits items, not expanded layers.}
+organization. The default, 25, bounds the service scan; \code{Inf} follows all
+available search pages. This limits items, not expanded layers. Inspect
+\code{attr(result, "discovery_complete")} before treating a live result as a
+complete portal listing.}
 
 \item{timeout}{Timeout in seconds for each HTTP attempt.}
+
+\item{total_timeout}{Maximum elapsed seconds for the complete operation,
+including discovery and retries. Defaults to 90; \code{Inf} disables this limit.}
+
+\item{publisher}{Publisher name or vector of names, matched exactly without
+regard to case. See \code{\link[=list_portals]{list_portals()}} for names. Filters all results and
+narrows the portal scan; an unmatched name returns no rows.}
+
+\item{validation_status}{\code{"checked"}, \code{"discovered"}, or a vector of both.
+NULL includes both. This filters the final classification; \code{source = "live"}
+can include checked matches. Use \code{source = "checked"} for offline browsing.}
+
+\item{spatial}{TRUE selects layers with declared geometry; FALSE selects
+nonspatial tables. NULL includes both and unknown geometry types.}
+
+\item{topic}{Word or vector of words matched as case-insensitive literal
+substrings in tags and categories. NULL disables this filter.}
+
+\item{category}{Category or vector of categories, matched exactly without
+regard to case against full source paths or their final labels.}
+
+\item{modified_after, modified_before}{Inclusive modification bounds: a Date
+or YYYY-MM-DD string includes its entire UTC calendar day; POSIXct supplies
+an exact instant. Rows with unknown modification times are excluded when
+either bound is supplied. Modification is an item or checked snapshot
+timestamp, not record freshness; \code{modified_source} identifies its origin.}
 }
 \value{
 A tibble with the same columns as \code{\link[=list_datasets]{list_datasets()}}.

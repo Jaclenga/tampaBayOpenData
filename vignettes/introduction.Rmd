@@ -11,9 +11,11 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 ```
 
-`tampaBayOpenData` searches public City of Tampa and Tampa Bay Regional Planning
-Council ArcGIS datasets. It also includes 20 City layers that package maintainers
-have checked. The same client retrieves checked or newly discovered layers as R
+`tampaBayOpenData` searches public ArcGIS datasets from Tampa, St. Petersburg,
+Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional
+Planning Council. It also includes 26 layers across the three cities that
+package maintainers have checked.
+The same client retrieves checked or newly discovered layers as R
 tables or optional `sf` objects, with provenance and completeness information.
 
 The checked catalog examples run offline. Live discovery and retrieval examples
@@ -24,14 +26,25 @@ with internet access.
 
 ```{r catalog, eval=TRUE}
 library(tampaBayOpenData)
-list_datasets(source = "checked")[, c("id", "title", "validation_status")]
-search_datasets("permit", source = "checked")
+list_portals()
+list_datasets(source = "checked")[,
+  c("id", "title", "jurisdiction", "validation_status")]
+search_datasets("park", source = "checked", spatial = TRUE,
+                jurisdiction = c("stpete", "clearwater"))
 ```
 
-`source = "checked"` reads the bundled City registry without a network request.
+`source = "checked"` reads the bundled registry without a network request.
 Checked IDs are stable package names, separate from ArcGIS item and layer IDs.
-The `jurisdiction` argument selects checked City entries; `portals` selects
-live City and regional organizations.
+For catalog functions, `jurisdiction = "all"` is the default. A code or vector
+filters both checked and live results: `"tampa"`, `"tampa-bay"`, `"stpete"`,
+`"clearwater"`, `"hillsborough"`, or `"pinellas"`. The `portals` argument selects live
+organizations: `"city"` (Tampa), `"tbrpc"`, `"stpete"`, `"clearwater"`,
+`"hillsborough"`, `"pinellas"`, or `"all"` (default). `list_portals()` lists the
+configured publishers and their portal locations offline. The county portals
+extend live discovery; the checked catalog still contains 26 city layers.
+Selecting a county with `source = "checked"` returns an empty catalog.
+Retrieval and download functions retain their default `jurisdiction = "tampa"`;
+omitting it also resolves uniquely named checked IDs across cities.
 
 Search the live portals when you need more than the checked catalog:
 
@@ -47,11 +60,12 @@ selected[, c("item_id", "service_url", "layer_id", "portal")]
 
 `validation_status = "checked"` means maintainers specifically tested that
 layer. `"discovered"` identifies a candidate from a public portal index;
-maintainers have not validated its contents or reuse terms. Retrieval checks
-that the selected layer advertises ArcGIS Query capability. Unchecked live IDs
+maintainers have not validated its contents or reuse terms. Retrieval validates
+query responses and requires `Query` when the layer declares its capabilities.
+Unchecked live IDs
 have the form `arcgis:<item-id>:<layer-id>` and remain usable if a title changes.
 A portal item may still be deleted or its service
-changed. `list_datasets()` searches both public organizations by default;
+changed. `list_datasets()` searches all six public organizations by default;
 `source = "checked"` remains available if the network is unavailable.
 
 ```{r discovered-retrieval}
@@ -65,7 +79,47 @@ dataset_provenance(housing)[c("item_id", "portal", "validation_status")]
 
 The discovery result includes the item's `modified` date, tags, and service
 location when available. That date is not necessarily the last update to its
-records. `max_items` limits portal items scanned per organization, not layers.
+records. `max_items` limits portal items scanned per organization, not layers;
+it defaults to 25. Set `max_items = Inf` for a full scan. Inspect the catalog's
+`discovery_complete`, `discovery_truncated_portals`, and `discovery_scanned_items`
+attributes before treating a bounded listing as a complete catalog.
+
+### Narrow a search
+
+Both `list_datasets()` and `search_datasets()` accept optional filters:
+
+```{r county-search}
+county_transport <- search_datasets(
+  "road", source = "live", jurisdiction = "pinellas", spatial = TRUE,
+  topic = "transportation", modified_after = as.Date("2025-01-01"),
+  max_items = 10
+)
+county_transport[, c("id", "title", "publisher", "modified", "modified_source")]
+```
+
+`publisher` matches exact names from `list_portals()`, ignoring case;
+`validation_status` selects `"checked"` or `"discovered"`. Live-only results can
+still contain checked matches. `spatial = TRUE` selects geometry layers,
+`FALSE` selects tables, and either filter excludes unknown geometry.
+`topic` matches literal substrings in tags and categories, ignoring case.
+`category` matches a complete category path or its final label, ignoring case.
+Character filters accept vectors; values in one filter are alternatives, while
+different filters must all match.
+
+`modified_after` and `modified_before` are inclusive bounds on `modified`.
+Use `Date` values or strict `"YYYY-MM-DD"` strings to include whole UTC days,
+or `POSIXct` values for exact instants. Rows with unknown item dates are dropped
+when a date bound is supplied. `modified_source = "portal_item"` identifies a
+live item timestamp; `"checked_snapshot"` identifies an upstream timestamp
+saved in the checked registry. Neither establishes record freshness, and the
+checked `verified` date remains a separate endpoint check.
+
+Jurisdiction and publisher filters reduce the organizations scanned. Other
+filters run after discovery and the checked overlay, so a bounded `max_items`
+scan can miss matching items beyond that limit. Inspect discovery attributes
+and increase the item limit when a broader search is needed. When a live layer
+matches a checked endpoint, the result keeps its checked identity and terms
+alongside current live tags, categories, and item modification date.
 
 ## Inspect dataset metadata
 
@@ -101,9 +155,25 @@ subset, and provenance marks it incomplete if more records match. `order_by`
 requests server ordering where supported; `get_permits()` is a shortcut for this
 dataset. See `?get_dataset` for other filters and limits.
 
-Results retain source field names and strings. Declared date fields become
-UTC `POSIXct` when their time-zone meaning is known. Dates with unknown
-time-zone semantics remain raw milliseconds with a warning.
+For sources with more than 10,000 matches and reliable ordering and pagination,
+finite previews of at most 1,000 rows verify the returned IDs with a subset
+manifest. Other retrievals use a full manifest; set `integrity = "full"` to
+request that explicitly. Provenance identifies `subset-manifest`,
+`full-manifest`, or `count-only` for a zero-row limit. A finite preview is marked
+incomplete when more records match.
+
+`timeout` limits each HTTP attempt. The overall `total_timeout` defaults to 120
+seconds for retrieval, 90 seconds for catalog discovery, and 60 seconds for
+metadata inspection. Set `total_timeout = Inf` explicitly for a long operation.
+Requests and retry waits use the remaining budget; parsing is checked after
+it finishes and can exceed the budget before reporting a timeout.
+
+Results retain source field names and text fields. ArcGIS epoch-millisecond
+date fields become UTC `POSIXct` unless the source declares an unknown time zone.
+In that case they remain raw milliseconds with a warning; UTC editor-tracking
+creation and edit dates identified by the layer metadata are still converted.
+Date-only fields become `Date`; time-only and timestamp-offset fields remain
+strings.
 
 You can also retrieve a compatible public ArcGIS layer directly by its URL:
 
@@ -114,6 +184,37 @@ direct <- get_arcgis_layer(
 )
 dataset_provenance(direct)$validation_status # "not_checked" for direct URL access
 ```
+
+For larger retrievals, write resumable chunks to a persistent directory outside
+the package source and read one chunk at a time:
+
+```{r download}
+saved <- download_dataset(
+  "construction-permits",
+  path = "~/tbOpenData-downloads/permits",
+  fields = c("OBJECTID", "RECORD_ID", "LASTUPDATE"),
+  page_size = 500,
+  total_timeout = 600
+)
+saved$complete
+first_chunk <- readRDS(saved$files[[1]])
+dataset_provenance(first_chunk)
+```
+
+Repeat the same download call to resume. The client rechecks current metadata and
+the full matching ID manifest, validates saved chunk checksums and provenance,
+and skips completed chunks. Changed query options, schema, CRS, or ID membership
+require a new directory. Chunk attributes can vary across requests or resumes,
+so the files do not form a frozen snapshot. Each chunk has its own completeness
+record; `saved$complete` describes the whole matching download. This path keeps
+only bounded feature batches in memory and retains the one-million-ID manifest
+limit. Download operations default to `total_timeout = Inf`; a finite deadline
+leaves completed chunks available for the next call.
+
+An exclusive directory lock prevents concurrent writers. A terminated R process
+can leave an empty `.lock` directory: confirm that process has stopped before
+removing the lock and resuming. `download_arcgis_layer()` supports the same
+chunked path for direct URLs.
 
 ## Explore the results
 
@@ -232,9 +333,9 @@ checks fetched IDs against the matching count and object-ID manifest where
 applicable; these checks cannot freeze every attribute at one instant.
 
 If a field is uncertain, inspect `dataset_info(id, refresh = TRUE)$fields`.
-For a temporary service failure, check the source URL and retry. Queries
-matching more than one million records are rejected because a complete
-object-ID manifest is required; narrow `where` first.
+For a temporary service failure, check the source URL and retry. Full-manifest
+queries matching more than one million records are rejected; narrow `where`
+first. Eligible finite previews can verify a bounded subset instead.
 
 Discovered items may lack clear reuse terms or may be stale in the portal
 index. Review each item's source and terms before analysis; the package does

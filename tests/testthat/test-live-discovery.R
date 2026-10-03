@@ -1,27 +1,3 @@
-# Synthetic portal items and service schemas; no copied government records.
-discovery_test_item <- function(id, url, title = "Service", org = "IbNXlmt2RVVRCZ6M",
-                                type = "Feature Service") {
-  list(id = id, type = type, title = title, url = url, orgId = org,
-       owner = "synthetic_owner", snippet = "Synthetic test item",
-       tags = list("roads", "test"), categories = list("Transport"),
-       modified = 1720000000000)
-}
-
-discovery_test_transport <- function(pages = list(), resources = list()) {
-  state <- new.env(parent = emptyenv())
-  state$requests <- list()
-  http <- function(url, params, timeout) {
-    state$requests[[length(state$requests) + 1L]] <-
-      list(url = url, params = params, timeout = timeout)
-    value <- if (grepl("/search$", url)) {
-      pages[[paste0(url, "/", params$start)]]
-    } else resources[[url]]
-    if (is.null(value)) return(fixture_response(list(), status = 404L))
-    fixture_response(value)
-  }
-  list(http = http, state = state)
-}
-
 test_that("portal discovery pages, expands layers and tables, and deduplicates by URL", {
   city <- "https://tampa.maps.arcgis.com/sharing/rest"
   root <- "https://example.org/arcgis/rest/services/Mixed/FeatureServer"
@@ -61,6 +37,8 @@ test_that("portal discovery pages, expands layers and tables, and deduplicates b
   expect_true(all(vapply(found$original_metadata, is.list, logical(1))))
   expect_s3_class(found$modified, "POSIXct")
   expect_length(attr(found, "discovery_issues"), 2L)
+  expect_false(attr(found, "discovery_complete"))
+  expect_identical(attr(found, "discovery_scanned_items"), c(city = 4L))
   searches <- Filter(function(x) grepl("/search$", x$url), transport$state$requests)
   expect_identical(vapply(searches, function(x) x$params$start, numeric(1)), c(1, 3))
   expect_true(all(vapply(searches, function(x)
@@ -88,7 +66,7 @@ test_that("regional discovery uses its own organization and metadata", {
   transport <- discovery_test_transport(pages, resources)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
 
-  found <- .discover_arcgis(portals = "all")
+  found <- .discover_arcgis(portals = c("city", "tbrpc"))
   expect_setequal(found$jurisdiction, c("tampa", "tampa-bay"))
   expect_identical(found$publisher[found$jurisdiction == "tampa-bay"],
                    "Tampa Bay Regional Planning Council")
@@ -136,6 +114,8 @@ test_that("empty search and malformed pages have explicit outcomes", {
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
   empty <- .discover_arcgis(query = "  ")
   expect_equal(nrow(empty), 0L)
+  expect_true(attr(empty, "discovery_complete"))
+  expect_identical(attr(empty, "discovery_scanned_items"), c(city = 0L))
   expect_true(all(c("id", "item_id", "original_metadata", "validation_status") %in%
                     names(empty)))
   expect_identical(.discovery_query("  "), .discovery_query(NULL))
@@ -192,7 +172,7 @@ test_that("one failed portal keeps the other provider and both failures are expl
   transport <- discovery_test_transport(pages, resources)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
 
-  expect_warning(found <- .discover_arcgis(portals = "all"),
+  expect_warning(found <- .discover_arcgis(portals = c("city", "tbrpc")),
                  "partial results.*city")
   expect_identical(found$id, paste0("arcgis:", id, ":0"))
   expect_identical(attr(found, "discovery_failed_portals"), "city")

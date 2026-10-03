@@ -2,9 +2,16 @@ name: live-check
 
 "on":
   workflow_dispatch:
+  schedule:
+    # Twice weekly at 06:17 UTC, away from the busiest top-of-hour queues.
+    - cron: '17 6 * * 2,5'
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   live:
@@ -14,6 +21,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       TAMPA_OPEN_DATA_LIVE: "true"
+      TAMPA_OPEN_DATA_MODE: ${{ github.event_name == 'schedule' && 'monitoring' || 'full' }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
@@ -27,4 +35,9 @@ jobs:
       - name: Run opt-in live integration tests
         shell: Rscript {0}
         run: |
-          testthat::test_local(filter = "live", stop_on_failure = TRUE)
+          test_filter <- if (identical(Sys.getenv("TAMPA_OPEN_DATA_MODE"), "monitoring")) {
+            "live-monitoring|live-county-discovery"
+          } else {
+            "live"
+          }
+          testthat::test_local(filter = test_filter, stop_on_failure = TRUE)

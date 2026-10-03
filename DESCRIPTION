@@ -3,11 +3,15 @@ Title: An R Interface to Tampa Bay Public Open Data
 Version: 0.1.0
 Authors@R: person("Jaclenga", role = c("aut", "cre"),
     email = "jack3lenga@gmail.com")
-Description: Discover public 'ArcGIS' layers in the City of Tampa and Tampa Bay
-    Regional Planning Council organizations through live portal search. A
-    bundled registry identifies City layers checked by package maintainers.
-    Retrieve queryable layers with checked pagination, server-side filtering,
-    typed tabular results, optional spatial objects, and source provenance.
+Description: Discover public 'ArcGIS' layers published by Tampa, St. Petersburg,
+    Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional
+    Planning Council. A publisher registry configures discovery; a separate
+    dataset registry identifies layers checked by package maintainers. Filter
+    catalogs by source, geometry, topic, category, and modification date.
+    Retrieve queryable layers
+    with validated pagination, bounded previews, server-side filtering, typed
+    tabular results, optional spatial objects, and source provenance. Save large
+    downloads as local chunks that can be validated and resumed.
 License: MIT + file LICENSE
 URL: https://github.com/Jaclenga/tbOpenData
 BugReports: https://github.com/Jaclenga/tbOpenData/issues

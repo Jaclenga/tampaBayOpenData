@@ -7,7 +7,8 @@
 dataset_provenance(x)
 }
 \arguments{
-\item{x}{An object returned by \code{\link[=get_dataset]{get_dataset()}} or a convenience wrapper.}
+\item{x}{A retrieval result or a chunk read from \code{\link[=download_dataset]{download_dataset()}} or
+\code{\link[=download_arcgis_layer]{download_arcgis_layer()}}.}
 }
 \value{
 A named list containing source metadata and retrieval details.

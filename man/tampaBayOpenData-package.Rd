@@ -4,14 +4,20 @@
 \name{tampaBayOpenData-package}
 \alias{tampaBayOpenData}
 \alias{tampaBayOpenData-package}
-\title{Discover and retrieve City of Tampa public open data}
+\title{Discover and retrieve Tampa Bay public data}
 \description{
-Search public City of Tampa and Tampa Bay Regional Planning Council ArcGIS
-services with \code{\link[=list_datasets]{list_datasets()}} or \code{\link[=search_datasets]{search_datasets()}}. The bundled catalog
-identifies 20 City layers checked by package maintainers. Use \code{\link[=get_dataset]{get_dataset()}}
+Search public Tampa, St. Petersburg, Clearwater, Hillsborough County, Pinellas
+County, and Tampa Bay Regional Planning Council ArcGIS services with
+\code{\link[=list_datasets]{list_datasets()}} or \code{\link[=search_datasets]{search_datasets()}}. \code{\link[=list_portals]{list_portals()}} reads the publisher
+configuration. Catalogs can filter jurisdiction, publisher, validation,
+geometry, topics, categories, and modification dates.
+The bundled catalog identifies 26 layers checked by package maintainers;
+catalog browsing defaults to all jurisdictions. Use \code{\link[=get_dataset]{get_dataset()}}
 for a checked ID or discovered layer, or \code{\link[=get_arcgis_layer]{get_arcgis_layer()}} for a direct
 compatible URL. Results are tibbles or optional \code{sf} objects;
 \code{\link[=dataset_provenance]{dataset_provenance()}} exposes the source, validation status, and query.
+\code{\link[=download_dataset]{download_dataset()}} and \code{\link[=download_arcgis_layer]{download_arcgis_layer()}} write validated chunks to
+a caller-selected directory and can resume an interrupted download.
 }
 \details{
 This independent package was inspired by rOpenSci's nycOpenData; it is not

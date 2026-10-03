@@ -1,8 +1,7 @@
 # Actual, trimmed upstream layer schemas; all feature values below are synthetic.
 # This exercises schema differences that a single permit-shaped mock cannot cover.
 source_schema_fixture <- function(id) {
-  jsonlite::fromJSON(test_path("fixtures", "tampa-layer-schemas.json"),
-                     simplifyVector = FALSE)[[id]]
+  source_schema_fixtures()[[id]]
 }
 
 source_fixture_feature <- function(attributes, geometry = NULL) {
@@ -52,8 +51,7 @@ expect_source_routing <- function(result, transport, id, fields) {
 
 test_that("every catalog entry matches its recorded source schema", {
   entries <- .read_registry()
-  snapshots <- jsonlite::fromJSON(test_path("fixtures", "tampa-layer-schemas.json"),
-                                  simplifyVector = FALSE)
+  snapshots <- source_schema_fixtures()
   expect_setequal(names(snapshots), vapply(entries, `[[`, character(1), "id"))
   for (entry in entries) {
     snapshot <- snapshots[[entry$id]]
@@ -68,12 +66,13 @@ test_that("every catalog entry matches its recorded source schema", {
     expect_identical(oid_fields[[1L]]$name, entry$object_id_field)
     date_fields <- vapply(Filter(function(x) x$type == "esriFieldTypeDate",
                                  metadata$fields), `[[`, character(1), "name")
-    expect_identical(date_fields, unlist(entry$date_fields, use.names = FALSE))
+    expect_identical(date_fields,
+                     unlist(entry$date_fields, use.names = FALSE) %||% character())
     expect_identical(metadata$advancedQueryCapabilities$supportsPagination,
                      entry$supports_pagination)
     expect_identical(metadata$advancedQueryCapabilities$supportsOrderBy,
                      entry$supports_order_by)
-    expect_equal(metadata$spatialReference, entry$spatial_reference)
+    expect_equal(arcgis_native_reference(metadata), entry$spatial_reference)
   }
 })
 

@@ -2,10 +2,13 @@
 
 export(dataset_info)
 export(dataset_provenance)
+export(download_arcgis_layer)
+export(download_dataset)
 export(get_arcgis_layer)
 export(get_capital_projects)
 export(get_dataset)
 export(get_development_cases)
 export(get_permits)
 export(list_datasets)
+export(list_portals)
 export(search_datasets)

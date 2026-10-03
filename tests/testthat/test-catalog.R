@@ -3,7 +3,7 @@ test_that("the bundled catalog is offline, verified, and City-published", {
                         .package = "tampaBayOpenData")
   entries <- .read_registry()
   expect_invisible(.validate_registry(entries))
-  catalog <- list_datasets(source = "checked")
+  catalog <- list_datasets(jurisdiction = "tampa", source = "checked")
   expect_s3_class(catalog, "tbl_df")
   expect_equal(nrow(catalog), 20L)
   expect_setequal(catalog$id, c("construction-permits", "development-cases",
@@ -168,7 +168,7 @@ test_that("offline dataset lookups retain the registry metadata for every layer"
     expect_identical(info$terms, entry$terms)
     expect_identical(info$tags, unlist(entry$tags, use.names = FALSE))
     expect_identical(info$date_fields,
-                     unlist(entry$date_fields, use.names = FALSE))
+                     unlist(entry$date_fields, use.names = FALSE) %||% character())
     expect_null(info$fields)
     expect_null(info$inspected_at)
   }
@@ -179,9 +179,9 @@ test_that("lookup explains unsupported IDs and jurisdictions", {
   expect_error(dataset_info("made-up"), "Unknown dataset.*list_datasets")
   expect_error(dataset_info("construction-permits", jurisdiction = "pinellas"),
                "Unsupported jurisdiction.*tampa")
-  expect_error(list_datasets("hillsborough", source = "checked"), "v0.1 supports the City of Tampa")
+  expect_identical(nrow(list_datasets("hillsborough", source = "checked")), 0L)
   expect_error(dataset_info(c("parks", "riverwalk")), "single nonmissing string")
-  expect_error(list_datasets(NA_character_, source = "checked"), "single nonmissing string")
+  expect_error(list_datasets(NA_character_, source = "checked"), "nonmissing strings")
   expect_error(dataset_info("parks", refresh = NA), "TRUE or FALSE")
   expect_error(dataset_info("parks", timeout = 0), "timeout")
 })
@@ -201,12 +201,11 @@ test_that("live inspection adds the actual schema without changing provenance", 
   expect_identical(inspected$verified, original$verified)
   expect_identical(inspected$metadata$maxRecordCount, 2L)
   expect_length(transport$state$requests, 1L)
-  expect_equal(transport$state$requests[[1L]]$timeout, 11)
+  expect_equal(as.numeric(transport$state$requests[[1L]]$timeout), 11)
 })
 
 test_that("refresh inspects each layer's own endpoint and field aliases", {
-  snapshots <- jsonlite::fromJSON(test_path("fixtures", "tampa-layer-schemas.json"),
-                                  simplifyVector = FALSE)
+  snapshots <- source_schema_fixtures()
   by_url <- setNames(snapshots, vapply(snapshots, `[[`, character(1), "metadata_url"))
   requests <- list()
   local_mocked_bindings(arcgis_http = function(url, params, timeout) {
@@ -236,7 +235,7 @@ test_that("refresh inspects each layer's own endpoint and field aliases", {
     request <- requests[[length(requests)]]
     expect_identical(request$url, snapshots[[id]]$metadata_url)
     expect_identical(request$params$f, "json")
-    expect_identical(request$timeout, 7)
+    expect_identical(as.numeric(request$timeout), 7)
   }
   expect_length(requests, length(snapshots))
 })

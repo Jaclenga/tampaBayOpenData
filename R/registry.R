@@ -50,9 +50,10 @@
 .jurisdiction_entries <- function(jurisdiction, entries = .read_registry()) {
   .string(jurisdiction, "jurisdiction")
   supported <- unique(vapply(entries, function(x) x$jurisdiction, character(1)))
+  if (identical(jurisdiction, "all")) return(entries)
   if (!jurisdiction %in% supported) {
     .abort(paste0("Unsupported jurisdiction `", jurisdiction, "`. Available: ",
-                  paste(supported, collapse = ", "), ". v0.1 supports the City of Tampa."),
+                  paste(c(supported, "all"), collapse = ", "), "."),
            subclass = "tampa_input_error")
   }
   Filter(function(x) identical(x$jurisdiction, jurisdiction), entries)
@@ -67,11 +68,15 @@
                   "`. Use list_datasets() or search_datasets() to find supported IDs."),
            subclass = "tampa_input_error")
   }
+  if (length(found) != 1L) {
+    .abort(paste0("Dataset `", id, "` exists in more than one jurisdiction. ",
+                  "Supply its specific `jurisdiction`."), subclass = "tampa_input_error")
+  }
   entry <- found[[1L]]
   entry$tags <- unlist(entry$tags, use.names = FALSE) %||% character()
   entry$date_fields <- unlist(entry$date_fields, use.names = FALSE) %||% character()
   entry$validation_status <- "checked"
-  entry$portal <- if (!is.null(entry$item_id))
+  entry$portal <- entry$portal %||% if (!is.null(entry$item_id))
     "https://www.arcgis.com/sharing/rest" else NULL
   entry
 }
@@ -86,13 +91,15 @@
   cols$tags <- lapply(entries, function(x) unlist(x$tags, use.names = FALSE) %||% character())
   cols$verified <- as.Date(cols$verified)
   cols$item_id <- vapply(entries, function(x) x$item_id %||% NA_character_, character(1))
-  cols$portal <- ifelse(is.na(cols$item_id), NA_character_,
-                        "https://www.arcgis.com/sharing/rest")
+  cols$portal <- vapply(entries, function(x) x$portal %||%
+    if (!is.null(x$item_id)) "https://www.arcgis.com/sharing/rest" else NA_character_,
+    character(1))
   cols$validation_status <- rep("checked", length(entries))
   modified <- vapply(entries, function(x) x$upstream_modified %||% NA_character_,
                      character(1))
   cols$modified <- as.POSIXct(sub("\\+00:00$", "", modified),
                               format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+  cols$modified_source <- ifelse(is.na(cols$modified), NA_character_, "checked_snapshot")
   cols$service_type <- ifelse(grepl("/FeatureServer$", cols$service_url),
                               "FeatureServer", "MapServer")
   cols$layer_type <- ifelse(cols$geometry_type == "none", "Table", "Feature Layer")

@@ -15,15 +15,18 @@ get_dataset(
   limit = Inf,
   page_size = NULL,
   query = list(),
-  timeout = 30
+  timeout = 30,
+  total_timeout = 120,
+  integrity = "auto"
 )
 }
 \arguments{
 \item{id}{Checked package dataset ID, one-row discovered dataset descriptor,
 or stable \verb{arcgis:<32-hex-item-id>:<nonnegative-layer-id>} identifier.}
 
-\item{jurisdiction}{Checked-registry jurisdiction. Omit for a discovered
-result or stable ArcGIS ID so its source jurisdiction is used.}
+\item{jurisdiction}{Checked-registry jurisdiction: \code{"tampa"}, \code{"stpete"},
+\code{"clearwater"}, or \code{"all"}. Omit to resolve a unique checked ID across the
+registry or to use a discovered result's or stable ArcGIS ID's jurisdiction.}
 
 \item{where}{ArcGIS SQL WHERE clause, using actual source field names.
 Defaults to \code{"1=1"} (all records). See \code{\link[=dataset_info]{dataset_info()}} with \code{refresh = TRUE}.}
@@ -58,7 +61,19 @@ aggregation, geometry simplification, and pagination parameters are protected.}
 
 \item{timeout}{Timeout in seconds for each HTTP attempt. Transient transport
 and HTTP failures may receive three attempts; one generic ArcGIS query
-error may receive four. This is not an overall retrieval deadline.}
+error may receive four.}
+
+\item{total_timeout}{Overall operation time budget in seconds. Defaults to
+120; use Inf to disable it. Requests and retry waits use the remaining
+budget. Parsing is checked after it finishes rather than interrupted.}
+
+\item{integrity}{\code{"auto"} (default) uses a bounded preview when a finite
+limit is at most 1,000, more than 10,000 records match, and the layer supports
+ordering and pagination. Returned IDs are verified against the original
+filter, without retrieving all matching IDs. Full retrieval always uses
+the full manifest. \code{"full"} requires that manifest even for a preview.
+A zero limit requests only the count. Provenance records the verification
+method and never labels a deliberate subset complete.}
 }
 \value{
 A tibble, or an sf object when spatial retrieval is requested. Source
@@ -74,15 +89,19 @@ layer URL outside the discovery portal, use \code{\link[=get_arcgis_layer]{get_a
 }
 \details{
 Requests the current ArcGIS layer schema,
-matching count, and object-ID manifest. Bounded requests are validated against
-that manifest. A missing or duplicate record, truncated manifest, unexpected
+matching count, and object-ID manifest. Full requests are validated against
+that manifest. Small previews of large queryable layers can validate only
+the returned IDs against the original filter. A missing or duplicate record,
+truncated manifest, unexpected
 response, or upstream error fails explicitly. With \code{limit = Inf}, all matching
 records are retrieved. Queries matching more than one million records must be
-narrowed with filters because the client requires a complete object-ID manifest.
+narrowed with filters for full retrieval because it requires a complete ID
+manifest. See \code{integrity} for previews and \code{\link[=download_dataset]{download_dataset()}} for downloads
+that save validated chunks to disk and can resume after interruption.
 
 Source column names, strings, coded values, and date-looking strings are
-preserved. Declared ArcGIS date fields are converted from epoch milliseconds
-to UTC POSIXct. If the source declares an unknown time zone, affected dates
+preserved. ArcGIS epoch-millisecond date fields are converted to UTC POSIXct.
+Date-only fields become Date. If the source declares an unknown time zone, affected dates
 remain raw milliseconds with a warning; UTC editor tracking dates identified
 by layer metadata are still converted. Integer fields become integers where
 safe, and

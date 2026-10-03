@@ -1,0 +1,68 @@
+[
+  {
+    "id": "city",
+    "root": "https://tampa.maps.arcgis.com/sharing/rest",
+    "org_id": "IbNXlmt2RVVRCZ6M",
+    "publisher": "City of Tampa",
+    "jurisdiction": "tampa",
+    "website": "https://www.tampa.gov/departments/geographic-information-systems",
+    "verified": "2026-10-02",
+    "metadata_url": "https://tampa.maps.arcgis.com/sharing/rest/portals/self",
+    "evidence_url": "https://tampa.maps.arcgis.com/home/index.html"
+  },
+  {
+    "id": "tbrpc",
+    "root": "https://www.arcgis.com/sharing/rest",
+    "org_id": "RgIBbQIF0Y6T3AX6",
+    "publisher": "Tampa Bay Regional Planning Council",
+    "jurisdiction": "tampa-bay",
+    "website": "https://tbrpc.org/",
+    "verified": "2026-10-02",
+    "metadata_url": "https://www.arcgis.com/sharing/rest/portals/RgIBbQIF0Y6T3AX6",
+    "evidence_url": "https://tbrpc.org/"
+  },
+  {
+    "id": "stpete",
+    "root": "https://csp.maps.arcgis.com/sharing/rest",
+    "org_id": "9qPLjNtocjo438CJ",
+    "publisher": "City of St. Petersburg",
+    "jurisdiction": "stpete",
+    "website": "https://www.stpete.org/",
+    "verified": "2026-10-02",
+    "metadata_url": "https://csp.maps.arcgis.com/sharing/rest/portals/self",
+    "evidence_url": "https://csp.maps.arcgis.com/home/index.html"
+  },
+  {
+    "id": "clearwater",
+    "root": "https://cityofclearwater.maps.arcgis.com/sharing/rest",
+    "org_id": "3GsNorcb0Mn5rMt8",
+    "publisher": "City of Clearwater",
+    "jurisdiction": "clearwater",
+    "website": "https://www.myclearwater.com/My-Government/About-Clearwater/Maps-GIS",
+    "verified": "2026-10-02",
+    "metadata_url": "https://cityofclearwater.maps.arcgis.com/sharing/rest/portals/self",
+    "evidence_url": "https://cityofclearwater.maps.arcgis.com/home/index.html"
+  },
+  {
+    "id": "hillsborough",
+    "root": "https://hillsborough.maps.arcgis.com/sharing/rest",
+    "org_id": "apTfC6SUmnNfnxuF",
+    "publisher": "Hillsborough County",
+    "jurisdiction": "hillsborough",
+    "website": "https://hcfl.gov/about-hillsborough/open-data-and-gis",
+    "verified": "2026-10-02",
+    "metadata_url": "https://hillsborough.maps.arcgis.com/sharing/rest/portals/self",
+    "evidence_url": "https://hcfl.gov/about-hillsborough/open-data-and-gis"
+  },
+  {
+    "id": "pinellas",
+    "root": "https://pinellas-egis.maps.arcgis.com/sharing/rest",
+    "org_id": "f5HgUpxURgEzTccH",
+    "publisher": "Pinellas County",
+    "jurisdiction": "pinellas",
+    "website": "https://pinellas.gov/services/maps-gis/",
+    "verified": "2026-10-02",
+    "metadata_url": "https://pinellas-egis.maps.arcgis.com/sharing/rest/portals/self",
+    "evidence_url": "https://pinellas.gov/services/maps-gis/"
+  }
+]

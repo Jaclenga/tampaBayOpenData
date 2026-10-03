@@ -30,7 +30,7 @@ test_that("live catalog rows share the checked schema and search provenance", {
   calls <- list()
   local_mocked_bindings(.discover_arcgis = function(query, portals, max_items, timeout) {
     calls[[length(calls) + 1L]] <<- list(query = query, portals = portals,
-                                        max_items = max_items, timeout = timeout)
+                                        max_items = max_items, timeout = as.numeric(timeout))
     if (identical(query, "housing")) return(live[2L, , drop = FALSE])
     if (identical(query, "zzportalonlyzz")) return(live[1L, , drop = FALSE])
     if (identical(query, "parks")) return(live[0L, , drop = FALSE])
@@ -38,7 +38,7 @@ test_that("live catalog rows share the checked schema and search provenance", {
   }, .package = "tampaBayOpenData")
 
   catalog <- list_datasets(max_items = 3, timeout = 12)
-  expect_identical(nrow(catalog), 21L)
+  expect_identical(nrow(catalog), 27L)
   expect_identical(names(catalog), names(checked))
   expect_identical(attr(catalog, "discovery_issues"), "one skipped portal item")
   expect_identical(attr(catalog, "discovery_failed_portals"), "tbrpc")
@@ -75,7 +75,7 @@ test_that("live catalog rows share the checked schema and search provenance", {
     expect_identical(nrow(result), 1L)
   }
   expect_identical(nrow(search_datasets("parks", source = "live")), 0L)
-  expect_identical(search_datasets("parks", source = "all")$id, "parks")
+  expect_identical(search_datasets("parks", jurisdiction = "tampa", source = "all")$id, "parks")
 })
 
 test_that("checked catalog stays available when live discovery fails", {
@@ -83,11 +83,11 @@ test_that("checked catalog stays available when live discovery fails", {
     .abort("The portal is unavailable.", subclass = "tampa_http_error")
   }, .package = "tampaBayOpenData")
   expect_warning(all <- list_datasets(), "returning checked datasets only")
-  expect_identical(nrow(all), 20L)
+  expect_identical(nrow(all), 26L)
   expect_true(all(all$validation_status == "checked"))
   expect_error(list_datasets(source = "live"), "portal is unavailable")
   expect_silent(checked <- list_datasets(source = "checked"))
-  expect_identical(nrow(checked), 20L)
+  expect_identical(nrow(checked), 26L)
 })
 
 test_that("catalog source and portal options reject invalid values", {

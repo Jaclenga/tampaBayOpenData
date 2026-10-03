@@ -1,5 +1,5 @@
-These fixtures contain trimmed City of Tampa ArcGIS layer metadata for all 20
-bundled datasets, verified on the `verified` date in each entry. Each
+The City of Tampa schema fixtures contain trimmed ArcGIS layer metadata for all
+20 checked Tampa layers, verified on the `verified` date in each entry. Each
 `metadata_url` identifies the source layer, and `original_file` names its
 research snapshot. They retain source field names, types, aliases, query
 capabilities, and spatial/date metadata, but no source feature records. Tests
@@ -29,5 +29,16 @@ EPSG:2882. The fixture preserves those differences instead of substituting the
 Tampa permit schema. All offline attribute values and coordinates are synthetic;
 no source feature records are bundled. The live tests share these URLs and
 selected fields but assert neither fixed counts nor fixed record IDs. These
-are direct-URL compatibility cases, not checked registry entries or additional
-portal discovery sources.
+exercise the direct-URL path and retain `not_checked` provenance, including
+when the endpoint also appears as a separate checked registry entry.
+
+## Checked regional schemas
+
+`regional-layer-schemas.json` contains trimmed metadata for three checked
+St. Petersburg layers (parks, city boundaries, and streets) and three checked
+Clearwater layers (park buffers, zoning, and libraries). It preserves their
+actual object-ID fields, source field types, geometry, query limits, and CRS
+differences. In particular, Clearwater's zoning and library MapServer outputs
+use EPSG:3857 even though their underlying source references differ. All test
+features remain synthetic; raw research snapshots and retrieved records are
+excluded from the package source.

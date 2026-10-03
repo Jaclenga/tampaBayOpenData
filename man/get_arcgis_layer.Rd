@@ -14,7 +14,9 @@ get_arcgis_layer(
   limit = Inf,
   page_size = NULL,
   query = list(),
-  timeout = 30
+  timeout = 30,
+  total_timeout = 120,
+  integrity = "auto"
 )
 }
 \arguments{
@@ -53,7 +55,19 @@ aggregation, geometry simplification, and pagination parameters are protected.}
 
 \item{timeout}{Timeout in seconds for each HTTP attempt. Transient transport
 and HTTP failures may receive three attempts; one generic ArcGIS query
-error may receive four. This is not an overall retrieval deadline.}
+error may receive four.}
+
+\item{total_timeout}{Overall operation time budget in seconds. Defaults to
+120; use Inf to disable it. Requests and retry waits use the remaining
+budget. Parsing is checked after it finishes rather than interrupted.}
+
+\item{integrity}{\code{"auto"} (default) uses a bounded preview when a finite
+limit is at most 1,000, more than 10,000 records match, and the layer supports
+ordering and pagination. Returned IDs are verified against the original
+filter, without retrieving all matching IDs. Full retrieval always uses
+the full manifest. \code{"full"} requires that manifest even for a preview.
+A zero limit requests only the count. Provenance records the verification
+method and never labels a deliberate subset complete.}
 }
 \value{
 A tibble, or an sf object when \code{spatial = TRUE}.

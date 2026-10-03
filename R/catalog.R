@@ -1,36 +1,75 @@
 #' List Tampa Bay ArcGIS datasets
 #'
-#' Live discovery searches the City of Tampa and Tampa Bay Regional Planning
-#' Council ArcGIS organizations and expands public services into candidate
-#' layers and tables. Retrieval checks each layer's current Query capability.
+#' Live discovery searches the organizations in [list_portals()] and expands
+#' public services into candidate layers and tables. Retrieval requires Query
+#' when a layer supplies a capabilities list and validates its query responses.
 #' The bundled registry supplies a separate
 #' `"checked"` validation layer and remains available without a network request.
 #' A portal item can be stale or a layer can change after discovery.
-#' @param jurisdiction Checked-registry jurisdiction. v0.1 has City of Tampa
-#'   checked entries. Live organizations are selected with `portals`.
+#' @param jurisdiction Jurisdiction code or vector of codes from [list_portals()],
+#'   or `"all"` (default). Filters checked and live results and narrows the portal
+#'   scan. A supported jurisdiction may have no checked entries.
 #' @param source `"all"` (default) combines live discovery with the checked
 #'   registry; `"live"` returns layers found through the portal with checked
 #'   matches marked; `"checked"` reads only the offline registry.
 #' @param max_items Maximum number of portal service items to scan per selected
-#'   organization. `Inf` (default) follows all available search pages. This
-#'   limits items, not expanded layers.
-#' @param portals Live ArcGIS organizations to search: `"city"`, `"tbrpc"`
-#'   (Tampa Bay Regional Planning Council), or `"all"` (default). A character
-#'   vector of `"city"` and `"tbrpc"` is also accepted. This does not filter the
-#'   bundled checked catalog.
+#'   organization. The default, 25, bounds the service scan; `Inf` follows all
+#'   available search pages. This limits items, not expanded layers. Inspect
+#'   `attr(result, "discovery_complete")` before treating a live result as a
+#'   complete portal listing.
+#' @param portals Live organization IDs from [list_portals()], or `"all"`
+#'   (default). A character vector of IDs is also accepted. Intersects with
+#'   jurisdiction and publisher filters before any portal requests.
+#'   This does not filter the bundled checked catalog.
 #' @param timeout Timeout in seconds for each HTTP attempt.
+#' @param total_timeout Maximum elapsed seconds for the complete operation,
+#'   including discovery and retries. Defaults to 90; `Inf` disables this limit.
+#' @param publisher Publisher name or vector of names, matched exactly without
+#'   regard to case. See [list_portals()] for names. Filters all results and
+#'   narrows the portal scan; an unmatched name returns no rows.
+#' @param validation_status `"checked"`, `"discovered"`, or a vector of both.
+#'   NULL includes both. This filters the final classification; `source = "live"`
+#'   can include checked matches. Use `source = "checked"` for offline browsing.
+#' @param spatial TRUE selects layers with declared geometry; FALSE selects
+#'   nonspatial tables. NULL includes both and unknown geometry types.
+#' @param topic Word or vector of words matched as case-insensitive literal
+#'   substrings in tags and categories. NULL disables this filter.
+#' @param category Category or vector of categories, matched exactly without
+#'   regard to case against full source paths or their final labels.
+#' @param modified_after,modified_before Inclusive modification bounds: a Date
+#'   or YYYY-MM-DD string includes its entire UTC calendar day; POSIXct supplies
+#'   an exact instant. Rows with unknown modification times are excluded when
+#'   either bound is supplied. Modification is an item or checked snapshot
+#'   timestamp, not record freshness; `modified_source` identifies its origin.
+#' @details Values within a filter are combined with OR; different filters and
+#'   the search query are combined with AND. Status, geometry, topic, category,
+#'   and date filters apply after the bounded scan and checked overlay. A capped
+#'   scan can miss matching older items; inspect `discovery_complete` and use
+#'   `max_items = Inf` with an appropriate time budget for an exhaustive scan.
 #' @return A tibble with stable IDs, service and layer locations, portal and
 #'   item IDs when available, and `validation_status` of `"checked"` or
 #'   `"discovered"`. The latter means the package has not checked that layer.
 #'   Skipped item errors are attached as `attr(result, "discovery_issues")`;
 #'   failed portal names are in `attr(result, "discovery_failed_portals")`.
+#'   `discovery_scanned_items` records item counts by portal;
+#'   `discovery_truncated_portals` identifies scans stopped at `max_items`.
+#'   `discovery_complete` is FALSE if a scan was truncated or any item or portal
+#'   failed. These attributes describe live discovery, not checked coverage.
 #' @export
 #' @examples
 #' list_datasets(source = "checked")
 #' \dontrun{list_datasets()}
-list_datasets <- function(jurisdiction = "tampa", source = "all",
-                          portals = "all", max_items = Inf, timeout = 30) {
-  .catalog_datasets(NULL, jurisdiction, source, portals, max_items, timeout)
+list_datasets <- function(jurisdiction = "all", source = "all",
+                          portals = "all", max_items = 25, timeout = 30,
+                          total_timeout = 90, publisher = NULL,
+                          validation_status = NULL, spatial = NULL, topic = NULL,
+                          category = NULL, modified_after = NULL, modified_before = NULL) {
+  timeout <- .operation_timeout(timeout, total_timeout)
+  .check_operation_timeout(timeout)
+  result <- .catalog_datasets(NULL, jurisdiction, source, portals, max_items, timeout,
+    publisher, validation_status, spatial, topic, category, modified_after, modified_before)
+  .check_operation_timeout(timeout)
+  result
 }
 
 #' Search Tampa Bay ArcGIS datasets
@@ -47,21 +86,50 @@ list_datasets <- function(jurisdiction = "tampa", source = "all",
 #' @examples
 #' search_datasets("permit", source = "checked")
 #' \dontrun{search_datasets("housing")}
-search_datasets <- function(query, jurisdiction = "tampa", source = "all",
-                            portals = "all", max_items = Inf, timeout = 30) {
+search_datasets <- function(query, jurisdiction = "all", source = "all",
+                            portals = "all", max_items = 25, timeout = 30,
+                            total_timeout = 90, publisher = NULL,
+                            validation_status = NULL, spatial = NULL, topic = NULL,
+                            category = NULL, modified_after = NULL, modified_before = NULL) {
   .string(query, "query", allow_empty = TRUE)
-  .catalog_datasets(query, jurisdiction, source, portals, max_items, timeout)
+  timeout <- .operation_timeout(timeout, total_timeout)
+  .check_operation_timeout(timeout)
+  result <- .catalog_datasets(query, jurisdiction, source, portals, max_items, timeout,
+    publisher, validation_status, spatial, topic, category, modified_after, modified_before)
+  .check_operation_timeout(timeout)
+  result
 }
 
-.catalog_datasets <- function(query, jurisdiction, source, portals, max_items, timeout) {
+.catalog_datasets <- function(query, jurisdiction, source, portals, max_items, timeout,
+                              publisher = NULL, validation_status = NULL,
+                              spatial = NULL, topic = NULL, category = NULL,
+                              modified_after = NULL, modified_before = NULL) {
   .catalog_options(source, portals, max_items, timeout)
-  checked <- .catalog_table(.jurisdiction_entries(jurisdiction))
+  entries <- .read_registry()
+  configs <- .portal_registry()
+  filters <- .catalog_filters(jurisdiction, publisher, validation_status, spatial,
+    topic, category, modified_after, modified_before, entries, configs)
+  checked <- .catalog_table(entries)
   matching_checked <- if (is.null(query)) checked else .search_checked(checked, query)
-  if (identical(source, "checked")) return(matching_checked)
-  live <- .catalog_live(query, source, portals, max_items, timeout)
-  if (is.null(live)) return(matching_checked)
+  if (identical(source, "checked")) return(.filter_catalog(matching_checked, filters))
+  keys <- .catalog_selected_portals(.discovery_portal_keys(portals), configs, filters)
+  if (!length(keys)) {
+    result <- if (identical(source, "all")) matching_checked else checked[0L, , drop = FALSE]
+    attr(result, "discovery_issues") <- character()
+    attr(result, "discovery_failed_portals") <- character()
+    attr(result, "discovery_scanned_items") <- stats::setNames(integer(), character())
+    attr(result, "discovery_truncated_portals") <- character()
+    attr(result, "discovery_complete") <- TRUE
+    return(.filter_catalog(result, filters))
+  }
+  scan_portals <- if (identical(portals, "all") && identical(keys, names(configs))) "all" else keys
+  live <- .catalog_live(query, source, scan_portals, max_items, timeout)
+  if (is.null(live)) {
+    attr(matching_checked, "discovery_complete") <- FALSE
+    return(.filter_catalog(matching_checked, filters))
+  }
   included_checked <- if (identical(source, "all")) matching_checked else checked[0L, , drop = FALSE]
-  .overlay_catalog(live, checked, included_checked)
+  .filter_catalog(.overlay_catalog(live, checked, included_checked), filters)
 }
 
 .catalog_options <- function(source, portals, max_items, timeout) {
@@ -69,17 +137,13 @@ search_datasets <- function(query, jurisdiction = "tampa", source = "all",
   if (!source %in% c("all", "live", "checked")) {
     .abort("`source` must be 'all', 'live', or 'checked'.", subclass = "tampa_input_error")
   }
-  if (!is.character(portals) || !length(portals) || anyNA(portals) ||
-      any(!portals %in% c("city", "tbrpc", "all")) ||
-      ("all" %in% portals && length(portals) != 1L) || anyDuplicated(portals)) {
-    .abort("`portals` must be 'city', 'tbrpc', 'all', or both named portals.",
-           subclass = "tampa_input_error")
-  }
+  .discovery_portal_keys(portals)
   .number(max_items, "max_items", min = 1, integer = TRUE, infinity = TRUE)
   .number(timeout, "timeout", min = .Machine$double.eps)
 }
 
 .search_checked <- function(catalog, query) {
+  if (!nrow(catalog)) return(catalog)
   words <- strsplit(tolower(trimws(query)), "[[:space:]]+")[[1L]]
   words <- words[nzchar(words)]
   if (!length(words)) return(catalog)
@@ -97,6 +161,7 @@ search_datasets <- function(query, jurisdiction = "tampa", source = "all",
   tryCatch(.discover_arcgis(query = query, portals = portals, max_items = max_items,
                             timeout = timeout),
            error = function(e) {
+             if (inherits(e, "tampa_timeout_error")) stop(e)
              if (identical(source, "live") || !inherits(e, "tampa_data_error")) stop(e)
              warning(paste0("Live ArcGIS discovery failed; returning checked datasets only: ",
                             conditionMessage(e)), call. = FALSE)
@@ -105,6 +170,8 @@ search_datasets <- function(query, jurisdiction = "tampa", source = "all",
 }
 
 .overlay_catalog <- function(live, checked, included_checked) {
+  scan_attributes <- attributes(live)[c("discovery_scanned_items",
+    "discovery_truncated_portals", "discovery_complete")]
   issues <- attr(live, "discovery_issues", exact = TRUE)
   failed_portals <- attr(live, "discovery_failed_portals", exact = TRUE)
   required <- c("id", "title", "description", "jurisdiction", "publisher", "source_url",
@@ -120,6 +187,7 @@ search_datasets <- function(query, jurisdiction = "tampa", source = "all",
   live$verified <- as.Date(rep(NA_character_, nrow(live)))
   live$terms <- rep(NA_character_, nrow(live))
   live$date_fields <- rep(list(character()), nrow(live))
+  live$modified_source <- ifelse(is.na(live$modified), NA_character_, "portal_item")
   live <- live[, names(checked), drop = FALSE]
   key <- function(x) paste(tolower(sub("/+$", "", x$service_url)), x$layer_id,
                            sep = "#")
@@ -130,12 +198,28 @@ search_datasets <- function(query, jurisdiction = "tampa", source = "all",
   checked_key <- key(checked)
   live_key <- key(live)
   matched <- checked[checked_key %in% c(live_key, key(included_checked)), , drop = FALSE]
+  for (i in seq_len(nrow(matched))) {
+    j <- match(key(matched[i, , drop = FALSE]), live_key)
+    if (is.na(j)) next
+    if (!is.na(live$modified[[j]])) {
+      matched$modified[[i]] <- live$modified[[j]]
+      matched$modified_source[[i]] <- "portal_item"
+    }
+    matched$tags[[i]] <- unique(c(matched$tags[[i]], live$tags[[j]]))
+    matched$categories[[i]] <- unique(c(matched$categories[[i]], live$categories[[j]]))
+    matched$original_metadata[[i]]$discovery <- live$original_metadata[[j]]
+  }
   unmatched <- live[!live_key %in% checked_key, , drop = FALSE]
   result <- rbind(matched, unmatched)
   rownames(result) <- NULL
   result <- tibble::as_tibble(result)
   attr(result, "discovery_issues") <- issues %||% character()
   attr(result, "discovery_failed_portals") <- failed_portals %||% character()
+  for (name in c("discovery_scanned_items", "discovery_truncated_portals",
+                 "discovery_complete")) {
+    value <- scan_attributes[[name]]
+    if (!is.null(value)) attr(result, name) <- value
+  }
   result
 }
 
@@ -150,10 +234,13 @@ search_datasets <- function(query, jurisdiction = "tampa", source = "all",
 #' records were updated.
 #' @param id Checked package ID, one-row discovery descriptor, or stable
 #'   ArcGIS item/layer identifier.
-#' @param jurisdiction Checked-registry jurisdiction. Omit for a discovered
-#'   result or stable ArcGIS ID so its source jurisdiction is used.
+#' @param jurisdiction Checked-registry jurisdiction. Omit to resolve a unique
+#'   checked package ID across all cities. For a discovery result or stable
+#'   ArcGIS ID, omission uses its source jurisdiction.
 #' @param refresh Whether to request live layer metadata.
 #' @param timeout Per-request timeout in seconds.
+#' @param total_timeout Maximum elapsed seconds for inspection, including
+#'   metadata requests and retries. Defaults to 60; `Inf` disables this limit.
 #' @return A named list of dataset metadata. Live inspection adds `fields`
 #'   (a tibble), `metadata` (the raw layer metadata), and `inspected_at` (UTC).
 #' @export
@@ -163,9 +250,11 @@ search_datasets <- function(query, jurisdiction = "tampa", source = "all",
 #' info <- dataset_info("construction-permits", refresh = TRUE)
 #' info$fields
 #' }
-dataset_info <- function(id, jurisdiction = "tampa", refresh = FALSE, timeout = 30) {
+dataset_info <- function(id, jurisdiction = "tampa", refresh = FALSE, timeout = 30,
+                         total_timeout = 60) {
   .flag(refresh, "refresh")
-  .number(timeout, "timeout", min = .Machine$double.eps)
+  timeout <- .operation_timeout(timeout, total_timeout)
+  .check_operation_timeout(timeout)
   requested_jurisdiction <- .requested_jurisdiction(
     id, jurisdiction, missing(jurisdiction))
   entry <- .resolve_dataset(id, requested_jurisdiction, timeout)
@@ -178,5 +267,6 @@ dataset_info <- function(id, jurisdiction = "tampa", refresh = FALSE, timeout = 
     entry$metadata <- metadata
     entry$inspected_at <- .utc_now()
   }
+  .check_operation_timeout(timeout)
   entry
 }

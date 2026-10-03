@@ -5,21 +5,25 @@ arcgis_http <- function(url, params, timeout) {
   req <- httr2::request(url)
   req <- httr2::req_user_agent(req, "tampaBayOpenData/0.1.0")
   req <- httr2::req_headers(req, Accept = "application/json")
-  req <- httr2::req_timeout(req, timeout)
+  req <- httr2::req_timeout(req, as.numeric(timeout))
   req <- httr2::req_options(req, followlocation = FALSE,
                            maxfilesize_large = .arcgis_response_limit)
-  req <- httr2::req_retry(req, max_tries = 3L, retry_on_failure = TRUE,
-                         is_transient = function(response) {
-                           httr2::resp_status(response) %in% c(429L, 500L, 502L, 503L, 504L)
-                         },
-                         after = .bounded_retry_after)
+  if (is.null(attr(timeout, "tampa_deadline", exact = TRUE))) {
+    req <- httr2::req_retry(req, max_tries = 3L, retry_on_failure = TRUE,
+                           is_transient = function(response) {
+                             httr2::resp_status(response) %in% c(429L, 500L, 502L, 503L, 504L)
+                           },
+                           after = .bounded_retry_after)
+  }
   req <- httr2::req_error(req, is_error = function(resp) FALSE)
   if (grepl("/query$", url)) {
     req <- do.call(httr2::req_body_form, c(list(req), params))
   } else {
     req <- do.call(httr2::req_url_query, c(list(req), params))
   }
-  response <- httr2::req_perform(req)
+  response <- if (is.null(attr(timeout, "tampa_deadline", exact = TRUE))) {
+    httr2::req_perform(req)
+  } else .perform_budgeted_request(req, timeout, url)
   list(status = httr2::resp_status(response), body = httr2::resp_body_string(response))
 }
 
@@ -34,10 +38,16 @@ arcgis_http <- function(url, params, timeout) {
 # Retry only the generic query failure; specific ArcGIS errors remain immediate.
 arcgis_request <- function(url, params = list(), dataset = NULL, timeout = 30) {
   for (attempt in seq_len(4L)) {
+    .check_operation_timeout(timeout, dataset, url)
     result <- tryCatch(.arcgis_request_once(url, params, dataset, timeout),
                        tampa_arcgis_transient_error = identity)
+    .check_operation_timeout(timeout, dataset, url)
     if (!inherits(result, "tampa_arcgis_transient_error")) return(result)
     if (attempt == 4L) stop(result)
+    if (0.25 * attempt >= .operation_remaining(timeout)) {
+      .abort("The remaining operation time budget is too short for another retry.",
+             dataset, url, "tampa_timeout_error")
+    }
     .arcgis_retry_pause(attempt)
   }
 }
@@ -47,9 +57,11 @@ arcgis_request <- function(url, params = list(), dataset = NULL, timeout = 30) {
 .arcgis_request_once <- function(url, params, dataset, timeout) {
   params$f <- "json"
   response <- tryCatch(arcgis_http(url, params, timeout), error = function(e) {
+    if (inherits(e, "tampa_timeout_error")) stop(e)
     .abort(paste0("The upstream ArcGIS service could not be reached: ", conditionMessage(e)),
            dataset, url, "tampa_http_error")
   })
+  .check_operation_timeout(timeout, dataset, url)
   if (!is.list(response) || !is.numeric(response$status) || length(response$status) != 1L ||
       is.na(response$status) || !is.finite(response$status)) {
     .abort("The HTTP transport returned an invalid response status.", dataset, url, "tampa_response_error")
@@ -272,7 +284,7 @@ arcgis_layers <- function(service_url, timeout = 30) {
   }
 }
 
-.manifest <- function(url, params, metadata, dataset, timeout) {
+.matching_count <- function(url, params, dataset, timeout) {
   count_response <- arcgis_request(url, c(params, list(returnCountOnly = "true", returnGeometry = "false")),
                                    dataset, timeout)
   count <- count_response[["count", exact = TRUE]]
@@ -280,6 +292,10 @@ arcgis_layers <- function(service_url, timeout = 30) {
       count < 0 || count != floor(count)) {
     .abort("The service returned an invalid matching-record count.", dataset, url, "tampa_response_error")
   }
+  count
+}
+
+.matching_ids <- function(url, params, metadata, dataset, timeout, count) {
   if (count > 1000000) {
     .abort("More than one million records match. Narrow `where` or spatial/time filters to avoid the ArcGIS object-ID limit.",
            dataset, url, "tampa_integrity_error")
@@ -296,7 +312,13 @@ arcgis_layers <- function(service_url, timeout = 30) {
     .abort("The matching count and object-ID manifest disagree. The service may have changed; retry the query.",
            dataset, url, "tampa_integrity_error")
   }
-  list(ids = sort(ids), count = count)
+  sort(ids)
+}
+
+.manifest <- function(url, params, metadata, dataset, timeout, count = NULL) {
+  if (is.null(count)) count <- .matching_count(url, params, dataset, timeout)
+  list(ids = .matching_ids(url, params, metadata, dataset, timeout, count),
+       count = count)
 }
 
 .page_features <- function(response, metadata, dataset, url) {

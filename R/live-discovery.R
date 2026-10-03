@@ -1,27 +1,16 @@
 # ArcGIS Portal item search is the live discovery source. Organization IDs
 # come from the providers' public portal metadata. The search index may lag
 # publication and contains only public items.
-.discovery_portals <- list(
-  city = list(root = "https://tampa.maps.arcgis.com/sharing/rest",
-              org_id = "IbNXlmt2RVVRCZ6M", publisher = "City of Tampa",
-              jurisdiction = "tampa"),
-  tbrpc = list(root = "https://www.arcgis.com/sharing/rest",
-               org_id = "RgIBbQIF0Y6T3AX6",
-               publisher = "Tampa Bay Regional Planning Council",
-               jurisdiction = "tampa-bay"))
-
-.discovery_portal_keys <- function(portals) {
+.discovery_portal_keys <- function(portals, registry = .portal_registry()) {
+  message <- paste0("`portals` must contain unique configured publisher names: ",
+                     paste(c(names(registry), "all"), collapse = ", "), ". Use list_portals() to inspect them.")
   if (!is.character(portals) || !length(portals) || anyNA(portals) ||
-      any(!nzchar(portals))) {
-    .abort("`portals` must be 'city', 'tbrpc', or 'all'.",
-           subclass = "tampa_input_error")
+      any(!nzchar(portals)) || anyDuplicated(portals) ||
+      (!identical(portals, "all") && any(!portals %in% names(registry)))) {
+    .abort(message, subclass = "tampa_input_error")
   }
-  if (identical(portals, "all")) return(names(.discovery_portals))
-  if (any(!portals %in% names(.discovery_portals))) {
-    .abort("`portals` must be 'city', 'tbrpc', or 'all'.",
-           subclass = "tampa_input_error")
-  }
-  unique(portals)
+  if (identical(portals, "all")) return(names(registry))
+  portals
 }
 
 .empty_discovery <- function() {
@@ -36,9 +25,9 @@
     tags = list(), categories = list(), original_metadata = list())
 }
 
-.discovery_query <- function(query = NULL, org_id = .discovery_portals$city$org_id) {
-  # Public Map Service *items* in these organizations are tile-only. Several
-  # Feature Service items legitimately point to a queryable MapServer layer.
+.discovery_query <- function(query = NULL, org_id = .portal_registry()$city$org_id) {
+  # Discover public Feature Service items. These may legitimately point to
+  # queryable MapServer layers as well as FeatureServer services.
   base <- paste0("orgid:", org_id, " AND type:\"Feature Service\"")
   if (is.null(query) || !nzchar(trimws(query))) return(base)
   # A quoted phrase keeps user text out of the portal query operators.
@@ -202,24 +191,26 @@
 }
 
 # Scan one provider, retaining rows and item issues if a later search page fails.
-.discover_portal <- function(key, query, max_items, timeout, cache) {
-  config <- .discovery_portals[[key]]
+.discover_portal <- function(key, query, max_items, timeout, cache,
+                             config = .portal_registry()[[key]]) {
   search <- .discovery_query(query, config$org_id)
   rows <- list()
   issues <- character()
   start <- 1L
   seen <- 0L
+  truncated <- FALSE
   repeat {
     num <- if (is.infinite(max_items)) 100L else as.integer(min(100, max_items - seen))
     if (num <= 0L) break
     page <- tryCatch(.discovery_page(search, start, num, timeout, config$root),
-                     error = identity)
+                     error = .discovery_error)
     if (inherits(page, "error")) {
-      return(list(rows = rows, issues = issues, error = page))
+      return(list(rows = rows, issues = issues, error = page,
+                  scanned = seen, truncated = FALSE))
     }
     for (item in page$results) {
       item_rows <- tryCatch(.discovery_item_rows(item, timeout, cache, config),
-                            error = identity)
+                            error = .discovery_error)
       if (inherits(item_rows, "error")) {
         item_id <- if (is.list(item)) .discovery_scalar(item$id, "unknown") else "unknown"
         issues <- c(issues, paste0(key, "/", item_id, ": ", conditionMessage(item_rows)))
@@ -229,9 +220,20 @@
     }
     seen <- seen + length(page$results)
     if (page$nextStart == -1L) break
+    if (seen >= max_items) {
+      truncated <- TRUE
+      break
+    }
     start <- as.integer(page$nextStart)
   }
-  list(rows = rows, issues = issues, error = NULL)
+  list(rows = rows, issues = issues, error = NULL, scanned = seen,
+        truncated = truncated)
+}
+
+# An elapsed operation budget is not an individual stale portal item.
+.discovery_error <- function(e) {
+  if (inherits(e, "tampa_timeout_error")) stop(e)
+  e
 }
 
 # Return public provider layers represented by portal items. max_items limits
@@ -240,18 +242,23 @@
 .discover_arcgis <- function(query = NULL, portals = "city", max_items = Inf,
                              timeout = 30) {
   if (!is.null(query)) .string(query, "query", allow_empty = TRUE)
-  keys <- .discovery_portal_keys(portals)
+  registry <- .portal_registry()
+  keys <- .discovery_portal_keys(portals, registry)
   .number(max_items, "max_items", integer = TRUE, infinity = TRUE)
   .number(timeout, "timeout", min = .Machine$double.eps)
   if (identical(max_items, 0) || identical(max_items, 0L)) return(.empty_discovery())
   rows <- list()
   issues <- character()
   failed_portals <- character()
+  truncated_portals <- character()
+  scanned_items <- stats::setNames(integer(length(keys)), keys)
   cache <- new.env(parent = emptyenv())
   for (key in keys) {
-    portal <- .discover_portal(key, query, max_items, timeout, cache)
+    portal <- .discover_portal(key, query, max_items, timeout, cache, registry[[key]])
     rows <- c(rows, portal$rows)
     issues <- c(issues, portal$issues)
+    scanned_items[[key]] <- portal$scanned
+    if (portal$truncated) truncated_portals <- c(truncated_portals, key)
     if (!is.null(portal$error)) {
       failed_portals <- c(failed_portals, key)
       issues <- c(issues, paste0("Portal ", key, ": ", conditionMessage(portal$error)))
@@ -266,6 +273,10 @@
   result <- .dedupe_discovery(result)
   attr(result, "discovery_issues") <- issues
   attr(result, "discovery_failed_portals") <- failed_portals
+  attr(result, "discovery_scanned_items") <- scanned_items
+  attr(result, "discovery_truncated_portals") <- truncated_portals
+  attr(result, "discovery_complete") <- !length(issues) &&
+    !length(failed_portals) && !length(truncated_portals)
   if (length(failed_portals)) {
     warning(paste0("ArcGIS discovery returned partial results; portal(s) failed: ",
                    paste(failed_portals, collapse = ", "),
@@ -290,32 +301,36 @@
                                                 subclass = "tampa_input_error")
   }
   .number(timeout, "timeout", min = .Machine$double.eps)
+  registry <- .portal_registry()
   if (!is.character(portal) || length(portal) != 1L || is.na(portal)) {
-    .abort("`portal` must be 'city', 'tbrpc', or 'all'.",
+    .abort("`portal` must identify a configured publisher from list_portals() or be 'all'.",
            subclass = "tampa_input_error")
   }
   if (identical(portal, "all") || identical(portal, "global")) {
     lookup_root <- "https://www.arcgis.com/sharing/rest"
     requested <- NULL
   } else {
-    keys <- names(.discovery_portals)[vapply(.discovery_portals,
+    keys <- names(registry)[vapply(registry,
       function(x) identical(x$root, portal), logical(1))]
-    if (portal %in% names(.discovery_portals)) keys <- portal
-    if (length(keys) != 1L) .abort("Unknown ArcGIS portal.", subclass = "tampa_input_error")
+    if (portal %in% names(registry)) keys <- portal
+    if (!length(keys)) .abort("Unknown ArcGIS portal.", subclass = "tampa_input_error")
     requested <- keys
-    lookup_root <- .discovery_portals[[keys]]$root
+    lookup_root <- registry[[keys[[1L]]]]$root
   }
   url <- paste0(lookup_root, "/content/items/", tolower(item_id))
   item <- arcgis_request(url, timeout = timeout)
-  matched <- names(.discovery_portals)[vapply(.discovery_portals,
+  matched <- names(registry)[vapply(registry,
     function(x) identical(item$orgId, x$org_id), logical(1))]
-  if (length(matched) != 1L || (!is.null(requested) && !identical(matched, requested))) {
+  if (length(matched) != 1L || (!is.null(requested) && !matched %in% requested)) {
     return(.empty_discovery())
   }
   rows <- tryCatch(.discovery_item_rows(item, timeout,
                                         new.env(parent = emptyenv()),
-                                        .discovery_portals[[matched]]),
-                   error = function(e) .empty_discovery())
+                                        registry[[matched]]),
+                    error = function(e) {
+                      if (inherits(e, "tampa_timeout_error")) stop(e)
+                      .empty_discovery()
+                    })
   if (!is.null(layer_id)) rows <- rows[rows$layer_id == layer_id, , drop = FALSE]
   .dedupe_discovery(rows)
 }

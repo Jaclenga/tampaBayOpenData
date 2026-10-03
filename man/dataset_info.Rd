@@ -4,18 +4,28 @@
 \alias{dataset_info}
 \title{Inspect a checked or discovered dataset and its source}
 \usage{
-dataset_info(id, jurisdiction = "tampa", refresh = FALSE, timeout = 30)
+dataset_info(
+  id,
+  jurisdiction = "tampa",
+  refresh = FALSE,
+  timeout = 30,
+  total_timeout = 60
+)
 }
 \arguments{
 \item{id}{Checked package ID, one-row discovery descriptor, or stable
 ArcGIS item/layer identifier.}
 
-\item{jurisdiction}{Checked-registry jurisdiction. Omit for a discovered
-result or stable ArcGIS ID so its source jurisdiction is used.}
+\item{jurisdiction}{Checked-registry jurisdiction. Omit to resolve a unique
+checked package ID across all cities. For a discovery result or stable
+ArcGIS ID, omission uses its source jurisdiction.}
 
 \item{refresh}{Whether to request live layer metadata.}
 
 \item{timeout}{Per-request timeout in seconds.}
+
+\item{total_timeout}{Maximum elapsed seconds for inspection, including
+metadata requests and retries. Defaults to 60; \code{Inf} disables this limit.}
 }
 \value{
 A named list of dataset metadata. Live inspection adds \code{fields}

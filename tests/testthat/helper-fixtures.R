@@ -73,14 +73,19 @@ fixture_transport <- function(features = fixture_features(),
   state$requests <- list()
   http <- function(url, params, timeout) {
     state$requests[[length(state$requests) + 1L]] <-
-      list(url = url, params = params, timeout = timeout)
+      list(url = url, params = params, timeout = as.numeric(timeout))
     if (!grepl("/query$", url)) {
       payload <- metadata
     } else if (identical(params$returnCountOnly, "true")) {
       payload <- list(count = count)
     } else if (identical(params$returnIdsOnly, "true")) {
+      selected_ids <- ids
+      if (!is.null(params$objectIds)) {
+        requested <- as.numeric(strsplit(params$objectIds, ",", fixed = TRUE)[[1L]])
+        selected_ids <- ids[ids %in% requested]
+      }
       payload <- list(objectIdFieldName = oid,
-                      objectIds = as.list(ids))
+                      objectIds = as.list(selected_ids))
     } else {
       selected <- features
       if (!is.null(params$objectIds)) {

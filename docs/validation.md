@@ -4,6 +4,150 @@ These are local results on Windows 11. Earlier runs used R 4.5.1; the later
 October 2 run used R 4.6.1. Each result describes the source and
 dependencies used for that run; live services can change.
 
+## Publisher registry and search filters (2026-10-02)
+
+The publisher configuration now lives in `inst/extdata/portals.json` and is
+available offline through `list_portals()`. It contains six organizations:
+Tampa, TBRPC, St. Petersburg, Clearwater, Hillsborough County, and Pinellas
+County. County identities were verified through the
+[Hillsborough open-data page](https://hcfl.gov/about-hillsborough/open-data-and-gis),
+[Pinellas GIS page](https://pinellas.gov/services/maps-gis/), and public ArcGIS
+organization metadata. St. Petersburg was already configured before this
+revision. No checked county datasets were added; the checked catalog remains
+26 selected city layers, and county results retain `discovered` provenance.
+
+The complete offline suite passed **3,246 assertions**, with zero failures or
+warnings and 18 expected live skips, in 103.8 seconds on R 4.6.1 with
+`LC_ALL=C`. A synthetic seventh publisher exercised the same discovery and
+descriptor/stable-ID retrieval code using configuration alone. A separate
+test used two organizations sharing one ArcGIS API root and verified their
+organization-scoped searches and distinct publisher attribution.
+
+The fresh source archive built its offline vignette and passed full
+`R CMD check --as-cran`: **zero errors, zero warnings, and one expected
+`New submission` NOTE**. Its package tests repeated all 3,246 passing offline
+assertions; examples, rebuilt vignette outputs, and PDF and HTML manuals also
+passed. The checked source matched the final package files. The archive is
+`.artifacts/release-publishers/tampaBayOpenData_0.1.0.tar.gz`, with SHA-256
+`0b35ef1864e6c3ff4cd7c8b27c510127f45304edec5060876a9c0e0a3cdd4894`.
+
+The [county live tests](../tests/testthat/test-live-county-discovery.R) passed
+**102 assertions**, with zero failures, warnings, or skips, in 11.0 seconds.
+Bounded searches for Hillsborough public libraries and Pinellas fire stations
+selected current discovery rows. Tabular retrieval through both a descriptor
+and a stable ID returned at most two records per call; spatial retrieval by
+stable ID returned nonempty EPSG:4326 point geometry. Source, publisher,
+jurisdiction, unique IDs, row counts, and completeness agreed. Further searches
+combined publisher, validation status, spatial, UTC modification-day, and
+available tag/category filters from the current rows. They retained the same
+source URLs and scanned only the selected county. The summaries in ignored
+artifacts retain measurements rather than feature records.
+
+Catalog functions now default to `jurisdiction = "all"`. Jurisdiction and
+publisher filters apply to checked and live rows and select organizations
+before HTTP requests. The remaining facets filter the merged catalog: checked
+or discovered status, spatial layers or tables, literal topic substrings,
+category paths or labels, and modification dates. Character alternatives use
+OR within one filter; filters and the query use AND. Date bounds include
+whole UTC days for Date or YYYY-MM-DD values, or exact POSIXct instants.
+Unknown modification times are excluded only when a date bound is supplied.
+Live metadata can enrich checked matches without replacing their checked
+identity or terms; `modified_source` distinguishes portal-item timestamps
+from saved checked snapshots. These timestamps do not establish row freshness.
+
+Facets applied after a capped scan can miss matching older items. Scan
+completeness attributes remain attached even to empty filtered results;
+`max_items = Inf` and a suitable time budget are required for an exhaustive
+scan. Registering an organization does not prove comprehensive coverage or
+validate every public item. The scheduled live gate now includes the bounded
+county retrieval/filter tests alongside the existing source-monitoring suite.
+It takes effect after pushing the workflow to the default branch; the new
+source still needs the configured cross-platform CI matrix after pushing.
+
+## Earlier regional coverage and resource controls (2026-10-02)
+
+That revision had 26 checked layers: 20 Tampa, three St.
+Petersburg, and three Clearwater. Public discovery searched those three
+municipal organizations and the Tampa Bay Regional Planning Council. Checked
+coverage is selected with `jurisdiction`; `portals` selects discovery sources.
+These additions establish checked retrieval paths for selected municipal
+layers, rather than comprehensive coverage of each city or the whole region.
+
+On R 4.6.1 with `LC_ALL=C`, the complete offline suite passed **3,041
+assertions**, with zero failures or warnings and 14 expected opt-in live skips
+in the fresh archive check. These are assertion counts, including repeated
+schema and pagination checks; they do not represent 3,041 independent live
+scenarios. The suite includes 95 assertions for local chunk downloads, interruptions,
+expired deadlines, resumed retrieval, changed manifests and queries, altered
+chunks, exclusive locks, and recovery around atomic file writes.
+
+The final fresh archive built its offline vignette and passed full
+`R CMD check --as-cran` with **zero errors, zero warnings, and one expected
+`New submission` NOTE**. Package tests, examples, rebuilt vignette output, and
+PDF and HTML manuals passed. The check used the current package source,
+including the final documentation edits; the release-file comparison found
+no differences from the staged source. It started on October 2 at 22:43 EDT
+and used the same qpdf, Pandoc, Tidy, and TinyTeX tools recorded below.
+The checked archive is
+`.artifacts/release-regional-ready/tampaBayOpenData_0.1.0.tar.gz`, with SHA-256
+`d28a0d9128c9fa825958c4217a899aaf9f4791b47558e9fc299a40d74a71a97a`.
+Generated download chunks and `development-cases.rds` are absent from its
+release source.
+
+The new bounded [live monitoring suite](../tests/testthat/test-live-monitoring.R)
+passed **420 assertions**, with zero failures, warnings, or skips, in 50.0
+seconds. It sampled all 26 checked layers as EPSG:4326 `sf` objects, checked
+source identity, selected fields, geometry, unique IDs, counts, provenance, and
+completeness, and tested all four portals with at most one service item each.
+Each retrieval requested at most two feature rows with `page_size = 1`, a
+15-second per-attempt timeout, and a 45-second overall budget. It also sampled
+a discovered regional layer. The run used sf 1.1.3 and testthat 3.3.2.
+
+A separate live comparison used the St. Petersburg streets layer's 12,853
+matches with `fields = "OBJECTID"`, `limit = 2`, and `page_size = 1`. Default
+`integrity = "auto"` returned the same two IDs as `integrity = "full"`, but
+its subset manifest returned only two IDs in 62 decoded response bytes. The
+full manifest returned 12,853 IDs in 102,872 bytes, a 99.94% reduction in that
+response's size. Both paths made five HTTP calls and marked the sample
+incomplete. Observed elapsed times were 1.110 and 0.990 seconds respectively;
+one run per path provides no evidence of a speed improvement. Across all
+responses, decoded body sizes were 36,947 and 139,699 bytes. The retained
+summary contains request parameters and aggregate measurements, not feature
+attribute or geometry records.
+
+The live `download_dataset()` check filtered the same streets layer to two
+current IDs, using one-row chunks. The initial call made two feature requests
+and saved two chunks. Repeating it rechecked metadata, count, and the full
+filtered manifest, then made **zero feature requests**. Both summaries were
+complete; chunk filenames, checksums, and modification times stayed unchanged.
+Downloaded files and measurement summaries remain in ignored local artifacts.
+Full ID manifests remain subject to the one-million-match limit; chunking
+bounds feature accumulation but does not impose a fixed byte limit on memory.
+
+Default discovery scans at most 25 service items per organization and exposes
+whether its result is complete. Small previews of large layers can validate
+only their returned IDs. Retrieval, discovery, and metadata inspection now
+share an overall operation deadline; HTTP attempts and retry waits use its
+remaining budget. R and native parsing are checked after returning, rather
+than interrupted during computation. Resumable downloads preserve completed
+chunks after a finite deadline and reject changed query, schema, CRS, or ID
+membership. Attribute values can still change across requests and resumes.
+
+The [live workflow](../.github/workflows/live-check.yaml) schedules the small
+monitoring suite on Tuesdays and Fridays at 06:17 UTC and retains the full
+live suite for manual runs. The schedule takes effect when this workflow is
+pushed to the default branch. This local run establishes current working
+paths; sustained reliability requires evidence from future scheduled runs.
+
+The [latest committed cross-platform run](https://github.com/Jaclenga/tbOpenData/actions/runs/37088075504)
+passed Linux release, devel, and oldrel-1, Windows release, and macOS release
+for `5f6bec32d887761ae474ccfc082e0e159f2f1786`. That commit predates this
+regional and resource work. The current uncommitted changes still need the
+same CI matrix after they are pushed; the earlier success does not validate
+this revision across platforms.
+
+## Historical runs
+
 | Date | Offline testthat | Build and local check |
 | --- | --- | --- |
 | 2026-09-29 | 967 assertions; no failures or test warnings; two opt-in live tests skipped | `R CMD build .` succeeded, including the offline vignette. `R CMD check --no-manual` on the source archive reported zero errors, warnings, and notes. |
@@ -18,6 +162,8 @@ dependencies used for that run; live services can change.
 | 2026-10-02, catalog and parsing bug fixes | 2,271 assertions passed; zero failures or test warnings; six opt-in live tests skipped. | No build or package check was run for this interim revision. |
 | 2026-10-02, CRS alias regression | 2,275 assertions passed on R 4.6.1; zero test failures or warnings; six opt-in live tests skipped. | Source archive built with its vignette. Full `R CMD check --as-cran`, including PDF and HTML manual checks, reported zero errors, zero warnings, and one `New submission` NOTE. |
 | 2026-10-02, other-city compatibility tests | 2,416 assertions passed on R 4.6.1; zero failures or warnings; ten opt-in live tests skipped. | No build or package check was rerun for this test expansion. The four new municipal live tests passed 214 assertions without failures, warnings, or skips. |
+| 2026-10-02, regional sources and resource controls | 3,041 assertions passed on R 4.6.1; zero failures or warnings; 14 opt-in live tests skipped. | Fresh source built with its vignette; full `R CMD check --as-cran` passed with zero errors, zero warnings, and one expected `New submission` NOTE. Bounded live monitoring passed 420 assertions; separate live preview and resume checks passed. |
+| 2026-10-02, publisher registry and catalog filters | 3,246 assertions passed on R 4.6.1; zero failures or warnings; 18 opt-in live tests skipped. | Fresh archive passed full `R CMD check --as-cran`, including vignette and both manual formats, with zero errors, zero warnings, and one expected `New submission` NOTE. Bounded county discovery, retrieval, geometry, and filter tests passed 102 live assertions. |
 
 The September 30 follow-up included fixes for UTC editor tracking dates,
 response `attributes` validation, transient HTTP retries, and registry shape
@@ -170,9 +316,10 @@ EPSG:2882 geometry agreed with each server's EPSG:4326 projection within the
 tests' 1e-5 coordinate comparison tolerance. Both runs used R 4.6.1, sf 1.1.3,
 testthat 3.3.2, and `LC_ALL=C`.
 
-These checks exercise `get_arcgis_layer()` compatibility. Both sources retain
-`not_checked` provenance; the checked catalog and automatic discovery sources
-were not expanded. The manual live workflow's existing `filter = "live"`
+These checks exercised `get_arcgis_layer()` compatibility. Both direct sources
+retained `not_checked` provenance; at that revision, the checked catalog and
+automatic discovery sources were not expanded. The manual live workflow's
+existing `filter = "live"`
 includes the new tests. Package checks and cross-platform CI were not rerun
 for this test expansion; their earlier results above describe earlier source
 revisions.
