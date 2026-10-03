@@ -19,8 +19,9 @@ install.packages(".", repos = NULL, type = "source")
 ```
 
 For a built archive, replace `"."` with its `.tar.gz` path.
-For spatial results, also install `sf`. Building the vignette from source
-requires `knitr`, `rmarkdown`, and Pandoc.
+For spatial results, also install `sf`. Installing directly from the source
+directory does not build the vignette. Building it with `R CMD build` requires
+`knitr`, `rmarkdown`, and Pandoc.
 
 ## Discover and retrieve
 
@@ -48,10 +49,11 @@ dataset_info("construction-permits")
 
 `validation_status = "checked"` means maintainers tested that layer;
 `"discovered"` marks a candidate from a public portal index; maintainers have
-not validated its contents or reuse terms. Retrieval checks that the selected
-layer advertises ArcGIS Query capability. Checked IDs such as
-`construction-permits` remain stable. Unchecked portal results use IDs such as
-`arcgis:<item-id>:<layer-id>`; pass an ID or a one-row result to `get_dataset()`.
+not validated its contents or reuse terms. Retrieval validates query responses
+and requires `Query` when the layer declares its capabilities. Checked IDs
+such as `construction-permits` remain stable. Unchecked portal results use IDs
+such as `arcgis:<item-id>:<layer-id>`; pass an ID or a one-row result to
+`get_dataset()`.
 A portal's `modified` date describes its item, not necessarily the age of every
 record. `max_items` limits portal **items per organization**, not the number of
 layers returned. A full live listing can take longer than a keyword search.
@@ -92,9 +94,11 @@ The main functions are:
 | `get_permits()`, `get_development_cases()`, `get_capital_projects()` | Shortcuts for three catalog entries. |
 | `dataset_provenance()` | Read source, validation status, query, timing, row counts, and completeness. |
 
-Source field names and strings retain their spelling. Declared ArcGIS date fields
-are converted to UTC `POSIXct` when their time-zone meaning is known. Dates with
-unknown time-zone semantics remain raw milliseconds with a warning.
+Source field names and text fields retain their spelling. ArcGIS epoch-millisecond
+date fields become UTC `POSIXct` unless the source declares an unknown time zone.
+In that case they remain raw milliseconds with a warning; UTC editor-tracking
+creation and edit dates are still converted. Date-only fields become
+`Date`; time-only and timestamp-offset fields remain strings.
 
 ## Spatial results
 
@@ -163,7 +167,8 @@ of those organizations and rOpenSci.
 - [Bicycle network notebook](inst/examples/bike-network.Rmd): catalog discovery,
   an optional live subset, provenance, and a map.
 - [Introduction vignette](vignettes/introduction.Rmd): a fuller walkthrough.
-  After installation, use `vignette("introduction", package = "tampaBayOpenData")`.
+  After installing an archive built with `R CMD build`, use
+  `vignette("introduction", package = "tampaBayOpenData")`.
 - [Architecture](docs/architecture.md) and [Tampa source research](docs/research-tampa.md):
   client design and catalog verification.
 - [Contributing](CONTRIBUTING.md) and [test suite guide](tests/README.md):
