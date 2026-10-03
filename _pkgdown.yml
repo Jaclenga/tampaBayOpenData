@@ -1,0 +1,24 @@
+template:
+  bootstrap: 5
+
+reference:
+  - title: Find datasets
+    contents:
+      - list_portals
+      - list_datasets
+      - search_datasets
+      - dataset_info
+  - title: Retrieve and save data
+    contents:
+      - get_dataset
+      - get_arcgis_layer
+      - download_dataset
+      - download_arcgis_layer
+  - title: Common Tampa datasets
+    contents:
+      - get_permits
+      - get_capital_projects
+      - get_development_cases
+  - title: Provenance
+    contents:
+      - dataset_provenance

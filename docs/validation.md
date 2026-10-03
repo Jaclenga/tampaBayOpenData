@@ -4,6 +4,24 @@ These are local results on Windows 11. Earlier runs used R 4.5.1; the later
 October 2 run used R 4.6.1. Each result describes the source and
 dependencies used for that run; live services can change.
 
+## rOpenSci preparation (2026-10-03)
+
+The fresh source archive at `tampaBayOpenData_0.1.0.tar.gz` (SHA-256
+`2bf4b5dda5c04fbefddd3da091522bd6c81afc5dd80761346647ae7e22e33af3`)
+passed full local `R CMD check --as-cran` on Windows 11 with R 4.5.1:
+**zero errors, zero warnings, and one expected `New submission` NOTE**.
+The check included tests, examples, vignette rebuilding, and PDF and HTML
+manuals. Local offline test coverage measured **95.17%**.
+
+`pkgcheck` 0.3.2 ran locally on commit `a3f7458` with working Universal Ctags
+and GNU Global. It confirmed the 95.2% coverage figure and found examples for
+all 12 exported functions. Its remaining red checks were a missing
+`_pkgdown.yml`, no CI status for this unpushed commit, no ORCID in `Authors@R`,
+and an embedded R CMD check that could not start because Rtools is absent from
+the Windows environment. A pkgdown reference configuration was added after
+that run. The separate full `R CMD check --as-cran` result above was clean;
+the new GitHub pkgcheck workflow is still pending a push.
+
 ## Publisher registry and search filters (2026-10-02)
 
 The publisher configuration now lives in `inst/extdata/portals.json` and is
