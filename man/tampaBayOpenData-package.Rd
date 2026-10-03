@@ -18,6 +18,14 @@ This independent package was inspired by rOpenSci's nycOpenData; it is not
 affiliated with rOpenSci or any government publisher. Government datasets
 retain their upstream terms.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/Jaclenga/tbOpenData}
+  \item Report bugs at \url{https://github.com/Jaclenga/tbOpenData/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Jaclenga \email{jack3lenga@gmail.com}
 
