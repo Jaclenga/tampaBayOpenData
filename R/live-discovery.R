@@ -25,6 +25,23 @@
     tags = list(), categories = list(), original_metadata = list())
 }
 
+.discovery_metadata <- function(issues = character(), failed_portals = character(),
+                                scanned_items = stats::setNames(integer(), character()),
+                                truncated_portals = character()) {
+  list(discovery_issues = issues, discovery_failed_portals = failed_portals,
+       discovery_scanned_items = scanned_items,
+       discovery_truncated_portals = truncated_portals,
+       discovery_complete = !length(issues) && !length(failed_portals) &&
+         !length(truncated_portals))
+}
+
+.attach_discovery_metadata <- function(result, metadata) {
+  for (name in names(metadata)) {
+    if (!is.null(metadata[[name]])) attr(result, name) <- metadata[[name]]
+  }
+  result
+}
+
 .discovery_query <- function(query = NULL, org_id = .portal_registry()$city$org_id) {
   # Discover public Feature Service items. These may legitimately point to
   # queryable MapServer layers as well as FeatureServer services.
@@ -136,6 +153,11 @@
       !grepl("^[[:xdigit:]]{32}$", item$id) ||
       !.discovery_scalar(item$type) %in% c("Feature Service", "Map Service")) {
     stop("Item is missing a valid ArcGIS service identity.")
+  }
+  # The orgid search filter scopes results; some item responses omit orgId.
+  # Reject an explicit conflict before assigning the selected publisher.
+  if (!is.null(item$orgId) && !identical(item$orgId, config$org_id)) {
+    stop("Item organization ID differs from the selected portal.")
   }
   parts <- .discovery_url_parts(item$url)
   if (is.null(parts)) stop("Item has no supported public HTTPS service URL.")
@@ -271,12 +293,8 @@
   }
   result <- if (length(rows)) do.call(rbind, rows) else .empty_discovery()
   result <- .dedupe_discovery(result)
-  attr(result, "discovery_issues") <- issues
-  attr(result, "discovery_failed_portals") <- failed_portals
-  attr(result, "discovery_scanned_items") <- scanned_items
-  attr(result, "discovery_truncated_portals") <- truncated_portals
-  attr(result, "discovery_complete") <- !length(issues) &&
-    !length(failed_portals) && !length(truncated_portals)
+  result <- .attach_discovery_metadata(result, .discovery_metadata(
+    issues, failed_portals, scanned_items, truncated_portals))
   if (length(failed_portals)) {
     warning(paste0("ArcGIS discovery returned partial results; portal(s) failed: ",
                    paste(failed_portals, collapse = ", "),
@@ -319,6 +337,10 @@
   }
   url <- paste0(lookup_root, "/content/items/", tolower(item_id))
   item <- arcgis_request(url, timeout = timeout)
+  if (!is.list(item) || !is.character(item$id) || length(item$id) != 1L ||
+      is.na(item$id) || !identical(tolower(item$id), tolower(item_id))) {
+    return(.empty_discovery())
+  }
   matched <- names(registry)[vapply(registry,
     function(x) identical(item$orgId, x$org_id), logical(1))]
   if (length(matched) != 1L || (!is.null(requested) && !matched %in% requested)) {

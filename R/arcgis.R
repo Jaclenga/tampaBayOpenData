@@ -66,7 +66,7 @@ arcgis_request <- function(url, params = list(), dataset = NULL, timeout = 30) {
       is.na(response$status) || !is.finite(response$status)) {
     .abort("The HTTP transport returned an invalid response status.", dataset, url, "tampa_response_error")
   }
-  if (response$status < 200L || response$status >= 300L) {
+  if (response$status != 200L) {
     .abort(paste0("The upstream ArcGIS service returned HTTP ",
                   response$status %||% "(unknown)",
                   if (identical(as.integer(response$status), 404L))

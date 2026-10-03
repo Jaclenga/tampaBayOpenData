@@ -19,6 +19,26 @@
   reference
 }
 
+.feature_page_handlers <- function(url, params, metadata, dataset, timeout,
+                                   spatial, out_sr) {
+  request_page <- function(paging) {
+    response <- arcgis_request(url, c(params, paging), dataset, timeout)
+    page <- .page_features(response, metadata, dataset, url)
+    page$truncated <- .transfer_limit(response, dataset, url)
+    page
+  }
+  add_page <- function(result, page) {
+    if (spatial && length(page$features)) {
+      result$spatial_reference <- .page_reference(
+        page, metadata, out_sr, result$spatial_reference, dataset, url)
+    }
+    result$features <- c(result$features, page$features)
+    result$ids <- c(result$ids, page$ids)
+    result
+  }
+  list(request_page = request_page, add_page = add_page)
+}
+
 # Split truncated batches depth first. Only complete batches enter the result.
 .fetch_id_batch <- function(ids, request_page, add_page, result, dataset, url) {
   page <- request_page(list(objectIds = paste(
@@ -92,31 +112,20 @@ arcgis_fetch <- function(dataset, metadata, where, fields, spatial, out_sr,
   } else .manifest(url, params, metadata, dataset, timeout, count = count)
   if (preview && is.null(order)) order <- paste(metadata$objectIdField, "ASC")
 
-  request_page <- function(paging) {
-    response <- arcgis_request(url, c(feature_params, paging), dataset, timeout)
-    page <- .page_features(response, metadata, dataset, url)
-    page$truncated <- isTRUE(response$exceededTransferLimit)
-    page
-  }
-  add_page <- function(result, page) {
-    if (spatial && length(page$features)) {
-      result$spatial_reference <- .page_reference(
-        page, metadata, out_sr, result$spatial_reference, dataset, url)
-    }
-    result$features <- c(result$features, page$features)
-    result$ids <- c(result$ids, page$ids)
-    result
-  }
+  handlers <- .feature_page_handlers(url, feature_params, metadata, dataset,
+                                     timeout, spatial, out_sr)
   result <- list(features = list(), ids = numeric(), spatial_reference = NULL)
   if (target > 0 && is.null(order)) {
     ids <- manifest$ids[seq_len(target)]
     for (start in seq.int(1, length(ids), by = size)) {
       batch <- ids[seq.int(start, min(start + size - 1, length(ids)))]
-      result <- .fetch_id_batch(batch, request_page, add_page, result, dataset, url)
+      result <- .fetch_id_batch(batch, handlers$request_page, handlers$add_page,
+                                result, dataset, url)
     }
   } else if (target > 0) {
     result <- .fetch_ordered_pages(order, target, size, manifest$ids,
-                                   request_page, add_page, result, dataset, url)
+                                   handlers$request_page, handlers$add_page,
+                                   result, dataset, url)
   }
   if (preview) {
     subset_params <- c(params, list(objectIds = paste(

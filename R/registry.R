@@ -7,10 +7,14 @@
   entries
 }
 
+.registry_required_fields <- function() {
+  c("id", "title", "description", "jurisdiction", "publisher",
+    "source_url", "service_url", "layer_id", "geometry_type",
+    "date_fields", "category", "tags", "verified", "terms")
+}
+
 .validate_registry <- function(entries) {
-  required <- c("id", "title", "description", "jurisdiction", "publisher",
-                "source_url", "service_url", "layer_id", "geometry_type",
-                "date_fields", "category", "tags", "verified", "terms")
+  required <- .registry_required_fields()
   if (!is.list(entries) || !length(entries)) .abort("The dataset registry must contain records.")
   for (entry in entries) {
     if (!is.list(entry) || !all(required %in% names(entry))) {
@@ -82,8 +86,7 @@
 }
 
 .catalog_table <- function(entries) {
-  scalar <- c("id", "title", "description", "jurisdiction", "publisher", "source_url",
-              "service_url", "geometry_type", "category", "verified", "terms")
+  scalar <- setdiff(.registry_required_fields(), c("layer_id", "date_fields", "tags"))
   cols <- lapply(scalar, function(name) vapply(entries, function(x) x[[name]], character(1)))
   names(cols) <- scalar
   cols$layer_id <- vapply(entries, function(x) as.integer(x$layer_id), integer(1))

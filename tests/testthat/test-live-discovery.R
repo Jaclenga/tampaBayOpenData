@@ -79,6 +79,38 @@ test_that("regional discovery uses its own organization and metadata", {
     function(x) x$params$q, character(1)), fixed = TRUE)))
 })
 
+test_that("search items reject a conflicting organization ID", {
+  city <- .portal_registry()$city
+  other <- .portal_registry()$tbrpc
+  ids <- c(strrep("a", 32L), strrep("b", 32L), strrep("c", 32L))
+  endpoints <- paste0("https://example.org/arcgis/rest/services/Org", 1:3,
+                      "/FeatureServer/0")
+  valid <- discovery_test_item(ids[[1L]], endpoints[[1L]], org = city$org_id)
+  wrong <- discovery_test_item(ids[[2L]], endpoints[[2L]], org = other$org_id)
+  missing <- discovery_test_item(ids[[3L]], endpoints[[3L]], org = city$org_id)
+  missing$orgId <- NULL
+  pages <- list()
+  pages[[paste0(city$root, "/search/1")]] <- list(
+    total = 3L, start = 1L, nextStart = -1L,
+    results = list(valid, wrong, missing))
+  resources <- setNames(rep(list(list(id = 0L, name = "Point",
+    type = "Feature Layer", geometryType = "esriGeometryPoint")), 3L),
+    endpoints)
+  transport <- discovery_test_transport(pages, resources)
+  local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+
+  found <- .discover_arcgis(portals = "city")
+  expect_setequal(found$id, paste0("arcgis:", ids[c(1L, 3L)], ":0"))
+  expect_identical(found$publisher, rep(city$publisher, 2L))
+  expect_identical(attr(found, "discovery_scanned_items"), c(city = 3L))
+  expect_length(attr(found, "discovery_issues"), 1L)
+  expect_match(attr(found, "discovery_issues"),
+               "Item organization ID differs from the selected portal", fixed = TRUE)
+  expect_false(attr(found, "discovery_complete"))
+  requested <- vapply(transport$state$requests, `[[`, character(1), "url")
+  expect_setequal(requested, c(paste0(city$root, "/search"), endpoints[c(1L, 3L)]))
+})
+
 test_that("stable item IDs resolve globally without relying on search rank", {
   regional <- "https://www.arcgis.com/sharing/rest"
   root <- "https://example.org/arcgis/rest/services/Region/FeatureServer"
@@ -103,6 +135,25 @@ test_that("stable item IDs resolve globally without relying on search rank", {
   expect_equal(nrow(.discover_arcgis_item(id, 8L)), 0L)
   expect_equal(nrow(.discover_arcgis_item(id, 3L, portal = "city")), 0L)
   expect_error(.discover_arcgis_item("bad"), "32-character", class = "tampa_input_error")
+})
+
+test_that("stable item lookup ignores a different returned item ID", {
+  lookup <- "https://www.arcgis.com/sharing/rest"
+  requested_id <- strrep("a", 32L)
+  returned_id <- strrep("b", 32L)
+  endpoint <- "https://example.org/arcgis/rest/services/Wrong/FeatureServer/0"
+  resources <- list()
+  resources[[paste0(lookup, "/content/items/", requested_id)]] <-
+    discovery_test_item(returned_id, endpoint)
+  resources[[endpoint]] <- list(id = 0L, name = "Wrong",
+    type = "Feature Layer", geometryType = "esriGeometryPoint")
+  transport <- discovery_test_transport(resources = resources)
+  local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+
+  found <- .discover_arcgis_item(requested_id, 0L)
+  expect_equal(nrow(found), 0L)
+  requested <- vapply(transport$state$requests, `[[`, character(1), "url")
+  expect_identical(requested, paste0(lookup, "/content/items/", requested_id))
 })
 
 test_that("empty search and malformed pages have explicit outcomes", {

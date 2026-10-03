@@ -81,27 +81,36 @@
     }
   }
   if (identical(status, "checked")) {
-    .string(x$id, "descriptor.id")
-    checked <- tryCatch(.checked_dataset(x$id, jurisdiction),
-                        tampa_data_error = function(e) NULL)
-    if (is.null(checked) || !identical(checked$service_url, x$service_url) ||
-        !identical(as.integer(checked$layer_id), as.integer(x$layer_id))) {
-      .abort("Only a matching bundled registry entry can claim `checked` status.",
-             subclass = "tampa_input_error")
-    }
-    # Keep item attribution from the bundled record when available. A portal
-    # row cannot silently replace that attribution with a different item ID.
-    supplied_item <- .descriptor_item_id(x$item_id)
-    if (!is.null(supplied_item) && !is.null(checked$item_id) &&
-        !identical(supplied_item, tolower(checked$item_id))) {
-      .abort("The checked descriptor's ArcGIS item ID differs from the bundled registry.",
-             subclass = "tampa_input_error")
-    }
-    checked$item_id <- checked$item_id %||% supplied_item
-    checked$portal <- checked$portal %||% .descriptor_portal(x$portal)
-    checked$original_metadata <- x
-    return(checked)
+    return(.checked_dataset_descriptor(x, jurisdiction))
   }
+  .unchecked_dataset_descriptor(x, jurisdiction, status, layer_url, parts)
+}
+
+.checked_dataset_descriptor <- function(x, jurisdiction) {
+  .string(x$id, "descriptor.id")
+  checked <- tryCatch(.checked_dataset(x$id, jurisdiction),
+                      tampa_data_error = function(e) NULL)
+  if (is.null(checked) || !identical(checked$service_url, x$service_url) ||
+      !identical(as.integer(checked$layer_id), as.integer(x$layer_id))) {
+    .abort("Only a matching bundled registry entry can claim `checked` status.",
+           subclass = "tampa_input_error")
+  }
+  # Keep item attribution from the bundled record when available. A portal
+  # row cannot silently replace that attribution with a different item ID.
+  supplied_item <- .descriptor_item_id(x$item_id)
+  if (!is.null(supplied_item) && !is.null(checked$item_id) &&
+      !identical(supplied_item, tolower(checked$item_id))) {
+    .abort("The checked descriptor's ArcGIS item ID differs from the bundled registry.",
+           subclass = "tampa_input_error")
+  }
+  checked$item_id <- checked$item_id %||% supplied_item
+  checked$portal <- checked$portal %||% .descriptor_portal(x$portal)
+  checked$original_metadata <- x
+  checked
+}
+
+# Discovered portal rows and direct URLs share the same untrusted path.
+.unchecked_dataset_descriptor <- function(x, jurisdiction, status, layer_url, parts) {
   source_url <- x$source_url %||% layer_url
   .string(source_url, "descriptor.source_url")
   if (!identical(source_url, layer_url)) {

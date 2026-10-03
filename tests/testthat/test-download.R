@@ -207,6 +207,43 @@ test_that("an active or stale directory lock is preserved and blocks writes", {
   expect_length(fixture_queries(transport, "features"), 0L)
 })
 
+test_that("a redirected checkpoint directory is rejected before any writes", {
+  path <- download_test_path()
+  outside <- paste0(path, "-outside")
+  dir.create(path)
+  dir.create(outside)
+  checkpoint_dir <- file.path(path, ".checkpoints")
+  linked <- suppressWarnings(file.symlink(outside, checkpoint_dir))
+  if (!linked && .Platform$OS.type == "windows") {
+    # A junction exercises the same path redirection without symlink privileges.
+    status <- suppressWarnings(system2("cmd", c("/c", "mklink", "/J",
+      shQuote(checkpoint_dir, type = "cmd"), shQuote(outside, type = "cmd")),
+      stdout = FALSE, stderr = FALSE))
+    linked <- identical(status, 0L) && dir.exists(checkpoint_dir)
+  }
+  if (!linked) skip("Directory links are unavailable on this system")
+  on.exit({
+    # The link and its target were created under this test's temporary root.
+    if (dir.exists(checkpoint_dir)) {
+      resolved <- normalizePath(checkpoint_dir, winslash = "/", mustWork = TRUE)
+      temporary <- paste0(normalizePath(tempdir(), winslash = "/", mustWork = TRUE), "/")
+      if (startsWith(tolower(resolved), tolower(temporary))) {
+        unlink(checkpoint_dir, recursive = TRUE)
+      }
+    }
+  }, add = TRUE)
+  expect_identical(normalizePath(checkpoint_dir, winslash = "/", mustWork = TRUE),
+                   normalizePath(outside, winslash = "/", mustWork = TRUE))
+  transport <- fixture_transport()
+  local_mocked_bindings(arcgis_http = transport$http)
+  expect_error(download_dataset("construction-permits", path,
+    fields = "RECORD_ID", page_size = 2), "checkpoint directory resolves outside",
+    class = "tampa_download_error")
+  expect_false(file.exists(file.path(path, "manifest.rds")))
+  expect_length(list.files(outside, all.files = TRUE, no.. = TRUE), 0L)
+  expect_length(fixture_queries(transport, "features"), 0L)
+})
+
 test_that("a checksum alone does not validate a chunk with mismatched provenance", {
   path <- download_test_path()
   transport <- fixture_transport()

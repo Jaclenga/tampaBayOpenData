@@ -110,12 +110,27 @@ test_that("requests carry the package headers, caller timeout, and bounded retry
 
 test_that("the HTTP boundary preserves status codes and UTF-8 response bodies", {
   body <- '{"name":"Jos\u00e9 Park","note":"synthetic"}'
-  for (status in c(206L, 429L, 503L)) {
+  for (status in c(202L, 206L, 429L, 503L)) {
     capture <- http_capture(body, status)
     result <- arcgis_http("https://example.invalid/FeatureServer/0",
                           list(f = "json"), 30)
     expect_identical(result$status, status)
     expect_identical(result$body, enc2utf8(body))
+    expect_length(capture(), 1L)
+  }
+})
+
+test_that("incomplete successful HTTP statuses are rejected before JSON parsing", {
+  entry <- dataset_info("construction-permits")
+  url <- paste0(entry$service_url, "/", entry$layer_id)
+  for (status in c(202L, 206L)) {
+    capture <- http_capture('{"name":"looks complete"}', status)
+    error <- tryCatch(arcgis_request(url, dataset = entry), error = identity)
+
+    expect_s3_class(error, "tampa_http_error")
+    expect_identical(error$dataset_id, entry$id)
+    expect_identical(error$url, url)
+    expect_match(conditionMessage(error), paste0("HTTP ", status), fixed = TRUE)
     expect_length(capture(), 1L)
   }
 })

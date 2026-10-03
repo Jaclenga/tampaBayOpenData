@@ -151,6 +151,9 @@ download_arcgis_layer <- function(url, path, where = "1=1", fields = NULL,
   allowed <- entries %in% c("manifest.rds", ".checkpoints", ".lock") |
     grepl("^chunk-[0-9]{7}\\.rds$", entries) | temporary
   checkpoint_dir <- file.path(path, ".checkpoints")
+  if (dir.exists(checkpoint_dir)) {
+    checkpoint_dir <- .download_check_checkpoint_directory(path)
+  }
   checkpoint_entries <- if (dir.exists(checkpoint_dir))
     list.files(checkpoint_dir, all.files = TRUE, no.. = TRUE) else character()
   own_empty_checkpoints <- entries == ".checkpoints" & dir.exists(checkpoint_dir) &
@@ -168,12 +171,33 @@ download_arcgis_layer <- function(url, path, where = "1=1", fields = NULL,
       !dir.exists(checkpoint_dir)) {
     .abort("The checkpoint directory could not be created.", subclass = "tampa_download_error")
   }
+  checkpoint_dir <- .download_check_checkpoint_directory(path)
   checkpoint_files <- list.files(checkpoint_dir, all.files = TRUE, no.. = TRUE)
   if (any(!grepl("^(chunk-[0-9]{7}-[0-9]{7}\\.rds|\\.tbod-.*\\.tmp)$",
                  checkpoint_files))) {
     .abort("The checkpoint directory contains unrelated files.", subclass = "tampa_download_error")
   }
   path
+}
+
+.download_check_checkpoint_directory <- function(path) {
+  checkpoint_dir <- file.path(path, ".checkpoints")
+  if (!dir.exists(checkpoint_dir)) {
+    .abort("The checkpoint directory is missing or inaccessible.",
+           subclass = "tampa_download_error")
+  }
+  resolved <- normalizePath(checkpoint_dir, winslash = "/", mustWork = TRUE)
+  parent <- paste0(sub("/+$", "", path), "/")
+  within <- if (.Platform$file.sep == "\\") {
+    startsWith(tolower(resolved), tolower(parent))
+  } else {
+    startsWith(resolved, parent)
+  }
+  if (!within) {
+    .abort("The checkpoint directory resolves outside the download directory.",
+           subclass = "tampa_download_error")
+  }
+  resolved
 }
 
 .download_release_lock <- function(lock, path) {
@@ -296,22 +320,9 @@ download_arcgis_layer <- function(url, path, where = "1=1", fields = NULL,
     returnGeometry = if (options$spatial) "true" else "false",
     returnZ = "false", returnM = "false"))
   if (!is.null(options$out_sr)) feature_params$outSR <- as.character(options$out_sr)
-  request_page <- function(paging) {
-    response <- arcgis_request(url, c(feature_params, paging), dataset, timeout)
-    page <- .page_features(response, metadata, dataset, url)
-    page$truncated <- .transfer_limit(response, dataset, url)
-    page
-  }
-  add_page <- function(result, page) {
-    if (options$spatial && length(page$features)) {
-      result$spatial_reference <- .page_reference(page, metadata, options$out_sr,
-                                                  result$spatial_reference, dataset, url)
-    }
-    result$features <- c(result$features, page$features)
-    result$ids <- c(result$ids, page$ids)
-    result
-  }
-  .fetch_id_batch(ids, request_page, add_page,
+  handlers <- .feature_page_handlers(url, feature_params, metadata, dataset,
+                                     timeout, options$spatial, options$out_sr)
+  .fetch_id_batch(ids, handlers$request_page, handlers$add_page,
     list(features = list(), ids = numeric(), spatial_reference = previous_reference),
     dataset, url)
 }
@@ -320,7 +331,7 @@ download_arcgis_layer <- function(url, path, where = "1=1", fields = NULL,
   temp <- tempfile(".tbod-", tmpdir = path, fileext = ".tmp")
   on.exit(unlink(temp), add = TRUE)
   saveRDS(data, temp)
-  checkpoint_dir <- file.path(path, ".checkpoints")
+  checkpoint_dir <- .download_check_checkpoint_directory(path)
   prefix <- sprintf("chunk-%07d-", chunk)
   previous <- list.files(checkpoint_dir, pattern = paste0("^", prefix, "[0-9]{7}\\.rds$"))
   attempt <- if (length(previous))
@@ -342,7 +353,8 @@ download_arcgis_layer <- function(url, path, where = "1=1", fields = NULL,
 .download_validate_chunk <- function(file, chunk, ids, manifest_hash, path,
                                      dataset, metadata, options, count) {
   prefix <- sprintf("chunk-%07d-", chunk)
-  checkpoints <- list.files(file.path(path, ".checkpoints"),
+  checkpoint_dir <- .download_check_checkpoint_directory(path)
+  checkpoints <- list.files(checkpoint_dir,
     pattern = paste0("^", prefix, "[0-9]{7}\\.rds$"), full.names = TRUE)
   bad <- function() .abort("A completed chunk or checkpoint was altered, is missing, or does not match this download.",
                            dataset, file, "tampa_download_error")

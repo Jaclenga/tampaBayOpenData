@@ -115,11 +115,7 @@ search_datasets <- function(query, jurisdiction = "all", source = "all",
   keys <- .catalog_selected_portals(.discovery_portal_keys(portals), configs, filters)
   if (!length(keys)) {
     result <- if (identical(source, "all")) matching_checked else checked[0L, , drop = FALSE]
-    attr(result, "discovery_issues") <- character()
-    attr(result, "discovery_failed_portals") <- character()
-    attr(result, "discovery_scanned_items") <- stats::setNames(integer(), character())
-    attr(result, "discovery_truncated_portals") <- character()
-    attr(result, "discovery_complete") <- TRUE
+    result <- .attach_discovery_metadata(result, .discovery_metadata())
     return(.filter_catalog(result, filters))
   }
   scan_portals <- if (identical(portals, "all") && identical(keys, names(configs))) "all" else keys
@@ -170,14 +166,12 @@ search_datasets <- function(query, jurisdiction = "all", source = "all",
 }
 
 .overlay_catalog <- function(live, checked, included_checked) {
-  scan_attributes <- attributes(live)[c("discovery_scanned_items",
-    "discovery_truncated_portals", "discovery_complete")]
-  issues <- attr(live, "discovery_issues", exact = TRUE)
-  failed_portals <- attr(live, "discovery_failed_portals", exact = TRUE)
-  required <- c("id", "title", "description", "jurisdiction", "publisher", "source_url",
-                "service_url", "layer_id", "item_id", "portal", "geometry_type",
-                "tags", "categories", "modified", "service_type", "layer_type",
-                "validation_status", "original_metadata")
+  metadata <- attributes(live)[names(.discovery_metadata())]
+  metadata$discovery_issues <- metadata$discovery_issues %||% character()
+  metadata$discovery_failed_portals <- metadata$discovery_failed_portals %||% character()
+  # The overlay supplies these five checked-catalog fields after validating live rows.
+  required <- setdiff(names(checked), c("category", "verified", "terms",
+                                        "date_fields", "modified_source"))
   if (!inherits(live, "data.frame") || !all(required %in% names(live))) {
     .abort("Live discovery returned an invalid catalog table.", subclass = "tampa_response_error")
   }
@@ -213,14 +207,7 @@ search_datasets <- function(query, jurisdiction = "all", source = "all",
   result <- rbind(matched, unmatched)
   rownames(result) <- NULL
   result <- tibble::as_tibble(result)
-  attr(result, "discovery_issues") <- issues %||% character()
-  attr(result, "discovery_failed_portals") <- failed_portals %||% character()
-  for (name in c("discovery_scanned_items", "discovery_truncated_portals",
-                 "discovery_complete")) {
-    value <- scan_attributes[[name]]
-    if (!is.null(value)) attr(result, name) <- value
-  }
-  result
+  .attach_discovery_metadata(result, metadata)
 }
 
 #' Inspect a checked or discovered dataset and its source
