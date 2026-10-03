@@ -27,8 +27,8 @@ retain their upstream terms.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/Jaclenga/tbOpenData}
-  \item Report bugs at \url{https://github.com/Jaclenga/tbOpenData/issues}
+  \item \url{https://github.com/Jaclenga/tampaBayOpenData}
+  \item Report bugs at \url{https://github.com/Jaclenga/tampaBayOpenData/issues}
 }
 
 }

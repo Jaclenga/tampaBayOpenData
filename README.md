@@ -17,7 +17,7 @@ In an R console, install directly from GitHub:
 
 ```r
 install.packages("pak") # Run once, if pak is not installed yet.
-pak::pak("Jaclenga/tbOpenData")
+pak::pak("Jaclenga/tampaBayOpenData")
 ```
 
 If you are working from a local source directory, install it with:
@@ -32,15 +32,30 @@ For spatial results, also install `sf`. Installing from the local source
 directory does not build the vignette. Building it with `R CMD build` requires
 `knitr`, `rmarkdown`, and Pandoc.
 
-## Discover and retrieve
+## Find and retrieve a dataset
 
 ```r
 library(tampaBayOpenData)
 
+search_datasets("parks")
+
+parks <- get_dataset("stpete-parks")
+```
+
+Search returns a table of matching datasets. Pass a result's `id` to
+`get_dataset()` to retrieve its records as an R tibble; `stpete-parks` is one of
+the checked IDs. Search scans live portals by default, so it may take time and
+needs internet access. To browse only the checked catalog offline, use
+`search_datasets("parks", source = "checked")`. Retrieving records still contacts
+the publisher's service.
+
+## Explore live sources
+
+```r
 found <- search_datasets("housing", source = "live", portals = "city")
 found[, c("id", "title", "publisher", "validation_status")]
 
-# Choose one result to retrieve; the one-row descriptor carries its source.
+# A one-row search result also carries the source needed for retrieval.
 housing <- get_dataset(found[1, ], limit = 100)
 dataset_provenance(housing)
 ```
@@ -217,7 +232,7 @@ the package source; repeating the same call resumes a matching download:
 ```r
 saved <- download_dataset(
   "construction-permits",
-  path = "~/tbOpenData-downloads/permits",
+  path = "~/tampaBayOpenData-downloads/permits",
   fields = c("OBJECTID", "RECORD_ID", "LASTUPDATE"),
   page_size = 500,
   total_timeout = 600
@@ -243,12 +258,13 @@ before resuming. Normal completion and handled errors release the lock.
 
 ## Source scope and reliability
 
-The 20 checked Tampa layers include active permit and development case views,
+The checked catalog contains 26 layers: 20 Tampa, 3 St. Petersburg, and 3
+Clearwater. The Tampa layers include active permit and development case views,
 not complete historical ledgers. The `city-boundary` layer follows a shoreline
 representation and is not a legal survey. The catalog also covers parks,
 historic sites, police districts, transportation, zoning, and utility service
-areas. Three checked St. Petersburg layers cover parks, city boundaries, and
-streets; three Clearwater layers cover park buffers, zoning, and libraries.
+areas. The St. Petersburg layers cover parks, city boundaries, and streets;
+Clearwater layers cover park buffers, zoning, and libraries.
 Hillsborough and Pinellas county layers are available through live discovery;
 the checked catalog remains the same 26 city layers.
 The park buffers are areas around parks, rather than exact park footprints.

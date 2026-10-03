@@ -13,8 +13,8 @@ Description: Discover public 'ArcGIS' layers published by Tampa, St. Petersburg,
     tabular results, optional spatial objects, and source provenance. Save large
     downloads as local chunks that can be validated and resumed.
 License: MIT + file LICENSE
-URL: https://github.com/Jaclenga/tbOpenData
-BugReports: https://github.com/Jaclenga/tbOpenData/issues
+URL: https://github.com/Jaclenga/tampaBayOpenData
+BugReports: https://github.com/Jaclenga/tampaBayOpenData/issues
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports:

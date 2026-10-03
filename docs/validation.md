@@ -139,7 +139,7 @@ live suite for manual runs. The schedule takes effect when this workflow is
 pushed to the default branch. This local run establishes current working
 paths; sustained reliability requires evidence from future scheduled runs.
 
-The [latest committed cross-platform run](https://github.com/Jaclenga/tbOpenData/actions/runs/37088075504)
+The [latest committed cross-platform run](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/37088075504)
 passed Linux release, devel, and oldrel-1, Windows release, and macOS release
 for `5f6bec32d887761ae474ccfc082e0e159f2f1786`. That commit predates this
 regional and resource work. The current uncommitted changes still need the
@@ -285,7 +285,7 @@ The local archive included built vignette documentation and tests. The
 configured [CI workflow](../.github/workflows/R-CMD-check.yaml) checks Linux
 release/devel/oldrel-1, Windows release, and macOS release; a separate manual
 [workflow](../.github/workflows/live-check.yaml) runs live tests. The
-[October 2 CI run](https://github.com/Jaclenga/tbOpenData/actions/runs/37079804102)
+[October 2 CI run](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/37079804102)
 passed all five `--as-cran --no-manual` jobs for source commit
 `7287b65c284141d5d9353d014ce8c66fbccc2203`: Linux release, devel, and
 oldrel-1; Windows release; and macOS release. These CI jobs did not check the

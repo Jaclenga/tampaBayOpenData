@@ -22,7 +22,22 @@ The checked catalog examples run offline. Live discovery and retrieval examples
 are displayed but not executed during vignette builds; run them in an R session
 with internet access.
 
-## Find a dataset
+## Start with a dataset
+
+```{r quick-start}
+library(tampaBayOpenData)
+
+search_datasets("parks")
+
+parks <- get_dataset("stpete-parks")
+```
+
+Search returns a table of matches. Each `id` can be passed to `get_dataset()`;
+`stpete-parks` is a checked ID. By default, retrieval returns all records as a
+tibble. Search scans live portals, and retrieval contacts the publisher, so run
+these calls with internet access.
+
+## Browse the checked catalog offline
 
 ```{r catalog, eval=TRUE}
 library(tampaBayOpenData)
@@ -191,7 +206,7 @@ the package source and read one chunk at a time:
 ```{r download}
 saved <- download_dataset(
   "construction-permits",
-  path = "~/tbOpenData-downloads/permits",
+  path = "~/tampaBayOpenData-downloads/permits",
   fields = c("OBJECTID", "RECORD_ID", "LASTUPDATE"),
   page_size = 500,
   total_timeout = 600
