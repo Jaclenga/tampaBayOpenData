@@ -30,12 +30,7 @@
 #' \dontrun{list_datasets()}
 list_datasets <- function(jurisdiction = "tampa", source = "all",
                           portals = "all", max_items = Inf, timeout = 30) {
-  .catalog_options(source, portals, max_items, timeout)
-  checked <- .catalog_table(.jurisdiction_entries(jurisdiction))
-  if (identical(source, "checked")) return(checked)
-  live <- .catalog_live(NULL, source, portals, max_items, timeout)
-  if (is.null(live)) return(checked)
-  .overlay_catalog(live, checked, include_all_checked = identical(source, "all"))
+  .catalog_datasets(NULL, jurisdiction, source, portals, max_items, timeout)
 }
 
 #' Search Tampa Bay ArcGIS datasets
@@ -55,12 +50,18 @@ list_datasets <- function(jurisdiction = "tampa", source = "all",
 search_datasets <- function(query, jurisdiction = "tampa", source = "all",
                             portals = "all", max_items = Inf, timeout = 30) {
   .string(query, "query", allow_empty = TRUE)
+  .catalog_datasets(query, jurisdiction, source, portals, max_items, timeout)
+}
+
+.catalog_datasets <- function(query, jurisdiction, source, portals, max_items, timeout) {
   .catalog_options(source, portals, max_items, timeout)
-  checked <- .search_checked(.catalog_table(.jurisdiction_entries(jurisdiction)), query)
-  if (identical(source, "checked")) return(checked)
+  checked <- .catalog_table(.jurisdiction_entries(jurisdiction))
+  matching_checked <- if (is.null(query)) checked else .search_checked(checked, query)
+  if (identical(source, "checked")) return(matching_checked)
   live <- .catalog_live(query, source, portals, max_items, timeout)
-  if (is.null(live)) return(checked)
-  .overlay_catalog(live, checked, include_all_checked = identical(source, "all"))
+  if (is.null(live)) return(matching_checked)
+  included_checked <- if (identical(source, "all")) matching_checked else checked[0L, , drop = FALSE]
+  .overlay_catalog(live, checked, included_checked)
 }
 
 .catalog_options <- function(source, portals, max_items, timeout) {
@@ -103,7 +104,7 @@ search_datasets <- function(query, jurisdiction = "tampa", source = "all",
            })
 }
 
-.overlay_catalog <- function(live, checked, include_all_checked) {
+.overlay_catalog <- function(live, checked, included_checked) {
   issues <- attr(live, "discovery_issues", exact = TRUE)
   failed_portals <- attr(live, "discovery_failed_portals", exact = TRUE)
   required <- c("id", "title", "description", "jurisdiction", "publisher", "source_url",
@@ -128,9 +129,8 @@ search_datasets <- function(query, jurisdiction = "tampa", source = "all",
   }
   checked_key <- key(checked)
   live_key <- key(live)
-  matched <- checked[checked_key %in% live_key, , drop = FALSE]
+  matched <- checked[checked_key %in% c(live_key, key(included_checked)), , drop = FALSE]
   unmatched <- live[!live_key %in% checked_key, , drop = FALSE]
-  if (include_all_checked) matched <- checked
   result <- rbind(matched, unmatched)
   rownames(result) <- NULL
   result <- tibble::as_tibble(result)
@@ -166,12 +166,8 @@ search_datasets <- function(query, jurisdiction = "tampa", source = "all",
 dataset_info <- function(id, jurisdiction = "tampa", refresh = FALSE, timeout = 30) {
   .flag(refresh, "refresh")
   .number(timeout, "timeout", min = .Machine$double.eps)
-  requested_jurisdiction <- if (missing(jurisdiction) &&
-                                (!is.character(id) ||
-                                 (length(id) == 1L && !is.na(id) &&
-                                  startsWith(id, "arcgis:")))) {
-    NULL
-  } else jurisdiction
+  requested_jurisdiction <- .requested_jurisdiction(
+    id, jurisdiction, missing(jurisdiction))
   entry <- .resolve_dataset(id, requested_jurisdiction, timeout)
   if (refresh) {
     metadata <- arcgis_layer(entry, timeout)

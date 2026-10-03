@@ -1,4 +1,4 @@
-test_that("live catalog rows and checked entries share one public schema", {
+test_that("live catalog rows share the checked schema and search provenance", {
   checked <- list_datasets(source = "checked")
   parks <- checked[checked$id == "parks", , drop = FALSE]
   live <- tibble::tibble(
@@ -31,7 +31,10 @@ test_that("live catalog rows and checked entries share one public schema", {
   local_mocked_bindings(.discover_arcgis = function(query, portals, max_items, timeout) {
     calls[[length(calls) + 1L]] <<- list(query = query, portals = portals,
                                         max_items = max_items, timeout = timeout)
-    if (identical(query, "housing")) live[2L, , drop = FALSE] else live
+    if (identical(query, "housing")) return(live[2L, , drop = FALSE])
+    if (identical(query, "zzportalonlyzz")) return(live[1L, , drop = FALSE])
+    if (identical(query, "parks")) return(live[0L, , drop = FALSE])
+    live
   }, .package = "tampaBayOpenData")
 
   catalog <- list_datasets(max_items = 3, timeout = 12)
@@ -61,6 +64,18 @@ test_that("live catalog rows and checked entries share one public schema", {
   info <- dataset_info(results)
   expect_identical(info$validation_status, "discovered")
   expect_identical(info$item_id, strrep("b", 32))
+
+  expect_identical(nrow(search_datasets("zzportalonlyzz", source = "checked")), 0L)
+  for (source in c("live", "all")) {
+    result <- search_datasets("zzportalonlyzz", source = source)
+    expect_identical(result$id, "parks")
+    expect_identical(result$validation_status, "checked")
+    expect_identical(result$title, parks$title)
+    expect_identical(result$service_url, parks$service_url)
+    expect_identical(nrow(result), 1L)
+  }
+  expect_identical(nrow(search_datasets("parks", source = "live")), 0L)
+  expect_identical(search_datasets("parks", source = "all")$id, "parks")
 })
 
 test_that("checked catalog stays available when live discovery fails", {

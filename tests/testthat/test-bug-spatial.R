@@ -76,6 +76,55 @@ test_that("valid XY and ZM coordinate arrays retain their two dimensional geomet
   expect_false(any(c("Z", "M") %in% colnames(sf::st_coordinates(line))))
 })
 
+test_that("partially null XY coordinates cannot become empty geometry", {
+  skip_if_not_installed("sf")
+  for (json in c('{"x":null,"y":3}', '{"x":3,"y":null}')) {
+    expect_error(bug_spatial_result(json, "esriGeometryPoint"),
+                 "point coordinates must be finite", class = "tampa_spatial_error")
+  }
+  for (json in c('{"points":[[null,3]]}', '{"points":[[3,null]]}',
+                 '{"points":[[null]]}')) {
+    expect_error(bug_spatial_result(json, "esriGeometryMultipoint"),
+                 "coordinate arrays must contain finite", class = "tampa_spatial_error")
+  }
+  empty <- bug_spatial_result('{"x":null,"y":null}', "esriGeometryPoint")
+  expect_identical(sf::st_is_empty(empty), TRUE)
+})
+
+test_that("spatial response keys require exact names", {
+  skip_if_not_installed("sf")
+  data <- tibble::tibble(id = 1L)
+  metadata <- list(geometryType = "esriGeometryPoint",
+                   spatialReference = list(wkid = 4326L))
+  extra_geometry <- arcgis_as_sf(
+    data, list(list(geometryExtra = list(x = 1, y = 2))), metadata
+  )
+  expect_identical(sf::st_is_empty(extra_geometry), TRUE)
+
+  feature <- list(list(geometry = list(x = 1, y = 2,
+                                       spatialReferenceExtra = list(wkid = 3857L))))
+  result <- arcgis_as_sf(data, feature, metadata)
+  expect_equal(unname(sf::st_coordinates(result)), matrix(c(1, 2), nrow = 1L))
+
+  for (source in list(
+    list(spatialReferenceExtra = list(wkid = 4326L)),
+    list(extent = list(spatialReferenceExtra = list(wkid = 4326L))),
+    list(sourceSpatialReferenceExtra = list(wkid = 4326L))
+  )) {
+    expect_error(arcgis_as_sf(data, feature,
+                              c(list(geometryType = "esriGeometryPoint"), source)),
+                 "no known spatial reference", class = "tampa_spatial_error")
+  }
+  expect_error(arcgis_as_sf(data, feature,
+                            list(geometryTypeExtra = "esriGeometryPoint",
+                                 spatialReference = list(wkid = 4326L))),
+               "no supported spatial geometry type", class = "tampa_spatial_error")
+  expect_error(bug_spatial_result('{"x":1,"yExtra":2}', "esriGeometryPoint"),
+               "point coordinates must be finite", class = "tampa_spatial_error")
+  expect_error(arcgis_spatial_crs(list(wktExtra = sf::st_crs(4326)$wkt)),
+               "could not be resolved", class = "tampa_spatial_error")
+})
+
 test_that("resolvable WKID identifiers cannot disagree within one spatial reference", {
   skip_if_not_installed("sf")
   for (reference in list(list(wkid = 3857L, latestWkid = 4326L),
@@ -104,7 +153,8 @@ test_that("resolvable WKID identifiers cannot disagree within one spatial refere
 
 test_that("matching WKID aliases remain valid in either field order", {
   skip_if_not_installed("sf")
-  pairs <- list(c(102100L, 3857L), c(102113L, 3857L), c(103023L, 6443L))
+  pairs <- list(c(102100L, 3857L), c(102113L, 3857L),
+                c(102659L, 2237L), c(103023L, 6443L))
   for (pair in pairs) {
     for (codes in list(pair, rev(pair))) {
       result <- arcgis_as_sf(

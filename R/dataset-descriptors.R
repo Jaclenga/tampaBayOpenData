@@ -1,3 +1,13 @@
+# Let discovered rows and ArcGIS IDs supply their own jurisdiction when callers
+# omit it; checked IDs keep the public default.
+.requested_jurisdiction <- function(id, jurisdiction, omitted) {
+  if (omitted && (!is.character(id) ||
+                  (length(id) == 1L && !is.na(id) && startsWith(id, "arcgis:")))) {
+    return(NULL)
+  }
+  jurisdiction
+}
+
 # Resolve all public retrieval inputs before calling the shared query engine.
 # Only a bundled registry entry can claim the package's `checked` status.
 .resolve_dataset <- function(id, jurisdiction = "tampa", timeout = 30) {
