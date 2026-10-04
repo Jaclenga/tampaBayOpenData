@@ -1,26 +1,75 @@
 url: https://jaclenga.github.io/tampaBayOpenData/
 
+home:
+  title: Discover public ArcGIS data across Tampa Bay
+  description: >
+    An R interface for finding and retrieving public data from six Tampa Bay
+    ArcGIS publishers, with checked dataset IDs, provenance, and spatial results.
+
 template:
   bootstrap: 5
+  light-switch: true
+  theme: github-light
+  theme-dark: github-dark
+
+navbar:
+  structure:
+    left: [intro, articles, reference, coverage, news]
+    right: [search, github, lightswitch]
+  components:
+    intro:
+      text: Get started
+      href: articles/introduction.html
+    articles:
+      text: Articles
+      menu:
+        - text: Discovering data
+          href: articles/discovery.html
+        - text: Retrieving and downloading
+          href: articles/retrieval.html
+        - text: Coverage, provenance, and source limits
+          href: articles/coverage.html
+        - text: All articles
+          href: articles/index.html
+    coverage:
+      text: Data coverage
+      href: articles/coverage.html
+    news:
+      text: Changelog
+      href: news/index.html
+
+articles:
+  - title: Start here
+    desc: The basic path from discovery to a reproducible analysis.
+    contents:
+      - introduction
+  - title: In depth
+    desc: Search, retrieval, source coverage, and limitations.
+    contents:
+      - discovery
+      - retrieval
+      - coverage
 
 reference:
-  - title: Find datasets
+  - title: Discover
     contents:
       - list_portals
       - list_datasets
       - search_datasets
+  - title: Inspect
+    contents:
       - dataset_info
-  - title: Retrieve and save data
+      - dataset_provenance
+  - title: Retrieve
     contents:
       - get_dataset
       - get_arcgis_layer
+  - title: Download
+    contents:
       - download_dataset
       - download_arcgis_layer
-  - title: Common Tampa datasets
+  - title: Convenience functions
     contents:
       - get_permits
       - get_capital_projects
       - get_development_cases
-  - title: Provenance
-    contents:
-      - dataset_provenance

@@ -19,7 +19,7 @@ devtools::check(args = "--no-manual")
 Commit generated `man/` and `NAMESPACE` changes when updating roxygen comments.
 Add tests for changed behavior. Ordinary tests and package checks use mocked
 responses and block live HTTP. Keep examples and vignettes offline; set network
-retrieval chunks to `eval = FALSE`. See the [test guide](tests/README.md) for
+retrieval chunks to `eval = FALSE`. See the [test guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md) for
 focused and opt-in live checks.
 The live workflow schedules bounded city, regional, and county smoke checks
 twice weekly, including county descriptor, stable-ID, and projected geometry

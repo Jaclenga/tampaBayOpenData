@@ -1,8 +1,8 @@
 ---
-title: "Discover and retrieve Tampa Bay ArcGIS data"
+title: "Get started with Tampa Bay open data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Discover and retrieve Tampa Bay ArcGIS data}
+  %\VignetteIndexEntry{Get started with Tampa Bay open data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -11,150 +11,56 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 ```
 
-`tampaBayOpenData` searches public ArcGIS datasets from Tampa, St. Petersburg,
-Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional
-Planning Council. It also includes 26 layers across the three cities that
-package maintainers have checked.
-The same client retrieves checked or newly discovered layers as R
-tables or optional `sf` objects, with provenance and completeness information.
+`tampaBayOpenData` gives R users one interface for finding and retrieving
+public ArcGIS data from Tampa, St. Petersburg, Clearwater, Hillsborough
+County, Pinellas County, and the Tampa Bay Regional Planning Council. It
+bundles 26 maintainer-checked city layers and also discovers public layers
+from the six live organizations. Results are R tibbles or optional `sf`
+objects with source provenance and completeness information.
 
-The checked catalog examples run offline. Live discovery and retrieval examples
-are displayed but not executed during vignette builds; run them in an R session
-with internet access.
+The offline catalog examples below run during the vignette build. Live
+discovery and retrieval examples are displayed but not run; try them in an
+internet-connected R session.
 
-## Start with a dataset
+## Find data
 
-```{r quick-start}
+Start with the checked catalog when you want an offline, reproducible list of
+package IDs:
+
+```{r checked-catalog, eval=TRUE}
 library(tampaBayOpenData)
 
-search_datasets("parks")
-
-parks <- get_dataset("stpete-parks")
-```
-
-Search returns a table of matches. Each `id` can be passed to `get_dataset()`;
-`stpete-parks` is a checked ID. By default, retrieval returns all records as a
-tibble. Search scans live portals, and retrieval contacts the publisher, so run
-these calls with internet access.
-
-## Browse the checked catalog offline
-
-```{r catalog, eval=TRUE}
-library(tampaBayOpenData)
-list_portals()
-list_datasets(source = "checked")[,
+tampaBayOpenData::list_portals()[, c("id", "publisher", "jurisdiction")]
+tampaBayOpenData::search_datasets("park", source = "checked")[,
   c("id", "title", "jurisdiction", "validation_status")]
-search_datasets("park", source = "checked", spatial = TRUE,
-                jurisdiction = c("stpete", "clearwater"))
+tampaBayOpenData::dataset_info("construction-permits")[
+  c("title", "scope_note", "verified")]
 ```
 
-`source = "checked"` reads the bundled registry without a network request.
-Checked IDs are stable package names, separate from ArcGIS item and layer IDs.
-For catalog functions, `jurisdiction = "all"` is the default. A code or vector
-filters both checked and live results: `"tampa"`, `"tampa-bay"`, `"stpete"`,
-`"clearwater"`, `"hillsborough"`, or `"pinellas"`. The `portals` argument selects live
-organizations: `"city"` (Tampa), `"tbrpc"`, `"stpete"`, `"clearwater"`,
-`"hillsborough"`, `"pinellas"`, or `"all"` (default). `list_portals()` lists the
-configured publishers and their portal locations offline. The county portals
-extend live discovery; the checked catalog still contains 26 city layers.
-Selecting a county with `source = "checked"` returns an empty catalog.
-Retrieval and download functions retain their default `jurisdiction = "tampa"`;
-omitting it also resolves uniquely named checked IDs across cities.
-
-Search the live portals when you need more than the checked catalog:
+`source = "checked"` uses a bundled registry without making a network
+request. Checked IDs, including `stpete-parks` and `construction-permits`,
+remain stable package names. `dataset_info()` reports the source, terms, and
+scope of a checked entry. For more choices, search live portal indexes:
 
 ```{r live-discovery}
-# The default `source = "all", portals = "all"` also includes checked entries.
 found <- search_datasets("housing", source = "live", portals = "city")
-found[, c("id", "title", "publisher", "geometry_type", "validation_status")]
-
-# Inspect one candidate's source before retrieving it.
-selected <- found[1, ]
-selected[, c("item_id", "service_url", "layer_id", "portal")]
+found[, c("id", "title", "publisher", "validation_status")]
 ```
 
-`validation_status = "checked"` means maintainers specifically tested that
-layer. `"discovered"` identifies a candidate from a public portal index;
-maintainers have not validated its contents or reuse terms. Retrieval validates
-query responses and requires `Query` when the layer declares its capabilities.
-Unchecked live IDs
-have the form `arcgis:<item-id>:<layer-id>` and remain usable if a title changes.
-A portal item may still be deleted or its service
-changed. `list_datasets()` searches all six public organizations by default;
-`source = "checked"` remains available if the network is unavailable.
-
-```{r discovered-retrieval}
-# A one-row discovery result carries its source and item metadata.
-housing <- get_dataset(selected, limit = 100)
-dataset_provenance(housing)[c("item_id", "portal", "validation_status")]
-
-# Its ID can also be passed to get_dataset() in a later online session:
-# housing <- get_dataset(selected$id[[1]], limit = 100)
-```
-
-The discovery result includes the item's `modified` date, tags, and service
-location when available. That date is not necessarily the last update to its
-records. `max_items` limits portal items scanned per organization, not layers;
-it defaults to 25. Set `max_items = Inf` for a full scan. Inspect the catalog's
-`discovery_complete`, `discovery_truncated_portals`, and `discovery_scanned_items`
-attributes before treating a bounded listing as a complete catalog.
-
-### Narrow a search
-
-Both `list_datasets()` and `search_datasets()` accept optional filters:
-
-```{r county-search}
-county_transport <- search_datasets(
-  "road", source = "live", jurisdiction = "pinellas", spatial = TRUE,
-  topic = "transportation", modified_after = as.Date("2025-01-01"),
-  max_items = 10
-)
-county_transport[, c("id", "title", "publisher", "modified", "modified_source")]
-```
-
-`publisher` matches exact names from `list_portals()`, ignoring case;
-`validation_status` selects `"checked"` or `"discovered"`. Live-only results can
-still contain checked matches. `spatial = TRUE` selects geometry layers,
-`FALSE` selects tables, and either filter excludes unknown geometry.
-`topic` matches literal substrings in tags and categories, ignoring case.
-`category` matches a complete category path or its final label, ignoring case.
-Character filters accept vectors; values in one filter are alternatives, while
-different filters must all match.
-
-`modified_after` and `modified_before` are inclusive bounds on `modified`.
-Use `Date` values or strict `"YYYY-MM-DD"` strings to include whole UTC days,
-or `POSIXct` values for exact instants. Rows with unknown item dates are dropped
-when a date bound is supplied. `modified_source = "portal_item"` identifies a
-live item timestamp; `"checked_snapshot"` identifies an upstream timestamp
-saved in the checked registry. Neither establishes record freshness, and the
-checked `verified` date remains a separate endpoint check.
-
-Jurisdiction and publisher filters reduce the organizations scanned. Other
-filters run after discovery and the checked overlay, so a bounded `max_items`
-scan can miss matching items beyond that limit. Inspect discovery attributes
-and increase the item limit when a broader search is needed. When a live layer
-matches a checked endpoint, the result keeps its checked identity and terms
-alongside current live tags, categories, and item modification date.
-
-## Inspect dataset metadata
-
-```{r metadata, eval=TRUE}
-info <- dataset_info("construction-permits")
-info[c("title", "source_url", "scope_note", "verified")]
-```
-
-`source_url` links to the checked City source, and `scope_note` describes limits
-on what the dataset represents. The `verified` date records an endpoint check,
-not the freshness of individual records. To inspect current field names,
-request the live schema:
-
-```{r live-metadata}
-dataset_info("construction-permits", refresh = TRUE)$fields
-```
+Catalog searches scan all six publishers by default. Set `portals` or
+`jurisdiction` to narrow them. `checked` means the package maintainers
+validated the configured layer; `discovered` means it appeared in a live
+portal index but has not received the same validation. Inspect a discovered
+source and its reuse terms before analysis. See [discovering Tampa Bay
+data](discovery.html) for all filters, live scan limits, and discovery status.
 
 ## Retrieve records
 
-```{r permits}
+Pass a checked ID, a discovered stable ID, or a one-row search result to
+`get_dataset()`. This example requests a small subset of a checked Tampa
+layer as a tibble:
+
+```{r retrieve}
 permits <- get_dataset(
   "construction-permits",
   where = "PROJECTSTATUS IS NOT NULL",
@@ -162,197 +68,49 @@ permits <- get_dataset(
   limit = 100
 )
 head(permits)
-```
-
-`where` uses ArcGIS SQL rather than Socrata SoQL, and `fields` uses exact source
-names. By default, `limit = Inf` retrieves every match. A finite limit returns a
-subset, and provenance marks it incomplete if more records match. `order_by`
-requests server ordering where supported; `get_permits()` is a shortcut for this
-dataset. See `?get_dataset` for other filters and limits.
-
-For sources with more than 10,000 matches and reliable ordering and pagination,
-finite previews of at most 1,000 rows verify the returned IDs with a subset
-manifest. Other retrievals use a full manifest; set `integrity = "full"` to
-request that explicitly. Provenance identifies `subset-manifest`,
-`full-manifest`, or `count-only` for a zero-row limit. A finite preview is marked
-incomplete when more records match.
-
-`timeout` limits each HTTP attempt. The overall `total_timeout` defaults to 120
-seconds for retrieval, 90 seconds for catalog discovery, and 60 seconds for
-metadata inspection. Set `total_timeout = Inf` explicitly for a long operation.
-Requests and retry waits use the remaining budget; parsing is checked after
-it finishes and can exceed the budget before reporting a timeout.
-
-Results retain source field names and text fields. ArcGIS epoch-millisecond
-date fields become UTC `POSIXct` unless the source declares an unknown time zone.
-In that case they remain raw milliseconds with a warning; UTC editor-tracking
-creation and edit dates identified by the layer metadata are still converted.
-Date-only fields become `Date`; time-only and timestamp-offset fields remain
-strings.
-
-You can also retrieve a compatible public ArcGIS layer directly by its URL:
-
-```{r direct-layer}
-direct <- get_arcgis_layer(
-  "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/4",
-  limit = 10
-)
-dataset_provenance(direct)$validation_status # "not_checked" for direct URL access
-```
-
-For larger retrievals, write resumable chunks to a persistent directory outside
-the package source and read one chunk at a time:
-
-```{r download}
-saved <- download_dataset(
-  "construction-permits",
-  path = "~/tampaBayOpenData-downloads/permits",
-  fields = c("OBJECTID", "RECORD_ID", "LASTUPDATE"),
-  page_size = 500,
-  total_timeout = 600
-)
-saved$complete
-first_chunk <- readRDS(saved$files[[1]])
-dataset_provenance(first_chunk)
-```
-
-Repeat the same download call to resume. The client rechecks current metadata and
-the full matching ID manifest, validates saved chunk checksums and provenance,
-and skips completed chunks. Changed query options, schema, CRS, or ID membership
-require a new directory. Chunk attributes can vary across requests or resumes,
-so the files do not form a frozen snapshot. Each chunk has its own completeness
-record; `saved$complete` describes the whole matching download. This path keeps
-only bounded feature batches in memory and retains the one-million-ID manifest
-limit. Download operations default to `total_timeout = Inf`; a finite deadline
-leaves completed chunks available for the next call.
-
-An exclusive directory lock prevents concurrent writers. A terminated R process
-can leave an empty `.lock` directory: confirm that process has stopped before
-removing the lock and resuming. `download_arcgis_layer()` supports the same
-chunked path for direct URLs.
-
-## Explore the results
-
-```{r permit-statuses}
 sort(table(permits$PROJECTSTATUS), decreasing = TRUE)
 ```
 
-These counts describe the retrieved subset, not every matching permit.
+The counts describe the retrieved subset, not all matching permits. Omit
+`limit` to retrieve all matching rows. A discovered result can travel to
+retrieval with its source information:
+
+```{r discovered-retrieval}
+housing <- get_dataset(found[1, ], limit = 100)
+dataset_provenance(housing)[c("publisher", "validation_status", "complete")]
+```
 
 ## Work with spatial data
 
-The same interface returns `sf` objects with `spatial = TRUE`. Install the
-optional `sf` package if needed. After loading `tampaBayOpenData` in the first
-example, run the next three chunks in order in an internet-connected R session.
+Install the optional `sf` package and request `spatial = TRUE` for an `sf`
+result. `out_sr = 4326` asks the service for WGS 84 coordinates; without
+`out_sr`, the client keeps the native CRS.
 
 ```{r spatial}
-# Request one CRS for both layers so their coordinates can share a map.
-projects <- get_dataset(
-  "development-cases",
-  spatial = TRUE,
-  out_sr = 4326
-)
-
-# Only the boundary ID is needed; spatial = TRUE still returns its geometry.
-boundary <- get_dataset(
-  "city-boundary",
-  fields = "OBJECTID",
-  spatial = TRUE,
-  out_sr = 4326
-)
-# Check the CRS reported for the case locations.
+projects <- get_dataset("development-cases", spatial = TRUE,
+                        out_sr = 4326)
 sf::st_crs(projects)$epsg
 ```
 
-Both results are `sf` objects in WGS 84 (EPSG:4326). The CRS line confirms the
-value for `projects`. Omitting `out_sr` keeps each layer's native CRS; point,
-line, and polygon layers use the same API.
+The [retrieval article](retrieval.html) shows a map with this layer and the
+Tampa boundary. It also explains ArcGIS filters, pagination, integrity
+checks, time budgets, data types, direct layer URLs, and resumable downloads.
 
-Records without geometry remain in `projects`. Make a subset of locations to
-plot:
+## Trace the source
 
-```{r spatial-prepare}
-# Preserve projects; create a plotting subset with nonempty geometries.
-mapped_projects <- projects[!sf::st_is_empty(projects), ]
-```
-
-Draw the city boundary for context, then add the case locations:
-
-```{r spatial-plot, fig.width=7, fig.height=5.5}
-# Draw the polygon first so it forms a backdrop for the case locations.
-plot(
-  sf::st_geometry(boundary),
-  col = "#EDF4F6",
-  border = "#7898A5",
-  lwd = 1.2,
-  axes = TRUE,
-  graticule = TRUE,
-  col_graticule = "#DCE7EB",
-  xlab = "Longitude",
-  ylab = "Latitude",
-  main = "Active development cases in Tampa"
-)
-
-# Filled circles have separate outlines and translucent fills.
-if (nrow(mapped_projects) > 0L) {
-  case_fill <- grDevices::adjustcolor("#E76F51", alpha.f = 0.7)
-  plot(
-    sf::st_geometry(mapped_projects),
-    add = TRUE,
-    pch = 21,
-    bg = case_fill,
-    col = "#9B4934",
-    cex = 0.85
-  )
-
-  # Match the legend symbol to the plotted points.
-  graphics::legend(
-    "bottomleft",
-    legend = "Development case location",
-    pch = 21,
-    pt.bg = case_fill,
-    col = "#9B4934",
-    bg = "white",
-    box.col = "#DCE7EB",
-    cex = 0.85
-  )
-}
-```
-
-The `city-boundary` layer is adjusted to follow the shoreline. It provides map
-context, not a legal survey boundary.
-
-## Keep track of where your data came from
+Provenance records where the result came from, the query, retrieval time,
+row counts, validation status, integrity method, and whether the result is
+complete. Save it separately before transforming the data, because some R
+operations may discard attached attributes.
 
 ```{r provenance}
 source <- dataset_provenance(projects)
-saveRDS(
-  list(data = projects, provenance = source),
-  "development-cases.rds"
-)
+saveRDS(list(data = projects, provenance = source),
+        "development-cases.rds")
 ```
 
-Provenance includes the publisher, source URL, portal and item ID when known,
-validation status, query endpoint, retrieval time, row counts, and
-completeness. Save it separately with your data because later R transformations
-may discard custom attributes.
-
-## Important limitations
-
-The permit and development-case layers are active views, not necessarily
-complete historical ledgers. Read `dataset_info(id)$scope_note` and
-`dataset_info(id)$terms` before interpreting their coverage or reuse terms.
-
-Live ArcGIS data can change during a multi-request retrieval. The client
-checks fetched IDs against the matching count and object-ID manifest where
-applicable; these checks cannot freeze every attribute at one instant.
-
-If a field is uncertain, inspect `dataset_info(id, refresh = TRUE)$fields`.
-For a temporary service failure, check the source URL and retry. Full-manifest
-queries matching more than one million records are rejected; narrow `where`
-first. Eligible finite previews can verify a bounded subset instead.
-
-Discovered items may lack clear reuse terms or may be stale in the portal
-index. Review each item's source and terms before analysis; the package does
-not verify those terms. The package's MIT
-license applies to its code, not to data from either source organization.
+Read [coverage, provenance, and source limits](coverage.html) before treating
+a layer as a complete historical record or interpreting a map as a legal
+boundary. That article also explains source attribution, citation, government
+data reuse terms, and monitoring evidence. The package is independent of
+the data publishers and rOpenSci.
