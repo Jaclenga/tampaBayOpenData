@@ -2,7 +2,8 @@
 
 * Windows 11 x64, R 4.5.1 (local, 2026-10-03)
 * GitHub Actions: Ubuntu R release, devel, and oldrel-1; Windows R release;
-  macOS R release (results for this revision pending)
+  macOS R release. All five `--as-cran --no-manual` jobs passed on the
+  [2026-10-03 run](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/37164594446).
 
 ## R CMD check results
 
