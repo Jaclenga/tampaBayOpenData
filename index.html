@@ -95,9 +95,17 @@ Discover and retrieve public data across Tampa Bay from one R interface.
 <p>Install the optional <code>sf</code> package for spatial results.</p>
 </div>
 <div class="section level2">
+<h2 id="identify-your-requests">Identify your requests<a class="anchor" aria-label="anchor" href="#identify-your-requests"></a>
+</h2>
+<p>Requests to publisher services use <code>tampaBayOpenData/0.1.0</code> as the default user agent. Set a package option before live discovery, retrieval, or downloads if you need to identify your own application:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>tampaBayOpenData.user_agent <span class="op">=</span> <span class="st">"my-project/1.0 (contact: me@example.org)"</span><span class="op">)</span></span></code></pre></div>
+<p>Set <code>options(tampaBayOpenData.user_agent = NULL)</code> to restore the default.</p>
+</div>
+<div class="section level2">
 <h2 id="find-data">Find data<a class="anchor" aria-label="anchor" href="#find-data"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"parks"</span><span class="op">)</span></span>
@@ -107,7 +115,7 @@ Discover and retrieve public data across Tampa Bay from one R interface.
 <div class="section level2">
 <h2 id="retrieve-data">Retrieve data<a class="anchor" aria-label="anchor" href="#retrieve-data"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">parks</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"stpete-parks"</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span></code></pre></div>
 <p>A checked ID is a stable package name for a maintainer-validated layer. Retrieval uses the publisher’s live service and returns a tibble by default. Use <code><a href="reference/get_arcgis_layer.html">get_arcgis_layer()</a></code> for a compatible public ArcGIS layer URL. See the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html">retrieval guide</a> for field filters, integrity checks, and resumable downloads.</p>
@@ -116,7 +124,7 @@ Discover and retrieve public data across Tampa Bay from one R interface.
 <h2 id="see-spatial-data">See spatial data<a class="anchor" aria-label="anchor" href="#see-spatial-data"></a>
 </h2>
 <p>This map uses the checked City of Tampa <code>city-boundary</code> and <code>capital-projects</code> layers. Both can be retrieved as <code>sf</code> objects:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">boundary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
 <span>                        spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"capital-projects"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
@@ -133,7 +141,7 @@ Discover and retrieve public data across Tampa Bay from one R interface.
 <div class="section level2">
 <h2 id="trace-the-source">Trace the source<a class="anchor" aria-label="anchor" href="#trace-the-source"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span>
 <span><span class="va">source</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"retrieved_at"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>Provenance also records validation status, the query, returned row counts, and the integrity method. Save it with results before transformations that may drop R attributes. The <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage and provenance guide</a> explains how to interpret the source and its limits.</p>
@@ -224,7 +232,7 @@ Discover and retrieve public data across Tampa Bay from one R interface.
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>Cite both <code>tampaBayOpenData</code> and the original data publisher and dataset. After installation, get the package citation or a BibTeX entry with:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/toLatex.html" class="external-link">toBibtex</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The <a href="https://jaclenga.github.io/tampaBayOpenData/authors.html#citation">citation page</a> has the package details. <code>dataset_info(id)</code> provides source information, and <code>dataset_provenance(result)</code> records the retrieval source and time.</p>
