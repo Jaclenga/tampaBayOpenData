@@ -35,17 +35,8 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="articles/introduction.html">Get started</a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/discovery.html">Discovering data</a></li>
-    <li><a class="dropdown-item" href="articles/retrieval.html">Retrieving and downloading</a></li>
-    <li><a class="dropdown-item" href="articles/coverage.html">Coverage, provenance, and source limits</a></li>
-    <li><a class="dropdown-item" href="articles/index.html">All articles</a></li>
-  </ul>
-</li>
+<li class="nav-item"><a class="nav-link" href="articles/index.html">Articles</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="articles/coverage.html">Data coverage</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -75,7 +66,7 @@
 Discover and retrieve public data across Tampa Bay from one R interface.
 </p>
 <p class="tb-kicker">
-26 maintainer-checked city layers · live discovery across six public ArcGIS publishers
+35 maintainer-checked layers · live discovery across six public ArcGIS publishers
 </p>
 <!-- badges: start -->
 
@@ -150,7 +141,7 @@ Discover and retrieve public data across Tampa Bay from one R interface.
 <h2 id="why-use-it">Why use it?<a class="anchor" aria-label="anchor" href="#why-use-it"></a>
 </h2>
 <ul>
-<li>Discover layers across six configured publishers and distinguish the 26 checked city layers from newly discovered candidates.</li>
+<li>Discover layers across six configured publishers and distinguish the 35 checked layers from newly discovered candidates.</li>
 <li>Retrieve typed R tables or optional <code>sf</code> objects with source provenance and checks for missing or duplicate records.</li>
 <li>Download large results in resumable chunks when an in-memory result is impractical.</li>
 </ul>
@@ -207,24 +198,24 @@ Discover and retrieve public data across Tampa Bay from one R interface.
 </tr>
 <tr>
 <td>Hillsborough County</td>
-<td align="right">0</td>
+<td align="right">3</td>
 <td align="center">Yes</td>
 </tr>
 <tr>
 <td>Pinellas County</td>
-<td align="right">0</td>
+<td align="right">3</td>
 <td align="center">Yes</td>
 </tr>
 <tr>
 <td>Tampa Bay Regional Planning Council</td>
-<td align="right">0</td>
+<td align="right">3</td>
 <td align="center">Yes</td>
 </tr>
 </tbody>
 </table>
-<p>A <strong>checked</strong> layer has been validated by the package maintainers. A <strong>discovered</strong> layer came from a public portal search and has not received that same validation; inspect its metadata and reuse terms before use. Zero checked layers does not mean a publisher has no public data.</p>
+<p>A <strong>checked</strong> layer has been validated by the package maintainers. A <strong>discovered</strong> layer came from a public portal search and has not received that same validation; inspect its metadata and reuse terms before use. The checked catalog is a selected set, not a complete inventory of publisher data.</p>
 <blockquote>
-<p><strong>Source limits:</strong> These are live publisher services, not a complete or frozen historical database. Some layers are active views, boundaries may be approximate, and records can change during retrieval. The package’s MIT license covers its code, not government data. It is independent of the source organizations and rOpenSci.</p>
+<p><strong>Source limits:</strong> These are live publisher services, not a complete or frozen historical database. Some layers are active views, boundaries may be approximate, and records can change during retrieval. The TBRPC storm surge layer is a historical planning model, not current emergency guidance. The package’s MIT license covers its code, not government data. It is independent of the source organizations and rOpenSci.</p>
 </blockquote>
 <p>Read the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage and source limitations guide</a> for specific layer caveats, validation, monitoring, and data-use details.</p>
 </div>

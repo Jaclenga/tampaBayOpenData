@@ -2,8 +2,8 @@
 
 Discover and retrieve public data across Tampa Bay from one R interface.
 
-26 maintainer-checked city layers · live discovery across six public
-ArcGIS publishers
+35 maintainer-checked layers · live discovery across six public ArcGIS
+publishers
 
 ## What is tampaBayOpenData?
 
@@ -128,7 +128,7 @@ explains how to interpret the source and its limits.
 ## Why use it?
 
 - Discover layers across six configured publishers and distinguish the
-  26 checked city layers from newly discovered candidates.
+  35 checked layers from newly discovered candidates.
 - Retrieve typed R tables or optional `sf` objects with source
   provenance and checks for missing or duplicate records.
 - Download large results in resumable chunks when an in-memory result is
@@ -147,21 +147,23 @@ explains how to interpret the source and its limits.
 | City of Tampa                       |             20 |      Yes       |
 | City of St. Petersburg              |              3 |      Yes       |
 | City of Clearwater                  |              3 |      Yes       |
-| Hillsborough County                 |              0 |      Yes       |
-| Pinellas County                     |              0 |      Yes       |
-| Tampa Bay Regional Planning Council |              0 |      Yes       |
+| Hillsborough County                 |              3 |      Yes       |
+| Pinellas County                     |              3 |      Yes       |
+| Tampa Bay Regional Planning Council |              3 |      Yes       |
 
 A **checked** layer has been validated by the package maintainers. A
 **discovered** layer came from a public portal search and has not
 received that same validation; inspect its metadata and reuse terms
-before use. Zero checked layers does not mean a publisher has no public
-data.
+before use. The checked catalog is a selected set, not a complete
+inventory of publisher data.
 
 > **Source limits:** These are live publisher services, not a complete
 > or frozen historical database. Some layers are active views,
 > boundaries may be approximate, and records can change during
-> retrieval. The package’s MIT license covers its code, not government
-> data. It is independent of the source organizations and rOpenSci.
+> retrieval. The TBRPC storm surge layer is a historical planning model,
+> not current emergency guidance. The package’s MIT license covers its
+> code, not government data. It is independent of the source
+> organizations and rOpenSci.
 
 Read the [coverage and source limitations
 guide](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html)

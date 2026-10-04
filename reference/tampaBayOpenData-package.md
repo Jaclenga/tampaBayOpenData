@@ -9,7 +9,7 @@ or
 [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
 reads the publisher configuration. Catalogs can filter jurisdiction,
 publisher, validation, geometry, topics, categories, and modification
-dates. The bundled catalog identifies 26 layers checked by package
+dates. The bundled catalog identifies 35 layers checked by package
 maintainers; catalog browsing defaults to all jurisdictions. Use
 [`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
 for a checked ID or discovered layer, or

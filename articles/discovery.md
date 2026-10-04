@@ -1,7 +1,7 @@
 # Discovering Tampa Bay data
 
 `tampaBayOpenData` can search two related sources: a bundled catalog of
-26 maintainer-checked layers, and public ArcGIS portal indexes operated
+35 maintainer-checked layers, and public ArcGIS portal indexes operated
 by six regional publishers. A checked layer has been configured and
 validated by the package maintainers. A discovered layer is a candidate
 found in a live portal index; its contents and reuse terms have not
@@ -29,7 +29,7 @@ tampaBayOpenData::list_portals()[, c("id", "publisher", "jurisdiction")]
 #> 6 pinellas     Pinellas County                     pinellas
 tampaBayOpenData::list_datasets(source = "checked")[,
   c("id", "title", "jurisdiction", "validation_status")]
-#> # A tibble: 26 × 4
+#> # A tibble: 35 × 4
 #>    id                   title                     jurisdiction validation_status
 #>    <chr>                <chr>                     <chr>        <chr>            
 #>  1 construction-permits Permits (active GIS view) tampa        checked          
@@ -42,7 +42,7 @@ tampaBayOpenData::list_datasets(source = "checked")[,
 #>  8 parks                Park polygons             tampa        checked          
 #>  9 fire-stations        City of Tampa fire stati… tampa        checked          
 #> 10 bike-lanes           Bicycle network segments  tampa        checked          
-#> # ℹ 16 more rows
+#> # ℹ 25 more rows
 tampaBayOpenData::search_datasets(
   "park", source = "checked", spatial = TRUE,
   jurisdiction = c("stpete", "clearwater")
@@ -73,10 +73,10 @@ tampaBayOpenData::dataset_info("construction-permits")[
 such as `construction-permits` and `stpete-parks`, are stable package
 names rather than ArcGIS item IDs. `dataset_info(id)` reports each
 checked entry’s scope, terms, source URL, and endpoint-verification
-date. The latter is not a record-freshness date. There are 20 Tampa,
-three St. Petersburg, and three Clearwater checked layers. Hillsborough
-County, Pinellas County, and the Tampa Bay Regional Planning Council are
-configured for live discovery but have no checked entries.
+date. The latter is not a record-freshness date. There are 20 Tampa
+checked layers and three each from St. Petersburg, Clearwater,
+Hillsborough County, Pinellas County, and the Tampa Bay Regional
+Planning Council. All six publishers also support live discovery.
 
 ## Discover live portal layers
 
@@ -112,7 +112,7 @@ defaults to `"all"` for catalog functions and can be a code or a vector
 of codes. A jurisdiction or publisher filter narrows the organizations
 scanned. Retrieval and download functions have a different default,
 `jurisdiction = "tampa"`; omitting it still resolves a uniquely named
-checked ID across cities.
+checked ID across publishers.
 
 `validation_status = "checked"` means maintainers validated the
 configured layer. `"discovered"` means the item was found in a public

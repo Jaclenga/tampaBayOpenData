@@ -12,6 +12,8 @@
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Discovering Tampa Bay data">
+<meta name="description" content="Search the checked catalog and live portals, then interpret and filter the results.">
+<meta property="og:description" content="Search the checked catalog and live portals, then interpret and filter the results.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -31,17 +33,8 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/introduction.html">Get started</a></li>
-<li class="active nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/discovery.html">Discovering data</a></li>
-    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading</a></li>
-    <li><a class="dropdown-item" href="../articles/coverage.html">Coverage, provenance, and source limits</a></li>
-    <li><a class="dropdown-item" href="../articles/index.html">All articles</a></li>
-  </ul>
-</li>
+<li class="active nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/coverage.html">Data coverage</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -80,7 +73,7 @@
     
     
 <p><code>tampaBayOpenData</code> can search two related sources: a
-bundled catalog of 26 maintainer-checked layers, and public ArcGIS
+bundled catalog of 35 maintainer-checked layers, and public ArcGIS
 portal indexes operated by six regional publishers. A checked layer has
 been configured and validated by the package maintainers. A discovered
 layer is a candidate found in a live portal index; its contents and
@@ -106,7 +99,7 @@ built. The checked-catalog example runs offline.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pinellas     Pinellas County                     pinellas</span></span>
 <span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/list_datasets.html">list_datasets</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span><span class="op">[</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"jurisdiction"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 26 × 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 35 × 4</span></span></span>
 <span><span class="co">#&gt;    id                   title                     jurisdiction validation_status</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> construction-permits Permits (active GIS view) tampa        checked          </span></span>
@@ -119,7 +112,7 @@ built. The checked-catalog example runs offline.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> parks                Park polygons             tampa        checked          </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> fire-stations        City of Tampa fire stati… tampa        checked          </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> bike-lanes           Bicycle network segments  tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 25 more rows</span></span></span>
 <span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span></span>
 <span>  <span class="st">"park"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  jurisdiction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stpete"</span>, <span class="st">"clearwater"</span><span class="op">)</span></span>
@@ -149,10 +142,10 @@ HTTP. Its IDs, such as <code>construction-permits</code> and
 <code>stpete-parks</code>, are stable package names rather than ArcGIS
 item IDs. <code>dataset_info(id)</code> reports each checked entry’s
 scope, terms, source URL, and endpoint-verification date. The latter is
-not a record-freshness date. There are 20 Tampa, three St. Petersburg,
-and three Clearwater checked layers. Hillsborough County, Pinellas
-County, and the Tampa Bay Regional Planning Council are configured for
-live discovery but have no checked entries.</p>
+not a record-freshness date. There are 20 Tampa checked layers and three
+each from St. Petersburg, Clearwater, Hillsborough County, Pinellas
+County, and the Tampa Bay Regional Planning Council. All six publishers
+also support live discovery.</p>
 </div>
 <div class="section level2">
 <h2 id="discover-live-portal-layers">Discover live portal layers<a class="anchor" aria-label="anchor" href="#discover-live-portal-layers"></a>
@@ -183,7 +176,7 @@ source locations offline. <code>jurisdiction</code> defaults to
 of codes. A jurisdiction or publisher filter narrows the organizations
 scanned. Retrieval and download functions have a different default,
 <code>jurisdiction = "tampa"</code>; omitting it still resolves a
-uniquely named checked ID across cities.</p>
+uniquely named checked ID across publishers.</p>
 <p><code>validation_status = "checked"</code> means maintainers
 validated the configured layer. <code>"discovered"</code> means the item
 was found in a public portal index, not that its contents or reuse terms

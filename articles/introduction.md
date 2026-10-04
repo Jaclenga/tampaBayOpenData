@@ -3,7 +3,7 @@
 `tampaBayOpenData` gives R users one interface for finding and
 retrieving public ArcGIS data from Tampa, St. Petersburg, Clearwater,
 Hillsborough County, Pinellas County, and the Tampa Bay Regional
-Planning Council. It bundles 26 maintainer-checked city layers and also
+Planning Council. It bundles 35 maintainer-checked layers and also
 discovers public layers from the six live organizations. Results are R
 tibbles or optional `sf` objects with source provenance and completeness
 information.
@@ -33,12 +33,15 @@ tampaBayOpenData::list_portals()[, c("id", "publisher", "jurisdiction")]
 #> 6 pinellas     Pinellas County                     pinellas
 tampaBayOpenData::search_datasets("park", source = "checked")[,
   c("id", "title", "jurisdiction", "validation_status")]
-#> # A tibble: 3 × 4
-#>   id                      title                   jurisdiction validation_status
-#>   <chr>                   <chr>                   <chr>        <chr>            
-#> 1 parks                   Park polygons           tampa        checked          
-#> 2 stpete-parks            St. Petersburg parks    stpete       checked          
-#> 3 clearwater-park-buffers Clearwater park buffers clearwater   checked
+#> # A tibble: 6 × 4
+#>   id                       title                  jurisdiction validation_status
+#>   <chr>                    <chr>                  <chr>        <chr>            
+#> 1 parks                    Park polygons          tampa        checked          
+#> 2 stpete-parks             St. Petersburg parks   stpete       checked          
+#> 3 clearwater-park-buffers  Clearwater park buffe… clearwater   checked          
+#> 4 hillsborough-parks       Hillsborough County p… hillsborough checked          
+#> 5 pinellas-park-boundaries Pinellas County park … pinellas     checked          
+#> 6 pinellas-trail           Pinellas Trail segmen… pinellas     checked
 tampaBayOpenData::dataset_info("construction-permits")[
   c("title", "scope_note", "verified")]
 #> $title

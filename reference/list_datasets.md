@@ -133,7 +133,7 @@ exhaustive scan.
 ``` r
 checked <- list_datasets(source = "checked")
 checked[, c("id", "title", "jurisdiction", "validation_status")]
-#> # A tibble: 26 × 4
+#> # A tibble: 35 × 4
 #>    id                   title                     jurisdiction validation_status
 #>    <chr>                <chr>                     <chr>        <chr>            
 #>  1 construction-permits Permits (active GIS view) tampa        checked          
@@ -146,6 +146,6 @@ checked[, c("id", "title", "jurisdiction", "validation_status")]
 #>  8 parks                Park polygons             tampa        checked          
 #>  9 fire-stations        City of Tampa fire stati… tampa        checked          
 #> 10 bike-lanes           Bicycle network segments  tampa        checked          
-#> # ℹ 16 more rows
+#> # ℹ 25 more rows
 if (FALSE) list_datasets() # \dontrun{}
 ```

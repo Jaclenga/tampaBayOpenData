@@ -12,6 +12,8 @@
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Coverage, provenance, and source limits">
+<meta name="description" content="Understand publisher coverage, preserve provenance, and assess source limits.">
+<meta property="og:description" content="Understand publisher coverage, preserve provenance, and assess source limits.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -31,17 +33,8 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/introduction.html">Get started</a></li>
-<li class="active nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/discovery.html">Discovering data</a></li>
-    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading</a></li>
-    <li><a class="dropdown-item" href="../articles/coverage.html">Coverage, provenance, and source limits</a></li>
-    <li><a class="dropdown-item" href="../articles/index.html">All articles</a></li>
-  </ul>
-</li>
+<li class="active nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/coverage.html">Data coverage</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -119,29 +112,28 @@ registries.</p>
 </tr>
 <tr class="even">
 <td>Hillsborough County</td>
-<td align="right">0</td>
+<td align="right">3</td>
 <td align="center">Yes</td>
 </tr>
 <tr class="odd">
 <td>Pinellas County</td>
-<td align="right">0</td>
+<td align="right">3</td>
 <td align="center">Yes</td>
 </tr>
 <tr class="even">
 <td>Tampa Bay Regional Planning Council</td>
-<td align="right">0</td>
+<td align="right">3</td>
 <td align="center">Yes</td>
 </tr>
 </tbody>
 </table>
-<p>The checked catalog is a selected set of <strong>26 city
-layers</strong>, not a complete inventory of each publisher’s holdings.
-Live discovery may find other layers, but it is subject to portal
-indexing, service availability, scan limits, and the publishers’
-metadata. Neither path establishes comprehensive historical coverage of
-Tampa Bay. See <a href="discovery.html">discovering data</a> for the
-meaning of <code>max_items</code>, scan completeness, and checked versus
-discovered status.</p>
+<p>The checked catalog is a selected set of <strong>35 layers</strong>,
+not a complete inventory of each publisher’s holdings. Live discovery
+may find other layers, but it is subject to portal indexing, service
+availability, scan limits, and the publishers’ metadata. Neither path
+establishes comprehensive historical coverage of Tampa Bay. See <a href="discovery.html">discovering data</a> for the meaning of
+<code>max_items</code>, scan completeness, and checked versus discovered
+status.</p>
 </div>
 <div class="section level2">
 <h2 id="interpret-source-scope-before-analysis">Interpret source scope before analysis<a class="anchor" aria-label="anchor" href="#interpret-source-scope-before-analysis"></a>
@@ -152,7 +144,12 @@ layer follows a shoreline representation and is not a legal survey. The
 catalog also includes parks, historic sites, police districts,
 transportation, zoning, and utility service areas. St. Petersburg
 checked layers cover parks, city boundaries, and streets; Clearwater
-layers cover park buffers, zoning, and libraries.</p>
+layers cover park buffers, zoning, and libraries. Hillsborough County
+adds cooperative libraries, sidewalks, and parks. Pinellas County adds
+fire stations, park boundaries, and a trail. The Tampa Bay Regional
+Planning Council adds developments of regional impact, storm surge, and
+data centers. Its storm surge layer is a historical planning model, not
+current emergency guidance.</p>
 <p>Park buffers are areas around parks, rather than exact park
 footprints. These maps do not by themselves establish legal boundaries,
 current road restrictions, service eligibility, or operating status. The
@@ -203,11 +200,11 @@ and downloads</a> for integrity and resume behavior.</p>
 <h2 id="monitoring-and-evidence">Monitoring and evidence<a class="anchor" aria-label="anchor" href="#monitoring-and-evidence"></a>
 </h2>
 <p>The scheduled monitoring workflow runs twice weekly and samples the
-26 checked city layers, regional discovery, and county facilities.
-County checks use both discovery descriptors and stable IDs and verify
-server projection to EPSG:4326. Each retrieval requests at most two rows
-with explicit timeouts; portal scans examine at most one service item
-per publisher. The <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md" class="external-link">test
+35 checked layers across all six publishers, live discovery, and county
+facility retrievals. County checks use both discovery descriptors and
+stable IDs and verify server projection to EPSG:4326. Each retrieval
+requests at most two rows with explicit timeouts; portal scans examine
+at most one service item per publisher. The <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md" class="external-link">test
 guide</a> describes these bounded checks and the full manual live suite.
 Completed runs provide dated evidence of source behavior, not a
 guarantee of future service availability, complete publisher coverage,
