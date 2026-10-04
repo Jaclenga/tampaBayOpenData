@@ -3,6 +3,11 @@
 [![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://jaclenga.github.io/tampaBayOpenData/DESCRIPTION)
 [![License:
 MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://jaclenga.github.io/tampaBayOpenData/LICENSE.md)
+[![R CMD
+check](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml)
+[![pkgcheck](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgcheck.yaml/badge.svg?branch=main)](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgcheck.yaml)
+[![Offline test coverage
+workflow](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml/badge.svg?branch=main)](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml)
 
 Public data for the Tampa Bay region is spread across separate ArcGIS
 portals. Finding a layer, retrieving all its records, and recording
@@ -363,8 +368,29 @@ The source organizations publish the data; the package’s MIT license
 applies to the software, not to government datasets. `tampaBayOpenData`
 is independent of those organizations and rOpenSci.
 
+## Citation
+
+If you use `tampaBayOpenData` in published work, cite the package
+version you used. After installation, get the citation text or a BibTeX
+entry in R:
+
+``` r
+
+citation("tampaBayOpenData")
+toBibtex(citation("tampaBayOpenData"))
+```
+
+Cite the original data publisher and dataset separately.
+`dataset_info(id)` provides source details, and
+`dataset_provenance(result)` records the source and retrieval time for a
+downloaded result.
+
 ## More information
 
+- [Coverage
+  workflow](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml):
+  each run summary reports the current offline test coverage percentage;
+  the badge above shows whether the workflow passed.
 - [Bicycle network
   notebook](https://jaclenga.github.io/tampaBayOpenData/inst/examples/bike-network.Rmd):
   catalog discovery, an optional live subset, provenance, and a map.
