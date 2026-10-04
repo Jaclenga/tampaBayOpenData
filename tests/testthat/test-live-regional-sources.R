@@ -1,8 +1,9 @@
-test_that("live checked St. Petersburg and Clearwater sources return bounded typed rows", {
+test_that("live checked regional sources return bounded typed rows", {
   skip_if_not(identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true"),
               "Set TAMPA_OPEN_DATA_LIVE=true to opt into municipal API calls")
   for (id in names(regional_source_cases())) {
     case <- regional_source_cases()[[id]]
+    oid <- regional_oid_field(case)
     fields <- unlist(case$fields, use.names = FALSE)
     data <- get_dataset(id, fields = fields, limit = 2, page_size = 1,
                         timeout = 15, total_timeout = 45)
@@ -10,7 +11,7 @@ test_that("live checked St. Petersburg and Clearwater sources return bounded typ
     expect_identical(names(data), fields)
     expect_gt(nrow(data), 0L)
     expect_lte(nrow(data), 2L)
-    expect_equal(anyDuplicated(data$OBJECTID), 0L)
+    expect_equal(anyDuplicated(data[[oid]]), 0L)
     expect_type(data[[case$label_field]], "character")
     source <- dataset_provenance(data)
     expect_identical(source$dataset_id, id)
@@ -23,19 +24,20 @@ test_that("live checked St. Petersburg and Clearwater sources return bounded typ
   }
 })
 
-test_that("live checked municipal point, line, and polygon sources project to WGS 84", {
+test_that("live checked regional point, line, and polygon sources project to WGS 84", {
   skip_if_not(identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true"),
               "Set TAMPA_OPEN_DATA_LIVE=true to opt into municipal API calls")
   skip_if_not_installed("sf")
   for (id in names(regional_source_cases())) {
     case <- regional_source_cases()[[id]]
-    data <- get_dataset(id, fields = c("OBJECTID", case$label_field),
+    oid <- regional_oid_field(case)
+    data <- get_dataset(id, fields = c(oid, case$label_field),
                         spatial = TRUE, out_sr = 4326, limit = 2, page_size = 1,
                         timeout = 15, total_timeout = 45)
     expect_s3_class(data, "sf")
     expect_gt(nrow(data), 0L)
     expect_lte(nrow(data), 2L)
-    expect_equal(anyDuplicated(data$OBJECTID), 0L)
+    expect_equal(anyDuplicated(data[[oid]]), 0L)
     expect_equal(sf::st_crs(data)$epsg, 4326)
     pattern <- switch(case$metadata$geometryType,
       esriGeometryPoint = "^POINT$", esriGeometryPolyline = "^(MULTI)?LINESTRING$",

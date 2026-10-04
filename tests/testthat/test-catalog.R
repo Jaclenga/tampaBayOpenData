@@ -178,8 +178,8 @@ test_that("lookup explains unsupported IDs and jurisdictions", {
   expect_equal(dataset_info("construction-permits")$layer_id, 0)
   expect_error(dataset_info("made-up"), "Unknown dataset.*list_datasets")
   expect_error(dataset_info("construction-permits", jurisdiction = "pinellas"),
-               "Unsupported jurisdiction.*tampa")
-  expect_identical(nrow(list_datasets("hillsborough", source = "checked")), 0L)
+               "Unknown dataset.*pinellas")
+  expect_identical(nrow(list_datasets("hillsborough", source = "checked")), 3L)
   expect_error(dataset_info(c("parks", "riverwalk")), "single nonmissing string")
   expect_error(list_datasets(NA_character_, source = "checked"), "nonmissing strings")
   expect_error(dataset_info("parks", refresh = NA), "TRUE or FALSE")

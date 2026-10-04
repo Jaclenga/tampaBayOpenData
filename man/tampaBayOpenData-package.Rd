@@ -11,7 +11,7 @@ County, and Tampa Bay Regional Planning Council ArcGIS services with
 \code{\link[=list_datasets]{list_datasets()}} or \code{\link[=search_datasets]{search_datasets()}}. \code{\link[=list_portals]{list_portals()}} reads the publisher
 configuration. Catalogs can filter jurisdiction, publisher, validation,
 geometry, topics, categories, and modification dates.
-The bundled catalog identifies 26 layers checked by package maintainers;
+The bundled catalog identifies 35 layers checked by package maintainers;
 catalog browsing defaults to all jurisdictions. Use \code{\link[=get_dataset]{get_dataset()}}
 for a checked ID or discovered layer, or \code{\link[=get_arcgis_layer]{get_arcgis_layer()}} for a direct
 compatible URL. Results are tibbles or optional \code{sf} objects;

@@ -1,28 +1,31 @@
-test_that("checked regional catalog includes three cities and can select Tampa offline", {
+test_that("checked catalog includes six publishers and can select Tampa offline", {
   local_mocked_bindings(arcgis_http = function(...) stop("unexpected network"))
   tampa <- list_datasets(jurisdiction = "tampa", source = "checked")
   regional <- list_datasets(source = "checked")
   expect_identical(nrow(tampa), 20L)
-  expect_identical(nrow(regional), 26L)
-  expect_setequal(regional$jurisdiction, c("tampa", "stpete", "clearwater"))
+  expect_identical(nrow(regional), 35L)
+  expect_setequal(regional$jurisdiction,
+                  c("tampa", "stpete", "clearwater", "hillsborough", "pinellas", "tampa-bay"))
   expect_identical(anyDuplicated(regional$id), 0L)
-  for (jurisdiction in c("stpete", "clearwater")) {
+  for (jurisdiction in c("stpete", "clearwater", "hillsborough", "pinellas", "tampa-bay")) {
     city <- list_datasets(jurisdiction = jurisdiction, source = "checked")
     expect_identical(nrow(city), 3L)
     expect_identical(unique(city$jurisdiction), jurisdiction)
     expect_gte(length(unique(city$category)), 2L)
-    expect_true(all(startsWith(city$id, paste0(jurisdiction, "-"))))
+    prefix <- if (jurisdiction == "tampa-bay") "tbrpc-" else paste0(jurisdiction, "-")
+    expect_true(all(startsWith(city$id, prefix)))
     expect_true(all(city$validation_status == "checked"))
     expect_true(all(nzchar(city$terms)))
     expect_true(all(city$id %in% regional$id))
   }
-  expect_identical(search_datasets("libraries", jurisdiction = "all",
-                                   source = "checked")$id, "clearwater-libraries")
+  expect_setequal(search_datasets("libraries", jurisdiction = "all",
+                                  source = "checked")$id,
+                  c("clearwater-libraries", "hillsborough-libraries"))
   expect_identical(search_datasets("streets", jurisdiction = "stpete",
                                    source = "checked")$id, "stpete-streets")
 })
 
-test_that("unique municipal checked IDs resolve their own jurisdiction", {
+test_that("unique regional checked IDs resolve their own jurisdiction", {
   for (id in names(regional_source_cases())) {
     case <- regional_source_cases()[[id]]
     info <- dataset_info(id)
@@ -40,7 +43,7 @@ test_that("unique municipal checked IDs resolve their own jurisdiction", {
     expect_identical(dataset_info(row)$jurisdiction, case$jurisdiction)
   }
   expect_identical(dataset_info("parks")$jurisdiction, "tampa")
-  expect_identical(nrow(list_datasets("tampa-bay", source = "checked")), 0L)
+  expect_identical(nrow(list_datasets("tampa-bay", source = "checked")), 3L)
 })
 
 test_that("all-jurisdiction lookup requires a choice when checked IDs are ambiguous", {
@@ -53,9 +56,10 @@ test_that("all-jurisdiction lookup requires a choice when checked IDs are ambigu
   expect_identical(dataset_info(entry$id, jurisdiction = "tampa")$jurisdiction, "tampa")
 })
 
-test_that("new checked municipal layers share typed pagination and provenance", {
+test_that("new checked regional layers share typed pagination and provenance", {
   for (id in names(regional_source_cases())) {
     case <- regional_source_cases()[[id]]
+    oid <- regional_oid_field(case)
     fields <- unlist(case$fields, use.names = FALSE)
     transport <- fixture_transport(metadata = case$metadata,
                                    features = regional_source_features(case))
@@ -63,10 +67,10 @@ test_that("new checked municipal layers share typed pagination and provenance", 
     result <- get_dataset(id, fields = fields, page_size = 1)
     expect_s3_class(result, "tbl_df")
     expect_identical(names(result), fields)
-    expect_identical(result$OBJECTID, c(2L, 8L, 14L))
+    expect_identical(result[[oid]], c(2L, 8L, 14L))
     expect_identical(result[[case$label_field]],
                      paste0("synthetic-", c(2L, 8L, 14L), " O'Brien & \u00e9"))
-    for (name in setdiff(fields, c("OBJECTID", case$label_field))) {
+    for (name in setdiff(fields, c(oid, case$label_field))) {
       field <- case$metadata$fields[[match(name, .field_names(case$metadata))]]
       if (field$type == "esriFieldTypeDate") expect_s3_class(result[[name]], "POSIXct")
       if (field$type %in% c("esriFieldTypeDouble", "esriFieldTypeSingle"))
@@ -90,19 +94,24 @@ test_that("new checked municipal layers share typed pagination and provenance", 
   }
 })
 
-test_that("municipal checked geometry uses response CRS and keeps missing rows", {
+test_that("regional checked geometry uses response CRS and keeps missing rows", {
   skip_if_not_installed("sf")
   for (id in names(regional_source_cases())) {
     case <- regional_source_cases()[[id]]
+    oid <- regional_oid_field(case)
     transport <- fixture_transport(metadata = case$metadata,
                                    features = regional_source_features(case))
     local_mocked_bindings(arcgis_http = transport$http)
-    result <- get_dataset(id, fields = c("OBJECTID", case$label_field),
+    result <- get_dataset(id, fields = c(oid, case$label_field),
                           spatial = TRUE, page_size = 1)
     expect_s3_class(result, "sf")
-    expect_identical(result$OBJECTID, c(2L, 8L, 14L))
+    expect_identical(result[[oid]], c(2L, 8L, 14L))
     expect_identical(sf::st_is_empty(result), c(TRUE, FALSE, FALSE))
-    expect_equal(sf::st_crs(result)$epsg, case$native_epsg)
+    if (is.null(case$native_epsg)) {
+      expect_match(sf::st_crs(result)$wkt, "Albers", ignore.case = TRUE)
+    } else {
+      expect_equal(sf::st_crs(result)$epsg, case$native_epsg)
+    }
     expect_true(all(sf::st_is_valid(result)))
     expect_true(dataset_provenance(result)$complete)
     expect_identical(dataset_provenance(result)$jurisdiction, case$jurisdiction)

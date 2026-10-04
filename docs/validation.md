@@ -4,6 +4,57 @@ These are local results on Windows 11 with R 4.5.1 or R 4.6.1 as noted.
 Each result describes the source and dependencies used for that run; live
 services can change.
 
+## Checked county and regional layers (2026-10-04)
+
+Nine checked FeatureServer layers were added: three each for Hillsborough
+County, Pinellas County, and the Tampa Bay Regional Planning Council. The
+registry now contains **35 checked layers across all six publishers**. These
+are links to live publisher services; no source feature records are bundled.
+On October 4, each source's public layer metadata, item ownership, object-ID
+field, query capabilities, reuse statement, count, object-ID list, and a
+bounded WGS 84 feature response were checked. Count queries then reported:
+
+| Checked ID | Publisher item | Live count |
+| --- | --- | ---: |
+| `hillsborough-libraries` | [Libraries](https://hillsborough.maps.arcgis.com/home/item.html?id=567d88367d4348df8e52720111008b0a) | 31 |
+| `hillsborough-sidewalks` | [Sidewalks](https://hillsborough.maps.arcgis.com/home/item.html?id=5efe0a0b335648e0ba0a7af34ff5d192) | 31,203 |
+| `hillsborough-parks` | [Parks and recreation](https://hillsborough.maps.arcgis.com/home/item.html?id=96d17f4369f14bc5b283d8863b016373) | 541 |
+| `pinellas-fire-stations` | [Fire stations](https://pinellas-egis.maps.arcgis.com/home/item.html?id=79694c385b164c57ab578db1e104cf2c) | 80 |
+| `pinellas-park-boundaries` | [Park boundaries](https://pinellas-egis.maps.arcgis.com/home/item.html?id=f2f1711bd0ba4291bbcb290fd60220d4) | 69 |
+| `pinellas-trail` | [Pinellas Trail](https://pinellas-egis.maps.arcgis.com/home/item.html?id=c3a5621e533e44148eef67784be2721f) | 36 |
+| `tbrpc-developments-of-regional-impact` | [Developments of regional impact](https://www.arcgis.com/home/item.html?id=f0f925147e714beca2ae7b723c5a0e69) | 296 |
+| `tbrpc-regional-storm-surge-zones` | [Regional storm-surge zones](https://www.arcgis.com/home/item.html?id=78308e23f12c411ebbb8cfccc58f5895) | 40 |
+| `tbrpc-regional-data-centers` | [Regional data centers](https://www.arcgis.com/home/item.html?id=3a754de6bf5f4d2791d8b27b8204dc88) | 15 |
+
+These are time-specific service counts, not promises of current size or data
+quality. The TBRPC storm-surge polygons are a historical SLOSH planning model
+clipped against a 2004 shoreline; they are not current emergency guidance.
+The data-center inventory is research-based and requires independent
+confirmation. Hillsborough's listed items state CC BY 4.0; the Pinellas items
+carry publisher disclaimers without a verified unrestricted reuse license.
+The TBRPC items' terms differ by layer; `dataset_info(id)$terms` and the linked
+item pages give the exact source statements.
+
+The full R 4.6.1 offline suite passed **3,861 assertions** with zero failures
+or warnings and 18 expected opt-in live skips. Separate bounded live tests
+passed for all 15 non-Tampa checked layers and for county discovery/retrieval.
+One regional live geometry check emitted a GDAL performance warning while
+organizing a source polygon with more than 100 parts; its assertions passed.
+The fresh archive at
+`.artifacts/release-2026-10-04-regional-checked/tampaBayOpenData_0.1.0.tar.gz`
+(SHA-256 `eabbe7f033367ecaa4c1d6c30d45936fdb8e67929bb5cae8709c95154377df05`)
+passed `R CMD check --as-cran`: **zero errors, zero
+warnings, one environment NOTE**. Vignettes, examples, and PDF/HTML manuals
+passed. The check log at
+`.artifacts/release-2026-10-04-regional-checked/tampaBayOpenData.Rcheck/00check.log`
+records that R could not verify system time remotely. This check disabled
+remote CRAN incoming checks because the shell cannot reach those hosts; it
+does not establish a fresh `pkgcheck` or CI result.
+The local pkgdown 2.2.1 preview built successfully at
+`.check/pkgdown-preview-20261004/`; its Articles index lists all four guides
+under the configured Start here and In depth groups, and its coverage guide
+shows the 35-layer catalog.
+
 ## rOpenSci preparation (2026-10-03)
 
 After the six publisher data-page links and user-agent override were added,

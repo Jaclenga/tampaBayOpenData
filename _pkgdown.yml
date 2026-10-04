@@ -14,26 +14,12 @@ template:
 
 navbar:
   structure:
-    left: [intro, articles, reference, coverage, news]
+    left: [intro, articles, reference, news]
     right: [search, github, lightswitch]
   components:
     intro:
       text: Get started
       href: articles/introduction.html
-    articles:
-      text: Articles
-      menu:
-        - text: Discovering data
-          href: articles/discovery.html
-        - text: Retrieving and downloading
-          href: articles/retrieval.html
-        - text: Coverage, provenance, and source limits
-          href: articles/coverage.html
-        - text: All articles
-          href: articles/index.html
-    coverage:
-      text: Data coverage
-      href: articles/coverage.html
     news:
       text: Changelog
       href: news/index.html

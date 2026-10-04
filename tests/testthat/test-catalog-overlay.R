@@ -38,7 +38,7 @@ test_that("live catalog rows share the checked schema and search provenance", {
   }, .package = "tampaBayOpenData")
 
   catalog <- list_datasets(max_items = 3, timeout = 12)
-  expect_identical(nrow(catalog), 27L)
+  expect_identical(nrow(catalog), 36L)
   expect_identical(names(catalog), names(checked))
   expect_identical(attr(catalog, "discovery_issues"), "one skipped portal item")
   expect_identical(attr(catalog, "discovery_failed_portals"), "tbrpc")
@@ -83,11 +83,11 @@ test_that("checked catalog stays available when live discovery fails", {
     .abort("The portal is unavailable.", subclass = "tampa_http_error")
   }, .package = "tampaBayOpenData")
   expect_warning(all <- list_datasets(), "returning checked datasets only")
-  expect_identical(nrow(all), 26L)
+  expect_identical(nrow(all), 35L)
   expect_true(all(all$validation_status == "checked"))
   expect_error(list_datasets(source = "live"), "portal is unavailable")
   expect_silent(checked <- list_datasets(source = "checked"))
-  expect_identical(nrow(checked), 26L)
+  expect_identical(nrow(checked), 35L)
 })
 
 test_that("catalog source and portal options reject invalid values", {

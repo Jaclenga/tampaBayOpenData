@@ -1,11 +1,12 @@
 # Scheduled smoke checks use the public API and fetch at most two rows per call.
 # Ordinary tests and package checks skip before any metadata or network access.
-test_that("live monitoring samples every checked city's source identity and geometry", {
+test_that("live monitoring samples every checked publisher's source identity and geometry", {
   skip_if_not(identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true"),
               "Set TAMPA_OPEN_DATA_LIVE=true to opt into scheduled source checks")
   skip_if_not_installed("sf")
   checked <- list_datasets(source = "checked", jurisdiction = "all")
-  expect_setequal(checked$jurisdiction, c("tampa", "stpete", "clearwater"))
+  expect_setequal(checked$jurisdiction,
+                  c("tampa", "stpete", "clearwater", "hillsborough", "pinellas", "tampa-bay"))
   selected <- list(
     "construction-permits" = c("OBJECTID", "RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"),
     "stpete-parks" = c("OBJECTID", "NAME"),

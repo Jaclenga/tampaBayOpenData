@@ -2,9 +2,11 @@
 
 The client discovers public ArcGIS layers from Tampa, St. Petersburg, Clearwater,
 Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning Council
-organizations. A bundled registry
-identifies 26 checked layers: 20 from Tampa and three each from St. Petersburg
-and Clearwater. It does not host government data or provide analysis.
+organizations. A bundled registry identifies 35 checked layers: 20 from Tampa
+and three each from St. Petersburg, Clearwater, Hillsborough County, Pinellas
+County, and the Tampa Bay Regional Planning Council. It does not host government
+data or provide analysis. The checked TBRPC storm surge layer is a historical
+planning model, not current emergency guidance.
 Tampa source terms and scope limits are recorded in
 [Tampa source research](research-tampa.md). Each checked entry also records its
 scope, terms, and verification date through `dataset_info(id)`.
@@ -39,12 +41,11 @@ layer URL for those cases.
 
 `list_datasets()` and `search_datasets()` combine live discovery with the
 checked registry by default. `source = "checked"` reads only
-`inst/extdata/datasets.json` and remains offline and deterministic;
+`inst/extdata/datasets.json` and remains offline and deterministic.
 Catalog functions default to `jurisdiction = "all"`; codes or vectors filter
-both checked and live results. County and regional jurisdictions are recognized
-even when they have no checked entries. The live overlay
-authenticates endpoints against all 26 checked layers regardless of the checked
-entries selected for inclusion.
+both checked and live results. The live overlay authenticates endpoints
+against all 35 checked layers regardless of which checked entries were selected
+for inclusion.
 
 `source = "live"` returns only portal-listed layers. The public catalog marks
 each row `checked` or `discovered`, deduplicates matching service/layer URLs,
@@ -53,8 +54,9 @@ not identifiers. All six configured organizations are searched by default;
 `portals` narrows them to `"city"`, `"tbrpc"`, `"stpete"`, `"clearwater"`,
 `"hillsborough"`, or `"pinellas"`.
 `list_portals()` reads the portal registry offline, exposing publisher identity
-and source locations separately from the checked layer catalog. County portals
-add live discovery without adding curated county layers.
+and source locations separately from the checked layer catalog. A portal
+configuration enables live discovery; checked county and regional layers are
+curated separately in the dataset registry.
 The registry lives in `inst/extdata/portals.json`; adding a verified publisher
 uses a registry entry rather than a new retrieval branch. Entries expose
 official evidence URLs, portal metadata URLs, and verification dates.
@@ -90,8 +92,8 @@ ArcGIS ID. `get_dataset()` resolves those same inputs, retrieves the current
 layer metadata, and applies one query engine for field and capability checks.
 The three convenience wrappers call this path. Retrieval and download functions
 retain a default `jurisdiction = "tampa"`; omitted jurisdiction also resolves a
-uniquely named checked ID across cities. Discovered rows carry their own publisher
-and jurisdiction.
+uniquely named checked ID across publishers. Discovered rows carry their own
+publisher and jurisdiction.
 
 HTTP requests use `httr2`; `jsonlite` decodes responses, and `tibble` supplies
 tabular results. Optional `sf` and GDAL decode spatial results. Source field

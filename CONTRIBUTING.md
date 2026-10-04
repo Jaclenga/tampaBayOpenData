@@ -36,10 +36,9 @@ page, layer metadata, and a small query. Record source and service URLs, layer
 ID, publisher, stable ID, geometry, useful date fields, data terms, and
 verification date. Add a fixture or test when a new schema exercises different
 behavior. The checked registry has 20 Tampa layers and three each from
-St. Petersburg and Clearwater. Live discovery supports the public ArcGIS
-organizations for these cities, Hillsborough County, Pinellas County, and the
-Tampa Bay Regional Planning Council. County discovery does not imply a checked
-county layer is in the bundled catalog.
+St. Petersburg, Clearwater, Hillsborough County, Pinellas County, and the
+Tampa Bay Regional Planning Council. Live discovery supports all six public
+ArcGIS organizations. A configured portal does not itself validate its layers.
 `get_arcgis_layer()` accepts compatible direct
 public layer URLs. Convenience functions should delegate to `get_dataset()`.
 

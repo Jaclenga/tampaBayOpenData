@@ -1,5 +1,6 @@
 ---
 title: "Discovering Tampa Bay data"
+description: "Search the checked catalog and live portals, then interpret and filter the results."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Discovering Tampa Bay data}
@@ -11,7 +12,7 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 ```
 
-`tampaBayOpenData` can search two related sources: a bundled catalog of 26
+`tampaBayOpenData` can search two related sources: a bundled catalog of 35
 maintainer-checked layers, and public ArcGIS portal indexes operated by six
 regional publishers. A checked layer has been configured and validated by the
 package maintainers. A discovered layer is a candidate found in a live portal
@@ -41,9 +42,9 @@ tampaBayOpenData::dataset_info("construction-permits")[
 `construction-permits` and `stpete-parks`, are stable package names rather than
 ArcGIS item IDs. `dataset_info(id)` reports each checked entry's scope, terms,
 source URL, and endpoint-verification date. The latter is not a record-freshness
-date. There are 20 Tampa, three St. Petersburg, and three Clearwater checked
-layers. Hillsborough County, Pinellas County, and the Tampa Bay Regional
-Planning Council are configured for live discovery but have no checked entries.
+date. There are 20 Tampa checked layers and three each from St. Petersburg,
+Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional
+Planning Council. All six publishers also support live discovery.
 
 ## Discover live portal layers
 
@@ -71,7 +72,7 @@ publisher names and source locations offline. `jurisdiction` defaults to
 `"all"` for catalog functions and can be a code or a vector of codes. A
 jurisdiction or publisher filter narrows the organizations scanned. Retrieval
 and download functions have a different default, `jurisdiction = "tampa"`;
-omitting it still resolves a uniquely named checked ID across cities.
+omitting it still resolves a uniquely named checked ID across publishers.
 
 `validation_status = "checked"` means maintainers validated the configured
 layer. `"discovered"` means the item was found in a public portal index, not

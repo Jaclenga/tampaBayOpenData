@@ -1,5 +1,6 @@
 ---
 title: "Coverage, provenance, and source limits"
+description: "Understand publisher coverage, preserve provenance, and assess source limits."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Coverage, provenance, and source limits}
@@ -30,11 +31,11 @@ from the bundled `inst/extdata/datasets.json` and `portals.json` registries.
 | Tampa | 20 | Yes |
 | St. Petersburg | 3 | Yes |
 | Clearwater | 3 | Yes |
-| Hillsborough County | 0 | Yes |
-| Pinellas County | 0 | Yes |
-| Tampa Bay Regional Planning Council | 0 | Yes |
+| Hillsborough County | 3 | Yes |
+| Pinellas County | 3 | Yes |
+| Tampa Bay Regional Planning Council | 3 | Yes |
 
-The checked catalog is a selected set of **26 city layers**, not a complete
+The checked catalog is a selected set of **35 layers**, not a complete
 inventory of each publisher's holdings. Live discovery may find other layers,
 but it is subject to portal indexing, service availability, scan limits, and
 the publishers' metadata. Neither path establishes comprehensive historical
@@ -49,6 +50,11 @@ shoreline representation and is not a legal survey. The catalog also includes
 parks, historic sites, police districts, transportation, zoning, and utility
 service areas. St. Petersburg checked layers cover parks, city boundaries,
 and streets; Clearwater layers cover park buffers, zoning, and libraries.
+Hillsborough County adds cooperative libraries, sidewalks, and parks. Pinellas
+County adds fire stations, park boundaries, and a trail. The Tampa Bay Regional
+Planning Council adds developments of regional impact, storm surge, and data
+centers. Its storm surge layer is a historical planning model, not current
+emergency guidance.
 
 Park buffers are areas around parks, rather than exact park footprints.
 These maps do not by themselves establish legal boundaries, current road
@@ -101,9 +107,9 @@ resume behavior.
 
 ## Monitoring and evidence
 
-The scheduled monitoring workflow runs twice weekly and samples the 26
-checked city layers, regional discovery, and county facilities. County
-checks use both discovery descriptors and stable IDs and verify server
+The scheduled monitoring workflow runs twice weekly and samples the 35
+checked layers across all six publishers, live discovery, and county facility
+retrievals. County checks use both discovery descriptors and stable IDs and verify server
 projection to EPSG:4326. Each retrieval requests at most two rows with
 explicit timeouts; portal scans examine at most one service item per
 publisher. The [test guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md)

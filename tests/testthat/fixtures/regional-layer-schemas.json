@@ -912,5 +912,1053 @@
       }
     },
     "verified": "2026-10-02"
+  },
+  "hillsborough-libraries": {
+    "metadata_url": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Libraries_hc/FeatureServer/0",
+    "jurisdiction": "hillsborough",
+    "publisher": "Hillsborough County",
+    "native_epsg": 2237,
+    "fields": [
+      "OBJECTID",
+      "Name_Full",
+      "Zip",
+      "created_date"
+    ],
+    "label_field": "Name_Full",
+    "metadata": {
+      "id": 0,
+      "name": "Libraries",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPoint",
+      "objectIdField": "OBJECTID",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "Address",
+          "type": "esriFieldTypeString",
+          "alias": "ADDRESS",
+          "length": 100
+        },
+        {
+          "name": "Name_Full",
+          "type": "esriFieldTypeString",
+          "alias": "Name_Full",
+          "length": 100
+        },
+        {
+          "name": "City",
+          "type": "esriFieldTypeString",
+          "alias": "City",
+          "length": 30
+        },
+        {
+          "name": "Zip",
+          "type": "esriFieldTypeDouble",
+          "alias": "Zip"
+        },
+        {
+          "name": "Type",
+          "type": "esriFieldTypeString",
+          "alias": "Type",
+          "length": 50
+        },
+        {
+          "name": "Region",
+          "type": "esriFieldTypeString",
+          "alias": "Region",
+          "length": 40
+        },
+        {
+          "name": "Name_Label",
+          "type": "esriFieldTypeString",
+          "alias": "Name_Label",
+          "length": 100
+        },
+        {
+          "name": "Library_Code",
+          "type": "esriFieldTypeString",
+          "alias": "Library_Code",
+          "length": 40
+        },
+        {
+          "name": "Website",
+          "type": "esriFieldTypeString",
+          "alias": "Website",
+          "length": 150
+        },
+        {
+          "name": "LocationID",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "LocationID"
+        },
+        {
+          "name": "created_user",
+          "type": "esriFieldTypeString",
+          "alias": "created_user",
+          "length": 255
+        },
+        {
+          "name": "created_date",
+          "type": "esriFieldTypeDate",
+          "alias": "created_date",
+          "length": 8
+        },
+        {
+          "name": "last_edited_user",
+          "type": "esriFieldTypeString",
+          "alias": "last_edited_user",
+          "length": 255
+        },
+        {
+          "name": "last_edited_date",
+          "type": "esriFieldTypeDate",
+          "alias": "last_edited_date",
+          "length": 8
+        },
+        {
+          "name": "FacilityID",
+          "type": "esriFieldTypeString",
+          "alias": "FacilityID",
+          "length": 30
+        }
+      ],
+      "maxRecordCount": 2000,
+      "capabilities": "Query",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkid": 102659,
+        "latestWkid": 2237
+      },
+      "extent": {
+        "xmin": 455158.36399169825,
+        "ymin": 1229613.880244933,
+        "xmax": 615558.7633085847,
+        "ymax": 1388063.7872595466,
+        "spatialReference": {
+          "wkid": 102659,
+          "latestWkid": 2237
+        }
+      },
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      },
+      "editingInfo": {
+        "lastEditDate": 1790550033260,
+        "schemaLastEditDate": 1730305128248,
+        "dataLastEditDate": 1790550033260
+      }
+    },
+    "verified": "2026-10-04"
+  },
+  "hillsborough-sidewalks": {
+    "metadata_url": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Sidewalks/FeatureServer/0",
+    "jurisdiction": "hillsborough",
+    "publisher": "Hillsborough County",
+    "native_epsg": 2237,
+    "fields": [
+      "OBJECTID",
+      "ASSETTYPE",
+      "WIDTH",
+      "INSP_DATE"
+    ],
+    "label_field": "ASSETTYPE",
+    "metadata": {
+      "id": 0,
+      "name": "Sidewalks",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPolyline",
+      "objectIdField": "OBJECTID",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "ASSETTYPE",
+          "type": "esriFieldTypeString",
+          "alias": "ASSET TYPE",
+          "length": 25
+        },
+        {
+          "name": "UNITID",
+          "type": "esriFieldTypeString",
+          "alias": "UNITID",
+          "length": 16
+        },
+        {
+          "name": "STREET_ID",
+          "type": "esriFieldTypeString",
+          "alias": "STREET ID",
+          "length": 8
+        },
+        {
+          "name": "WIDTH",
+          "type": "esriFieldTypeDouble",
+          "alias": "WIDTH (FT)"
+        },
+        {
+          "name": "MATERIAL",
+          "type": "esriFieldTypeString",
+          "alias": "MATERIAL",
+          "length": 6
+        },
+        {
+          "name": "OWNER",
+          "type": "esriFieldTypeString",
+          "alias": "OWNER",
+          "length": 6
+        },
+        {
+          "name": "MAINTAINER",
+          "type": "esriFieldTypeString",
+          "alias": "MAINTAINER",
+          "length": 6
+        },
+        {
+          "name": "INSP_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "LAST INSPECTION DATE",
+          "length": 8
+        },
+        {
+          "name": "INSP_TIME",
+          "type": "esriFieldTypeString",
+          "alias": "LAST INSPECTION TIME",
+          "length": 10
+        },
+        {
+          "name": "INSP_BY",
+          "type": "esriFieldTypeString",
+          "alias": "INSPECTION BY",
+          "length": 30
+        },
+        {
+          "name": "CONDITION",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "CONDITION"
+        },
+        {
+          "name": "SERV_UNIT",
+          "type": "esriFieldTypeString",
+          "alias": "SERVICE UNIT",
+          "length": 10
+        },
+        {
+          "name": "INSTALL_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "INSTALL_DATE",
+          "length": 8
+        },
+        {
+          "name": "SOURCE",
+          "type": "esriFieldTypeString",
+          "alias": "SOURCE",
+          "length": 12
+        },
+        {
+          "name": "ADD_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "ADD DATE",
+          "length": 8
+        },
+        {
+          "name": "ADD_BY",
+          "type": "esriFieldTypeString",
+          "alias": "ADD BY",
+          "length": 30
+        },
+        {
+          "name": "MOD_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "MOD DATE",
+          "length": 8
+        },
+        {
+          "name": "MOD_BY",
+          "type": "esriFieldTypeString",
+          "alias": "MOD BY",
+          "length": 30
+        },
+        {
+          "name": "MOD_WHY",
+          "type": "esriFieldTypeString",
+          "alias": "MOD WHY",
+          "length": 16
+        },
+        {
+          "name": "MEDIAKEY",
+          "type": "esriFieldTypeInteger",
+          "alias": "MEDIAKEY"
+        },
+        {
+          "name": "EXP_DATE",
+          "type": "esriFieldTypeDate",
+          "alias": "EXPIRED DATE",
+          "length": 8
+        },
+        {
+          "name": "UNITNUM",
+          "type": "esriFieldTypeInteger",
+          "alias": "UNITNUM"
+        },
+        {
+          "name": "GlobalID",
+          "type": "esriFieldTypeGlobalID",
+          "alias": "GlobalID",
+          "length": 38
+        },
+        {
+          "name": "Created_User",
+          "type": "esriFieldTypeString",
+          "alias": "Created_User",
+          "length": 255
+        },
+        {
+          "name": "Created_Date",
+          "type": "esriFieldTypeDate",
+          "alias": "Created_Date",
+          "length": 8
+        },
+        {
+          "name": "Last_Editor_User",
+          "type": "esriFieldTypeString",
+          "alias": "Last_Editor_User",
+          "length": 255
+        },
+        {
+          "name": "Last_Editor_Date",
+          "type": "esriFieldTypeDate",
+          "alias": "Last_Editor_Date",
+          "length": 8
+        },
+        {
+          "name": "Shape__Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Length"
+        }
+      ],
+      "maxRecordCount": 2000,
+      "capabilities": "Query",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkid": 102659,
+        "latestWkid": 2237
+      },
+      "extent": {
+        "xmin": 446665.31730187766,
+        "ymin": 1210542.761859073,
+        "xmax": 638007.362434972,
+        "ymax": 1396123.0033476697,
+        "spatialReference": {
+          "wkid": 102659,
+          "latestWkid": 2237
+        }
+      },
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      },
+      "editFieldsInfo": {
+        "creationDateField": "Created_Date",
+        "creatorField": "Created_User",
+        "editDateField": "Last_Editor_Date",
+        "editorField": "Last_Editor_User"
+      },
+      "editingInfo": {
+        "lastEditDate": 1790999477914,
+        "schemaLastEditDate": 1790993759720,
+        "dataLastEditDate": 1790999477914
+      }
+    },
+    "verified": "2026-10-04"
+  },
+  "hillsborough-parks": {
+    "metadata_url": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Parks_and_Recreation/FeatureServer/0",
+    "jurisdiction": "hillsborough",
+    "publisher": "Hillsborough County",
+    "native_epsg": 2237,
+    "fields": [
+      "OBJECTID_1",
+      "NAME",
+      "Shape__Area",
+      "created_date"
+    ],
+    "label_field": "NAME",
+    "metadata": {
+      "id": 0,
+      "name": "Parks_and_Recreation",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPolygon",
+      "objectIdField": "OBJECTID_1",
+      "fields": [
+        {
+          "name": "OBJECTID_1",
+          "type": "esriFieldTypeOID",
+          "alias": "ID"
+        },
+        {
+          "name": "FOLIONUMB",
+          "type": "esriFieldTypeString",
+          "alias": "Folio Numb",
+          "length": 11
+        },
+        {
+          "name": "NAME",
+          "type": "esriFieldTypeString",
+          "alias": "Name",
+          "length": 254
+        },
+        {
+          "name": "ADDR",
+          "type": "esriFieldTypeString",
+          "alias": "Address",
+          "length": 254
+        },
+        {
+          "name": "TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Type",
+          "length": 254
+        },
+        {
+          "name": "USES",
+          "type": "esriFieldTypeString",
+          "alias": "Uses",
+          "length": 20
+        },
+        {
+          "name": "PROPOWNER",
+          "type": "esriFieldTypeString",
+          "alias": "Owner",
+          "length": 254
+        },
+        {
+          "name": "PROPMNG",
+          "type": "esriFieldTypeString",
+          "alias": "Managed by",
+          "length": 254
+        },
+        {
+          "name": "GlobalID",
+          "type": "esriFieldTypeGlobalID",
+          "alias": "GlobalID",
+          "length": 38
+        },
+        {
+          "name": "created_user",
+          "type": "esriFieldTypeString",
+          "alias": "User",
+          "length": 255
+        },
+        {
+          "name": "created_date",
+          "type": "esriFieldTypeDate",
+          "alias": "Date",
+          "length": 8
+        },
+        {
+          "name": "last_edited_user",
+          "type": "esriFieldTypeString",
+          "alias": "Edit User",
+          "length": 255
+        },
+        {
+          "name": "last_edited_date",
+          "type": "esriFieldTypeDate",
+          "alias": "Edit Date",
+          "length": 8
+        },
+        {
+          "name": "Shape__Area",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Area"
+        },
+        {
+          "name": "Shape__Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Length"
+        }
+      ],
+      "maxRecordCount": 2000,
+      "capabilities": "Query,Extract",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkid": 102659,
+        "latestWkid": 2237
+      },
+      "extent": {
+        "xmin": 449206.61996366835,
+        "ymin": 1211156.8270692527,
+        "xmax": 634243.6970672496,
+        "ymax": 1395833.362243004,
+        "spatialReference": {
+          "wkid": 102659,
+          "latestWkid": 2237
+        }
+      },
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      },
+      "editFieldsInfo": {
+        "creationDateField": "created_date",
+        "creatorField": "created_user",
+        "editDateField": "last_edited_date",
+        "editorField": "last_edited_user"
+      },
+      "editingInfo": {
+        "lastEditDate": 1742816812904,
+        "schemaLastEditDate": 1699885511099,
+        "dataLastEditDate": 1699885511099
+      }
+    },
+    "verified": "2026-10-04"
+  },
+  "pinellas-fire-stations": {
+    "metadata_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PSSFireStation_view/FeatureServer/0",
+    "jurisdiction": "pinellas",
+    "publisher": "Pinellas County",
+    "native_epsg": 3857,
+    "fields": [
+      "OBJECTID",
+      "NAME",
+      "RESTORATIONPRIORITY",
+      "int_edited_date"
+    ],
+    "label_field": "NAME",
+    "metadata": {
+      "id": 0,
+      "name": "PSSFireStation",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPoint",
+      "objectIdField": "OBJECTID",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "NAME",
+          "type": "esriFieldTypeString",
+          "alias": "Name",
+          "length": 255
+        },
+        {
+          "name": "RESTORATIONPRIORITY",
+          "type": "esriFieldTypeDouble",
+          "alias": "Restoration Priority"
+        },
+        {
+          "name": "int_created_date",
+          "type": "esriFieldTypeDate",
+          "alias": "Internal Created Date",
+          "length": 8
+        },
+        {
+          "name": "int_edited_date",
+          "type": "esriFieldTypeDate",
+          "alias": "Internal Edited Date",
+          "length": 8
+        }
+      ],
+      "maxRecordCount": 1000,
+      "capabilities": "Query",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkid": 102100,
+        "latestWkid": 3857
+      },
+      "extent": {
+        "xmin": -9223054.017268993,
+        "ymin": 3207841.803220905,
+        "xmax": -9195472.362529414,
+        "ymax": 3270065.4615677944,
+        "spatialReference": {
+          "wkid": 102100,
+          "latestWkid": 3857
+        }
+      },
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      },
+      "editingInfo": {
+        "lastEditDate": 1791124385198,
+        "schemaLastEditDate": 1791124385198,
+        "dataLastEditDate": 1791124385198
+      }
+    },
+    "verified": "2026-10-04"
+  },
+  "pinellas-park-boundaries": {
+    "metadata_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_ParkBoundaries_view/FeatureServer/0",
+    "jurisdiction": "pinellas",
+    "publisher": "Pinellas County",
+    "native_epsg": 3857,
+    "fields": [
+      "OBJECTID",
+      "SITE_NAME",
+      "GISACRES",
+      "int_edited_date"
+    ],
+    "label_field": "SITE_NAME",
+    "metadata": {
+      "id": 0,
+      "name": "ParkBoundaries",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPolygon",
+      "objectIdField": "OBJECTID",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "SITE_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "Site Name",
+          "length": 255
+        },
+        {
+          "name": "GISACRES",
+          "type": "esriFieldTypeDouble",
+          "alias": "GIS Acres"
+        },
+        {
+          "name": "int_created_date",
+          "type": "esriFieldTypeDate",
+          "alias": "Internal Created Date",
+          "length": 8
+        },
+        {
+          "name": "int_edited_date",
+          "type": "esriFieldTypeDate",
+          "alias": "Internal Edited Date",
+          "length": 8
+        }
+      ],
+      "maxRecordCount": 1000,
+      "capabilities": "Query",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkid": 102100,
+        "latestWkid": 3857
+      },
+      "extent": {
+        "xmin": -9222951.519307554,
+        "ymin": 3199875.3542838558,
+        "xmax": -9193480.385221815,
+        "ymax": 3270925.927174476,
+        "spatialReference": {
+          "wkid": 102100,
+          "latestWkid": 3857
+        }
+      },
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      },
+      "editingInfo": {
+        "lastEditDate": 1791058513380,
+        "schemaLastEditDate": 1791058513380,
+        "dataLastEditDate": 1791058513380
+      }
+    },
+    "verified": "2026-10-04"
+  },
+  "pinellas-trail": {
+    "metadata_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PinellasTrail_view/FeatureServer/0",
+    "jurisdiction": "pinellas",
+    "publisher": "Pinellas County",
+    "native_epsg": 3857,
+    "fields": [
+      "OBJECTID",
+      "NAME",
+      "LENGTH",
+      "INSTALLDATE"
+    ],
+    "label_field": "NAME",
+    "metadata": {
+      "id": 0,
+      "name": "PinellasTrail",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPolyline",
+      "objectIdField": "OBJECTID",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "NAME",
+          "type": "esriFieldTypeString",
+          "alias": "NAME",
+          "length": 254
+        },
+        {
+          "name": "LENGTH",
+          "type": "esriFieldTypeDouble",
+          "alias": "Length"
+        },
+        {
+          "name": "INSTALLDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "Install Date",
+          "length": 8
+        },
+        {
+          "name": "CONDITIONDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "Condition Date",
+          "length": 8
+        },
+        {
+          "name": "LASTINSPECTIONDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "Last Inspection Date",
+          "length": 8
+        },
+        {
+          "name": "WARRANTYDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "Warranty Date",
+          "length": 8
+        },
+        {
+          "name": "int_created_date",
+          "type": "esriFieldTypeDate",
+          "alias": "Internal Created Date",
+          "length": 8
+        },
+        {
+          "name": "int_edited_date",
+          "type": "esriFieldTypeDate",
+          "alias": "Internal Edited Date",
+          "length": 8
+        },
+        {
+          "name": "ENDOFLIFEDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "End of Life Date",
+          "length": 8
+        },
+        {
+          "name": "CRITICALITYDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "BRE Date",
+          "length": 8
+        },
+        {
+          "name": "REPLACEMENTCOSTDATE",
+          "type": "esriFieldTypeDate",
+          "alias": "Replacement Cost Date",
+          "length": 8
+        }
+      ],
+      "maxRecordCount": 1000,
+      "capabilities": "Query",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkid": 102100,
+        "latestWkid": 3857
+      },
+      "extent": {
+        "xmin": -9219283.599138245,
+        "ymin": 3218995.262880704,
+        "xmax": -9197454.934381574,
+        "ymax": 3270876.841210067,
+        "spatialReference": {
+          "wkid": 102100,
+          "latestWkid": 3857
+        }
+      },
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      },
+      "editingInfo": {
+        "lastEditDate": 1790985405383,
+        "schemaLastEditDate": 1790985405383,
+        "dataLastEditDate": 1790985405383
+      }
+    },
+    "verified": "2026-10-04"
+  },
+  "tbrpc-developments-of-regional-impact": {
+    "metadata_url": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Developments_of_Regional_Impact/FeatureServer/0",
+    "jurisdiction": "tampa-bay",
+    "publisher": "Tampa Bay Regional Planning Council",
+    "native_epsg": 26917,
+    "synthetic_origin": [
+      350000,
+      3080000
+    ],
+    "fields": [
+      "FID",
+      "DRINAME",
+      "COUNTY1",
+      "DRINUM",
+      "created_da"
+    ],
+    "label_field": "DRINAME",
+    "metadata": {
+      "id": 0,
+      "name": "dri",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPolygon",
+      "objectIdField": "FID",
+      "fields": [
+        {
+          "name": "FID",
+          "type": "esriFieldTypeOID",
+          "alias": "FID"
+        },
+        {
+          "name": "COUNTY1",
+          "type": "esriFieldTypeString",
+          "alias": "COUNTY1",
+          "length": 2
+        },
+        {
+          "name": "DRINAME",
+          "type": "esriFieldTypeString",
+          "alias": "DRINAME",
+          "length": 35
+        },
+        {
+          "name": "DRINUM",
+          "type": "esriFieldTypeInteger",
+          "alias": "DRINUM"
+        },
+        {
+          "name": "created_da",
+          "type": "esriFieldTypeDate",
+          "alias": "created_da",
+          "length": 8
+        },
+        {
+          "name": "last_edi_1",
+          "type": "esriFieldTypeDate",
+          "alias": "last_edi_1",
+          "length": 8
+        }
+      ],
+      "maxRecordCount": 2000,
+      "capabilities": "Query",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkid": 26917,
+        "latestWkid": 26917,
+        "vcsWkid": 5703,
+        "latestVcsWkid": 5703
+      },
+      "extent": {
+        "xmin": 319896,
+        "ymin": 3009961.1943999995,
+        "xmax": 396104.12630000035,
+        "ymax": 3146319,
+        "spatialReference": {
+          "wkid": 26917,
+          "latestWkid": 26917,
+          "vcsWkid": 5703,
+          "latestVcsWkid": 5703
+        }
+      },
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      }
+    },
+    "verified": "2026-10-04"
+  },
+  "tbrpc-regional-storm-surge-zones": {
+    "metadata_url": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/region_storm_surge_zones/FeatureServer/0",
+    "jurisdiction": "tampa-bay",
+    "publisher": "Tampa Bay Regional Planning Council",
+    "native_epsg": null,
+    "synthetic_origin": [
+      400000,
+      400000
+    ],
+    "fields": [
+      "OBJECTID_1",
+      "CAT",
+      "COUNTY",
+      "Shape__Area"
+    ],
+    "label_field": "CAT",
+    "metadata": {
+      "id": 0,
+      "name": "region_storm_surge_zones",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPolygon",
+      "objectIdField": "OBJECTID_1",
+      "fields": [
+        {
+          "name": "OBJECTID_1",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID_1"
+        },
+        {
+          "name": "CAT",
+          "type": "esriFieldTypeString",
+          "alias": "CAT",
+          "length": 8
+        },
+        {
+          "name": "COUNTY",
+          "type": "esriFieldTypeString",
+          "alias": "COUNTY",
+          "length": 20
+        },
+        {
+          "name": "Shape__Area",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Area"
+        }
+      ],
+      "maxRecordCount": 2000,
+      "capabilities": "Query",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkt": "PROJCS[\"FDEP_Albers_HARN\",GEOGCS[\"GCS_North_American_1983_HARN\",DATUM[\"D_North_American_1983_HARN\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"False_Easting\",400000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-84.0],PARAMETER[\"Standard_Parallel_1\",24.0],PARAMETER[\"Standard_Parallel_2\",31.5],PARAMETER[\"Latitude_Of_Origin\",24.0],UNIT[\"Meter\",1.0]]"
+      },
+      "extent": {
+        "xmin": 510750.0546150417,
+        "ymin": 362821.2704707589,
+        "xmax": 580529.7907265503,
+        "ymax": 562160.715304181,
+        "spatialReference": {
+          "wkt": "PROJCS[\"FDEP_Albers_HARN\",GEOGCS[\"GCS_North_American_1983_HARN\",DATUM[\"D_North_American_1983_HARN\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"False_Easting\",400000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-84.0],PARAMETER[\"Standard_Parallel_1\",24.0],PARAMETER[\"Standard_Parallel_2\",31.5],PARAMETER[\"Latitude_Of_Origin\",24.0],UNIT[\"Meter\",1.0]]"
+        }
+      },
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      }
+    },
+    "verified": "2026-10-04"
+  },
+  "tbrpc-regional-data-centers": {
+    "metadata_url": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Tampa_Bay_Region_Data_Centers/FeatureServer/0",
+    "jurisdiction": "tampa-bay",
+    "publisher": "Tampa Bay Regional Planning Council",
+    "native_epsg": 4326,
+    "synthetic_origin": [
+      -82.5,
+      28.5
+    ],
+    "fields": [
+      "OBJECTID",
+      "Name",
+      "County",
+      "Latitude",
+      "Status"
+    ],
+    "label_field": "Name",
+    "metadata": {
+      "id": 0,
+      "name": "tb_region_data_centers_human_scrubbed_XYTableToPoint",
+      "type": "Feature Layer",
+      "geometryType": "esriGeometryPoint",
+      "objectIdField": "OBJECTID",
+      "fields": [
+        {
+          "name": "OBJECTID",
+          "type": "esriFieldTypeOID",
+          "alias": "OBJECTID"
+        },
+        {
+          "name": "Name",
+          "type": "esriFieldTypeString",
+          "alias": "Name",
+          "length": 8000
+        },
+        {
+          "name": "County",
+          "type": "esriFieldTypeString",
+          "alias": "County",
+          "length": 8000
+        },
+        {
+          "name": "Latitude",
+          "type": "esriFieldTypeDouble",
+          "alias": "Latitude"
+        },
+        {
+          "name": "Status",
+          "type": "esriFieldTypeString",
+          "alias": "Status",
+          "length": 8000
+        }
+      ],
+      "maxRecordCount": 2000,
+      "capabilities": "Query",
+      "advancedQueryCapabilities": {
+        "supportsPagination": true,
+        "supportsOrderBy": true
+      },
+      "spatialReference": {
+        "wkid": 4326,
+        "latestWkid": 4326
+      },
+      "extent": {
+        "xmin": -82.74279999999999,
+        "ymin": 27.869200000000035,
+        "xmax": -82.32739999999995,
+        "ymax": 28.96900000000005,
+        "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+        }
+      },
+      "dateFieldsTimeReference": {
+        "timeZone": "UTC",
+        "timeZoneIANA": "Etc/UTC",
+        "respectsDaylightSaving": false
+      }
+    },
+    "verified": "2026-10-04"
   }
 }

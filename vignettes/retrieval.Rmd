@@ -1,5 +1,6 @@
 ---
 title: "Retrieving and downloading data"
+description: "Retrieve and download records or spatial layers with integrity checks."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Retrieving and downloading data}

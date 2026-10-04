@@ -1,5 +1,6 @@
 ---
 title: "Get started with Tampa Bay open data"
+description: "Find a dataset, retrieve its records, work with spatial data, and trace its source."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Get started with Tampa Bay open data}
@@ -14,7 +15,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 `tampaBayOpenData` gives R users one interface for finding and retrieving
 public ArcGIS data from Tampa, St. Petersburg, Clearwater, Hillsborough
 County, Pinellas County, and the Tampa Bay Regional Planning Council. It
-bundles 26 maintainer-checked city layers and also discovers public layers
+bundles 35 maintainer-checked layers and also discovers public layers
 from the six live organizations. Results are R tibbles or optional `sf`
 objects with source provenance and completeness information.
 

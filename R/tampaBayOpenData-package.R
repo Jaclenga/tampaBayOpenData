@@ -5,7 +5,7 @@
 #' [list_datasets()] or [search_datasets()]. [list_portals()] reads the publisher
 #' configuration. Catalogs can filter jurisdiction, publisher, validation,
 #' geometry, topics, categories, and modification dates.
-#' The bundled catalog identifies 26 layers checked by package maintainers;
+#' The bundled catalog identifies 35 layers checked by package maintainers;
 #' catalog browsing defaults to all jurisdictions. Use [get_dataset()]
 #' for a checked ID or discovered layer, or [get_arcgis_layer()] for a direct
 #' compatible URL. Results are tibbles or optional `sf` objects;

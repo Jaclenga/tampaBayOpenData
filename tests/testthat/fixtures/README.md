@@ -34,11 +34,12 @@ when the endpoint also appears as a separate checked registry entry.
 
 ## Checked regional schemas
 
-`regional-layer-schemas.json` contains trimmed metadata for three checked
-St. Petersburg layers (parks, city boundaries, and streets) and three checked
-Clearwater layers (park buffers, zoning, and libraries). It preserves their
-actual object-ID fields, source field types, geometry, query limits, and CRS
-differences. In particular, Clearwater's zoning and library MapServer outputs
-use EPSG:3857 even though their underlying source references differ. All test
-features remain synthetic; raw research snapshots and retrieved records are
-excluded from the package source.
+`regional-layer-schemas.json` contains trimmed metadata for 15 checked layers:
+three each from St. Petersburg, Clearwater, Hillsborough County, Pinellas
+County, and the Tampa Bay Regional Planning Council. It preserves the source
+object-ID and date fields, selected attribute types, geometry, query limits,
+and CRS differences. In particular, Clearwater's zoning and library MapServer
+outputs use EPSG:3857 even though their underlying source references differ;
+the Council's historical storm-surge layer supplies a native Albers HARN WKT
+without an EPSG authority ID. All test attributes and coordinates are
+synthetic; no source feature records are bundled.

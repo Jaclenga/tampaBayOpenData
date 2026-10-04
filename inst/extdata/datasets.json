@@ -1164,5 +1164,459 @@
     "supports_order_by": true,
     "date_time_reference": null,
     "scope_note": "Library points are facility locations, not a guarantee of opening hours or currently available services. The response uses Web Mercator; the stored source CRS is different."
+  },
+  {
+    "id": "hillsborough-libraries",
+    "title": "Hillsborough County libraries",
+    "description": "Locations of Hillsborough County Public Library Cooperative headquarters and branches, with library names and addresses.",
+    "jurisdiction": "hillsborough",
+    "publisher": "Hillsborough County",
+    "source_url": "https://hillsborough.maps.arcgis.com/home/item.html?id=567d88367d4348df8e52720111008b0a",
+    "service_url": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Libraries_hc/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "Libraries",
+    "geometry_type": "esriGeometryPoint",
+    "date_fields": [
+      "created_date",
+      "last_edited_date"
+    ],
+    "category": "Public facilities",
+    "tags": [
+      "libraries",
+      "public facilities",
+      "community"
+    ],
+    "verified": "2026-10-04",
+    "terms": "The Hillsborough County publisher item states Creative Commons Attribution 4.0 International (CC BY 4.0) terms, which require attribution. Source: https://hillsborough.maps.arcgis.com/sharing/rest/content/items/567d88367d4348df8e52720111008b0a?f=pjson",
+    "terms_url": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/567d88367d4348df8e52720111008b0a?f=pjson",
+    "license_info": "CC BY 4.0",
+    "license_source": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/567d88367d4348df8e52720111008b0a?f=pjson",
+    "publisher_evidence": [
+      "https://hcfl.gov/about-hillsborough/open-data-and-gis/geohub",
+      "https://hillsborough.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Libraries_hc/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "These are reference locations for cooperative libraries; consult the library system for current hours and services. The item includes Plant City and Temple Terrace partners.",
+    "item_id": "567d88367d4348df8e52720111008b0a",
+    "portal": "https://hillsborough.maps.arcgis.com/sharing/rest",
+    "upstream_modified": "2024-10-30T16:18:51+00:00"
+  },
+  {
+    "id": "hillsborough-sidewalks",
+    "title": "Hillsborough County sidewalks",
+    "description": "Sidewalk centerlines from the county public works asset inventory, with source ownership, condition, width, and material attributes.",
+    "jurisdiction": "hillsborough",
+    "publisher": "Hillsborough County",
+    "source_url": "https://hillsborough.maps.arcgis.com/home/item.html?id=5efe0a0b335648e0ba0a7af34ff5d192",
+    "service_url": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Sidewalks/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "Sidewalks",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [
+      "INSP_DATE",
+      "INSTALL_DATE",
+      "ADD_DATE",
+      "MOD_DATE",
+      "EXP_DATE",
+      "Created_Date",
+      "Last_Editor_Date"
+    ],
+    "category": "Transportation",
+    "tags": [
+      "sidewalks",
+      "pedestrian",
+      "transportation",
+      "infrastructure"
+    ],
+    "verified": "2026-10-04",
+    "terms": "The Hillsborough County publisher item states Creative Commons Attribution 4.0 International (CC BY 4.0) terms, which require attribution. Source: https://hillsborough.maps.arcgis.com/sharing/rest/content/items/5efe0a0b335648e0ba0a7af34ff5d192?f=pjson",
+    "terms_url": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/5efe0a0b335648e0ba0a7af34ff5d192?f=pjson",
+    "license_info": "CC BY 4.0",
+    "license_source": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/5efe0a0b335648e0ba0a7af34ff5d192?f=pjson",
+    "publisher_evidence": [
+      "https://hcfl.gov/about-hillsborough/open-data-and-gis/geohub",
+      "https://hillsborough.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Sidewalks/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "The source compiled centerlines from aerial photography and multiple edits at varying scales and accuracies. These GIS assets do not establish current access, accessibility compliance, or safe routing.",
+    "item_id": "5efe0a0b335648e0ba0a7af34ff5d192",
+    "portal": "https://hillsborough.maps.arcgis.com/sharing/rest",
+    "upstream_modified": "2025-02-27T20:18:51+00:00"
+  },
+  {
+    "id": "hillsborough-parks",
+    "title": "Hillsborough County parks and recreation properties",
+    "description": "Polygon boundaries of properties managed by the county Parks & Recreation Department, with source names, types, and ownership attributes.",
+    "jurisdiction": "hillsborough",
+    "publisher": "Hillsborough County",
+    "source_url": "https://hillsborough.maps.arcgis.com/home/item.html?id=96d17f4369f14bc5b283d8863b016373",
+    "service_url": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Parks_and_Recreation/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "Parks_and_Recreation",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "created_date",
+      "last_edited_date"
+    ],
+    "category": "Recreation",
+    "tags": [
+      "parks",
+      "recreation",
+      "property",
+      "open space"
+    ],
+    "verified": "2026-10-04",
+    "terms": "The Hillsborough County publisher item states Creative Commons Attribution 4.0 International (CC BY 4.0) terms, which require attribution. Source: https://hillsborough.maps.arcgis.com/sharing/rest/content/items/96d17f4369f14bc5b283d8863b016373?f=pjson",
+    "terms_url": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/96d17f4369f14bc5b283d8863b016373?f=pjson",
+    "license_info": "CC BY 4.0",
+    "license_source": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/96d17f4369f14bc5b283d8863b016373?f=pjson",
+    "publisher_evidence": [
+      "https://hcfl.gov/about-hillsborough/open-data-and-gis/geohub",
+      "https://hillsborough.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Parks_and_Recreation/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID_1",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "These are managed property polygons, not legal boundaries or a guarantee of public access or operating hours. The publisher says updates occur as property status changes.",
+    "item_id": "96d17f4369f14bc5b283d8863b016373",
+    "portal": "https://hillsborough.maps.arcgis.com/sharing/rest",
+    "upstream_modified": "2025-03-24T11:46:54+00:00"
+  },
+  {
+    "id": "pinellas-fire-stations",
+    "title": "Pinellas County fire stations",
+    "description": "Fire-station locations and county-provided station, address, agency, and status attributes.",
+    "jurisdiction": "pinellas",
+    "publisher": "Pinellas County",
+    "source_url": "https://pinellas-egis.maps.arcgis.com/home/item.html?id=79694c385b164c57ab578db1e104cf2c",
+    "service_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PSSFireStation_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "PSSFireStation",
+    "geometry_type": "esriGeometryPoint",
+    "date_fields": [
+      "int_created_date",
+      "int_edited_date"
+    ],
+    "category": "Public safety",
+    "tags": [
+      "fire stations",
+      "emergency services",
+      "public safety"
+    ],
+    "verified": "2026-10-04",
+    "terms": "The county ArcGIS item offers the data as is, without an accuracy or completeness warranty, and says it is for reference rather than survey precision. It does not declare an unrestricted reuse license. Source: https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/79694c385b164c57ab578db1e104cf2c?f=pjson",
+    "terms_url": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/79694c385b164c57ab578db1e104cf2c?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/79694c385b164c57ab578db1e104cf2c?f=pjson",
+    "publisher_evidence": [
+      "https://pinellas.gov/services/maps-gis/",
+      "https://pinellas-egis.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PSSFireStation_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "The county describes station locations and attributes. Operational status is a source attribute, not a guarantee of current response availability. Public fields include contact information, which retrieval passes through without enrichment.",
+    "item_id": "79694c385b164c57ab578db1e104cf2c",
+    "portal": "https://pinellas-egis.maps.arcgis.com/sharing/rest",
+    "upstream_modified": "2026-10-04T14:33:06+00:00"
+  },
+  {
+    "id": "pinellas-park-boundaries",
+    "title": "Pinellas County park boundaries",
+    "description": "County-owned or managed parks, preserves, beach access, marina, and related areas represented by planning polygons.",
+    "jurisdiction": "pinellas",
+    "publisher": "Pinellas County",
+    "source_url": "https://pinellas-egis.maps.arcgis.com/home/item.html?id=f2f1711bd0ba4291bbcb290fd60220d4",
+    "service_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_ParkBoundaries_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "ParkBoundaries",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "int_created_date",
+      "int_edited_date"
+    ],
+    "category": "Recreation",
+    "tags": [
+      "parks",
+      "preserves",
+      "boundaries",
+      "recreation"
+    ],
+    "verified": "2026-10-04",
+    "terms": "The county ArcGIS item offers the data as is, without an accuracy or completeness warranty, and says it is for reference rather than survey precision. It does not declare an unrestricted reuse license. Source: https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/f2f1711bd0ba4291bbcb290fd60220d4?f=pjson",
+    "terms_url": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/f2f1711bd0ba4291bbcb290fd60220d4?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/f2f1711bd0ba4291bbcb290fd60220d4?f=pjson",
+    "publisher_evidence": [
+      "https://pinellas.gov/services/maps-gis/",
+      "https://pinellas-egis.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_ParkBoundaries_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "The county says these boundaries are primarily parcel based and sometimes extend through rights-of-way. They are planning and visual reference data, not survey-precision property boundaries or a guarantee of public access.",
+    "item_id": "f2f1711bd0ba4291bbcb290fd60220d4",
+    "portal": "https://pinellas-egis.maps.arcgis.com/sharing/rest",
+    "upstream_modified": "2026-10-03T20:15:14+00:00"
+  },
+  {
+    "id": "pinellas-trail",
+    "title": "Pinellas Trail segments",
+    "description": "Pinellas Trail line segments and Parks and Conservation Resources asset attributes, including surface and condition fields.",
+    "jurisdiction": "pinellas",
+    "publisher": "Pinellas County",
+    "source_url": "https://pinellas-egis.maps.arcgis.com/home/item.html?id=c3a5621e533e44148eef67784be2721f",
+    "service_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PinellasTrail_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "PinellasTrail",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [
+      "INSTALLDATE",
+      "CONDITIONDATE",
+      "LASTINSPECTIONDATE",
+      "WARRANTYDATE",
+      "int_created_date",
+      "int_edited_date",
+      "ENDOFLIFEDATE",
+      "CRITICALITYDATE",
+      "REPLACEMENTCOSTDATE"
+    ],
+    "category": "Recreation",
+    "tags": [
+      "Pinellas Trail",
+      "trails",
+      "cycling",
+      "recreation"
+    ],
+    "verified": "2026-10-04",
+    "terms": "The county ArcGIS item offers the data as is, without an accuracy or completeness warranty, and says it is for reference rather than survey precision. It does not declare an unrestricted reuse license. Source: https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/c3a5621e533e44148eef67784be2721f?f=pjson",
+    "terms_url": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/c3a5621e533e44148eef67784be2721f?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/c3a5621e533e44148eef67784be2721f?f=pjson",
+    "publisher_evidence": [
+      "https://pinellas.gov/services/maps-gis/",
+      "https://pinellas-egis.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PinellasTrail_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "This is a county parks asset layer; its condition and lifecycle fields should not be read as current trail openings, safety advice, or survey-precision rights-of-way.",
+    "item_id": "c3a5621e533e44148eef67784be2721f",
+    "portal": "https://pinellas-egis.maps.arcgis.com/sharing/rest",
+    "upstream_modified": "2026-10-02T23:56:46+00:00"
+  },
+  {
+    "id": "tbrpc-developments-of-regional-impact",
+    "title": "Developments of regional impact",
+    "description": "Boundaries of large-scale developments reviewed as developments of regional impact in the Tampa Bay region.",
+    "jurisdiction": "tampa-bay",
+    "publisher": "Tampa Bay Regional Planning Council",
+    "source_url": "https://www.arcgis.com/home/item.html?id=f0f925147e714beca2ae7b723c5a0e69",
+    "service_url": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Developments_of_Regional_Impact/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "dri",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "created_da",
+      "last_edi_1"
+    ],
+    "category": "Development",
+    "tags": [
+      "regional planning",
+      "development",
+      "DRI",
+      "boundaries"
+    ],
+    "verified": "2026-10-04",
+    "terms": "The ArcGIS item instructs users to check source, scale, accuracy, and currentness; it requests acknowledgement of the Florida Regional Planning Councils and Florida Division of Emergency Management. It does not state a permissive reuse license. Source: https://www.arcgis.com/sharing/rest/content/items/f0f925147e714beca2ae7b723c5a0e69?f=pjson",
+    "terms_url": "https://www.arcgis.com/sharing/rest/content/items/f0f925147e714beca2ae7b723c5a0e69?f=pjson",
+    "license_info": "No explicit permissive reuse license stated; source verification and acknowledgement requested",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/f0f925147e714beca2ae7b723c5a0e69?f=pjson",
+    "item_id": "f0f925147e714beca2ae7b723c5a0e69",
+    "publisher_evidence": [
+      "https://tbrpc.org/arcgis-geohub/",
+      "https://www.arcgis.com/sharing/rest/portals/RgIBbQIF0Y6T3AX6?f=pjson",
+      "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Developments_of_Regional_Impact/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 26917,
+      "latestWkid": 26917,
+      "vcsWkid": 5703,
+      "latestVcsWkid": 5703
+    },
+    "object_id_field": "FID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2023-03-29T02:15:39+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "This is a DRI planning boundary snapshot whose ArcGIS item was last modified in March 2023. It is not a current inventory of all development applications or a legal parcel boundary. Confirm project status, scale, and accuracy with the Council and local reviewing agencies.",
+    "portal": "https://www.arcgis.com/sharing/rest"
+  },
+  {
+    "id": "tbrpc-regional-storm-surge-zones",
+    "title": "Regional storm-surge zones (historical model)",
+    "description": "Storm-surge planning polygons for the TBRPC region derived from SLOSH maximum-of-maximums modeling.",
+    "jurisdiction": "tampa-bay",
+    "publisher": "Tampa Bay Regional Planning Council",
+    "source_url": "https://www.arcgis.com/home/item.html?id=78308e23f12c411ebbb8cfccc58f5895",
+    "service_url": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/region_storm_surge_zones/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "region_storm_surge_zones",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [],
+    "category": "Hazards",
+    "tags": [
+      "storm surge",
+      "SLOSH",
+      "hazards",
+      "planning"
+    ],
+    "verified": "2026-10-04",
+    "terms": "The ArcGIS item instructs users to check source, scale, accuracy, and currentness; it requests acknowledgement of the Florida Regional Planning Councils and Florida Division of Emergency Management. It does not state a permissive reuse license. Source: https://www.arcgis.com/sharing/rest/content/items/78308e23f12c411ebbb8cfccc58f5895?f=pjson",
+    "terms_url": "https://www.arcgis.com/sharing/rest/content/items/78308e23f12c411ebbb8cfccc58f5895?f=pjson",
+    "license_info": "No explicit permissive reuse license stated; source verification and acknowledgement requested",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/78308e23f12c411ebbb8cfccc58f5895?f=pjson",
+    "item_id": "78308e23f12c411ebbb8cfccc58f5895",
+    "publisher_evidence": [
+      "https://tbrpc.org/arcgis-geohub/",
+      "https://www.arcgis.com/sharing/rest/portals/RgIBbQIF0Y6T3AX6?f=pjson",
+      "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/region_storm_surge_zones/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkt": "PROJCS[\"FDEP_Albers_HARN\",GEOGCS[\"GCS_North_American_1983_HARN\",DATUM[\"D_North_American_1983_HARN\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"False_Easting\",400000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-84.0],PARAMETER[\"Standard_Parallel_1\",24.0],PARAMETER[\"Standard_Parallel_2\",31.5],PARAMETER[\"Latitude_Of_Origin\",24.0],UNIT[\"Meter\",1.0]]"
+    },
+    "object_id_field": "OBJECTID_1",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2021-11-03T16:56:33+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Historical SLOSH maximum-of-maximums planning product. The layer description says it was clipped against a 2004 shoreline, and its ArcGIS item was last modified in November 2021. These polygons are not a current forecast, an evacuation order, or current emergency guidance. Use current official county and emergency-management sources for decisions. The native CRS is FDEP Albers HARN supplied as WKT only; request out_sr = 4326 for a standard output CRS.",
+    "portal": "https://www.arcgis.com/sharing/rest"
+  },
+  {
+    "id": "tbrpc-regional-data-centers",
+    "title": "Tampa Bay region data centers",
+    "description": "Point inventory of data-center locations in the Tampa Bay region compiled by the TBRPC.",
+    "jurisdiction": "tampa-bay",
+    "publisher": "Tampa Bay Regional Planning Council",
+    "source_url": "https://www.arcgis.com/home/item.html?id=3a754de6bf5f4d2791d8b27b8204dc88",
+    "service_url": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Tampa_Bay_Region_Data_Centers/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "tb_region_data_centers_human_scrubbed_XYTableToPoint",
+    "geometry_type": "esriGeometryPoint",
+    "date_fields": [],
+    "category": "Infrastructure",
+    "tags": [
+      "data centers",
+      "infrastructure",
+      "regional planning"
+    ],
+    "verified": "2026-10-04",
+    "terms": "The ArcGIS item states 'No restrictions' and asks users to contact the Council about outdated or missing data. Source and completeness limitations still apply. Source: https://www.arcgis.com/sharing/rest/content/items/3a754de6bf5f4d2791d8b27b8204dc88?f=pjson",
+    "terms_url": "https://www.arcgis.com/sharing/rest/content/items/3a754de6bf5f4d2791d8b27b8204dc88?f=pjson",
+    "license_info": "No restrictions",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/3a754de6bf5f4d2791d8b27b8204dc88?f=pjson",
+    "item_id": "3a754de6bf5f4d2791d8b27b8204dc88",
+    "publisher_evidence": [
+      "https://tbrpc.org/arcgis-geohub/",
+      "https://www.arcgis.com/sharing/rest/portals/RgIBbQIF0Y6T3AX6?f=pjson",
+      "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Tampa_Bay_Region_Data_Centers/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 4326,
+      "latestWkid": 4326
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-08-05T15:58:51+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Research inventory based on websites, Google Maps, Gemini comparison, visual checks, property information, and news reports for planned sites, as described by the Council. Locations, operational status, and estimated size require independent confirmation; this is not a comprehensive or authoritative facility register.",
+    "portal": "https://www.arcgis.com/sharing/rest"
   }
 ]

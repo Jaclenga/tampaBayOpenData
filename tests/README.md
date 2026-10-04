@@ -22,7 +22,7 @@ testthat::test_local(filter = "other-cities", stop_on_failure = TRUE)
 testthat::test_local(filter = "download", stop_on_failure = TRUE)
 ```
 
-The suite covers the 26 checked source schemas across three cities, live portal
+The suite covers the 35 checked source schemas across six publishers, live portal
 paging and searching, checked versus discovered overlays, item/layer resolution, direct
 URL retrieval, HTTP requests and retries, record pagination, parsing, spatial
 conversion, provenance, convenience functions, and error and security
@@ -56,7 +56,7 @@ They cover MapServer object-ID inference, typed attributes and dates, complete
 and ordered pagination, zero limits, empty filters, native EPSG:2882 geometry,
 missing geometry, and direct-URL provenance. Direct URL retrieval retains
 `not_checked` provenance, even when a separate checked catalog entry uses the
-same endpoint. Regional catalog tests separately cover the six checked layers
+same endpoint. Regional catalog tests cover checked layers beyond Tampa
 and the configured discovery organizations.
 
 [Download tests](testthat/test-download.R) use temporary directories and
@@ -68,7 +68,7 @@ files. They also verify that validated completed chunks are not requested again.
 ## Fixtures
 
 [helper-fixtures.R](testthat/helper-fixtures.R) generates synthetic responses;
-the [source schema fixtures](testthat/fixtures/README.md) contain trimmed municipal
+the [source schema fixtures](testthat/fixtures/README.md) contain trimmed publisher
 layer metadata. Keep source field names, types, date references, and CRS
 differences when updating them. Add a regression test for a bug and keep
 ordinary tests independent of service availability.
@@ -90,13 +90,13 @@ Use `filter = "live-other-cities"` to run only the municipal checks, or
 `filter = "live-county-discovery"` for the county checks. The
 [county live cases](testthat/test-live-county-discovery.R) discover public
 libraries and fire stations, then retrieve at most two rows by descriptor and
-stable ID and check projected point geometry. County layers remain `discovered`;
-these tests do not add them to the checked catalog.
+stable ID and check projected point geometry. A matching checked registry entry
+retains its checked ID; other live results remain `discovered`.
 
 For the small recurring smoke suites, use
 `filter = "live-monitoring|live-county-discovery"` with
-`TAMPA_OPEN_DATA_LIVE=true`. They sample every checked layer across the three
-cities, a regional discovery result, and county facilities, checking source
+`TAMPA_OPEN_DATA_LIVE=true`. They sample every checked layer across all six
+publishers, a regional discovery result, and county facilities, checking source
 identity, selected field types, row counts, provenance, and geometry. County
 checks exercise descriptor and stable-ID retrieval and projection to EPSG:4326.
 Each retrieval requests at most two feature rows with a 15-second per-attempt
@@ -107,7 +107,7 @@ manifest requests still run, with a 45-second overall deadline per operation.
 
 The manual [live-check workflow](../.github/workflows/live-check.yaml) runs
 opt-in checks against current Tampa, regional, St. Petersburg, Clearwater, and
-county ArcGIS services. It covers all 26 checked layers, live portal discovery,
+county ArcGIS services. It covers all 35 checked layers, live portal discovery,
 and a complete multi-page permit download. The
 [other-city live tests](testthat/test-live-other-cities.R) retrieve at most two
 features per call, check a complete filter using IDs from the current run, and

@@ -19,9 +19,22 @@ for (case in list(
       expect_length(attr(found, "discovery_issues"), 0L)
       expect_identical(unique(found$publisher), config$publisher)
       expect_identical(unique(found$jurisdiction), config$jurisdiction)
-      expect_true(all(found$validation_status == "discovered"))
+      expect_true(all(found$validation_status %in% c("checked", "discovered")))
       row <- found[1L, ]
-      expect_match(row$id, "^arcgis:[[:xdigit:]]{32}:[0-9]+$")
+      checked <- list_datasets(jurisdiction = config$jurisdiction,
+                               source = "checked")
+      matching <- checked[
+        tolower(sub("/+$", "", checked$service_url)) ==
+          tolower(sub("/+$", "", row$service_url[[1L]])) &
+          checked$layer_id == row$layer_id[[1L]], , drop = FALSE]
+      expect_lte(nrow(matching), 1L)
+      if (nrow(matching)) {
+        expect_identical(row$validation_status[[1L]], "checked")
+        expect_identical(row$id[[1L]], matching$id[[1L]])
+      } else {
+        expect_identical(row$validation_status[[1L]], "discovered")
+        expect_match(row$id, "^arcgis:[[:xdigit:]]{32}:[0-9]+$")
+      }
       modified_day <- as.Date(row$modified, tz = "UTC")
       expect_false(is.na(modified_day))
       tags <- row$tags[[1L]]
@@ -30,12 +43,12 @@ for (case in list(
       categories <- categories[!is.na(categories) & nzchar(trimws(categories))]
       filtered <- search_datasets(county$query, jurisdiction = config$jurisdiction,
         source = "live", portals = county$portal, publisher = config$publisher,
-        validation_status = "discovered", spatial = TRUE,
+        validation_status = row$validation_status[[1L]], spatial = TRUE,
         modified_after = modified_day, modified_before = modified_day,
         topic = if (length(tags)) tags[[1L]] else NULL,
         category = if (length(categories)) categories[[1L]] else NULL,
         max_items = 1, timeout = 15, total_timeout = 45)
-      expect_true(row$source_url %in% filtered$source_url)
+      expect_true(row$id %in% filtered$id)
       expect_true(all(filtered$modified_source == "portal_item"))
       expect_identical(attr(filtered, "discovery_scanned_items"),
                        setNames(1L, county$portal))
@@ -59,7 +72,8 @@ for (case in list(
         source <- dataset_provenance(result)
         expect_identical(source$publisher, config$publisher)
         expect_identical(source$jurisdiction, config$jurisdiction)
-        expect_identical(source$validation_status, "discovered")
+        expect_identical(source$validation_status, row$validation_status[[1L]])
+        expect_identical(source$dataset_id, row$id[[1L]])
         expect_identical(source$source_url, row$source_url)
         expect_identical(source$returned_rows, nrow(result))
         expect_gte(source$matched_rows, nrow(result))
@@ -67,7 +81,7 @@ for (case in list(
       }
     })
 
-    test_that(paste(county$portal, "live discovered facilities retain projected geometry"), {
+    test_that(paste(county$portal, "live county facilities retain projected geometry"), {
       skip_if_not(identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true"),
                   "Set TAMPA_OPEN_DATA_LIVE=true to opt into county ArcGIS calls")
       skip_if_not_installed("sf")
@@ -93,7 +107,8 @@ for (case in list(
       source <- dataset_provenance(spatial)
       expect_identical(source$publisher, config$publisher)
       expect_identical(source$jurisdiction, config$jurisdiction)
-      expect_identical(source$validation_status, "discovered")
+      expect_identical(source$validation_status, row$validation_status[[1L]])
+      expect_identical(source$dataset_id, row$id[[1L]])
       expect_identical(source$source_url, row$source_url)
       expect_identical(source$query$out_sr, 4326)
       expect_identical(source$returned_rows, nrow(spatial))
