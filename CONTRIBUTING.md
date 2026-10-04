@@ -23,8 +23,8 @@ roxygen comments. Add tests for changed behavior. Ordinary tests and
 package checks use mocked responses and block live HTTP. Keep examples
 and vignettes offline; set network retrieval chunks to `eval = FALSE`.
 See the [test
-guide](https://jaclenga.github.io/tampaBayOpenData/tests/README.md) for
-focused and opt-in live checks. The live workflow schedules bounded
+guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md)
+for focused and opt-in live checks. The live workflow schedules bounded
 city, regional, and county smoke checks twice weekly, including county
 descriptor, stable-ID, and projected geometry retrieval with at most two
 rows per call. Manual runs keep the complete integration suite. When

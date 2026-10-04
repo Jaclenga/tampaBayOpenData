@@ -5,20 +5,23 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>An R Interface to Tampa Bay Public Open Data • tampaBayOpenData</title>
-<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Discover public ArcGIS data across Tampa Bay • tampaBayOpenData</title>
+<script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="An R Interface to Tampa Bay Public Open Data">
-<meta name="description" content="Discover public ArcGIS layers published by Tampa, St. Petersburg, Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning Council. A publisher registry configures discovery; a separate dataset registry identifies layers checked by package maintainers. Filter catalogs by source, geometry, topic, category, and modification date. Retrieve queryable layers with validated pagination, bounded previews, server-side filtering, typed tabular results, optional spatial objects, and source provenance. Save large downloads as local chunks that can be validated and resumed.">
-<meta property="og:description" content="Discover public ArcGIS layers published by Tampa, St. Petersburg, Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning Council. A publisher registry configures discovery; a separate dataset registry identifies layers checked by package maintainers. Filter catalogs by source, geometry, topic, category, and modification date. Retrieve queryable layers with validated pagination, bounded previews, server-side filtering, typed tabular results, optional spatial objects, and source provenance. Save large downloads as local chunks that can be validated and resumed.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
+<meta property="og:title" content="Discover public ArcGIS data across Tampa Bay">
+<meta name="description" content="An R interface for finding and retrieving public data from six Tampa Bay ArcGIS publishers, with checked dataset IDs, provenance, and spatial results.
+">
+<meta property="og:description" content="An R interface for finding and retrieving public data from six Tampa Bay ArcGIS publishers, with checked dataset IDs, provenance, and spatial results.
+">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="index.html">tampaBayOpenData</a>
 
@@ -31,13 +34,18 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/introduction.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/introduction.html">Discover and retrieve Tampa Bay ArcGIS data</a></li>
+<li><a class="dropdown-item" href="articles/discovery.html">Discovering data</a></li>
+    <li><a class="dropdown-item" href="articles/retrieval.html">Retrieving and downloading</a></li>
+    <li><a class="dropdown-item" href="articles/coverage.html">Coverage, provenance, and source limits</a></li>
+    <li><a class="dropdown-item" href="articles/index.html">All articles</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/coverage.html">Data coverage</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -45,6 +53,14 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/Jaclenga/tampaBayOpenData/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
+<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
+  </ul>
+</li>
       </ul>
 </div>
 
@@ -55,287 +71,180 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="tampabayopendata">tampaBayOpenData<a class="anchor" aria-label="anchor" href="#tampabayopendata"></a>
 </h1></div>
-<p><a href="DESCRIPTION"><img src="https://img.shields.io/badge/version-0.1.0-blue.svg" alt="Version"></a> <a href="LICENSE.html"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a> <a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main" alt="R CMD check"></a> <a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgcheck.yaml" class="external-link"><img src="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgcheck.yaml/badge.svg?branch=main" alt="pkgcheck"></a> <a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml" class="external-link"><img src="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml/badge.svg?branch=main" alt="Offline test coverage workflow"></a></p>
-<p>Public data for the Tampa Bay region is spread across separate ArcGIS portals. Finding a layer, retrieving all its records, and recording where they came from can make regional analysis hard to repeat. <code>tampaBayOpenData</code> gives researchers, planners, journalists, and civic technologists one R interface to discover and retrieve public data from Tampa, St. Petersburg, Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning Council.</p>
-<p>Search a bundled catalog of 26 maintainer-checked city layers offline, or discover other layers on the live portals. Retrieve records as tibbles or optional <code>sf</code> objects, with source provenance and validation status attached. The package focuses on reproducible access to these regional sources; the publishers remain responsible for their data and its reuse terms.</p>
+<p class="tb-lede">
+Discover and retrieve public data across Tampa Bay from one R interface.
+</p>
+<p class="tb-kicker">
+26 maintainer-checked city layers · live discovery across six public ArcGIS publishers
+</p>
+<!-- badges: start -->
+
+<div class="section level2">
+<h2 id="what-is-tampabayopendata">What is tampaBayOpenData?<a class="anchor" aria-label="anchor" href="#what-is-tampabayopendata"></a>
+</h2>
+<p>Public data is spread across separate ArcGIS portals. Finding a layer, getting its records, and recording its source can make regional analysis hard to repeat. <code>tampaBayOpenData</code> gives researchers, planners, journalists, and civic technologists a consistent path from <strong>discovery → retrieval → analysis → source provenance</strong>. It covers Tampa, St. Petersburg, Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning Council.</p>
+<p>The bundled catalog can be searched offline. Live discovery reaches the six configured public publishers; retrieval contacts the publisher’s service.</p>
+</div>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
-<p>In an R console, install directly from GitHub:</p>
+<p>Install the current version from GitHub in an R console:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span> <span class="co"># Run once, if pak is not installed yet.</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span> <span class="co"># if needed</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"Jaclenga/tampaBayOpenData"</span><span class="op">)</span></span></code></pre></div>
-<p>If you are working from a local source directory, install it with:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"httr2"</span>, <span class="st">"jsonlite"</span>, <span class="st">"tibble"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"."</span>, repos <span class="op">=</span> <span class="cn">NULL</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></span></code></pre></div>
-<p>For a built archive, replace <code>"."</code> with its <code>.tar.gz</code> path. For spatial results, also install <code>sf</code>. Installing from the local source directory does not build the vignette. Building it with <code>R CMD build</code> requires <code>knitr</code>, <code>rmarkdown</code>, and Pandoc.</p>
+<p>Install the optional <code>sf</code> package for spatial results.</p>
 </div>
 <div class="section level2">
-<h2 id="find-and-retrieve-a-dataset">Find and retrieve a dataset<a class="anchor" aria-label="anchor" href="#find-and-retrieve-a-dataset"></a>
+<h2 id="find-data">Find data<a class="anchor" aria-label="anchor" href="#find-data"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"parks"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">parks</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"stpete-parks"</span><span class="op">)</span></span></code></pre></div>
-<p>Search returns a table of matching datasets. Pass a result’s <code>id</code> to <code><a href="reference/get_dataset.html">get_dataset()</a></code> to retrieve its records as an R tibble; <code>stpete-parks</code> is one of the checked IDs. Search scans live portals by default, so it may take time and needs internet access. To browse only the checked catalog offline, use <code>search_datasets("parks", source = "checked")</code>. Retrieving records still contacts the publisher’s service.</p>
+<span><span class="fu"><a href="reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span></code></pre></div>
+<p>The first search includes checked entries and scans live portals. To browse only the bundled catalog without a network request, use <code>search_datasets("parks", source = "checked")</code>. The second search restricts live discovery to Tampa’s portal. The <a href="https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html">discovery guide</a> explains filters, other publishers, and bounded searches.</p>
 </div>
 <div class="section level2">
-<h2 id="explore-live-sources">Explore live sources<a class="anchor" aria-label="anchor" href="#explore-live-sources"></a>
+<h2 id="retrieve-data">Retrieve data<a class="anchor" aria-label="anchor" href="#retrieve-data"></a>
 </h2>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">parks</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"stpete-parks"</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span></code></pre></div>
+<p>A checked ID is a stable package name for a maintainer-validated layer. Retrieval uses the publisher’s live service and returns a tibble by default. Use <code><a href="reference/get_arcgis_layer.html">get_arcgis_layer()</a></code> for a compatible public ArcGIS layer URL. See the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html">retrieval guide</a> for field filters, integrity checks, and resumable downloads.</p>
+</div>
+<div class="section level2">
+<h2 id="see-spatial-data">See spatial data<a class="anchor" aria-label="anchor" href="#see-spatial-data"></a>
+</h2>
+<p>This map uses the checked City of Tampa <code>city-boundary</code> and <code>capital-projects</code> layers. Both can be retrieved as <code>sf</code> objects:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
-<span><span class="va">found</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">boundary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
+<span>                        spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
+<span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"capital-projects"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
+<span>                        spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># A one-row search result also carries the source needed for retrieval.</span></span>
-<span><span class="va">housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">housing</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="reference/list_datasets.html">list_datasets()</a></code> and <code><a href="reference/search_datasets.html">search_datasets()</a></code> search the six configured public ArcGIS organizations by default. <code><a href="reference/list_portals.html">list_portals()</a></code> lists their IDs, publishers, and source locations offline. Choose live organizations with <code>portals = "city"</code> (Tampa), <code>"tbrpc"</code>, <code>"stpete"</code>, <code>"clearwater"</code>, <code>"hillsborough"</code>, or <code>"pinellas"</code>, or pass a vector of these names. <code>source = "live"</code> returns only portal results, including checked matches found there. Catalog functions default to <code>jurisdiction = "all"</code>; use a jurisdiction code or vector to filter both checked and live results. <code>source = "checked"</code> reads the bundled catalog <strong>offline</strong>:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/list_portals.html">list_portals</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"publisher"</span>, <span class="st">"jurisdiction"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="fu"><a href="reference/list_datasets.html">list_datasets</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span><span class="op">[</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"jurisdiction"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="fu"><a href="reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"park"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                publisher <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"City of St. Petersburg"</span>, <span class="st">"City of Clearwater"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/dataset_info.html">dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span></code></pre></div>
-<p>County jurisdictions have no checked entries yet: selecting them with <code>source = "checked"</code> returns an empty catalog. Retrieval and download functions retain their default <code>jurisdiction = "tampa"</code>; uniquely named checked IDs such as <code>stpete-parks</code> also resolve when that argument is omitted.</p>
-<div class="section level3">
-<h3 id="filter-discovery-results">Filter discovery results<a class="anchor" aria-label="anchor" href="#filter-discovery-results"></a>
-</h3>
-<p>Both catalog functions accept these optional filters:</p>
-<table class="table">
-<colgroup>
-<col width="50%">
-<col width="50%">
-</colgroup>
-<thead><tr>
-<th>Filter</th>
-<th>Match</th>
-</tr></thead>
-<tbody>
-<tr>
-<td><code>jurisdiction</code></td>
-<td>Codes from <code><a href="reference/list_portals.html">list_portals()</a></code>, such as <code>"pinellas"</code>, or a vector of codes. The default is <code>"all"</code>.</td>
-</tr>
-<tr>
-<td><code>publisher</code></td>
-<td>Exact publisher names from <code><a href="reference/list_portals.html">list_portals()</a></code>, ignoring case.</td>
-</tr>
-<tr>
-<td><code>validation_status</code></td>
-<td>
-<code>"checked"</code> or <code>"discovered"</code>.</td>
-</tr>
-<tr>
-<td><code>spatial</code></td>
-<td>
-<code>TRUE</code> for geometry layers, <code>FALSE</code> for tables; unknown geometry is excluded when filtering.</td>
-</tr>
-<tr>
-<td><code>topic</code></td>
-<td>Literal substring in tags and categories, ignoring case.</td>
-</tr>
-<tr>
-<td><code>category</code></td>
-<td>Exact category path or final category label, ignoring case.</td>
-</tr>
-<tr>
-<td>
-<code>modified_after</code>, <code>modified_before</code>
-</td>
-<td>Inclusive bounds on the catalog’s <code>modified</code> timestamp.</td>
-</tr>
-</tbody>
-</table>
-<p>Character filters accept vectors: values within one filter are alternatives, and separate filters must all match. Date bounds accept <code>Date</code> or <code>"YYYY-MM-DD"</code> for whole UTC days, or <code>POSIXct</code> for exact instants. Rows with no modification time are excluded only when a date filter is supplied. <code>modified_source</code> is <code>"portal_item"</code> for a live item’s timestamp or <code>"checked_snapshot"</code> for an upstream timestamp saved in the checked registry. These dates do not establish record freshness; the separate <code>verified</code> date records an endpoint check.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">county_transport</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_datasets.html">search_datasets</a></span><span class="op">(</span></span>
-<span>  <span class="st">"road"</span>, source <span class="op">=</span> <span class="st">"live"</span>, jurisdiction <span class="op">=</span> <span class="st">"pinellas"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  topic <span class="op">=</span> <span class="st">"transportation"</span>, modified_after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2025-01-01"</span><span class="op">)</span>,</span>
-<span>  max_items <span class="op">=</span> <span class="fl">10</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">county_transport</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"modified"</span>, <span class="st">"modified_source"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>Jurisdiction and publisher filters narrow the organizations scanned. Other filters apply to the combined catalog after scanning, so <code>max_items</code> can stop a scan before other matching items are reached. Inspect <code>discovery_complete</code> and increase <code>max_items</code> when you need a broader search.</p>
-<p><code>validation_status = "checked"</code> means maintainers tested that layer; <code>"discovered"</code> marks a candidate from a public portal index; maintainers have not validated its contents or reuse terms. Retrieval validates query responses and requires <code>Query</code> when the layer declares its capabilities. Checked IDs such as <code>construction-permits</code> remain stable. Unchecked portal results use IDs such as <code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code>; pass an ID or a one-row result to <code><a href="reference/get_dataset.html">get_dataset()</a></code>. A portal’s <code>modified</code> date describes its item, not necessarily the age of every record. <code>max_items</code> limits portal <strong>items per organization</strong>, not the number of layers returned. The default scans at most 25 items per organization; set <code>max_items = Inf</code> explicitly for a full live listing. Results expose <code>discovery_complete</code>, <code>discovery_truncated_portals</code>, and <code>discovery_scanned_items</code> attributes, so a bounded listing is not presented as a complete portal catalog. Skipped-item and failed-portal details are attached as <code>discovery_issues</code> and <code>discovery_failed_portals</code> attributes on the catalog result.</p>
-<p>Prefixed checked IDs also retrieve municipal layers in an online R session:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">libraries</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"clearwater-libraries"</span>, limit <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="va">stpete_parks</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"stpete-parks"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span>, limit <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p>For current source fields, use <code>dataset_info("construction-permits", refresh = TRUE)$fields</code>; the same result’s <code>$metadata</code> contains query capabilities.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">permits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"construction-permits"</span>,</span>
-<span>  where <span class="op">=</span> <span class="st">"PROJECTSTATUS IS NOT NULL"</span>,</span>
-<span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RECORD_ID"</span>, <span class="st">"PROJECTSTATUS"</span>, <span class="st">"LASTUPDATE"</span><span class="op">)</span>,</span>
-<span>  limit <span class="op">=</span> <span class="fl">100</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span></span></code></pre></div>
-<p><code>where</code> uses ArcGIS SQL rather than Socrata SoQL, and <code>fields</code> uses exact source field names. A finite <code>limit</code> returns a subset; provenance marks it incomplete when more records match. The default <code>limit = Inf</code> retrieves all matches. Use <code>order_by</code> for an ordered subset when the service supports ordering and pagination. <code>query</code> accepts supported advanced ArcGIS filters, such as spatial and time filters; see <code><a href="reference/get_dataset.html">?get_dataset</a></code> for parameters and restrictions.</p>
-<p>For services with more than 10,000 matches and reliable ordering and pagination, a finite preview of at most 1,000 rows uses an ordered sample and verifies those returned IDs with a subset manifest. Other requests use the full matching ID manifest; <code>integrity = "full"</code> requests that path explicitly. Provenance identifies the path as <code>subset-manifest</code>, <code>full-manifest</code>, or <code>count-only</code> for <code>limit = 0</code>. A preview stays incomplete when additional records match.</p>
-<p><code>timeout</code> limits each HTTP attempt. <code>total_timeout</code> sets an overall time budget: 120 seconds for retrieval, 90 seconds for catalog discovery, and 60 seconds for metadata inspection by default. Set <code>total_timeout = Inf</code> explicitly for a long operation that should have no overall deadline. Requests and retry waits use the remaining budget. Parsing is checked after it finishes, so computation can exceed the budget before reporting a timeout.</p>
-<p>The main functions are:</p>
-<table class="table">
-<colgroup>
-<col width="50%">
-<col width="50%">
-</colgroup>
-<thead><tr>
-<th>Function</th>
-<th>Purpose</th>
-</tr></thead>
-<tbody>
-<tr>
-<td><code><a href="reference/list_portals.html">list_portals()</a></code></td>
-<td>List configured public ArcGIS organizations and their identities offline.</td>
-</tr>
-<tr>
-<td>
-<code><a href="reference/list_datasets.html">list_datasets()</a></code>, <code><a href="reference/search_datasets.html">search_datasets()</a></code>
-</td>
-<td>Search configured public ArcGIS organizations, with checked entries identified. Use <code>source = "checked"</code> offline.</td>
-</tr>
-<tr>
-<td><code><a href="reference/dataset_info.html">dataset_info()</a></code></td>
-<td>Inspect a checked or discovered layer; <code>refresh = TRUE</code> fetches the live schema.</td>
-</tr>
-<tr>
-<td><code><a href="reference/get_dataset.html">get_dataset()</a></code></td>
-<td>Retrieve a checked ID, discovered ID, or one-row discovery result.</td>
-</tr>
-<tr>
-<td><code><a href="reference/get_arcgis_layer.html">get_arcgis_layer()</a></code></td>
-<td>Retrieve a compatible public ArcGIS layer directly by URL.</td>
-</tr>
-<tr>
-<td>
-<code><a href="reference/get_permits.html">get_permits()</a></code>, <code><a href="reference/get_development_cases.html">get_development_cases()</a></code>, <code><a href="reference/get_capital_projects.html">get_capital_projects()</a></code>
-</td>
-<td>Shortcuts for three catalog entries.</td>
-</tr>
-<tr>
-<td>
-<code><a href="reference/download_dataset.html">download_dataset()</a></code>, <code><a href="reference/download_arcgis_layer.html">download_arcgis_layer()</a></code>
-</td>
-<td>Download matching records into resumable local RDS chunks.</td>
-</tr>
-<tr>
-<td><code><a href="reference/dataset_provenance.html">dataset_provenance()</a></code></td>
-<td>Read source, validation status, query, timing, row counts, integrity, and completeness.</td>
-</tr>
-</tbody>
-</table>
-<p>Source field names and text fields retain their spelling. ArcGIS epoch-millisecond date fields become UTC <code>POSIXct</code> unless the source declares an unknown time zone. In that case they remain raw milliseconds with a warning; UTC editor-tracking creation and edit dates identified by the layer metadata are still converted. Date-only fields become <code>Date</code>; time-only and timestamp-offset fields remain strings.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">boundary</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"#CFE5D8"</span>, border <span class="op">=</span> <span class="st">"#527A76"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">projects</span><span class="op">[</span><span class="op">!</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_query.html" class="external-link">st_is_empty</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span>,</span>
+<span>     add <span class="op">=</span> <span class="cn">TRUE</span>, pch <span class="op">=</span> <span class="fl">21</span>, bg <span class="op">=</span> <span class="st">"#DB6745"</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="reference/figures/tampa-capital-projects-map.png" alt="Map of 394 City of Tampa capital project locations and the shoreline-adjusted Tampa boundary"><div class="figcaption">Map of 394 City of Tampa capital project locations and the shoreline-adjusted Tampa boundary</div>
 </div>
+<p><em>City of Tampa data retrieved October 3, 2026 (both ArcGIS items marked CC0). This snapshot is illustrative: the shoreline-adjusted boundary is not a legal survey, and mapped points do not establish current project status or complete coverage. The committed image keeps site builds independent of live HTTP. <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tools/render-home-map.R" class="external-link">Reproduce the map</a> or read the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/introduction.html#work-with-spatial-data">spatial walkthrough</a>.</em></p>
 </div>
 <div class="section level2">
-<h2 id="how-this-relates-to-other-tools">How this relates to other tools<a class="anchor" aria-label="anchor" href="#how-this-relates-to-other-tools"></a>
+<h2 id="trace-the-source">Trace the source<a class="anchor" aria-label="anchor" href="#trace-the-source"></a>
 </h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span>
+<span><span class="va">source</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"retrieved_at"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>Provenance also records validation status, the query, returned row counts, and the integrity method. Save it with results before transformations that may drop R attributes. The <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage and provenance guide</a> explains how to interpret the source and its limits.</p>
+</div>
+<div class="section level2">
+<h2 id="why-use-it">Why use it?<a class="anchor" aria-label="anchor" href="#why-use-it"></a>
+</h2>
+<ul>
+<li>Discover layers across six configured publishers and distinguish the 26 checked city layers from newly discovered candidates.</li>
+<li>Retrieve typed R tables or optional <code>sf</code> objects with source provenance and checks for missing or duplicate records.</li>
+<li>Download large results in resumable chunks when an in-memory result is impractical.</li>
+</ul>
 <table class="table">
 <colgroup>
-<col width="33%">
-<col width="33%">
-<col width="33%">
+<col width="50%">
+<col width="50%">
 </colgroup>
 <thead><tr>
-<th>Tool</th>
-<th>When to use it</th>
-<th>What <code>tampaBayOpenData</code> adds</th>
+<th>Alternative</th>
+<th>Relationship to <code>tampaBayOpenData</code>
+</th>
 </tr></thead>
 <tbody>
 <tr>
 <td><a href="https://docs.ropensci.org/nycOpenData/" class="external-link"><code>nycOpenData</code></a></td>
-<td>Access New York City’s Socrata Open Data API.</td>
-<td>A Tampa Bay focus and discovery and retrieval from multiple ArcGIS publishers, using ArcGIS queries rather than Socrata SoQL.</td>
+<td>An R interface for New York City’s Socrata data; this package focuses on Tampa Bay’s ArcGIS publishers.</td>
 </tr>
 <tr>
-<td><a href="https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer/" class="external-link">ArcGIS REST API</a></td>
-<td>Work directly with a known ArcGIS service and its query parameters.</td>
-<td>A regional publisher registry, checked dataset IDs, bounded discovery, typed R results, provenance, and resumable downloads. <code><a href="reference/get_arcgis_layer.html">get_arcgis_layer()</a></code> also accepts a direct layer URL.</td>
+<td><a href="https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer/" class="external-link">Direct ArcGIS REST requests</a></td>
+<td>Useful with a known service URL; this package adds a regional registry, checked IDs, typed results, and retrieval provenance.</td>
 </tr>
 <tr>
 <td><a href="https://r.esri.com/arcgislayers/" class="external-link"><code>arcgislayers</code></a></td>
-<td>Work broadly with ArcGIS data services, including feature layers, imagery, and portal items.</td>
-<td>A focused Tampa Bay catalog and workflow for finding public regional layers, distinguishing checked from discovered results, and recording retrieval provenance.</td>
+<td>General ArcGIS access; this package supplies a focused regional catalog and records whether a layer was checked or only discovered.</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section level2">
-<h2 id="spatial-results">Spatial results<a class="anchor" aria-label="anchor" href="#spatial-results"></a>
+<h2 id="coverage-and-source-limits">Coverage and source limits<a class="anchor" aria-label="anchor" href="#coverage-and-source-limits"></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sf"</span><span class="op">)</span> <span class="co"># once</span></span>
-<span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
-<span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span></span></code></pre></div>
-<p><code>spatial = TRUE</code> returns an <code>sf</code> object. <code>out_sr = 4326</code> asks the service for WGS 84 coordinates; omit <code>out_sr</code> to keep the native CRS. The client supports point, line, and polygon layers, including records with missing geometry. Nonspatial tables can be retrieved with <code>spatial = FALSE</code>.</p>
-<p>To query a compatible public layer directly, use its ArcGIS layer URL:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">yard_waste</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_arcgis_layer.html">get_arcgis_layer</a></span><span class="op">(</span></span>
-<span>  <span class="st">"https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/4"</span>,</span>
-<span>  limit <span class="op">=</span> <span class="fl">10</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">yard_waste</span><span class="op">)</span><span class="op">$</span><span class="va">validation_status</span> <span class="co"># "not_checked" for direct URL access</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="resumable-downloads">Resumable downloads<a class="anchor" aria-label="anchor" href="#resumable-downloads"></a>
-</h2>
-<p>Use <code><a href="reference/download_dataset.html">download_dataset()</a></code> for a larger retrieval that should write bounded chunks instead of collecting all feature pages in memory. Choose a directory outside the package source; repeating the same call resumes a matching download:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">saved</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/download_dataset.html">download_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"construction-permits"</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"~/tampaBayOpenData-downloads/permits"</span>,</span>
-<span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBJECTID"</span>, <span class="st">"RECORD_ID"</span>, <span class="st">"LASTUPDATE"</span><span class="op">)</span>,</span>
-<span>  page_size <span class="op">=</span> <span class="fl">500</span>,</span>
-<span>  total_timeout <span class="op">=</span> <span class="fl">600</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">saved</span><span class="op">$</span><span class="va">complete</span></span>
-<span><span class="va">first_chunk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">saved</span><span class="op">$</span><span class="va">files</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">first_chunk</span><span class="op">)</span></span></code></pre></div>
-<p>Each chunk is a tibble or, with <code>spatial = TRUE</code>, an <code>sf</code> object. A resume rechecks the live schema and complete ID manifest, verifies saved chunks against their checkpoints, and downloads only missing chunks. Changed query options, schema, CRS, or ID membership require a new directory. Chunk attributes can still change between requests or resumes; the files are not a frozen snapshot. Downloads always use full-manifest integrity and retain its one-million-match limit. Their default <code>total_timeout = Inf</code> allows a long operation; a finite deadline leaves completed chunks available for resumption. <code><a href="reference/download_arcgis_layer.html">download_arcgis_layer()</a></code> provides the same path for a compatible direct layer URL.</p>
-<p>An exclusive directory lock prevents concurrent writers. If an R process is terminated, confirm it has stopped, then remove its empty <code>.lock</code> directory before resuming. Normal completion and handled errors release the lock.</p>
-</div>
-<div class="section level2">
-<h2 id="source-scope-and-reliability">Source scope and reliability<a class="anchor" aria-label="anchor" href="#source-scope-and-reliability"></a>
-</h2>
-<p>The checked catalog contains 26 layers: 20 Tampa, 3 St. Petersburg, and 3 Clearwater. The Tampa layers include active permit and development case views, not complete historical ledgers. The <code>city-boundary</code> layer follows a shoreline representation and is not a legal survey. The catalog also covers parks, historic sites, police districts, transportation, zoning, and utility service areas. The St. Petersburg layers cover parks, city boundaries, and streets; Clearwater layers cover park buffers, zoning, and libraries. Hillsborough and Pinellas county layers are available through live discovery; the checked catalog remains the same 26 city layers. The park buffers are areas around parks, rather than exact park footprints. These maps do not by themselves establish legal boundaries, current road restrictions, service eligibility, or operating status. The <code>water-service-area</code> extends beyond city limits. The current <code>fire-stations</code> source uses unqualified field names such as <code>NAME</code> and supports <code>order_by</code>; joined service-information fields from the old source are unavailable. Check a checked entry’s <code>scope_note</code> and <code>terms</code> with <code>dataset_info(id)</code> before analysis. Its <code>verified</code> date records an endpoint check, not the freshness of every feature. Discovered items may change, become unavailable, or lack clear reuse terms; inspect their source metadata before use. The package does not verify the reuse terms of discovered items. A live discovery failure leaves <code>source = "checked"</code> available offline.</p>
-<p>Twice-weekly monitoring samples the checked city layers, regional discovery, and county facilities. County checks use both discovery descriptors and stable IDs and verify server projection to EPSG:4326. Each retrieval requests at most two rows with explicit timeouts; portal scans use at most one item per publisher. The <a href="tests/README.html">test guide</a> describes these bounded checks and the full manual live suite. Completed runs provide dated evidence of source behavior.</p>
-<p>Retrieval compares the matching count and the applicable full or subset object-ID manifest with downloaded batches. It raises an error for detected missing, duplicate, or unexpected records. Live records can change during a request, so a successful result is not a frozen snapshot of every attribute. Very large queries may need a narrower <code>where</code> clause: full-manifest retrieval rejects more than one million matches. Eligible finite previews can verify a bounded subset instead.</p>
-<p><code><a href="reference/dataset_provenance.html">dataset_provenance()</a></code> records the publisher, source layer or item URL, portal and item ID when known, validation status, query endpoint, retrieval time, options, row counts, and completeness. Save that record separately before transformations that may discard R attributes:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">projects</span>, provenance <span class="op">=</span> <span class="va">source</span><span class="op">)</span>, <span class="st">"development-cases.rds"</span><span class="op">)</span></span></code></pre></div>
-<p>The source organizations publish the data; the package’s MIT license applies to the software, not to government datasets. <code>tampaBayOpenData</code> is independent of those organizations and rOpenSci.</p>
+<table class="table">
+<thead><tr>
+<th>Public publisher</th>
+<th align="right">Checked layers</th>
+<th align="center">Live discovery</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>City of Tampa</td>
+<td align="right">20</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td>City of St. Petersburg</td>
+<td align="right">3</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td>City of Clearwater</td>
+<td align="right">3</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td>Hillsborough County</td>
+<td align="right">0</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td>Pinellas County</td>
+<td align="right">0</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td>Tampa Bay Regional Planning Council</td>
+<td align="right">0</td>
+<td align="center">Yes</td>
+</tr>
+</tbody>
+</table>
+<p>A <strong>checked</strong> layer has been validated by the package maintainers. A <strong>discovered</strong> layer came from a public portal search and has not received that same validation; inspect its metadata and reuse terms before use. Zero checked layers does not mean a publisher has no public data.</p>
+<blockquote>
+<p><strong>Source limits:</strong> These are live publisher services, not a complete or frozen historical database. Some layers are active views, boundaries may be approximate, and records can change during retrieval. The package’s MIT license covers its code, not government data. It is independent of the source organizations and rOpenSci.</p>
+</blockquote>
+<p>Read the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage and source limitations guide</a> for specific layer caveats, validation, monitoring, and data-use details.</p>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<p>If you use <code>tampaBayOpenData</code> in published work, cite the package version you used. After installation, get the citation text or a BibTeX entry in R:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p>Cite both <code>tampaBayOpenData</code> and the original data publisher and dataset. After installation, get the package citation or a BibTeX entry with:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/toLatex.html" class="external-link">toBibtex</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Cite the original data publisher and dataset separately. <code>dataset_info(id)</code> provides source details, and <code>dataset_provenance(result)</code> records the source and retrieval time for a downloaded result.</p>
+<p>The <a href="https://jaclenga.github.io/tampaBayOpenData/authors.html#citation">citation page</a> has the package details. <code>dataset_info(id)</code> provides source information, and <code>dataset_provenance(result)</code> records the retrieval source and time.</p>
 </div>
 <div class="section level2">
-<h2 id="more-information">More information<a class="anchor" aria-label="anchor" href="#more-information"></a>
+<h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
 </h2>
 <ul>
 <li>
-<a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml" class="external-link">Coverage workflow</a>: each run summary reports the current offline test coverage percentage; the badge above shows whether the workflow passed.</li>
+<a href="https://jaclenga.github.io/tampaBayOpenData/articles/introduction.html">Get started</a>: a longer walkthrough with a reproducible spatial example.</li>
 <li>
-<a href="inst/examples/bike-network.Rmd">Bicycle network notebook</a>: catalog discovery, an optional live subset, provenance, and a map.</li>
+<a href="https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html">Discovering data</a>, <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html">retrieving and downloading</a>, and <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage and provenance</a>: detailed workflows and caveats.</li>
 <li>
-<a href="vignettes/introduction.Rmd">Introduction vignette</a>: a fuller walkthrough. After installing an archive built with <code>R CMD build</code>, use <code><a href="articles/introduction.html">vignette("introduction", package = "tampaBayOpenData")</a></code>.</li>
+<a href="https://jaclenga.github.io/tampaBayOpenData/reference/index.html">Function reference</a> and <a href="https://jaclenga.github.io/tampaBayOpenData/news/index.html">changelog</a>.</li>
 <li>
-<a href="docs/architecture.html">Architecture</a> and <a href="docs/research-tampa.html">Tampa source research</a>: client design and catalog verification.</li>
+<a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/architecture.md" class="external-link">Architecture</a>, <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md" class="external-link">validation record</a>, and <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md" class="external-link">test guide</a>: implementation, dated checks, and test methods.</li>
 <li>
-<a href="CONTRIBUTING.html">Contributing</a> and <a href="tests/README.html">test suite guide</a>: development, offline tests, and opt-in live checks.</li>
-<li>
-<a href="docs/validation.html">Dated validation record</a> and <a href="docs/security-audit.html">security audit</a>: checks and known limitations.</li>
+<a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/inst/examples/bike-network.Rmd" class="external-link">Bicycle network notebook</a> and <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/CONTRIBUTING.md" class="external-link">contributing guide</a>.</li>
 </ul>
-<p>The design was inspired by rOpenSci’s <a href="https://docs.ropensci.org/nycOpenData/" class="external-link"><code>nycOpenData</code></a> (<a href="https://github.com/ropensci/nycOpenData" class="external-link">source code</a>); the ArcGIS client was implemented independently.</p>
+<p>The design was inspired by rOpenSci’s <a href="https://docs.ropensci.org/nycOpenData/" class="external-link"><code>nycOpenData</code></a>; the ArcGIS client was implemented independently.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -375,7 +284,16 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/DESCRIPTION" class="external-link"><img src="https://img.shields.io/badge/version-0.1.0-blue.svg" alt="Version"></a></li>
+<li><a href="LICENSE.html"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a></li>
+<li><a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main" alt="R CMD check"></a></li>
+<li><a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgcheck.yaml" class="external-link"><img src="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgcheck.yaml/badge.svg?branch=main" alt="pkgcheck"></a></li>
+<li><a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml" class="external-link"><img src="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml/badge.svg?branch=main" alt="Offline test coverage workflow"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>

@@ -5,18 +5,19 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Discover and retrieve Tampa Bay ArcGIS data • tampaBayOpenData</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Get started with Tampa Bay open data • tampaBayOpenData</title>
+<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Discover and retrieve Tampa Bay ArcGIS data">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="Get started with Tampa Bay open data">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">tampaBayOpenData</a>
 
@@ -29,13 +30,18 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="active nav-item"><a class="nav-link" href="../articles/introduction.html">Get started</a></li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/introduction.html">Discover and retrieve Tampa Bay ArcGIS data</a></li>
+<li><a class="dropdown-item" href="../articles/discovery.html">Discovering data</a></li>
+    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading</a></li>
+    <li><a class="dropdown-item" href="../articles/coverage.html">Coverage, provenance, and source limits</a></li>
+    <li><a class="dropdown-item" href="../articles/index.html">All articles</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/coverage.html">Data coverage</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -43,6 +49,14 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/Jaclenga/tampaBayOpenData/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
+<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
+  </ul>
+</li>
       </ul>
 </div>
 
@@ -56,7 +70,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Discover and retrieve Tampa Bay ArcGIS data</h1>
+      <h1>Get started with Tampa Bay open data</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
@@ -65,395 +79,124 @@
 
     
     
-<p><code>tampaBayOpenData</code> searches public ArcGIS datasets from
-Tampa, St. Petersburg, Clearwater, Hillsborough County, Pinellas County,
-and the Tampa Bay Regional Planning Council. It also includes 26 layers
-across the three cities that package maintainers have checked. The same
-client retrieves checked or newly discovered layers as R tables or
-optional <code>sf</code> objects, with provenance and completeness
-information.</p>
-<p>The checked catalog examples run offline. Live discovery and
-retrieval examples are displayed but not executed during vignette
-builds; run them in an R session with internet access.</p>
+<p><code>tampaBayOpenData</code> gives R users one interface for finding
+and retrieving public ArcGIS data from Tampa, St. Petersburg,
+Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay
+Regional Planning Council. It bundles 26 maintainer-checked city layers
+and also discovers public layers from the six live organizations.
+Results are R tibbles or optional <code>sf</code> objects with source
+provenance and completeness information.</p>
+<p>The offline catalog examples below run during the vignette build.
+Live discovery and retrieval examples are displayed but not run; try
+them in an internet-connected R session.</p>
 <div class="section level2">
-<h2 id="start-with-a-dataset">Start with a dataset<a class="anchor" aria-label="anchor" href="#start-with-a-dataset"></a>
+<h2 id="find-data">Find data<a class="anchor" aria-label="anchor" href="#find-data"></a>
 </h2>
+<p>Start with the checked catalog when you want an offline, reproducible
+list of package IDs:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"parks"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">parks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"stpete-parks"</span><span class="op">)</span></span></code></pre></div>
-<p>Search returns a table of matches. Each <code>id</code> can be passed
-to <code><a href="../reference/get_dataset.html">get_dataset()</a></code>; <code>stpete-parks</code> is a checked
-ID. By default, retrieval returns all records as a tibble. Search scans
-live portals, and retrieval contacts the publisher, so run these calls
-with internet access.</p>
-</div>
-<div class="section level2">
-<h2 id="browse-the-checked-catalog-offline">Browse the checked catalog offline<a class="anchor" aria-label="anchor" href="#browse-the-checked-catalog-offline"></a>
-</h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/list_portals.html">list_portals</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 9</span></span></span>
-<span><span class="co">#&gt;   id         root  org_id publisher jurisdiction website verified   metadata_url</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> city       http… IbNXl… City of … tampa        https:… 2026-10-02 https://tam…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> tbrpc      http… RgIBb… Tampa Ba… tampa-bay    https:… 2026-10-02 https://www…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> stpete     http… 9qPLj… City of … stpete       https:… 2026-10-02 https://csp…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> clearwater http… 3GsNo… City of … clearwater   https:… 2026-10-02 https://cit…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> hillsboro… http… apTfC… Hillsbor… hillsborough https:… 2026-10-02 https://hil…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pinellas   http… f5HgU… Pinellas… pinellas     https:… 2026-10-02 https://pin…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: evidence_url &lt;chr&gt;</span></span></span>
-<span><span class="fu"><a href="../reference/list_datasets.html">list_datasets</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span><span class="op">[</span>,</span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/list_portals.html">list_portals</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"publisher"</span>, <span class="st">"jurisdiction"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
+<span><span class="co">#&gt;   id           publisher                           jurisdiction</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> city         City of Tampa                       tampa       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> tbrpc        Tampa Bay Regional Planning Council tampa-bay   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> stpete       City of St. Petersburg              stpete      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> clearwater   City of Clearwater                  clearwater  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> hillsborough Hillsborough County                 hillsborough</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pinellas     Pinellas County                     pinellas</span></span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"park"</span>, source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span><span class="op">[</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"jurisdiction"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 26 × 4</span></span></span>
-<span><span class="co">#&gt;    id                   title                     jurisdiction validation_status</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> construction-permits Permits (active GIS view) tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> development-cases    Active development coord… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> capital-projects     Capital improvement proj… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> city-boundary        Tampa boundary (shorelin… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> neighborhoods        Neighborhood association… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> council-districts    City council districts    tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> riverwalk            Tampa Riverwalk segments  tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> parks                Park polygons             tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> fire-stations        City of Tampa fire stati… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> bike-lanes           Bicycle network segments  tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16 more rows</span></span></span>
-<span><span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"park"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                jurisdiction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stpete"</span>, <span class="st">"clearwater"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 23</span></span></span>
-<span><span class="co">#&gt;   id             title description jurisdiction publisher source_url service_url</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> stpete-parks   St. … Public par… stpete       City of … https://c… https://se…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> clearwater-pa… Clea… City of Cl… clearwater   City of … https://g… https://gi…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16 more variables: geometry_type &lt;chr&gt;, category &lt;chr&gt;, verified &lt;date&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   terms &lt;chr&gt;, layer_id &lt;int&gt;, date_fields &lt;list&gt;, tags &lt;list&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   item_id &lt;chr&gt;, portal &lt;chr&gt;, validation_status &lt;chr&gt;, modified &lt;dttm&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   modified_source &lt;chr&gt;, service_type &lt;chr&gt;, layer_type &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   categories &lt;list&gt;, original_metadata &lt;list&gt;</span></span></span></code></pre></div>
-<p><code>source = "checked"</code> reads the bundled registry without a
-network request. Checked IDs are stable package names, separate from
-ArcGIS item and layer IDs. For catalog functions,
-<code>jurisdiction = "all"</code> is the default. A code or vector
-filters both checked and live results: <code>"tampa"</code>,
-<code>"tampa-bay"</code>, <code>"stpete"</code>,
-<code>"clearwater"</code>, <code>"hillsborough"</code>, or
-<code>"pinellas"</code>. The <code>portals</code> argument selects live
-organizations: <code>"city"</code> (Tampa), <code>"tbrpc"</code>,
-<code>"stpete"</code>, <code>"clearwater"</code>,
-<code>"hillsborough"</code>, <code>"pinellas"</code>, or
-<code>"all"</code> (default). <code><a href="../reference/list_portals.html">list_portals()</a></code> lists the
-configured publishers and their portal locations offline. The county
-portals extend live discovery; the checked catalog still contains 26
-city layers. Selecting a county with <code>source = "checked"</code>
-returns an empty catalog. Retrieval and download functions retain their
-default <code>jurisdiction = "tampa"</code>; omitting it also resolves
-uniquely named checked IDs across cities.</p>
-<p>Search the live portals when you need more than the checked
-catalog:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># The default `source = "all", portals = "all"` also includes checked entries.</span></span>
-<span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
-<span><span class="va">found</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"geometry_type"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
-<span></span>
-<span><span class="co"># Inspect one candidate's source before retrieving it.</span></span>
-<span><span class="va">selected</span> <span class="op">&lt;-</span> <span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span></span>
-<span><span class="va">selected</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item_id"</span>, <span class="st">"service_url"</span>, <span class="st">"layer_id"</span>, <span class="st">"portal"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p><code>validation_status = "checked"</code> means maintainers
-specifically tested that layer. <code>"discovered"</code> identifies a
-candidate from a public portal index; maintainers have not validated its
-contents or reuse terms. Retrieval validates query responses and
-requires <code>Query</code> when the layer declares its capabilities.
-Unchecked live IDs have the form
-<code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code> and remain usable
-if a title changes. A portal item may still be deleted or its service
-changed. <code><a href="../reference/list_datasets.html">list_datasets()</a></code> searches all six public
-organizations by default; <code>source = "checked"</code> remains
-available if the network is unavailable.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># A one-row discovery result carries its source and item metadata.</span></span>
-<span><span class="va">housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="va">selected</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">housing</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item_id"</span>, <span class="st">"portal"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
-<span></span>
-<span><span class="co"># Its ID can also be passed to get_dataset() in a later online session:</span></span>
-<span><span class="co"># housing &lt;- get_dataset(selected$id[[1]], limit = 100)</span></span></code></pre></div>
-<p>The discovery result includes the item’s <code>modified</code> date,
-tags, and service location when available. That date is not necessarily
-the last update to its records. <code>max_items</code> limits portal
-items scanned per organization, not layers; it defaults to 25. Set
-<code>max_items = Inf</code> for a full scan. Inspect the catalog’s
-<code>discovery_complete</code>,
-<code>discovery_truncated_portals</code>, and
-<code>discovery_scanned_items</code> attributes before treating a
-bounded listing as a complete catalog.</p>
-<div class="section level3">
-<h3 id="narrow-a-search">Narrow a search<a class="anchor" aria-label="anchor" href="#narrow-a-search"></a>
-</h3>
-<p>Both <code><a href="../reference/list_datasets.html">list_datasets()</a></code> and <code><a href="../reference/search_datasets.html">search_datasets()</a></code>
-accept optional filters:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">county_transport</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span></span>
-<span>  <span class="st">"road"</span>, source <span class="op">=</span> <span class="st">"live"</span>, jurisdiction <span class="op">=</span> <span class="st">"pinellas"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  topic <span class="op">=</span> <span class="st">"transportation"</span>, modified_after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2025-01-01"</span><span class="op">)</span>,</span>
-<span>  max_items <span class="op">=</span> <span class="fl">10</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">county_transport</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"modified"</span>, <span class="st">"modified_source"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p><code>publisher</code> matches exact names from
-<code><a href="../reference/list_portals.html">list_portals()</a></code>, ignoring case;
-<code>validation_status</code> selects <code>"checked"</code> or
-<code>"discovered"</code>. Live-only results can still contain checked
-matches. <code>spatial = TRUE</code> selects geometry layers,
-<code>FALSE</code> selects tables, and either filter excludes unknown
-geometry. <code>topic</code> matches literal substrings in tags and
-categories, ignoring case. <code>category</code> matches a complete
-category path or its final label, ignoring case. Character filters
-accept vectors; values in one filter are alternatives, while different
-filters must all match.</p>
-<p><code>modified_after</code> and <code>modified_before</code> are
-inclusive bounds on <code>modified</code>. Use <code>Date</code> values
-or strict <code>"YYYY-MM-DD"</code> strings to include whole UTC days,
-or <code>POSIXct</code> values for exact instants. Rows with unknown
-item dates are dropped when a date bound is supplied.
-<code>modified_source = "portal_item"</code> identifies a live item
-timestamp; <code>"checked_snapshot"</code> identifies an upstream
-timestamp saved in the checked registry. Neither establishes record
-freshness, and the checked <code>verified</code> date remains a separate
-endpoint check.</p>
-<p>Jurisdiction and publisher filters reduce the organizations scanned.
-Other filters run after discovery and the checked overlay, so a bounded
-<code>max_items</code> scan can miss matching items beyond that limit.
-Inspect discovery attributes and increase the item limit when a broader
-search is needed. When a live layer matches a checked endpoint, the
-result keeps its checked identity and terms alongside current live tags,
-categories, and item modification date.</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="inspect-dataset-metadata">Inspect dataset metadata<a class="anchor" aria-label="anchor" href="#inspect-dataset-metadata"></a>
-</h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dataset_info.html">dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
-<span><span class="va">info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"source_url"</span>, <span class="st">"scope_note"</span>, <span class="st">"verified"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 4</span></span></span>
+<span><span class="co">#&gt;   id                      title                   jurisdiction validation_status</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> parks                   Park polygons           tampa        checked          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> stpete-parks            St. Petersburg parks    stpete       checked          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> clearwater-park-buffers Clearwater park buffers clearwater   checked</span></span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/dataset_info.html">dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span><span class="op">[</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"scope_note"</span>, <span class="st">"verified"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $title</span></span>
 <span><span class="co">#&gt; [1] "Permits (active GIS view)"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $source_url</span></span>
-<span><span class="co">#&gt; [1] "https://arcgis.tampagov.net/arcgis/rest/services/Planning/PermitsAll/FeatureServer/0"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $scope_note</span></span>
 <span><span class="co">#&gt; [1] "The upstream service is described as data for an internal active-permits viewer, although its public Query endpoint is accessible without a token. The date fields are LASTUPDATE and CREATEDDATE; no permit issue-date field is advertised. No explicit dataset license was found on this exact FeatureServer service or in the selected public ArcGIS organization catalog. Do not infer the license of a separate MapServer layer."</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $verified</span></span>
 <span><span class="co">#&gt; [1] "2026-09-29"</span></span></code></pre></div>
-<p><code>source_url</code> links to the checked City source, and
-<code>scope_note</code> describes limits on what the dataset represents.
-The <code>verified</code> date records an endpoint check, not the
-freshness of individual records. To inspect current field names, request
-the live schema:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/dataset_info.html">dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span>, refresh <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">fields</span></span></code></pre></div>
+<p><code>source = "checked"</code> uses a bundled registry without
+making a network request. Checked IDs, including
+<code>stpete-parks</code> and <code>construction-permits</code>, remain
+stable package names. <code><a href="../reference/dataset_info.html">dataset_info()</a></code> reports the source,
+terms, and scope of a checked entry. For more choices, search live
+portal indexes:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
+<span><span class="va">found</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>Catalog searches scan all six publishers by default. Set
+<code>portals</code> or <code>jurisdiction</code> to narrow them.
+<code>checked</code> means the package maintainers validated the
+configured layer; <code>discovered</code> means it appeared in a live
+portal index but has not received the same validation. Inspect a
+discovered source and its reuse terms before analysis. See <a href="discovery.html">discovering Tampa Bay data</a> for all filters,
+live scan limits, and discovery status.</p>
 </div>
 <div class="section level2">
 <h2 id="retrieve-records">Retrieve records<a class="anchor" aria-label="anchor" href="#retrieve-records"></a>
 </h2>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>Pass a checked ID, a discovered stable ID, or a one-row search result
+to <code><a href="../reference/get_dataset.html">get_dataset()</a></code>. This example requests a small subset of a
+checked Tampa layer as a tibble:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">permits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"construction-permits"</span>,</span>
 <span>  where <span class="op">=</span> <span class="st">"PROJECTSTATUS IS NOT NULL"</span>,</span>
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RECORD_ID"</span>, <span class="st">"PROJECTSTATUS"</span>, <span class="st">"LASTUPDATE"</span><span class="op">)</span>,</span>
 <span>  limit <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span></span></code></pre></div>
-<p><code>where</code> uses ArcGIS SQL rather than Socrata SoQL, and
-<code>fields</code> uses exact source names. By default,
-<code>limit = Inf</code> retrieves every match. A finite limit returns a
-subset, and provenance marks it incomplete if more records match.
-<code>order_by</code> requests server ordering where supported;
-<code><a href="../reference/get_permits.html">get_permits()</a></code> is a shortcut for this dataset. See
-<code><a href="../reference/get_dataset.html">?get_dataset</a></code> for other filters and limits.</p>
-<p>For sources with more than 10,000 matches and reliable ordering and
-pagination, finite previews of at most 1,000 rows verify the returned
-IDs with a subset manifest. Other retrievals use a full manifest; set
-<code>integrity = "full"</code> to request that explicitly. Provenance
-identifies <code>subset-manifest</code>, <code>full-manifest</code>, or
-<code>count-only</code> for a zero-row limit. A finite preview is marked
-incomplete when more records match.</p>
-<p><code>timeout</code> limits each HTTP attempt. The overall
-<code>total_timeout</code> defaults to 120 seconds for retrieval, 90
-seconds for catalog discovery, and 60 seconds for metadata inspection.
-Set <code>total_timeout = Inf</code> explicitly for a long operation.
-Requests and retry waits use the remaining budget; parsing is checked
-after it finishes and can exceed the budget before reporting a
-timeout.</p>
-<p>Results retain source field names and text fields. ArcGIS
-epoch-millisecond date fields become UTC <code>POSIXct</code> unless the
-source declares an unknown time zone. In that case they remain raw
-milliseconds with a warning; UTC editor-tracking creation and edit dates
-identified by the layer metadata are still converted. Date-only fields
-become <code>Date</code>; time-only and timestamp-offset fields remain
-strings.</p>
-<p>You can also retrieve a compatible public ArcGIS layer directly by
-its URL:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_arcgis_layer.html">get_arcgis_layer</a></span><span class="op">(</span></span>
-<span>  <span class="st">"https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/4"</span>,</span>
-<span>  limit <span class="op">=</span> <span class="fl">10</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">direct</span><span class="op">)</span><span class="op">$</span><span class="va">validation_status</span> <span class="co"># "not_checked" for direct URL access</span></span></code></pre></div>
-<p>For larger retrievals, write resumable chunks to a persistent
-directory outside the package source and read one chunk at a time:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">saved</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_dataset.html">download_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"construction-permits"</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"~/tampaBayOpenData-downloads/permits"</span>,</span>
-<span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBJECTID"</span>, <span class="st">"RECORD_ID"</span>, <span class="st">"LASTUPDATE"</span><span class="op">)</span>,</span>
-<span>  page_size <span class="op">=</span> <span class="fl">500</span>,</span>
-<span>  total_timeout <span class="op">=</span> <span class="fl">600</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">saved</span><span class="op">$</span><span class="va">complete</span></span>
-<span><span class="va">first_chunk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">saved</span><span class="op">$</span><span class="va">files</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">first_chunk</span><span class="op">)</span></span></code></pre></div>
-<p>Repeat the same download call to resume. The client rechecks current
-metadata and the full matching ID manifest, validates saved chunk
-checksums and provenance, and skips completed chunks. Changed query
-options, schema, CRS, or ID membership require a new directory. Chunk
-attributes can vary across requests or resumes, so the files do not form
-a frozen snapshot. Each chunk has its own completeness record;
-<code>saved$complete</code> describes the whole matching download. This
-path keeps only bounded feature batches in memory and retains the
-one-million-ID manifest limit. Download operations default to
-<code>total_timeout = Inf</code>; a finite deadline leaves completed
-chunks available for the next call.</p>
-<p>An exclusive directory lock prevents concurrent writers. A terminated
-R process can leave an empty <code>.lock</code> directory: confirm that
-process has stopped before removing the lock and resuming.
-<code><a href="../reference/download_arcgis_layer.html">download_arcgis_layer()</a></code> supports the same chunked path for
-direct URLs.</p>
-</div>
-<div class="section level2">
-<h2 id="explore-the-results">Explore the results<a class="anchor" aria-label="anchor" href="#explore-the-results"></a>
-</h2>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">permits</span><span class="op">$</span><span class="va">PROJECTSTATUS</span><span class="op">)</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>These counts describe the retrieved subset, not every matching
-permit.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">permits</span><span class="op">$</span><span class="va">PROJECTSTATUS</span><span class="op">)</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>The counts describe the retrieved subset, not all matching permits.
+Omit <code>limit</code> to retrieve all matching rows. A discovered
+result can travel to retrieval with its source information:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">housing</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"validation_status"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="work-with-spatial-data">Work with spatial data<a class="anchor" aria-label="anchor" href="#work-with-spatial-data"></a>
 </h2>
-<p>The same interface returns <code>sf</code> objects with
-<code>spatial = TRUE</code>. Install the optional <code>sf</code>
-package if needed. After loading <code>tampaBayOpenData</code> in the
-first example, run the next three chunks in order in an
-internet-connected R session.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Request one CRS for both layers so their coordinates can share a map.</span></span>
-<span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"development-cases"</span>,</span>
-<span>  spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  out_sr <span class="op">=</span> <span class="fl">4326</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Only the boundary ID is needed; spatial = TRUE still returns its geometry.</span></span>
-<span><span class="va">boundary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"city-boundary"</span>,</span>
-<span>  fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
-<span>  spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  out_sr <span class="op">=</span> <span class="fl">4326</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co"># Check the CRS reported for the case locations.</span></span>
+<p>Install the optional <code>sf</code> package and request
+<code>spatial = TRUE</code> for an <code>sf</code> result.
+<code>out_sr = 4326</code> asks the service for WGS 84 coordinates;
+without <code>out_sr</code>, the client keeps the native CRS.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                        out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span></span></code></pre></div>
-<p>Both results are <code>sf</code> objects in WGS 84 (EPSG:4326). The
-CRS line confirms the value for <code>projects</code>. Omitting
-<code>out_sr</code> keeps each layer’s native CRS; point, line, and
-polygon layers use the same API.</p>
-<p>Records without geometry remain in <code>projects</code>. Make a
-subset of locations to plot:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Preserve projects; create a plotting subset with nonempty geometries.</span></span>
-<span><span class="va">mapped_projects</span> <span class="op">&lt;-</span> <span class="va">projects</span><span class="op">[</span><span class="op">!</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_query.html" class="external-link">st_is_empty</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span>, <span class="op">]</span></span></code></pre></div>
-<p>Draw the city boundary for context, then add the case locations:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Draw the polygon first so it forms a backdrop for the case locations.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
-<span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">boundary</span><span class="op">)</span>,</span>
-<span>  col <span class="op">=</span> <span class="st">"#EDF4F6"</span>,</span>
-<span>  border <span class="op">=</span> <span class="st">"#7898A5"</span>,</span>
-<span>  lwd <span class="op">=</span> <span class="fl">1.2</span>,</span>
-<span>  axes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  graticule <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  col_graticule <span class="op">=</span> <span class="st">"#DCE7EB"</span>,</span>
-<span>  xlab <span class="op">=</span> <span class="st">"Longitude"</span>,</span>
-<span>  ylab <span class="op">=</span> <span class="st">"Latitude"</span>,</span>
-<span>  main <span class="op">=</span> <span class="st">"Active development cases in Tampa"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Filled circles have separate outlines and translucent fills.</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">case_fill</span> <span class="op">&lt;-</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"#E76F51"</span>, alpha.f <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
-<span>    <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">)</span>,</span>
-<span>    add <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    pch <span class="op">=</span> <span class="fl">21</span>,</span>
-<span>    bg <span class="op">=</span> <span class="va">case_fill</span>,</span>
-<span>    col <span class="op">=</span> <span class="st">"#9B4934"</span>,</span>
-<span>    cex <span class="op">=</span> <span class="fl">0.85</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># Match the legend symbol to the plotted points.</span></span>
-<span>  <span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span></span>
-<span>    <span class="st">"bottomleft"</span>,</span>
-<span>    legend <span class="op">=</span> <span class="st">"Development case location"</span>,</span>
-<span>    pch <span class="op">=</span> <span class="fl">21</span>,</span>
-<span>    pt.bg <span class="op">=</span> <span class="va">case_fill</span>,</span>
-<span>    col <span class="op">=</span> <span class="st">"#9B4934"</span>,</span>
-<span>    bg <span class="op">=</span> <span class="st">"white"</span>,</span>
-<span>    box.col <span class="op">=</span> <span class="st">"#DCE7EB"</span>,</span>
-<span>    cex <span class="op">=</span> <span class="fl">0.85</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-<p>The <code>city-boundary</code> layer is adjusted to follow the
-shoreline. It provides map context, not a legal survey boundary.</p>
+<p>The <a href="retrieval.html">retrieval article</a> shows a map with
+this layer and the Tampa boundary. It also explains ArcGIS filters,
+pagination, integrity checks, time budgets, data types, direct layer
+URLs, and resumable downloads.</p>
 </div>
 <div class="section level2">
-<h2 id="keep-track-of-where-your-data-came-from">Keep track of where your data came from<a class="anchor" aria-label="anchor" href="#keep-track-of-where-your-data-came-from"></a>
+<h2 id="trace-the-source">Trace the source<a class="anchor" aria-label="anchor" href="#trace-the-source"></a>
 </h2>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<p>Provenance records where the result came from, the query, retrieval
+time, row counts, validation status, integrity method, and whether the
+result is complete. Save it separately before transforming the data,
+because some R operations may discard attached attributes.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">projects</span>, provenance <span class="op">=</span> <span class="va">source</span><span class="op">)</span>,</span>
-<span>  <span class="st">"development-cases.rds"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Provenance includes the publisher, source URL, portal and item ID
-when known, validation status, query endpoint, retrieval time, row
-counts, and completeness. Save it separately with your data because
-later R transformations may discard custom attributes.</p>
-</div>
-<div class="section level2">
-<h2 id="important-limitations">Important limitations<a class="anchor" aria-label="anchor" href="#important-limitations"></a>
-</h2>
-<p>The permit and development-case layers are active views, not
-necessarily complete historical ledgers. Read
-<code>dataset_info(id)$scope_note</code> and
-<code>dataset_info(id)$terms</code> before interpreting their coverage
-or reuse terms.</p>
-<p>Live ArcGIS data can change during a multi-request retrieval. The
-client checks fetched IDs against the matching count and object-ID
-manifest where applicable; these checks cannot freeze every attribute at
-one instant.</p>
-<p>If a field is uncertain, inspect
-<code>dataset_info(id, refresh = TRUE)$fields</code>. For a temporary
-service failure, check the source URL and retry. Full-manifest queries
-matching more than one million records are rejected; narrow
-<code>where</code> first. Eligible finite previews can verify a bounded
-subset instead.</p>
-<p>Discovered items may lack clear reuse terms or may be stale in the
-portal index. Review each item’s source and terms before analysis; the
-package does not verify those terms. The package’s MIT license applies
-to its code, not to data from either source organization.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">projects</span>, provenance <span class="op">=</span> <span class="va">source</span><span class="op">)</span>,</span>
+<span>        <span class="st">"development-cases.rds"</span><span class="op">)</span></span></code></pre></div>
+<p>Read <a href="coverage.html">coverage, provenance, and source
+limits</a> before treating a layer as a complete historical record or
+interpreting a map as a legal boundary. That article also explains
+source attribution, citation, government data reuse terms, and
+monitoring evidence. The package is independent of the data publishers
+and rOpenSci.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
