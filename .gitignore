@@ -10,3 +10,4 @@
 *.Rcheck/
 development-cases.rds
 cobertura.xml
+_site/

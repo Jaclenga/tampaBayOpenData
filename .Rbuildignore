@@ -16,3 +16,4 @@
 ^cobertura\.xml$
 ^cran-comments\.md$
 ^_pkgdown\.yml$
+^_site$

@@ -36,11 +36,11 @@ jobs:
           needs: website
       - name: Build site
         shell: Rscript {0}
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        run: pkgdown::build_site_github_pages(dest_dir = "_site", new_process = FALSE, install = FALSE)
       - name: Deploy to GitHub Pages
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4.8.0
         with:
           clean: false
           branch: gh-pages
-          folder: docs
+          folder: _site
