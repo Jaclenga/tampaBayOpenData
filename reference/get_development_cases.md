@@ -29,5 +29,10 @@ returns the full record.
 ## Examples
 
 ``` r
-if (FALSE) get_development_cases(spatial = TRUE, limit = 10) # \dontrun{}
+dataset_info("development-cases")$title
+#> [1] "Active development coordination cases"
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  cases <- get_development_cases(limit = 10)
+  nrow(cases)
+}
 ```

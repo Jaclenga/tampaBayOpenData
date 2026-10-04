@@ -5,7 +5,7 @@
 - Adds Hillsborough County and Pinellas County publishers to live
   discovery and exposes the six configured organizations through offline
   [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md).
-  The checked catalog remains 26 city layers.
+  The checked catalog now spans all six publishers.
 - Makes `jurisdiction = "all"` the catalog default and adds
   jurisdiction, publisher, validation status, geometry, topic, category,
   and item-modification filters to listing and searching. Publisher and
@@ -24,9 +24,10 @@
   conditional Query capabilities, declared date types, and UTC
   editor-tracking exceptions when other dates have unknown time-zone
   semantics.
-- Expands checked coverage to 26 layers across Tampa, St. Petersburg,
-  and Clearwater, and adds the two municipal ArcGIS organizations to
-  live discovery. `jurisdiction = "all"` selects all checked layers.
+- Expands checked coverage to 35 layers across Tampa, St. Petersburg,
+  Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay
+  Regional Planning Council. Adds the two municipal ArcGIS organizations
+  to live discovery. `jurisdiction = "all"` selects all checked layers.
   Live checked overlays are matched against the full registry.
 - Limits default live discovery to 25 service items per organization,
   reports partial-scan attributes, and adds overall operation deadlines.
@@ -48,7 +49,7 @@
   and
   [`dataset_info()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
   discovery API.
-- Expands the curated catalog to 20 layers, adding fire stations,
+- Expands the curated Tampa catalog to 20 layers, adding fire stations,
   bicycle and truck routes, recycling and water service areas, historic
   sites, police districts, zoning, redevelopment areas, and
   transportation safety layers.
@@ -86,7 +87,7 @@
 - Includes deterministic tests, an offline-safe introductory vignette,
   platform checks, and separate scheduled and manual live integration
   checks.
-- Exercises HTTP request construction and all 26 checked source schemas
+- Exercises HTTP request construction and all 35 checked source schemas
   offline, and rejects malformed timezone and query-capability metadata
   before retrieving features.
 - Separates pagination, declared-type parsing, and geometry decoding

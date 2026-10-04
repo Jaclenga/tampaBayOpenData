@@ -71,8 +71,8 @@ info[c("id", "title", "publisher", "source_url")]
 #> $source_url
 #> [1] "https://arcgis.tampagov.net/arcgis/rest/services/Planning/PermitsAll/FeatureServer/0"
 #> 
-if (FALSE) { # \dontrun{
-info <- dataset_info("construction-permits", refresh = TRUE)
-info$fields
-} # }
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  current <- dataset_info("construction-permits", refresh = TRUE)
+  current$fields
+}
 ```

@@ -39,9 +39,11 @@ IDs. The list is the result's attached `source` attribute.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-permits <- get_permits(limit = 10)
-dataset_provenance(permits)
-attr(permits, "retrieved_at")
-} # }
+dataset_info("construction-permits")$publisher
+#> [1] "City of Tampa"
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  permits <- get_permits(limit = 10)
+  dataset_provenance(permits)
+  attr(permits, "retrieved_at")
+}
 ```

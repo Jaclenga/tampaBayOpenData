@@ -167,12 +167,11 @@ parsers or bound decompression memory on older curl builds.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-permits <- get_dataset("construction-permits")
-filtered <- get_dataset("construction-permits",
-  where = "PROJECTSTATUS IS NOT NULL",
-  fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"))
-projects <- get_dataset("development-cases", spatial = TRUE, out_sr = 4326)
-dataset_provenance(projects)
-} # }
+dataset_info("construction-permits")$source_url
+#> [1] "https://arcgis.tampagov.net/arcgis/rest/services/Planning/PermitsAll/FeatureServer/0"
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  permits <- get_dataset("construction-permits", limit = 10,
+    fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"))
+  dataset_provenance(permits)$returned_rows
+}
 ```

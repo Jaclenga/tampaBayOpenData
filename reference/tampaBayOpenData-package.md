@@ -38,9 +38,17 @@ before calling a function that contacts a publisher to identify your own
 application. Set the option to `NULL` to restore the default. The
 setting applies to discovery, retrieval, and downloads.
 
+## Live examples
+
+Examples that contact public ArcGIS services run when
+`TAMPA_OPEN_DATA_LIVE=true` is set in the R environment. Without this
+opt-in, the examples use only the bundled registry and run offline.
+
 ## See also
 
 Useful links:
+
+- <https://jaclenga.github.io/tampaBayOpenData/>
 
 - <https://github.com/Jaclenga/tampaBayOpenData>
 
@@ -48,8 +56,10 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Jack Lenga <jack3lenga@gmail.com> \[copyright holder\]
+**Maintainer**: Jack Lenga <jack3lenga@gmail.com>
+([ORCID](https://orcid.org/0009-0003-1153-8105)) \[copyright holder\]
 
 Authors:
 
-- Jack Lenga <jack3lenga@gmail.com> \[copyright holder\]
+- Jack Lenga <jack3lenga@gmail.com>
+  ([ORCID](https://orcid.org/0009-0003-1153-8105)) \[copyright holder\]

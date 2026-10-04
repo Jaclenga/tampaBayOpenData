@@ -30,5 +30,10 @@ returns the full record.
 ## Examples
 
 ``` r
-if (FALSE) get_permits(limit = 10) # \dontrun{}
+dataset_info("construction-permits")$title
+#> [1] "Permits (active GIS view)"
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  permits <- get_permits(limit = 10)
+  dataset_provenance(permits)$source_url
+}
 ```

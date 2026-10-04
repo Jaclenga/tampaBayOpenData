@@ -130,10 +130,14 @@ reports whether the full matching manifest has been downloaded.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-saved <- download_dataset("construction-permits", "permit-download",
-  fields = c("OBJECTID", "RECORD_ID", "LASTUPDATE"), page_size = 500)
-first <- readRDS(saved$files[[1]])
-dataset_provenance(first)
-} # }
+dataset_info("construction-permits")$object_id_field
+#> [1] "OBJECTID"
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  saved <- download_dataset("construction-permits", tempfile("permit-download-"),
+    where = "OBJECTID <= 10", page_size = 5)
+  if (length(saved$files)) {
+    first <- readRDS(saved$files[[1]])
+    dataset_provenance(first)$download$chunk
+  }
+}
 ```

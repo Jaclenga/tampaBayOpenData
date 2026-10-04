@@ -147,5 +147,7 @@ checked[, c("id", "title", "jurisdiction", "validation_status")]
 #>  9 fire-stations        City of Tampa fire stati… tampa        checked          
 #> 10 bike-lanes           Bicycle network segments  tampa        checked          
 #> # ℹ 25 more rows
-if (FALSE) list_datasets() # \dontrun{}
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  list_datasets(max_items = 1)
+}
 ```

@@ -120,10 +120,9 @@ to read the full provenance record; its `validation_status` is
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-data <- get_arcgis_layer(
-  "https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer/0",
-  limit = 10)
-dataset_provenance(data)
-} # }
+url <- dataset_info("construction-permits")$source_url
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  data <- get_arcgis_layer(url, limit = 10)
+  dataset_provenance(data)$validation_status
+}
 ```

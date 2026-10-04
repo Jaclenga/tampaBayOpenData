@@ -125,5 +125,7 @@ permits[, c("id", "title", "jurisdiction")]
 #>   id                   title                     jurisdiction
 #>   <chr>                <chr>                     <chr>       
 #> 1 construction-permits Permits (active GIS view) tampa       
-if (FALSE) search_datasets("housing") # \dontrun{}
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  search_datasets("housing", max_items = 1)
+}
 ```
