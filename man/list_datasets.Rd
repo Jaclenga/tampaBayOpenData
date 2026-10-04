@@ -97,5 +97,7 @@ scan can miss matching older items; inspect \code{discovery_complete} and use
 \examples{
 checked <- list_datasets(source = "checked")
 checked[, c("id", "title", "jurisdiction", "validation_status")]
-\dontrun{list_datasets()}
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  list_datasets(max_items = 1)
+}
 }

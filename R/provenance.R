@@ -57,10 +57,11 @@
 #'   object IDs. The list is the result's attached `source` attribute.
 #' @export
 #' @examples
-#' \dontrun{
-#' permits <- get_permits(limit = 10)
-#' dataset_provenance(permits)
-#' attr(permits, "retrieved_at")
+#' dataset_info("construction-permits")$publisher
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   permits <- get_permits(limit = 10)
+#'   dataset_provenance(permits)
+#'   attr(permits, "retrieved_at")
 #' }
 dataset_provenance <- function(x) {
   source <- attr(x, "source", exact = TRUE)

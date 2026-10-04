@@ -59,7 +59,9 @@
 #' @examples
 #' checked <- list_datasets(source = "checked")
 #' checked[, c("id", "title", "jurisdiction", "validation_status")]
-#' \dontrun{list_datasets()}
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   list_datasets(max_items = 1)
+#' }
 list_datasets <- function(jurisdiction = "all", source = "all",
                           portals = "all", max_items = 25, timeout = 30,
                           total_timeout = 90, publisher = NULL,
@@ -89,7 +91,9 @@ list_datasets <- function(jurisdiction = "all", source = "all",
 #' @examples
 #' permits <- search_datasets("permit", source = "checked")
 #' permits[, c("id", "title", "jurisdiction")]
-#' \dontrun{search_datasets("housing")}
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   search_datasets("housing", max_items = 1)
+#' }
 search_datasets <- function(query, jurisdiction = "all", source = "all",
                             portals = "all", max_items = 25, timeout = 30,
                             total_timeout = 90, publisher = NULL,
@@ -240,9 +244,9 @@ search_datasets <- function(query, jurisdiction = "all", source = "all",
 #' @examples
 #' info <- dataset_info("construction-permits")
 #' info[c("id", "title", "publisher", "source_url")]
-#' \dontrun{
-#' info <- dataset_info("construction-permits", refresh = TRUE)
-#' info$fields
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   current <- dataset_info("construction-permits", refresh = TRUE)
+#'   current$fields
 #' }
 dataset_info <- function(id, jurisdiction = "tampa", refresh = FALSE, timeout = 30,
                          total_timeout = 60) {

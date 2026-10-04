@@ -37,11 +37,14 @@
 #'   column was not selected.
 #' @export
 #' @examples
-#' \dontrun{
-#' saved <- download_dataset("construction-permits", "permit-download",
-#'   fields = c("OBJECTID", "RECORD_ID", "LASTUPDATE"), page_size = 500)
-#' first <- readRDS(saved$files[[1]])
-#' dataset_provenance(first)
+#' dataset_info("construction-permits")$object_id_field
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   saved <- download_dataset("construction-permits", tempfile("permit-download-"),
+#'     where = "OBJECTID <= 10", page_size = 5)
+#'   if (length(saved$files)) {
+#'     first <- readRDS(saved$files[[1]])
+#'     dataset_provenance(first)$download$chunk
+#'   }
 #' }
 download_dataset <- function(id, path, jurisdiction = "tampa", where = "1=1",
                              fields = NULL, spatial = FALSE, out_sr = NULL,
@@ -123,10 +126,11 @@ download_dataset <- function(id, path, jurisdiction = "tampa", where = "1=1",
 #'   in [download_dataset()]. Direct URLs have `not_checked` provenance.
 #' @export
 #' @examples
-#' \dontrun{
-#' url <- paste0("https://gis.myclearwater.com/arcgis/rest/services/",
-#'   "ArcGISMapServices/Clearwater_Park_Buffers/MapServer/0")
-#' saved <- download_arcgis_layer(url, "park-buffer-download", page_size = 50)
+#' url <- dataset_info("construction-permits")$source_url
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   saved <- download_arcgis_layer(url, tempfile("permit-url-download-"),
+#'     where = "OBJECTID <= 10", page_size = 5)
+#'   saved[c("matched_rows", "returned_rows", "complete")]
 #' }
 download_arcgis_layer <- function(url, path, where = "1=1", fields = NULL,
                                  spatial = FALSE, out_sr = NULL, page_size = 1000,

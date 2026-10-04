@@ -24,4 +24,6 @@ jobs:
     steps:
       - uses: ropensci-review-tools/pkgcheck-action@main
         with:
+          # Check the exact commit whose R-CMD-check run succeeded.
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
           post-to-issue: "false"

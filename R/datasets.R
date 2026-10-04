@@ -83,13 +83,11 @@
 #'   `retrieved_at` attributes; [dataset_provenance()] returns the full record.
 #' @export
 #' @examples
-#' \dontrun{
-#' permits <- get_dataset("construction-permits")
-#' filtered <- get_dataset("construction-permits",
-#'   where = "PROJECTSTATUS IS NOT NULL",
-#'   fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"))
-#' projects <- get_dataset("development-cases", spatial = TRUE, out_sr = 4326)
-#' dataset_provenance(projects)
+#' dataset_info("construction-permits")$source_url
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   permits <- get_dataset("construction-permits", limit = 10,
+#'     fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"))
+#'   dataset_provenance(permits)$returned_rows
 #' }
 get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL,
                         spatial = FALSE, out_sr = NULL, order_by = NULL,
@@ -174,11 +172,10 @@ get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL
 #'   `validation_status` is `not_checked` for a direct URL.
 #' @export
 #' @examples
-#' \dontrun{
-#' data <- get_arcgis_layer(
-#'   "https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer/0",
-#'   limit = 10)
-#' dataset_provenance(data)
+#' url <- dataset_info("construction-permits")$source_url
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   data <- get_arcgis_layer(url, limit = 10)
+#'   dataset_provenance(data)$validation_status
 #' }
 get_arcgis_layer <- function(url, where = "1=1", fields = NULL,
                              spatial = FALSE, out_sr = NULL, order_by = NULL,

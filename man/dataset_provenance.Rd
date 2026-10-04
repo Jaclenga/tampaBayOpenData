@@ -31,9 +31,10 @@ Attributes can be lost in subsequent R transformations; save provenance before
 exporting data or transforming objects with tools that discard attributes.
 }
 \examples{
-\dontrun{
-permits <- get_permits(limit = 10)
-dataset_provenance(permits)
-attr(permits, "retrieved_at")
+dataset_info("construction-permits")$publisher
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  permits <- get_permits(limit = 10)
+  dataset_provenance(permits)
+  attr(permits, "retrieved_at")
 }
 }

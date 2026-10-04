@@ -66,9 +66,10 @@ Uses the same resumable, bounded-memory path as \code{\link[=download_dataset]{d
 layer URL retains \code{not_checked} provenance and no inferred publisher identity.
 }
 \examples{
-\dontrun{
-url <- paste0("https://gis.myclearwater.com/arcgis/rest/services/",
-  "ArcGISMapServices/Clearwater_Park_Buffers/MapServer/0")
-saved <- download_arcgis_layer(url, "park-buffer-download", page_size = 50)
+url <- dataset_info("construction-permits")$source_url
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  saved <- download_arcgis_layer(url, tempfile("permit-url-download-"),
+    where = "OBJECTID <= 10", page_size = 5)
+  saved[c("matched_rows", "returned_rows", "complete")]
 }
 }

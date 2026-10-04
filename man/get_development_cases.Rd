@@ -19,5 +19,9 @@ A thin wrapper for \code{get_dataset("development-cases", ...)}. The upstream
 layer covers active entitlement locations, not all historical development.
 }
 \examples{
-\dontrun{get_development_cases(spatial = TRUE, limit = 10)}
+dataset_info("development-cases")$title
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  cases <- get_development_cases(limit = 10)
+  nrow(cases)
+}
 }

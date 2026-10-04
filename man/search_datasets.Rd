@@ -86,5 +86,7 @@ fields, so its results need not follow the checked catalog's literal matching.
 \examples{
 permits <- search_datasets("permit", source = "checked")
 permits[, c("id", "title", "jurisdiction")]
-\dontrun{search_datasets("housing")}
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  search_datasets("housing", max_items = 1)
+}
 }

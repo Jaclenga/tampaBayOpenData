@@ -121,12 +121,10 @@ Keep native curl, GDAL, and PROJ libraries patched; these checks do not isolate
 native parsers or bound decompression memory on older curl builds.
 }
 \examples{
-\dontrun{
-permits <- get_dataset("construction-permits")
-filtered <- get_dataset("construction-permits",
-  where = "PROJECTSTATUS IS NOT NULL",
-  fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"))
-projects <- get_dataset("development-cases", spatial = TRUE, out_sr = 4326)
-dataset_provenance(projects)
+dataset_info("construction-permits")$source_url
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  permits <- get_dataset("construction-permits", limit = 10,
+    fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"))
+  dataset_provenance(permits)$returned_rows
 }
 }

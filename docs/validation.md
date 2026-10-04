@@ -4,6 +4,61 @@ These are local results on Windows 11 with R 4.5.1 or R 4.6.1 as noted.
 Each result describes the source and dependencies used for that run; live
 services can change.
 
+## Final rOpenSci readiness preflight (2026-10-04)
+
+Local checks ran on an isolated copy of the source before the final submission
+commit. `autotest` 0.2.0 traced documented examples only: its full `typetracer`
+test trace failed while rewriting this Windows test suite (backslash injection
+and test failures). The direct-network example mutation returned **zero
+execution errors**, 28 parameter-demo warnings, and 10 diagnostics. The
+warnings identify parameters for review; they are not `R CMD check` warnings.
+The records are `.check/final-autotest-20261004.log` and
+`.check/final-autotest-direct-20261004.log`.
+
+`goodpractice` 1.2.0.1 completed with function length, complexity, line style,
+and test assertion advice, but its embedded `rcmdcheck` could not start under
+R 4.5.1 because Rtools 4.5 was unavailable. Local `pkgcheck` 0.3.2 on the
+isolated source confirmed examples for all 12 exports, an HTML vignette,
+metadata, and 95% coverage. It marked CI absent because the staged source
+omitted repository metadata, and its embedded `R CMD check` hit the same
+Rtools limitation. See `.check/final-goodpractice-20261004.log` and
+`.check/final-pkgcheck-20261004.log` for the full advice and diagnostics.
+
+Separately, a fresh R 4.6.1 source tarball passed standalone
+`R CMD check --as-cran` with **zero errors, zero warnings, and one expected
+`New submission` NOTE**. Its offline tests passed 3,861 assertions with 18
+opt-in live skips; examples, vignettes, and PDF and HTML manuals passed. The
+tarball at `.artifacts/release-2026-10-04-submission-preflight/tampaBayOpenData_0.1.0.tar.gz`
+has SHA-256 `19f7890f2e7029cfa5cf44a833602327f52db2a3b2f3f48b13231023f04d11bd`.
+Its check log is in the same directory. These `.check/` and `.artifacts/`
+records are ignored local files. At the prior commit `7514a56`, the
+[five-platform R check](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/37223299725),
+[coverage](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/37223299626),
+[pkgdown](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/37223299662),
+and [pkgcheck](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/37223539664)
+Actions all passed. At this preflight, CI for the submission revision had not
+yet run.
+
+## Final opt-in live-service run (2026-10-04)
+
+On October 4, the full manual [live-check suite](../.github/workflows/live-check.yaml)
+ran locally against current public ArcGIS services with R 4.6.1, testthat
+3.3.2, and sf 1.1.3. The command was
+`testthat::test_local(filter = "live", stop_on_failure = TRUE)` with
+`TAMPA_OPEN_DATA_LIVE=true`. This run used a direct network connection because
+the ordinary sandbox proxy cannot reach external services. The recorded log is
+`.artifacts/live-2026-10-04-final/test-local-live-direct.log`.
+
+The suite sampled all **35 checked layers across six publishers** as bounded
+EPSG:4326 spatial queries. It also checked bounded discovery for all six
+publisher registries, county descriptor and stable-ID retrieval, regional and
+other-city queries, and a complete multi-page construction-permit retrieval.
+The result was **1,489 passing assertions, zero failures, zero skips, and one
+warning** in 159.1 seconds. The warning came from GDAL while organizing a live
+polygon with more than 100 parts; it advises that processing may be slow. The
+geometry and provenance assertions passed. This is a time-specific check of
+public endpoints, not a guarantee of future availability or source freshness.
+
 ## Checked county and regional layers (2026-10-04)
 
 Nine checked FeatureServer layers were added: three each for Hillsborough

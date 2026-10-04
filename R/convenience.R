@@ -7,7 +7,11 @@
 #' @inherit get_dataset return
 #' @export
 #' @examples
-#' \dontrun{get_permits(limit = 10)}
+#' dataset_info("construction-permits")$title
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   permits <- get_permits(limit = 10)
+#'   dataset_provenance(permits)$source_url
+#' }
 get_permits <- function(...) get_dataset("construction-permits", ...)
 
 #' Retrieve City of Tampa active development case locations
@@ -18,7 +22,11 @@ get_permits <- function(...) get_dataset("construction-permits", ...)
 #' @inherit get_permits return
 #' @export
 #' @examples
-#' \dontrun{get_development_cases(spatial = TRUE, limit = 10)}
+#' dataset_info("development-cases")$title
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   cases <- get_development_cases(limit = 10)
+#'   nrow(cases)
+#' }
 get_development_cases <- function(...) get_dataset("development-cases", ...)
 
 #' Retrieve City of Tampa public capital project locations
@@ -29,5 +37,9 @@ get_development_cases <- function(...) get_dataset("development-cases", ...)
 #' @inherit get_permits return
 #' @export
 #' @examples
-#' \dontrun{get_capital_projects(limit = 10)}
+#' dataset_info("capital-projects")$title
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   projects <- get_capital_projects(limit = 10)
+#'   nrow(projects)
+#' }
 get_capital_projects <- function(...) get_dataset("capital-projects", ...)

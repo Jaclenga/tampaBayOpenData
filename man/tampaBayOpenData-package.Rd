@@ -26,26 +26,35 @@ retain their upstream terms.
 }
 \section{Request identity}{
 
-Web requests use \code{tampaBayOpenData/0.1.0} as the default user agent. Set
+Web requests use \verb{tampaBayOpenData/0.1.0} as the default user agent. Set
 \code{options(tampaBayOpenData.user_agent = "my-project/1.0 (contact: me@example.org)")}
 before calling a function that contacts a publisher to identify your own
 application. Set the option to \code{NULL} to restore the default. The setting
 applies to discovery, retrieval, and downloads.
 }
+
+\section{Live examples}{
+
+Examples that contact public ArcGIS services run when
+\code{TAMPA_OPEN_DATA_LIVE=true} is set in the R environment. Without this opt-in,
+the examples use only the bundled registry and run offline.
+}
+
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://jaclenga.github.io/tampaBayOpenData/}
   \item \url{https://github.com/Jaclenga/tampaBayOpenData}
   \item Report bugs at \url{https://github.com/Jaclenga/tampaBayOpenData/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Jack Lenga \email{jack3lenga@gmail.com} [copyright holder]
+\strong{Maintainer}: Jack Lenga \email{jack3lenga@gmail.com} (\href{https://orcid.org/0009-0003-1153-8105}{ORCID}) [copyright holder]
 
 Authors:
 \itemize{
-  \item Jack Lenga \email{jack3lenga@gmail.com} [copyright holder]
+  \item Jack Lenga \email{jack3lenga@gmail.com} (\href{https://orcid.org/0009-0003-1153-8105}{ORCID}) [copyright holder]
 }
 
 }

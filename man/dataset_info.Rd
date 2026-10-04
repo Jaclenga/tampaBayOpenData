@@ -45,8 +45,8 @@ records were updated.
 \examples{
 info <- dataset_info("construction-permits")
 info[c("id", "title", "publisher", "source_url")]
-\dontrun{
-info <- dataset_info("construction-permits", refresh = TRUE)
-info$fields
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  current <- dataset_info("construction-permits", refresh = TRUE)
+  current$fields
 }
 }

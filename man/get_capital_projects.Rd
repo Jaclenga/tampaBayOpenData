@@ -19,5 +19,9 @@ A thin wrapper for \code{get_dataset("capital-projects", ...)}. The City service
 publishes only records marked PUBLIC; this client preserves that source scope.
 }
 \examples{
-\dontrun{get_capital_projects(limit = 10)}
+dataset_info("capital-projects")$title
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  projects <- get_capital_projects(limit = 10)
+  nrow(projects)
+}
 }

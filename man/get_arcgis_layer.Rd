@@ -83,10 +83,9 @@ marked \code{not_checked} in \code{\link[=dataset_provenance]{dataset_provenance
 A table without geometry can be retrieved with \code{spatial = FALSE}.
 }
 \examples{
-\dontrun{
-data <- get_arcgis_layer(
-  "https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer/0",
-  limit = 10)
-dataset_provenance(data)
+url <- dataset_info("construction-permits")$source_url
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  data <- get_arcgis_layer(url, limit = 10)
+  dataset_provenance(data)$validation_status
 }
 }

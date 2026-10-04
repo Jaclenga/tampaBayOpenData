@@ -20,5 +20,9 @@ the City's PermitsAll layer used by its active-permits viewer, not a guaranteed
 historical archive of every permit. Source values and scope are preserved.
 }
 \examples{
-\dontrun{get_permits(limit = 10)}
+dataset_info("construction-permits")$title
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  permits <- get_permits(limit = 10)
+  dataset_provenance(permits)$source_url
+}
 }

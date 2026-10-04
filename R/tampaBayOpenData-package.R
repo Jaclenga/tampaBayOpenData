@@ -23,5 +23,9 @@
 #' before calling a function that contacts a publisher to identify your own
 #' application. Set the option to `NULL` to restore the default. The setting
 #' applies to discovery, retrieval, and downloads.
+#' @section Live examples:
+#' Examples that contact public ArcGIS services run when
+#' `TAMPA_OPEN_DATA_LIVE=true` is set in the R environment. Without this opt-in,
+#' the examples use only the bundled registry and run offline.
 #' @keywords internal
 "_PACKAGE"
