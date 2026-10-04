@@ -1,26 +1,40 @@
 # Dated validation record
 
-These are local results on Windows 11. Earlier runs used R 4.5.1; the later
-October 2 run used R 4.6.1. Each result describes the source and
-dependencies used for that run; live services can change.
+These are local results on Windows 11 with R 4.5.1 or R 4.6.1 as noted.
+Each result describes the source and dependencies used for that run; live
+services can change.
 
 ## rOpenSci preparation (2026-10-03)
 
-The fresh source archive at `tampaBayOpenData_0.1.0.tar.gz` (SHA-256
-`2bf4b5dda5c04fbefddd3da091522bd6c81afc5dd80761346647ae7e22e33af3`)
-passed full local `R CMD check --as-cran` on Windows 11 with R 4.5.1:
-**zero errors, zero warnings, and one expected `New submission` NOTE**.
-The check included tests, examples, vignette rebuilding, and PDF and HTML
-manuals. Local offline test coverage measured **95.17%**.
+After the six publisher data-page links and user-agent override were added,
+the fresh archive at
+`.artifacts/ropensci-fixes-2026-10-03/tampaBayOpenData_0.1.0.tar.gz`
+(SHA-256 `48e75f3fde5e4b44dd574aa58ed3b8050bd68e35304c6609950748d82b042024`)
+completed full local `R CMD check --as-cran` with R 4.6.1: **zero errors,
+zero warnings, and one environment NOTE**. The offline tests passed 3,281
+assertions with zero failures or warnings and 18 expected live skips.
+Examples, vignette rebuilding, and PDF and HTML manuals passed. The local
+`.artifacts/ropensci-fixes-2026-10-03/tampaBayOpenData.Rcheck/00check.log`
+records that R could not verify the system clock remotely.
 
-`pkgcheck` 0.3.2 ran locally on commit `a3f7458` with working Universal Ctags
-and GNU Global. It confirmed the 95.2% coverage figure and found examples for
-all 12 exported functions. Its remaining red checks were a missing
-`_pkgdown.yml`, no CI status for this unpushed commit, no ORCID in `Authors@R`,
-and an embedded R CMD check that could not start because Rtools is absent from
-the Windows environment. A pkgdown reference configuration was added after
-that run. The separate full `R CMD check --as-cran` result above was clean;
-the new GitHub pkgcheck workflow is still pending a push.
+This run placed the local TinyTeX, qpdf, HTML Tidy, and Pandoc binaries on
+`PATH`. It set `_R_CHECK_CRAN_INCOMING_REMOTE_=FALSE` because this shell cannot
+reach external sites, so it did not check public URLs or the ORCID remotely.
+The earlier `.check/codex-submission-audit/tampaBayOpenData.Rcheck/00check.log`
+recorded one error, two warnings, and four notes when PDF tools were missing
+from `PATH` and external requests failed. Its tests and vignette rebuild had
+passed; the post-edit full check above also passed both manuals with the
+available local tools.
+
+The stored `pkgcheck` 0.3.2 result is historical: it ran on commit `a3f7458`
+and measured 95.17% coverage then. Its missing `_pkgdown.yml` and ORCID
+findings no longer match the working source. A post-edit `pkgcheck` rerun was
+attempted with local Universal Ctags and GNU Global, but stopped while
+downloading GitHub data through the blocked network connection. The local
+`.check/ropensci-fixes-pkgcheck-20261003-attempt5.log` records the
+`127.0.0.1:9` connection failure. No new `pkgcheck` result was produced.
+The [five-platform CI run](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/37164594446)
+passed on an earlier revision; the post-edit source has not run in CI.
 
 ## Publisher registry and search filters (2026-10-02)
 

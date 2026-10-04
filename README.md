@@ -34,6 +34,18 @@ pak::pak("Jaclenga/tampaBayOpenData")
 
 Install the optional `sf` package for spatial results.
 
+## Identify your requests
+
+Requests to publisher services use `tampaBayOpenData/0.1.0` as the default
+user agent. Set a package option before live discovery, retrieval, or downloads
+if you need to identify your own application:
+
+```r
+options(tampaBayOpenData.user_agent = "my-project/1.0 (contact: me@example.org)")
+```
+
+Set `options(tampaBayOpenData.user_agent = NULL)` to restore the default.
+
 ## Find data
 
 ```r

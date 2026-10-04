@@ -3,7 +3,7 @@
 
 arcgis_http <- function(url, params, timeout) {
   req <- httr2::request(url)
-  req <- httr2::req_user_agent(req, "tampaBayOpenData/0.1.0")
+  req <- httr2::req_user_agent(req, .arcgis_user_agent())
   req <- httr2::req_headers(req, Accept = "application/json")
   req <- httr2::req_timeout(req, as.numeric(timeout))
   req <- httr2::req_options(req, followlocation = FALSE,
@@ -25,6 +25,16 @@ arcgis_http <- function(url, params, timeout) {
     httr2::req_perform(req)
   } else .perform_budgeted_request(req, timeout, url)
   list(status = httr2::resp_status(response), body = httr2::resp_body_string(response))
+}
+
+.arcgis_user_agent <- function() {
+  agent <- getOption("tampaBayOpenData.user_agent", "tampaBayOpenData/0.1.0")
+  if (!is.character(agent) || length(agent) != 1L || is.na(agent) ||
+      !nzchar(trimws(agent)) || grepl("[\r\n]", agent)) {
+    .abort("Option `tampaBayOpenData.user_agent` must be a nonempty single-line string.",
+           subclass = "tampa_input_error")
+  }
+  agent
 }
 
 .bounded_retry_after <- function(response) {
@@ -57,7 +67,7 @@ arcgis_request <- function(url, params = list(), dataset = NULL, timeout = 30) {
 .arcgis_request_once <- function(url, params, dataset, timeout) {
   params$f <- "json"
   response <- tryCatch(arcgis_http(url, params, timeout), error = function(e) {
-    if (inherits(e, "tampa_timeout_error")) stop(e)
+    if (inherits(e, c("tampa_timeout_error", "tampa_input_error"))) stop(e)
     .abort(paste0("The upstream ArcGIS service could not be reached: ", conditionMessage(e)),
            dataset, url, "tampa_http_error")
   })

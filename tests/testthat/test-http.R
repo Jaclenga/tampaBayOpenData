@@ -108,6 +108,32 @@ test_that("requests carry the package headers, caller timeout, and bounded retry
   expect_length(capture(), 1L)
 })
 
+test_that("a user agent option applies to metadata and query requests", {
+  previous <- options(tampaBayOpenData.user_agent =
+                        "regional-research/2.0 (contact: data@example.org)")
+  on.exit(options(previous), add = TRUE)
+  capture <- http_capture()
+  arcgis_request("https://example.invalid/FeatureServer/0")
+  arcgis_request("https://example.invalid/FeatureServer/0/query")
+
+  requests <- capture()
+  expect_length(requests, 2L)
+  expect_identical(vapply(requests, function(req) req$options$useragent, character(1)),
+                   rep("regional-research/2.0 (contact: data@example.org)", 2L))
+})
+
+test_that("invalid user agent options fail before HTTP", {
+  previous <- options(tampaBayOpenData.user_agent = NULL)
+  on.exit(options(previous), add = TRUE)
+  capture <- http_capture()
+  for (agent in list("", NA_character_, c("one", "two"), 1, "one\r\ntwo")) {
+    options(tampaBayOpenData.user_agent = agent)
+    expect_error(arcgis_request("https://example.invalid/FeatureServer/0"),
+                 "tampaBayOpenData.user_agent", class = "tampa_input_error")
+  }
+  expect_length(capture(), 0L)
+})
+
 test_that("the HTTP boundary preserves status codes and UTF-8 response bodies", {
   body <- '{"name":"Jos\u00e9 Park","note":"synthetic"}'
   for (status in c(202L, 206L, 429L, 503L)) {

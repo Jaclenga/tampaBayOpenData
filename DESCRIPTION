@@ -13,6 +13,14 @@ Description: Discover public 'ArcGIS' layers published by Tampa, St. Petersburg,
     with validated pagination, bounded previews, server-side filtering, typed
     tabular results, optional spatial objects, and source provenance. Save large
     downloads as local chunks that can be validated and resumed.
+    Public data pages are the City of Tampa GeoHub
+    <https://city-tampa.opendata.arcgis.com/>, St. Petersburg ArcGIS portal
+    <https://csp.maps.arcgis.com/home/index.html>, Clearwater ArcGIS portal
+    <https://cityofclearwater.maps.arcgis.com/home/index.html>, Hillsborough
+    County GeoHub <https://hcfl.gov/about-hillsborough/open-data-and-gis/geohub>,
+    Pinellas County Enterprise GIS
+    <https://new-pinellas-egis.opendata.arcgis.com/>, and Tampa Bay Regional
+    Planning Council GeoHub <https://opendata-tbrpc.hub.arcgis.com/>.
 License: MIT + file LICENSE
 URL: https://jaclenga.github.io/tampaBayOpenData/, https://github.com/Jaclenga/tampaBayOpenData
 BugReports: https://github.com/Jaclenga/tampaBayOpenData/issues
