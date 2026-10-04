@@ -4,7 +4,7 @@
 
 - Adds Hillsborough County and Pinellas County publishers to live
   discovery and exposes the six configured organizations through offline
-  [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md).
+  [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md).
   The checked catalog remains 26 city layers.
 - Makes `jurisdiction = "all"` the catalog default and adds
   jurisdiction, publisher, validation status, geometry, topic, category,
@@ -34,19 +34,19 @@
   full integrity and complete retrieval continue to verify the full
   matching manifest.
 - Adds
-  [`download_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
+  [`download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
   and
-  [`download_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
+  [`download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
   for resumable local RDS chunks. Each resume rechecks current metadata
   and full record membership, validates chunk checksums and provenance,
   and skips completed feature batches. Atomic writes and an exclusive
   directory lock protect saved progress; chunk attributes can still vary
   across requests and resumed sessions.
 - Introduces an offline, verified City of Tampa dataset registry and the
-  [`list_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md),
-  [`search_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md),
+  [`list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md),
+  [`search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md),
   and
-  [`dataset_info()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
+  [`dataset_info()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
   discovery API.
 - Expands the curated catalog to 20 layers, adding fire stations,
   bicycle and truck routes, recycling and water service areas, historic
@@ -57,9 +57,9 @@
   checked layers remain an offline `checked` overlay; other portal
   layers are marked `discovered`.
 - Lets the generic
-  [`get_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
+  [`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
   retrieve a discovery row or stable ArcGIS item/layer ID, and adds
-  [`get_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md)
+  [`get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md)
   for a direct compatible layer URL. Provenance records the portal, item
   ID, validation status, and source metadata.
 - Adds generic retrieval from ArcGIS FeatureServer and queryable
@@ -80,7 +80,7 @@
   field types, date metadata, geometry, and spatial references.
 - Attaches source, retrieval, query, and completeness provenance,
   exposed through
-  [`dataset_provenance()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md).
+  [`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md).
 - Adds thin convenience functions for permits, development cases, and
   capital projects.
 - Includes deterministic tests, an offline-safe introductory vignette,

@@ -23,9 +23,9 @@ dataset_provenance(x)
 - x:
 
   A retrieval result or a chunk read from
-  [`download_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
+  [`download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
   or
-  [`download_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md).
+  [`download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md).
 
 ## Value
 

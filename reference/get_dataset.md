@@ -1,14 +1,14 @@
 # Retrieve a checked or discovered ArcGIS dataset
 
 Accepts a checked package ID from
-[`list_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md),
+[`list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md),
 a single discovery result row from
-[`search_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md),
+[`search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md),
 or a stable `arcgis:<item-id>:<layer-id>` identifier. The latter two
 paths use current ArcGIS portal metadata; they have not received the
 package's curated source validation. For a compatible layer URL outside
 the discovery portal, use
-[`get_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md).
+[`get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md).
 
 ## Usage
 
@@ -47,7 +47,7 @@ get_dataset(
 
   ArcGIS SQL WHERE clause, using actual source field names. Defaults to
   `"1=1"` (all records). See
-  [`dataset_info()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
+  [`dataset_info()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
   with `refresh = TRUE`.
 
 - fields:
@@ -78,7 +78,7 @@ get_dataset(
 
   Maximum number of records; Inf retrieves all, and 0 returns a typed
   empty result. A deliberate subset is recorded as incomplete in
-  [`dataset_provenance()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
+  [`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
   when additional matching records exist.
 
 - page_size:
@@ -123,7 +123,7 @@ get_dataset(
 A tibble, or an sf object when spatial retrieval is requested. Source
 metadata are attached as `source`, `dataset_id`, `jurisdiction`, and
 `retrieved_at` attributes;
-[`dataset_provenance()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
+[`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
 returns the full record.
 
 ## Details
@@ -137,7 +137,7 @@ manifest, unexpected response, or upstream error fails explicitly. With
 than one million records must be narrowed with filters for full
 retrieval because it requires a complete ID manifest. See `integrity`
 for previews and
-[`download_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
+[`download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
 for downloads that save validated chunks to disk and can resume after
 interruption.
 

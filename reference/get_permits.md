@@ -16,7 +16,7 @@ get_permits(...)
 - ...:
 
   Arguments passed unchanged to
-  [`get_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md),
+  [`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md),
   excluding `id`.
 
 ## Value
@@ -24,7 +24,7 @@ get_permits(...)
 A tibble, or an sf object when spatial retrieval is requested. Source
 metadata are attached as `source`, `dataset_id`, `jurisdiction`, and
 `retrieved_at` attributes;
-[`dataset_provenance()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
+[`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
 returns the full record.
 
 ## Examples

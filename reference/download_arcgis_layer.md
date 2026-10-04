@@ -1,7 +1,7 @@
 # Download a direct ArcGIS layer into resumable local chunks
 
 Uses the same resumable, bounded-memory path as
-[`download_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md).
+[`download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md).
 A direct layer URL retains `not_checked` provenance and no inferred
 publisher identity.
 
@@ -37,7 +37,7 @@ download_arcgis_layer(
 
   ArcGIS SQL WHERE clause, using actual source field names. Defaults to
   `"1=1"` (all records). See
-  [`dataset_info()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
+  [`dataset_info()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
   with `refresh = TRUE`.
 
 - fields:
@@ -93,7 +93,7 @@ download_arcgis_layer(
 A named list with `path`, ordered chunk `files`, `matched_rows`,
 `returned_rows`, `complete`, and summary `source` provenance, as
 described in
-[`download_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md).
+[`download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md).
 Direct URLs have `not_checked` provenance.
 
 ## Examples

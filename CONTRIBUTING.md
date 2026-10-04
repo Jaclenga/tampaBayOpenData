@@ -23,7 +23,7 @@ roxygen comments. Add tests for changed behavior. Ordinary tests and
 package checks use mocked responses and block live HTTP. Keep examples
 and vignettes offline; set network retrieval chunks to `eval = FALSE`.
 See the [test
-guide](https://Jaclenga.github.io/tampaBayOpenData/tests/README.md) for
+guide](https://jaclenga.github.io/tampaBayOpenData/tests/README.md) for
 focused and opt-in live checks. The live workflow schedules bounded
 city, regional, and county smoke checks twice weekly, including county
 descriptor, stable-ID, and projected geometry retrieval with at most two
@@ -45,15 +45,15 @@ discovery supports the public ArcGIS organizations for these cities,
 Hillsborough County, Pinellas County, and the Tampa Bay Regional
 Planning Council. County discovery does not imply a checked county layer
 is in the bundled catalog.
-[`get_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md)
+[`get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md)
 accepts compatible direct public layer URLs. Convenience functions
 should delegate to
-[`get_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md).
+[`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md).
 
 ### Add a discovery publisher
 
 Discovery publishers are configured in `inst/extdata/portals.json`.
-[`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
+[`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
 exposes this registry without a network request. To add one:
 
 1.  Follow an official publisher page to its ArcGIS portal. Query that
@@ -70,7 +70,7 @@ exposes this registry without a network request. To add one:
     `/portals/self` or `/portals/<org_id>` URL without `?f=pjson`;
     registry URLs omit query parameters.
 3.  Check
-    [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
+    [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
     and run the portal registry and discovery tests. Then opt into a
     bounded live search for the new ID, with `max_items = 1`,
     `timeout = 15`, and `total_timeout = 45`. Inspect discovery issues
@@ -80,7 +80,7 @@ exposes this registry without a network request. To add one:
     layers `checked`.
 
 Scheduled monitoring reads
-[`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
+[`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
 so a new configured publisher is included automatically. Ordinary tests
 continue to block live network access.
 

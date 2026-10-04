@@ -3,24 +3,24 @@
 Search public Tampa, St. Petersburg, Clearwater, Hillsborough County,
 Pinellas County, and Tampa Bay Regional Planning Council ArcGIS services
 with
-[`list_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
+[`list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
 or
-[`search_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md).
-[`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
+[`search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md).
+[`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
 reads the publisher configuration. Catalogs can filter jurisdiction,
 publisher, validation, geometry, topics, categories, and modification
 dates. The bundled catalog identifies 26 layers checked by package
 maintainers; catalog browsing defaults to all jurisdictions. Use
-[`get_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
+[`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
 for a checked ID or discovered layer, or
-[`get_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md)
+[`get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md)
 for a direct compatible URL. Results are tibbles or optional `sf`
 objects;
-[`dataset_provenance()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
+[`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
 exposes the source, validation status, and query.
-[`download_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
+[`download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
 and
-[`download_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
+[`download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
 write validated chunks to a caller-selected directory and can resume an
 interrupted download.
 

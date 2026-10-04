@@ -20,9 +20,9 @@ A tibble with `id` (the discovery selector), `root`, `org_id`,
 `publisher`, `jurisdiction`, `website`, `verified` (a Date),
 `metadata_url`, and `evidence_url`. Use `id` values in the `portals`
 argument of
-[`list_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
+[`list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
 or
-[`search_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md).
+[`search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md).
 
 ## Examples
 

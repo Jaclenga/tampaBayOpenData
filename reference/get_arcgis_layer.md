@@ -2,10 +2,10 @@
 
 Reads a public HTTPS ArcGIS FeatureServer or MapServer layer through the
 same checked pagination and parsing engine as
-[`get_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md).
+[`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md).
 Pass a layer URL ending in `/FeatureServer/<id>` or `/MapServer/<id>`.
 This direct path is marked `not_checked` in
-[`dataset_provenance()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md);
+[`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md);
 it has no portal item ID. A table without geometry can be retrieved with
 `spatial = FALSE`.
 
@@ -38,7 +38,7 @@ get_arcgis_layer(
 
   ArcGIS SQL WHERE clause, using actual source field names. Defaults to
   `"1=1"` (all records). See
-  [`dataset_info()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
+  [`dataset_info()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
   with `refresh = TRUE`.
 
 - fields:
@@ -69,7 +69,7 @@ get_arcgis_layer(
 
   Maximum number of records; Inf retrieves all, and 0 returns a typed
   empty result. A deliberate subset is recorded as incomplete in
-  [`dataset_provenance()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
+  [`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
   when additional matching records exist.
 
 - page_size:
@@ -113,7 +113,7 @@ get_arcgis_layer(
 
 A tibble, or an sf object when `spatial = TRUE`, with source, retrieval,
 and completeness details attached as attributes. Use
-[`dataset_provenance()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
+[`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
 to read the full provenance record; its `validation_status` is
 `not_checked` for a direct URL.
 

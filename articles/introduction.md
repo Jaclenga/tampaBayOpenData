@@ -23,7 +23,7 @@ parks <- get_dataset("stpete-parks")
 ```
 
 Search returns a table of matches. Each `id` can be passed to
-[`get_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md);
+[`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md);
 `stpete-parks` is a checked ID. By default, retrieval returns all
 records as a tibble. Search scans live portals, and retrieval contacts
 the publisher, so run these calls with internet access.
@@ -82,7 +82,7 @@ default. A code or vector filters both checked and live results:
 or `"pinellas"`. The `portals` argument selects live organizations:
 `"city"` (Tampa), `"tbrpc"`, `"stpete"`, `"clearwater"`,
 `"hillsborough"`, `"pinellas"`, or `"all"` (default).
-[`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
+[`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
 lists the configured publishers and their portal locations offline. The
 county portals extend live discovery; the checked catalog still contains
 26 city layers. Selecting a county with `source = "checked"` returns an
@@ -110,7 +110,7 @@ Retrieval validates query responses and requires `Query` when the layer
 declares its capabilities. Unchecked live IDs have the form
 `arcgis:<item-id>:<layer-id>` and remain usable if a title changes. A
 portal item may still be deleted or its service changed.
-[`list_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
+[`list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
 searches all six public organizations by default; `source = "checked"`
 remains available if the network is unavailable.
 
@@ -135,9 +135,9 @@ before treating a bounded listing as a complete catalog.
 ### Narrow a search
 
 Both
-[`list_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
+[`list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
 and
-[`search_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md)
+[`search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md)
 accept optional filters:
 
 ``` r
@@ -151,7 +151,7 @@ county_transport[, c("id", "title", "publisher", "modified", "modified_source")]
 ```
 
 `publisher` matches exact names from
-[`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
+[`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
 ignoring case; `validation_status` selects `"checked"` or
 `"discovered"`. Live-only results can still contain checked matches.
 `spatial = TRUE` selects geometry layers, `FALSE` selects tables, and
@@ -224,9 +224,9 @@ head(permits)
 exact source names. By default, `limit = Inf` retrieves every match. A
 finite limit returns a subset, and provenance marks it incomplete if
 more records match. `order_by` requests server ordering where supported;
-[`get_permits()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_permits.md)
+[`get_permits()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_permits.md)
 is a shortcut for this dataset. See
-[`?get_dataset`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
+[`?get_dataset`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
 for other filters and limits.
 
 For sources with more than 10,000 matches and reliable ordering and
@@ -293,7 +293,7 @@ finite deadline leaves completed chunks available for the next call.
 An exclusive directory lock prevents concurrent writers. A terminated R
 process can leave an empty `.lock` directory: confirm that process has
 stopped before removing the lock and resuming.
-[`download_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
+[`download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
 supports the same chunked path for direct URLs.
 
 ## Explore the results

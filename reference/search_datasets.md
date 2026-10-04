@@ -37,7 +37,7 @@ search_datasets(
 - jurisdiction:
 
   Jurisdiction code or vector of codes from
-  [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
+  [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
   or `"all"` (default). Filters checked and live results and narrows the
   portal scan. A supported jurisdiction may have no checked entries.
 
@@ -50,7 +50,7 @@ search_datasets(
 - portals:
 
   Live organization IDs from
-  [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
+  [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
   or `"all"` (default). A character vector of IDs is also accepted.
   Intersects with jurisdiction and publisher filters before any portal
   requests. This does not filter the bundled checked catalog.
@@ -76,7 +76,7 @@ search_datasets(
 
   Publisher name or vector of names, matched exactly without regard to
   case. See
-  [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
+  [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
   for names. Filters all results and narrows the portal scan; an
   unmatched name returns no rows.
 
@@ -113,7 +113,7 @@ search_datasets(
 
 A tibble with the catalog columns and, for live searches, the discovery
 attributes described in
-[`list_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md).
+[`list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md).
 A checked-only search reads the bundled registry without network access.
 
 ## Examples

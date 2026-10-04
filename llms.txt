@@ -1,8 +1,8 @@
 # tampaBayOpenData
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://Jaclenga.github.io/tampaBayOpenData/DESCRIPTION)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://jaclenga.github.io/tampaBayOpenData/DESCRIPTION)
 [![License:
-MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://Jaclenga.github.io/tampaBayOpenData/LICENSE.md)
+MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://jaclenga.github.io/tampaBayOpenData/LICENSE.md)
 
 Public data for the Tampa Bay region is spread across separate ArcGIS
 portals. Finding a layer, retrieving all its records, and recording
@@ -54,7 +54,7 @@ parks <- get_dataset("stpete-parks")
 ```
 
 Search returns a table of matching datasets. Pass a result’s `id` to
-[`get_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
+[`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
 to retrieve its records as an R tibble; `stpete-parks` is one of the
 checked IDs. Search scans live portals by default, so it may take time
 and needs internet access. To browse only the checked catalog offline,
@@ -73,11 +73,11 @@ housing <- get_dataset(found[1, ], limit = 100)
 dataset_provenance(housing)
 ```
 
-[`list_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
+[`list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
 and
-[`search_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md)
+[`search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md)
 search the six configured public ArcGIS organizations by default.
-[`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
+[`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
 lists their IDs, publishers, and source locations offline. Choose live
 organizations with `portals = "city"` (Tampa), `"tbrpc"`, `"stpete"`,
 `"clearwater"`, `"hillsborough"`, or `"pinellas"`, or pass a vector of
@@ -109,8 +109,8 @@ Both catalog functions accept these optional filters:
 
 | Filter | Match |
 |----|----|
-| `jurisdiction` | Codes from [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md), such as `"pinellas"`, or a vector of codes. The default is `"all"`. |
-| `publisher` | Exact publisher names from [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md), ignoring case. |
+| `jurisdiction` | Codes from [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md), such as `"pinellas"`, or a vector of codes. The default is `"all"`. |
+| `publisher` | Exact publisher names from [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md), ignoring case. |
 | `validation_status` | `"checked"` or `"discovered"`. |
 | `spatial` | `TRUE` for geometry layers, `FALSE` for tables; unknown geometry is excluded when filtering. |
 | `topic` | Literal substring in tags and categories, ignoring case. |
@@ -149,7 +149,7 @@ query responses and requires `Query` when the layer declares its
 capabilities. Checked IDs such as `construction-permits` remain stable.
 Unchecked portal results use IDs such as `arcgis:<item-id>:<layer-id>`;
 pass an ID or a one-row result to
-[`get_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md).
+[`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md).
 A portal’s `modified` date describes its item, not necessarily the age
 of every record. `max_items` limits portal **items per organization**,
 not the number of layers returned. The default scans at most 25 items
@@ -192,7 +192,7 @@ marks it incomplete when more records match. The default `limit = Inf`
 retrieves all matches. Use `order_by` for an ordered subset when the
 service supports ordering and pagination. `query` accepts supported
 advanced ArcGIS filters, such as spatial and time filters; see
-[`?get_dataset`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
+[`?get_dataset`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
 for parameters and restrictions.
 
 For services with more than 10,000 matches and reliable ordering and
@@ -215,14 +215,14 @@ The main functions are:
 
 | Function | Purpose |
 |----|----|
-| [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md) | List configured public ArcGIS organizations and their identities offline. |
-| [`list_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md), [`search_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md) | Search configured public ArcGIS organizations, with checked entries identified. Use `source = "checked"` offline. |
-| [`dataset_info()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md) | Inspect a checked or discovered layer; `refresh = TRUE` fetches the live schema. |
-| [`get_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md) | Retrieve a checked ID, discovered ID, or one-row discovery result. |
-| [`get_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md) | Retrieve a compatible public ArcGIS layer directly by URL. |
-| [`get_permits()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_permits.md), [`get_development_cases()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_development_cases.md), [`get_capital_projects()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_capital_projects.md) | Shortcuts for three catalog entries. |
-| [`download_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md), [`download_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md) | Download matching records into resumable local RDS chunks. |
-| [`dataset_provenance()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md) | Read source, validation status, query, timing, row counts, integrity, and completeness. |
+| [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md) | List configured public ArcGIS organizations and their identities offline. |
+| [`list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md), [`search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md) | Search configured public ArcGIS organizations, with checked entries identified. Use `source = "checked"` offline. |
+| [`dataset_info()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md) | Inspect a checked or discovered layer; `refresh = TRUE` fetches the live schema. |
+| [`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md) | Retrieve a checked ID, discovered ID, or one-row discovery result. |
+| [`get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md) | Retrieve a compatible public ArcGIS layer directly by URL. |
+| [`get_permits()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_permits.md), [`get_development_cases()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_development_cases.md), [`get_capital_projects()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_capital_projects.md) | Shortcuts for three catalog entries. |
+| [`download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md), [`download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md) | Download matching records into resumable local RDS chunks. |
+| [`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md) | Read source, validation status, query, timing, row counts, integrity, and completeness. |
 
 Source field names and text fields retain their spelling. ArcGIS
 epoch-millisecond date fields become UTC `POSIXct` unless the source
@@ -236,7 +236,7 @@ by the layer metadata are still converted. Date-only fields become
 | Tool | When to use it | What `tampaBayOpenData` adds |
 |----|----|----|
 | [`nycOpenData`](https://docs.ropensci.org/nycOpenData/) | Access New York City’s Socrata Open Data API. | A Tampa Bay focus and discovery and retrieval from multiple ArcGIS publishers, using ArcGIS queries rather than Socrata SoQL. |
-| [ArcGIS REST API](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer/) | Work directly with a known ArcGIS service and its query parameters. | A regional publisher registry, checked dataset IDs, bounded discovery, typed R results, provenance, and resumable downloads. [`get_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md) also accepts a direct layer URL. |
+| [ArcGIS REST API](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer/) | Work directly with a known ArcGIS service and its query parameters. | A regional publisher registry, checked dataset IDs, bounded discovery, typed R results, provenance, and resumable downloads. [`get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md) also accepts a direct layer URL. |
 | [`arcgislayers`](https://r.esri.com/arcgislayers/) | Work broadly with ArcGIS data services, including feature layers, imagery, and portal items. | A focused Tampa Bay catalog and workflow for finding public regional layers, distinguishing checked from discovered results, and recording retrieval provenance. |
 
 ## Spatial results
@@ -268,7 +268,7 @@ dataset_provenance(yard_waste)$validation_status # "not_checked" for direct URL 
 ## Resumable downloads
 
 Use
-[`download_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
+[`download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
 for a larger retrieval that should write bounded chunks instead of
 collecting all feature pages in memory. Choose a directory outside the
 package source; repeating the same call resumes a matching download:
@@ -296,7 +296,7 @@ resumes; the files are not a frozen snapshot. Downloads always use
 full-manifest integrity and retain its one-million-match limit. Their
 default `total_timeout = Inf` allows a long operation; a finite deadline
 leaves completed chunks available for resumption.
-[`download_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
+[`download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
 provides the same path for a compatible direct layer URL.
 
 An exclusive directory lock prevents concurrent writers. If an R process
@@ -335,7 +335,7 @@ discovery, and county facilities. County checks use both discovery
 descriptors and stable IDs and verify server projection to EPSG:4326.
 Each retrieval requests at most two rows with explicit timeouts; portal
 scans use at most one item per publisher. The [test
-guide](https://Jaclenga.github.io/tampaBayOpenData/tests/README.md)
+guide](https://jaclenga.github.io/tampaBayOpenData/tests/README.md)
 describes these bounded checks and the full manual live suite. Completed
 runs provide dated evidence of source behavior.
 
@@ -347,7 +347,7 @@ of every attribute. Very large queries may need a narrower `where`
 clause: full-manifest retrieval rejects more than one million matches.
 Eligible finite previews can verify a bounded subset instead.
 
-[`dataset_provenance()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
+[`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
 records the publisher, source layer or item URL, portal and item ID when
 known, validation status, query endpoint, retrieval time, options, row
 counts, and completeness. Save that record separately before
@@ -366,25 +366,25 @@ is independent of those organizations and rOpenSci.
 ## More information
 
 - [Bicycle network
-  notebook](https://Jaclenga.github.io/tampaBayOpenData/inst/examples/bike-network.Rmd):
+  notebook](https://jaclenga.github.io/tampaBayOpenData/inst/examples/bike-network.Rmd):
   catalog discovery, an optional live subset, provenance, and a map.
 - [Introduction
-  vignette](https://Jaclenga.github.io/tampaBayOpenData/vignettes/introduction.Rmd):
+  vignette](https://jaclenga.github.io/tampaBayOpenData/vignettes/introduction.Rmd):
   a fuller walkthrough. After installing an archive built with
   `R CMD build`, use
-  [`vignette("introduction", package = "tampaBayOpenData")`](https://Jaclenga.github.io/tampaBayOpenData/articles/introduction.md).
-- [Architecture](https://Jaclenga.github.io/tampaBayOpenData/docs/architecture.md)
+  [`vignette("introduction", package = "tampaBayOpenData")`](https://jaclenga.github.io/tampaBayOpenData/articles/introduction.md).
+- [Architecture](https://jaclenga.github.io/tampaBayOpenData/docs/architecture.md)
   and [Tampa source
-  research](https://Jaclenga.github.io/tampaBayOpenData/docs/research-tampa.md):
+  research](https://jaclenga.github.io/tampaBayOpenData/docs/research-tampa.md):
   client design and catalog verification.
-- [Contributing](https://Jaclenga.github.io/tampaBayOpenData/CONTRIBUTING.md)
+- [Contributing](https://jaclenga.github.io/tampaBayOpenData/CONTRIBUTING.md)
   and [test suite
-  guide](https://Jaclenga.github.io/tampaBayOpenData/tests/README.md):
+  guide](https://jaclenga.github.io/tampaBayOpenData/tests/README.md):
   development, offline tests, and opt-in live checks.
 - [Dated validation
-  record](https://Jaclenga.github.io/tampaBayOpenData/docs/validation.md)
+  record](https://jaclenga.github.io/tampaBayOpenData/docs/validation.md)
   and [security
-  audit](https://Jaclenga.github.io/tampaBayOpenData/docs/security-audit.md):
+  audit](https://jaclenga.github.io/tampaBayOpenData/docs/security-audit.md):
   checks and known limitations.
 
 The design was inspired by rOpenSci’s
@@ -396,38 +396,38 @@ implemented independently.
 
 ## Find datasets
 
-- [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
+- [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
   : List the configured public ArcGIS publishers
-- [`list_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
+- [`list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
   : List Tampa Bay ArcGIS datasets
-- [`search_datasets()`](https://Jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md)
+- [`search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md)
   : Search Tampa Bay ArcGIS datasets
-- [`dataset_info()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
+- [`dataset_info()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
   : Inspect a checked or discovered dataset and its source
 
 ## Retrieve and save data
 
-- [`get_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
+- [`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
   : Retrieve a checked or discovered ArcGIS dataset
-- [`get_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md)
+- [`get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md)
   : Retrieve a compatible ArcGIS layer by URL
-- [`download_dataset()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
+- [`download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
   : Download an ArcGIS dataset into resumable local chunks
-- [`download_arcgis_layer()`](https://Jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
+- [`download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
   : Download a direct ArcGIS layer into resumable local chunks
 
 ## Common Tampa datasets
 
-- [`get_permits()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_permits.md)
+- [`get_permits()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_permits.md)
   : Retrieve City of Tampa permit locations
-- [`get_capital_projects()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_capital_projects.md)
+- [`get_capital_projects()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_capital_projects.md)
   : Retrieve City of Tampa public capital project locations
-- [`get_development_cases()`](https://Jaclenga.github.io/tampaBayOpenData/reference/get_development_cases.md)
+- [`get_development_cases()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_development_cases.md)
   : Retrieve City of Tampa active development case locations
 
 ## Provenance
 
-- [`dataset_provenance()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
+- [`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
   : Read the source and retrieval provenance of a result
 
 # Articles
@@ -435,4 +435,4 @@ implemented independently.
 ### All vignettes
 
 - [Discover and retrieve Tampa Bay ArcGIS
-  data](https://Jaclenga.github.io/tampaBayOpenData/articles/introduction.md):
+  data](https://jaclenga.github.io/tampaBayOpenData/articles/introduction.md):

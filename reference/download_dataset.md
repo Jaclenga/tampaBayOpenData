@@ -48,7 +48,7 @@ download_dataset(
 
   ArcGIS SQL WHERE clause, using actual source field names. Defaults to
   `"1=1"` (all records). See
-  [`dataset_info()`](https://Jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
+  [`dataset_info()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_info.md)
   with `refresh = TRUE`.
 
 - fields:

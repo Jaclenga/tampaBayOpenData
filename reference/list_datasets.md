@@ -1,7 +1,7 @@
 # List Tampa Bay ArcGIS datasets
 
 Live discovery searches the organizations in
-[`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
+[`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
 and expands public services into candidate layers and tables. Retrieval
 requires Query when a layer supplies a capabilities list and validates
 its query responses. The bundled registry supplies a separate
@@ -34,7 +34,7 @@ list_datasets(
 - jurisdiction:
 
   Jurisdiction code or vector of codes from
-  [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
+  [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
   or `"all"` (default). Filters checked and live results and narrows the
   portal scan. A supported jurisdiction may have no checked entries.
 
@@ -47,7 +47,7 @@ list_datasets(
 - portals:
 
   Live organization IDs from
-  [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
+  [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md),
   or `"all"` (default). A character vector of IDs is also accepted.
   Intersects with jurisdiction and publisher filters before any portal
   requests. This does not filter the bundled checked catalog.
@@ -73,7 +73,7 @@ list_datasets(
 
   Publisher name or vector of names, matched exactly without regard to
   case. See
-  [`list_portals()`](https://Jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
+  [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
   for names. Filters all results and narrows the portal scan; an
   unmatched name returns no rows.
 

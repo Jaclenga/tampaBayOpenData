@@ -3,4 +3,4 @@
 ### All vignettes
 
 - [Discover and retrieve Tampa Bay ArcGIS
-  data](https://Jaclenga.github.io/tampaBayOpenData/articles/introduction.md):
+  data](https://jaclenga.github.io/tampaBayOpenData/articles/introduction.md):
