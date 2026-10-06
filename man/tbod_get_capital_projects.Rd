@@ -17,3 +17,8 @@ Calls \code{\link[=tbod_get_dataset]{tbod_get_dataset()}} for the bundled \code{
 The City service publishes records marked PUBLIC;
 the package preserves that source scope.
 }
+\examples{
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  tbod_get_capital_projects(limit = 10)
+}
+}

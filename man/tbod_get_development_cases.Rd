@@ -17,3 +17,8 @@ Calls \code{\link[=tbod_get_dataset]{tbod_get_dataset()}} for the bundled \code{
 It covers active entitlement locations, not all
 historical development cases.
 }
+\examples{
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  tbod_get_development_cases(limit = 10)
+}
+}

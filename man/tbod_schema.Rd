@@ -42,3 +42,7 @@ expected schema and requires \code{refresh = TRUE}. Call \code{\link[=tbod_check
 compare a current service against its expected schema. A stable ArcGIS item
 ID from an Enterprise portal can be resolved with \code{portal}.
 }
+\examples{
+schema <- tbod_schema("construction-permits")
+head(schema$fields[, c("name", "type")])
+}

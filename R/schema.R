@@ -147,6 +147,9 @@
 #' @return A list with endpoint, a tibble of field names, types and aliases,
 #'   geometry type, spatial reference, object-ID field, and dataset ID.
 #' @export
+#' @examples
+#' schema <- tbod_schema("construction-permits")
+#' head(schema$fields[, c("name", "type")])
 tbod_schema <- function(id, jurisdiction = NULL, refresh = FALSE,
                         timeout = 30, total_timeout = 60, portal = NULL) {
   .flag(refresh, "refresh")
@@ -332,6 +335,12 @@ tbod_schema <- function(id, jurisdiction = NULL, refresh = FALSE,
 #'   expected and current schemas. An incompatible missing endpoint has no
 #'   current schema.
 #' @export
+#' @examples
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   report <- tbod_check_schema("construction-permits")
+#'   report$status
+#'   report$issues
+#' }
 tbod_check_schema <- function(id, jurisdiction = NULL, expected = NULL,
                               timeout = 30, total_timeout = 60,
                               portal = NULL) {

@@ -50,3 +50,10 @@ are incompatible drift. This inspection function returns a report, including
 missing endpoints; checked retrieval warns for compatible drift and errors
 before querying for incompatible drift.
 }
+\examples{
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  report <- tbod_check_schema("construction-permits")
+  report$status
+  report$issues
+}
+}

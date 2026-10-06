@@ -560,6 +560,10 @@ tbod_get_permits <- function(...) tbod_get_dataset("construction-permits", ...)
 #' @inheritParams tbod_get_permits
 #' @return A tibble or sf object with retrieval provenance attached.
 #' @export
+#' @examples
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   tbod_get_development_cases(limit = 10)
+#' }
 tbod_get_development_cases <- function(...) tbod_get_dataset("development-cases", ...)
 
 #' Retrieve bundled Tampa capital projects
@@ -570,4 +574,8 @@ tbod_get_development_cases <- function(...) tbod_get_dataset("development-cases"
 #' @inheritParams tbod_get_permits
 #' @return A tibble or sf object with retrieval provenance attached.
 #' @export
+#' @examples
+#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+#'   tbod_get_capital_projects(limit = 10)
+#' }
 tbod_get_capital_projects <- function(...) tbod_get_dataset("capital-projects", ...)
