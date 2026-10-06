@@ -3,11 +3,17 @@
 result row from search_datasets(), or a stable arcgis:&amp;lt;item-id&amp;gt;:&amp;lt;layer-id&amp;gt;
 identifier. The latter two paths use current ArcGIS portal metadata; they
 have not received the package's curated source validation. For a compatible
-layer URL outside the discovery portal, use get_arcgis_layer()."><meta property="og:description" content="Accepts a checked package ID from list_datasets(), a single discovery
+layer URL outside the discovery portal, use get_arcgis_layer().
+Bundled checked layers are compared with expected schema snapshots before
+querying. Compatible changes warn; incompatible changes stop retrieval.
+tbod_check_schema returns a categorized report of current differences."><meta property="og:description" content="Accepts a checked package ID from list_datasets(), a single discovery
 result row from search_datasets(), or a stable arcgis:&amp;lt;item-id&amp;gt;:&amp;lt;layer-id&amp;gt;
 identifier. The latter two paths use current ArcGIS portal metadata; they
 have not received the package's curated source validation. For a compatible
-layer URL outside the discovery portal, use get_arcgis_layer()."></head><body>
+layer URL outside the discovery portal, use get_arcgis_layer().
+Bundled checked layers are compared with expected schema snapshots before
+querying. Compatible changes warn; incompatible changes stop retrieval.
+tbod_check_schema returns a categorized report of current differences."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -54,14 +60,17 @@ layer URL outside the discovery portal, use get_arcgis_layer()."></head><body>
 result row from <code><a href="search_datasets.html">search_datasets()</a></code>, or a stable <code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code>
 identifier. The latter two paths use current ArcGIS portal metadata; they
 have not received the package's curated source validation. For a compatible
-layer URL outside the discovery portal, use <code><a href="get_arcgis_layer.html">get_arcgis_layer()</a></code>.</p>
+layer URL outside the discovery portal, use <code><a href="get_arcgis_layer.html">get_arcgis_layer()</a></code>.
+Bundled checked layers are compared with expected schema snapshots before
+querying. Compatible changes warn; incompatible changes stop retrieval.
+<code><a href="tbod_check_schema.html">tbod_check_schema</a></code> returns a categorized report of current differences.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_dataset</span><span class="op">(</span></span>
 <span>  <span class="va">id</span>,</span>
-<span>  jurisdiction <span class="op">=</span> <span class="st">"tampa"</span>,</span>
+<span>  jurisdiction <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  where <span class="op">=</span> <span class="st">"1=1"</span>,</span>
 <span>  fields <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  spatial <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -86,9 +95,10 @@ or stable <code>arcgis:&lt;32-hex-item-id&gt;:&lt;nonnegative-layer-id&gt;</code
 
 
 <dt id="arg-jurisdiction">jurisdiction<a class="anchor" aria-label="anchor" href="#arg-jurisdiction"></a></dt>
-<dd><p>Checked-registry jurisdiction: <code>"tampa"</code>, <code>"stpete"</code>,
-<code>"clearwater"</code>, or <code>"all"</code>. Omit to resolve a unique checked ID across the
-registry or to use a discovered result's or stable ArcGIS ID's jurisdiction.</p></dd>
+<dd><p>Bundled checked-catalog jurisdiction code, or <code>"all"</code>.
+Omit to resolve a unique checked ID across the catalog or to use a discovered
+result's or stable ArcGIS ID's jurisdiction. See <code><a href="list_portals.html">list_portals()</a></code>
+for the bundled jurisdiction codes.</p></dd>
 
 
 <dt id="arg-where">where<a class="anchor" aria-label="anchor" href="#arg-where"></a></dt>

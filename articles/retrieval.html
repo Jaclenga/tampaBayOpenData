@@ -72,9 +72,9 @@
 
     
     
-<p>Use <code><a href="../reference/get_dataset.html">get_dataset()</a></code> for a checked package ID, a one-row
-discovery result, or a stable discovered ID. Use
-<code><a href="../reference/get_arcgis_layer.html">get_arcgis_layer()</a></code> when you already have a compatible
+<p>Use <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> for a checked package ID, a
+one-row discovery result, or a stable discovered ID. Use
+<code><a href="../reference/tbod_get_arcgis_layer.html">tbod_get_arcgis_layer()</a></code> when you already have a compatible
 public HTTPS ArcGIS layer URL. Both paths use the same retrieval, type
 conversion, integrity checks, and provenance. These examples contact
 live publishers when run in an R session; none run during the site
@@ -85,52 +85,85 @@ build.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">permits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span></span>
+<span><span class="va">permits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"construction-permits"</span>,</span>
 <span>  where <span class="op">=</span> <span class="st">"PROJECTSTATUS IS NOT NULL"</span>,</span>
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RECORD_ID"</span>, <span class="st">"PROJECTSTATUS"</span>, <span class="st">"LASTUPDATE"</span><span class="op">)</span>,</span>
 <span>  limit <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"matched_rows"</span>, <span class="st">"returned_rows"</span>, <span class="st">"complete"</span>, <span class="st">"integrity"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"matched_rows"</span>, <span class="st">"returned_rows"</span>, <span class="st">"complete"</span>, <span class="st">"integrity"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p><code>where</code> uses ArcGIS SQL, not Socrata SoQL, and
 <code>fields</code> requires exact source field names. Inspect current
 fields with
-<code>dataset_info("construction-permits", refresh = TRUE)$fields</code>;
+<code>tbod_dataset_info("construction-permits", refresh = TRUE)$fields</code>;
 its metadata also reports query capabilities. <code>query</code> accepts
 supported advanced ArcGIS spatial, time, and version filters. It does
 not allow overriding parameters that control the response format, field
 selection, aggregation, geometry simplification, or pagination; see
-<code><a href="../reference/get_dataset.html">?get_dataset</a></code> for the accepted names.</p>
+<code><a href="../reference/tbod_get_dataset.html">?tbod_get_dataset</a></code> for the accepted names.</p>
 <p>The default <code>limit = Inf</code> retrieves all matches. A finite
-limit deliberately returns a subset and
-<code><a href="../reference/dataset_provenance.html">dataset_provenance()</a></code> records <code>complete = FALSE</code>
-when additional records match. Use <code>order_by</code> for a
-reproducible ordered subset only when the service supports ordering and
-offset pagination; an object-ID tie breaker is added.
-<code>limit = 0</code> returns a typed empty result after obtaining the
-matching count. <code><a href="../reference/get_permits.html">get_permits()</a></code>,
-<code><a href="../reference/get_development_cases.html">get_development_cases()</a></code>, and
-<code><a href="../reference/get_capital_projects.html">get_capital_projects()</a></code> are short calls to
-<code><a href="../reference/get_dataset.html">get_dataset()</a></code> for three checked Tampa layers.</p>
+limit deliberately returns a subset and <code><a href="../reference/tbod_provenance.html">tbod_provenance()</a></code>
+records <code>complete = FALSE</code> when additional records match. Use
+<code>order_by</code> for a reproducible ordered subset only when the
+service supports ordering and offset pagination; an object-ID tie
+breaker is added. <code>limit = 0</code> returns a typed empty result
+after obtaining the matching count. <code><a href="../reference/tbod_convenience.html">tbod_get_permits()</a></code>,
+<code><a href="../reference/tbod_convenience.html">tbod_get_development_cases()</a></code>, and
+<code><a href="../reference/tbod_convenience.html">tbod_get_capital_projects()</a></code> are short calls to
+<code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> for three checked Tampa layers.</p>
 <p>For a one-row discovery result, pass the row itself so its source and
 publisher travel with the request:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
-<span><span class="va">housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">housing</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"item_id"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
+<span><span class="va">housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">housing</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"item_id"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>For a compatible direct layer, pass a URL ending in
 <code>/FeatureServer/&lt;id&gt;</code> or
 <code>/MapServer/&lt;id&gt;</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">yard_waste</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_arcgis_layer.html">get_arcgis_layer</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">yard_waste</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_arcgis_layer.html">tbod_get_arcgis_layer</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/4"</span>,</span>
 <span>  limit <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">yard_waste</span><span class="op">)</span><span class="op">$</span><span class="va">validation_status</span> <span class="co"># "not_checked"</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">yard_waste</span><span class="op">)</span><span class="op">$</span><span class="va">validation_status</span> <span class="co"># "not_checked"</span></span></code></pre></div>
 <p>Direct URL access does not infer a publisher or ArcGIS portal item
-and has <code>not_checked</code> validation status. Inspect the
-service’s source and reuse terms yourself.</p>
+and has <code>not_checked</code> validation status. It cannot take a
+<code>jurisdiction</code> override. Inspect the service’s source and
+reuse terms yourself.</p>
+</div>
+<div class="section level2">
+<h2 id="check-the-live-schema">Check the live schema<a class="anchor" aria-label="anchor" href="#check-the-live-schema"></a>
+</h2>
+<p>Checked layers have a bundled field, geometry, CRS, object-ID, and
+endpoint snapshot. <code>tbod_schema(id)</code> reads that snapshot
+offline; <code>tbod_schema(id, refresh = TRUE)</code> reads the current
+layer metadata. <code>tbod_check_schema(id)</code> compares them and
+returns a report:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">expected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
+<span><span class="va">report</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_check_schema.html">tbod_check_schema</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
+<span><span class="va">report</span><span class="op">$</span><span class="va">status</span></span>
+<span><span class="va">report</span><span class="op">$</span><span class="va">issues</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"category"</span>, <span class="st">"severity"</span>, <span class="st">"field"</span>, <span class="st">"expected"</span>, <span class="st">"actual"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>The status is <code>"unchanged"</code>, <code>"compatible"</code>, or
+<code>"incompatible"</code> for a checked layer. Added fields and
+changed aliases are compatible drift: checked retrieval warns and
+proceeds. Removed or renamed fields, changed field types, object-ID
+fields, geometry, CRS, or endpoint are incompatible: checked retrieval
+stops before querying records. A vanished endpoint is reported as
+<code>endpoint_disappeared</code>. Inspect <code>report$issues</code> to
+identify the change.</p>
+<p>A direct URL or discovered layer has no bundled expected schema. Save
+its current metadata and supply it on a later check; an untracked check
+without <code>expected</code> returns <code>status = "untracked"</code>.
+For a stable ID from a custom Enterprise portal, also pass
+<code>portal</code> to <code><a href="../reference/tbod_schema.html">tbod_schema()</a></code> or
+<code><a href="../reference/tbod_check_schema.html">tbod_check_schema()</a></code>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Replace this example address with a public ArcGIS layer URL.</span></span>
+<span><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://example.org/arcgis/rest/services/Example/FeatureServer/0"</span></span>
+<span><span class="va">baseline</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="va">url</span>, refresh <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">later</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_check_schema.html">tbod_check_schema</a></span><span class="op">(</span><span class="va">url</span>, expected <span class="op">=</span> <span class="va">baseline</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="integrity-and-time-budgets">Integrity and time budgets<a class="anchor" aria-label="anchor" href="#integrity-and-time-budgets"></a>
@@ -177,18 +210,18 @@ retain an exact representation when possible.</p>
 <code>out_sr</code> to keep the source’s native CRS. Point, line, and
 polygon layers are supported, including records with missing geometry. A
 nonspatial table can be retrieved with <code>spatial = FALSE</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">boundary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span></span>
+<span><span class="va">boundary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span></span></code></pre></div>
 <p>Both layers use one CRS so they can share a map. Keep only nonempty
 case geometries for the display; the full <code>projects</code> object
 remains available for analysis:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mapped_projects</span> <span class="op">&lt;-</span> <span class="va">projects</span><span class="op">[</span><span class="op">!</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_query.html" class="external-link">st_is_empty</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
@@ -215,15 +248,17 @@ a map or its record counts.</p>
 <div class="section level2">
 <h2 id="resume-a-large-download">Resume a large download<a class="anchor" aria-label="anchor" href="#resume-a-large-download"></a>
 </h2>
-<p><code><a href="../reference/download_dataset.html">download_dataset()</a></code> writes bounded RDS chunks to a local
-directory outside the package source. This avoids collecting all feature
-pages in memory; the full matching ID manifest still uses memory and
-retains the one-million-match limit. Each chunk is a tibble or, with
+<p><code><a href="../reference/tbod_download_dataset.html">tbod_download_dataset()</a></code> writes bounded RDS chunks to a
+local directory outside the package source. This avoids collecting all
+feature pages in memory; the full matching ID manifest still uses memory
+and retains the one-million-match limit. Each chunk is a tibble or, with
 <code>spatial = TRUE</code>, an <code>sf</code> object.
-<code><a href="../reference/download_arcgis_layer.html">download_arcgis_layer()</a></code> offers the same path for a
-compatible direct layer URL.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">saved</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_dataset.html">download_dataset</a></span><span class="op">(</span></span>
+<code><a href="../reference/tbod_download_dataset.html">tbod_download_arcgis_layer()</a></code> offers the same path for a
+compatible direct layer URL. For a stable ID from another ArcGIS
+Enterprise portal, pass its sharing REST root through
+<code>portal</code>, as with <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code>.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">saved</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_download_dataset.html">tbod_download_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"construction-permits"</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"~/tampaBayOpenData-downloads/permits"</span>,</span>
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBJECTID"</span>, <span class="st">"RECORD_ID"</span>, <span class="st">"LASTUPDATE"</span><span class="op">)</span>,</span>
@@ -232,7 +267,7 @@ compatible direct layer URL.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">saved</span><span class="op">$</span><span class="va">complete</span></span>
 <span><span class="va">first_chunk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">saved</span><span class="op">$</span><span class="va">files</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">first_chunk</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">first_chunk</span><span class="op">)</span></span></code></pre></div>
 <p>Repeat the same call to resume. The client rechecks the live schema
 and complete matching ID manifest, verifies saved chunks against
 checkpoints, and downloads missing chunks. Changed query options,

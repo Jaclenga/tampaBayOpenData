@@ -2,6 +2,23 @@
 
 ## tampaBayOpenData 0.1.0
 
+- Adds the `tbod_` API for catalog search, arbitrary ArcGIS portal
+  discovery, layer retrieval, provenance, and schema inspection.
+  Existing unprefixed functions remain available for compatibility.
+- Bundles expected field, geometry, and CRS schemas for checked
+  datasets. Retrieval and downloads compare current layer metadata
+  before querying; additive fields warn and incompatible changes stop
+  the operation.
+- Classifies removed object-ID fields and disappeared layers as
+  incompatible schema drift, validates malformed CRS metadata, and
+  scopes saved checked schemas by jurisdiction and dataset ID.
+- Lets the same retrieval API accept a public ArcGIS layer URL or a
+  discovered row from an arbitrary public ArcGIS portal. Tampa Bay
+  remains the bundled catalog and publisher configuration.
+- Searches queryable Map Service items as well as Feature Service items,
+  reads full metadata for each service layer, and retains rows found
+  before a later portal page fails. Direct URLs reject jurisdiction
+  overrides.
 - Adds Hillsborough County and Pinellas County publishers to live
   discovery and exposes the six configured organizations through offline
   [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md).
@@ -10,11 +27,11 @@
   jurisdiction, publisher, validation status, geometry, topic, category,
   and item-modification filters to listing and searching. Publisher and
   jurisdiction filters narrow portal scans; other filters retain the
-  bounded-scan caveat. Retrieval and download jurisdiction defaults
-  remain Tampa. Live checked matches preserve current item dates, tags,
-  and categories alongside checked identity and terms. Catalog
-  `modified_source` distinguishes live item timestamps from saved
-  checked-source timestamps.
+  bounded-scan caveat. Retrieval and download resolve checked IDs across
+  the registry by default. Live checked matches preserve current item
+  dates, tags, and categories alongside checked identity and terms.
+  Catalog `modified_source` distinguishes live item timestamps from
+  saved checked-source timestamps.
 - Adds twice-weekly bounded live smoke checks for checked city,
   regional, and county sources, including county descriptor, stable-ID,
   and projected geometry retrieval, while preserving manually triggered

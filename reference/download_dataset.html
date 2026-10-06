@@ -62,7 +62,7 @@ itself remains in memory and is subject to the one-million-record limit.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">download_dataset</span><span class="op">(</span></span>
 <span>  <span class="va">id</span>,</span>
 <span>  <span class="va">path</span>,</span>
-<span>  jurisdiction <span class="op">=</span> <span class="st">"tampa"</span>,</span>
+<span>  jurisdiction <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  where <span class="op">=</span> <span class="st">"1=1"</span>,</span>
 <span>  fields <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  spatial <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -89,9 +89,10 @@ or stable <code>arcgis:&lt;32-hex-item-id&gt;:&lt;nonnegative-layer-id&gt;</code
 
 
 <dt id="arg-jurisdiction">jurisdiction<a class="anchor" aria-label="anchor" href="#arg-jurisdiction"></a></dt>
-<dd><p>Checked-registry jurisdiction: <code>"tampa"</code>, <code>"stpete"</code>,
-<code>"clearwater"</code>, or <code>"all"</code>. Omit to resolve a unique checked ID across the
-registry or to use a discovered result's or stable ArcGIS ID's jurisdiction.</p></dd>
+<dd><p>Bundled checked-catalog jurisdiction code, or <code>"all"</code>.
+Omit to resolve a unique checked ID across the catalog or to use a discovered
+result's or stable ArcGIS ID's jurisdiction. See <code><a href="list_portals.html">list_portals()</a></code>
+for the bundled jurisdiction codes.</p></dd>
 
 
 <dt id="arg-where">where<a class="anchor" aria-label="anchor" href="#arg-where"></a></dt>
@@ -169,7 +170,10 @@ before resuming. Locks are never removed automatically on a new call.</p>
 <p>Record attributes can change between chunks and between resumed calls even
 when the IDs and schema remain unchanged. This is not a frozen snapshot.
 Chunk provenance describes that chunk; the returned summary reports whether
-the full matching manifest has been downloaded.</p>
+the full matching manifest has been downloaded.
+Bundled checked layers are compared with their expected schemas before a
+download starts or resumes. Compatible drift warns; incompatible drift stops
+the download. Inspect differences with <code><a href="tbod_check_schema.html">tbod_check_schema</a></code>.</p>
     </div>
 
     <div class="section level2">

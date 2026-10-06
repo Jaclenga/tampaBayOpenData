@@ -14,7 +14,7 @@ one-million-record limit.
 download_dataset(
   id,
   path,
-  jurisdiction = "tampa",
+  jurisdiction = NULL,
   where = "1=1",
   fields = NULL,
   spatial = FALSE,
@@ -40,9 +40,11 @@ download_dataset(
 
 - jurisdiction:
 
-  Checked-registry jurisdiction: `"tampa"`, `"stpete"`, `"clearwater"`,
-  or `"all"`. Omit to resolve a unique checked ID across the registry or
-  to use a discovered result's or stable ArcGIS ID's jurisdiction.
+  Bundled checked-catalog jurisdiction code, or `"all"`. Omit to resolve
+  a unique checked ID across the catalog or to use a discovered result's
+  or stable ArcGIS ID's jurisdiction. See
+  [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
+  for the bundled jurisdiction codes.
 
 - where:
 
@@ -125,7 +127,11 @@ resuming. Locks are never removed automatically on a new call.
 Record attributes can change between chunks and between resumed calls
 even when the IDs and schema remain unchanged. This is not a frozen
 snapshot. Chunk provenance describes that chunk; the returned summary
-reports whether the full matching manifest has been downloaded.
+reports whether the full matching manifest has been downloaded. Bundled
+checked layers are compared with their expected schemas before a
+download starts or resumes. Compatible drift warns; incompatible drift
+stops the download. Inspect differences with
+[`tbod_check_schema`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_schema.md).
 
 ## Examples
 

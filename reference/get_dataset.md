@@ -9,13 +9,18 @@ paths use current ArcGIS portal metadata; they have not received the
 package's curated source validation. For a compatible layer URL outside
 the discovery portal, use
 [`get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md).
+Bundled checked layers are compared with expected schema snapshots
+before querying. Compatible changes warn; incompatible changes stop
+retrieval.
+[`tbod_check_schema`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_schema.md)
+returns a categorized report of current differences.
 
 ## Usage
 
 ``` r
 get_dataset(
   id,
-  jurisdiction = "tampa",
+  jurisdiction = NULL,
   where = "1=1",
   fields = NULL,
   spatial = FALSE,
@@ -39,9 +44,11 @@ get_dataset(
 
 - jurisdiction:
 
-  Checked-registry jurisdiction: `"tampa"`, `"stpete"`, `"clearwater"`,
-  or `"all"`. Omit to resolve a unique checked ID across the registry or
-  to use a discovered result's or stable ArcGIS ID's jurisdiction.
+  Bundled checked-catalog jurisdiction code, or `"all"`. Omit to resolve
+  a unique checked ID across the catalog or to use a discovered result's
+  or stable ArcGIS ID's jurisdiction. See
+  [`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
+  for the bundled jurisdiction codes.
 
 - where:
 

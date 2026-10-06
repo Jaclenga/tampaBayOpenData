@@ -61,7 +61,7 @@ source are unavailable.
 
 library(tampaBayOpenData)
 
-info <- dataset_info("construction-permits")
+info <- tbod_dataset_info("construction-permits")
 info[c("title", "source_url", "scope_note", "terms", "verified")]
 ```
 
@@ -80,7 +80,7 @@ checked catalog with `source = "checked"`.
 
 ## Keep provenance with results
 
-[`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
+[`tbod_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_provenance.md)
 returns a record attached to a retrieved tibble or `sf` object. It
 includes the publisher, source layer or item URL, portal and item ID
 when known, validation status, query endpoint and options, retrieval
@@ -90,8 +90,8 @@ live result, or `not_checked` for direct URL retrieval.
 
 ``` r
 
-projects <- get_dataset("development-cases", spatial = TRUE, out_sr = 4326)
-source <- dataset_provenance(projects)
+projects <- tbod_get_dataset("development-cases", spatial = TRUE, out_sr = 4326)
+source <- tbod_provenance(projects)
 saveRDS(list(data = projects, provenance = source), "development-cases.rds")
 ```
 
@@ -132,8 +132,8 @@ toBibtex(citation("tampaBayOpenData"))
 ```
 
 Cite the original data publisher and dataset separately.
-`dataset_info(id)` provides source details, and
-`dataset_provenance(result)` records the source and retrieval time for a
+`tbod_dataset_info(id)` provides source details, and
+`tbod_provenance(result)` records the source and retrieval time for a
 downloaded result. The package’s MIT license applies to its software,
 **not** to government datasets. The publishers remain responsible for
 their data and reuse terms. `tampaBayOpenData` is independent of those

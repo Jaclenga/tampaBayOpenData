@@ -1,28 +1,35 @@
-# Discover and retrieve Tampa Bay public data
+# Discover and retrieve public ArcGIS data
 
-Search public Tampa, St. Petersburg, Clearwater, Hillsborough County,
-Pinellas County, and Tampa Bay Regional Planning Council ArcGIS services
-with
-[`list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_datasets.md)
-or
-[`search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/search_datasets.md).
-[`list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/list_portals.md)
-reads the publisher configuration. Catalogs can filter jurisdiction,
-publisher, validation, geometry, topics, categories, and modification
-dates. The bundled catalog identifies 35 layers checked by package
-maintainers; catalog browsing defaults to all jurisdictions. Use
-[`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
-for a checked ID or discovered layer, or
-[`get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md)
-for a direct compatible URL. Results are tibbles or optional `sf`
-objects;
-[`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
-exposes the source, validation status, and query.
-[`download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
+The bundled Tampa Bay configuration covers Tampa, St. Petersburg,
+Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay
+Regional Planning Council.
+[`tbod_list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_datasets.md)
 and
-[`download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
-write validated chunks to a caller-selected directory and can resume an
-interrupted download.
+[`tbod_search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_datasets.md)
+browse its checked catalog and configured live portals. The catalog
+identifies 35 layers checked by package maintainers;
+`source = "checked"` reads them offline.
+[`tbod_list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_portals.md)
+shows the bundled publisher configuration.
+
+[`tbod_discover()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_discover.md)
+searches another public ArcGIS sharing REST portal or enumerates a
+FeatureServer or MapServer service. Pass a discovered row, bundled ID,
+stable ArcGIS item ID, or direct layer URL to
+[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md).
+Results are tibbles or optional `sf` objects.
+[`tbod_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_provenance.md)
+exposes their source, validation status, and query.
+[`tbod_download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_download_dataset.md)
+saves validated chunks and can resume an interrupted download.
+
+The bundled checked layers have expected schema snapshots.
+[`tbod_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_schema.md)
+inspects an expected or current schema, and
+[`tbod_check_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_schema.md)
+reports changes. Retrieval warns for compatible drift and stops before
+querying for incompatible drift. Unprefixed function names remain
+available for existing code; new code can use the `tbod_` entry points.
 
 ## Details
 

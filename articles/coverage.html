@@ -160,7 +160,7 @@ service-information fields from an older source are unavailable.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dataset_info.html">dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
+<span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
 <span><span class="va">info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"source_url"</span>, <span class="st">"scope_note"</span>, <span class="st">"terms"</span>, <span class="st">"verified"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>Read <code>scope_note</code> and <code>terms</code> for a checked
 entry before analysis. The <code>verified</code> date records a
@@ -178,7 +178,7 @@ checked catalog with <code>source = "checked"</code>.</p>
 <div class="section level2">
 <h2 id="keep-provenance-with-results">Keep provenance with results<a class="anchor" aria-label="anchor" href="#keep-provenance-with-results"></a>
 </h2>
-<p><code><a href="../reference/dataset_provenance.html">dataset_provenance()</a></code> returns a record attached to a
+<p><code><a href="../reference/tbod_provenance.html">tbod_provenance()</a></code> returns a record attached to a
 retrieved tibble or <code>sf</code> object. It includes the publisher,
 source layer or item URL, portal and item ID when known, validation
 status, query endpoint and options, retrieval time, row counts,
@@ -186,8 +186,8 @@ integrity method, and completeness. Status is <code>checked</code> for a
 bundled validated layer, <code>discovered</code> for an unvalidated live
 result, or <code>not_checked</code> for direct URL retrieval.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
-<span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
+<span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">projects</span>, provenance <span class="op">=</span> <span class="va">source</span><span class="op">)</span>, <span class="st">"development-cases.rds"</span><span class="op">)</span></span></code></pre></div>
 <p>Save provenance separately before transformations or exports that may
 discard R attributes. A finite subset remains marked incomplete when
@@ -221,8 +221,8 @@ or a BibTeX entry in R:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/toLatex.html" class="external-link">toBibtex</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Cite the original data publisher and dataset separately.
-<code>dataset_info(id)</code> provides source details, and
-<code>dataset_provenance(result)</code> records the source and retrieval
+<code>tbod_dataset_info(id)</code> provides source details, and
+<code>tbod_provenance(result)</code> records the source and retrieval
 time for a downloaded result. The package’s MIT license applies to its
 software, <strong>not</strong> to government datasets. The publishers
 remain responsible for their data and reuse terms.

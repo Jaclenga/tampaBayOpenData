@@ -1,10 +1,10 @@
 # Retrieving and downloading data
 
 Use
-[`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
+[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
 for a checked package ID, a one-row discovery result, or a stable
 discovered ID. Use
-[`get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_arcgis_layer.md)
+[`tbod_get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_arcgis_layer.md)
 when you already have a compatible public HTTPS ArcGIS layer URL. Both
 paths use the same retrieval, type conversion, integrity checks, and
 provenance. These examples contact live publishers when run in an R
@@ -16,40 +16,40 @@ session; none run during the site build.
 
 library(tampaBayOpenData)
 
-permits <- get_dataset(
+permits <- tbod_get_dataset(
   "construction-permits",
   where = "PROJECTSTATUS IS NOT NULL",
   fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"),
   limit = 100
 )
 head(permits)
-dataset_provenance(permits)[c("matched_rows", "returned_rows", "complete", "integrity")]
+tbod_provenance(permits)[c("matched_rows", "returned_rows", "complete", "integrity")]
 ```
 
 `where` uses ArcGIS SQL, not Socrata SoQL, and `fields` requires exact
 source field names. Inspect current fields with
-`dataset_info("construction-permits", refresh = TRUE)$fields`; its
+`tbod_dataset_info("construction-permits", refresh = TRUE)$fields`; its
 metadata also reports query capabilities. `query` accepts supported
 advanced ArcGIS spatial, time, and version filters. It does not allow
 overriding parameters that control the response format, field selection,
 aggregation, geometry simplification, or pagination; see
-[`?get_dataset`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
+[`?tbod_get_dataset`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
 for the accepted names.
 
 The default `limit = Inf` retrieves all matches. A finite limit
 deliberately returns a subset and
-[`dataset_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/dataset_provenance.md)
+[`tbod_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_provenance.md)
 records `complete = FALSE` when additional records match. Use `order_by`
 for a reproducible ordered subset only when the service supports
 ordering and offset pagination; an object-ID tie breaker is added.
 `limit = 0` returns a typed empty result after obtaining the matching
 count.
-[`get_permits()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_permits.md),
-[`get_development_cases()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_development_cases.md),
+[`tbod_get_permits()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_convenience.md),
+[`tbod_get_development_cases()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_convenience.md),
 and
-[`get_capital_projects()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_capital_projects.md)
+[`tbod_get_capital_projects()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_convenience.md)
 are short calls to
-[`get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/get_dataset.md)
+[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
 for three checked Tampa layers.
 
 For a one-row discovery result, pass the row itself so its source and
@@ -57,9 +57,9 @@ publisher travel with the request:
 
 ``` r
 
-found <- search_datasets("housing", source = "live", portals = "city")
-housing <- get_dataset(found[1, ], limit = 100)
-dataset_provenance(housing)[c("publisher", "item_id", "validation_status")]
+found <- tbod_search_datasets("housing", source = "live", portals = "city")
+housing <- tbod_get_dataset(found[1, ], limit = 100)
+tbod_provenance(housing)[c("publisher", "item_id", "validation_status")]
 ```
 
 For a compatible direct layer, pass a URL ending in
@@ -67,16 +67,55 @@ For a compatible direct layer, pass a URL ending in
 
 ``` r
 
-yard_waste <- get_arcgis_layer(
+yard_waste <- tbod_get_arcgis_layer(
   "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/4",
   limit = 10
 )
-dataset_provenance(yard_waste)$validation_status # "not_checked"
+tbod_provenance(yard_waste)$validation_status # "not_checked"
 ```
 
 Direct URL access does not infer a publisher or ArcGIS portal item and
-has `not_checked` validation status. Inspect the service’s source and
-reuse terms yourself.
+has `not_checked` validation status. It cannot take a `jurisdiction`
+override. Inspect the service’s source and reuse terms yourself.
+
+## Check the live schema
+
+Checked layers have a bundled field, geometry, CRS, object-ID, and
+endpoint snapshot. `tbod_schema(id)` reads that snapshot offline;
+`tbod_schema(id, refresh = TRUE)` reads the current layer metadata.
+`tbod_check_schema(id)` compares them and returns a report:
+
+``` r
+
+expected <- tbod_schema("construction-permits")
+report <- tbod_check_schema("construction-permits")
+report$status
+report$issues[, c("category", "severity", "field", "expected", "actual")]
+```
+
+The status is `"unchanged"`, `"compatible"`, or `"incompatible"` for a
+checked layer. Added fields and changed aliases are compatible drift:
+checked retrieval warns and proceeds. Removed or renamed fields, changed
+field types, object-ID fields, geometry, CRS, or endpoint are
+incompatible: checked retrieval stops before querying records. A
+vanished endpoint is reported as `endpoint_disappeared`. Inspect
+`report$issues` to identify the change.
+
+A direct URL or discovered layer has no bundled expected schema. Save
+its current metadata and supply it on a later check; an untracked check
+without `expected` returns `status = "untracked"`. For a stable ID from
+a custom Enterprise portal, also pass `portal` to
+[`tbod_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_schema.md)
+or
+[`tbod_check_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_schema.md).
+
+``` r
+
+# Replace this example address with a public ArcGIS layer URL.
+url <- "https://example.org/arcgis/rest/services/Example/FeatureServer/0"
+baseline <- tbod_schema(url, refresh = TRUE)
+later <- tbod_check_schema(url, expected = baseline)
+```
 
 ## Integrity and time budgets
 
@@ -125,10 +164,10 @@ missing geometry. A nonspatial table can be retrieved with
 
 ``` r
 
-projects <- get_dataset(
+projects <- tbod_get_dataset(
   "development-cases", spatial = TRUE, out_sr = 4326
 )
-boundary <- get_dataset(
+boundary <- tbod_get_dataset(
   "city-boundary", fields = "OBJECTID", spatial = TRUE, out_sr = 4326
 )
 sf::st_crs(projects)$epsg
@@ -168,17 +207,20 @@ before interpreting a map or its record counts.
 
 ## Resume a large download
 
-[`download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_dataset.md)
+[`tbod_download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_download_dataset.md)
 writes bounded RDS chunks to a local directory outside the package
 source. This avoids collecting all feature pages in memory; the full
 matching ID manifest still uses memory and retains the one-million-match
 limit. Each chunk is a tibble or, with `spatial = TRUE`, an `sf` object.
-[`download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/download_arcgis_layer.md)
-offers the same path for a compatible direct layer URL.
+[`tbod_download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_download_dataset.md)
+offers the same path for a compatible direct layer URL. For a stable ID
+from another ArcGIS Enterprise portal, pass its sharing REST root
+through `portal`, as with
+[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md).
 
 ``` r
 
-saved <- download_dataset(
+saved <- tbod_download_dataset(
   "construction-permits",
   path = "~/tampaBayOpenData-downloads/permits",
   fields = c("OBJECTID", "RECORD_ID", "LASTUPDATE"),
@@ -187,7 +229,7 @@ saved <- download_dataset(
 )
 saved$complete
 first_chunk <- readRDS(saved$files[[1]])
-dataset_provenance(first_chunk)
+tbod_provenance(first_chunk)
 ```
 
 Repeat the same call to resume. The client rechecks the live schema and

@@ -5,16 +5,16 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Discover public ArcGIS data across Tampa Bay • tampaBayOpenData</title>
+<title>Discover Tampa Bay and other public ArcGIS data • tampaBayOpenData</title>
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
-<meta property="og:title" content="Discover public ArcGIS data across Tampa Bay">
-<meta name="description" content="An R interface for finding and retrieving public data from six Tampa Bay ArcGIS publishers, with checked dataset IDs, provenance, and spatial results.
+<meta property="og:title" content="Discover Tampa Bay and other public ArcGIS data">
+<meta name="description" content="An R interface for six bundled Tampa Bay ArcGIS publishers and other public ArcGIS portals or layer URLs, with checked dataset IDs, schema checks, provenance, and spatial results.
 ">
-<meta property="og:description" content="An R interface for finding and retrieving public data from six Tampa Bay ArcGIS publishers, with checked dataset IDs, provenance, and spatial results.
+<meta property="og:description" content="An R interface for six bundled Tampa Bay ArcGIS publishers and other public ArcGIS portals or layer URLs, with checked dataset IDs, schema checks, provenance, and spatial results.
 ">
 </head>
 <body>
@@ -74,7 +74,7 @@ Discover and retrieve public data across Tampa Bay from one R interface.
 <h2 id="what-is-tampabayopendata">What is tampaBayOpenData?<a class="anchor" aria-label="anchor" href="#what-is-tampabayopendata"></a>
 </h2>
 <p>Public data is spread across separate ArcGIS portals. Finding a layer, getting its records, and recording its source can make regional analysis hard to repeat. <code>tampaBayOpenData</code> gives researchers, planners, journalists, and civic technologists a consistent path from <strong>discovery → retrieval → analysis → source provenance</strong>. It covers Tampa, St. Petersburg, Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning Council.</p>
-<p>The bundled catalog can be searched offline. Live discovery reaches the six configured public publishers; retrieval contacts the publisher’s service.</p>
+<p>The bundled Tampa Bay catalog can be searched offline. Live discovery reaches its six configured public publishers or another public ArcGIS portal or FeatureServer/MapServer URL supplied by the caller. Retrieval contacts the publisher’s service.</p>
 </div>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
@@ -99,26 +99,34 @@ Discover and retrieve public data across Tampa Bay from one R interface.
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"parks"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span></code></pre></div>
-<p>The first search includes checked entries and scans live portals. To browse only the bundled catalog without a network request, use <code>search_datasets("parks", source = "checked")</code>. The second search restricts live discovery to Tampa’s portal. The <a href="https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html">discovery guide</a> explains filters, other publishers, and bounded searches.</p>
+<span><span class="fu"><a href="reference/tbod_list_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"parks"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/tbod_list_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span></code></pre></div>
+<p>The first search includes checked entries and scans live portals. To browse only the bundled catalog without a network request, use <code>tbod_search_datasets("parks", source = "checked")</code>. The second search restricts live discovery to Tampa’s portal. The <a href="https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html">discovery guide</a> explains filters, other publishers, and bounded searches.</p>
+<p>To search another ArcGIS organization, provide its public sharing REST root. The result rows can be passed directly to the same retrieval function:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Replace this example address with your portal's public sharing REST root.</span></span>
+<span><span class="va">other</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_discover.html">tbod_discover</a></span><span class="op">(</span><span class="st">"https://example.maps.arcgis.com/sharing/rest"</span>,</span>
+<span>                       query <span class="op">=</span> <span class="st">"parks"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">other</span><span class="op">)</span><span class="op">)</span> <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="va">other</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<p>A stable <code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code> ID from another portal can be used later with <code>tbod_get_dataset(id, portal = "https://example.maps.arcgis.com/sharing/rest")</code>. Pass a service root to <code><a href="reference/tbod_discover.html">tbod_discover()</a></code> to enumerate its queryable layers.</p>
 </div>
 <div class="section level2">
 <h2 id="retrieve-data">Retrieve data<a class="anchor" aria-label="anchor" href="#retrieve-data"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">parks</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"stpete-parks"</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">parks</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"stpete-parks"</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span></code></pre></div>
-<p>A checked ID is a stable package name for a maintainer-validated layer. Retrieval uses the publisher’s live service and returns a tibble by default. Use <code><a href="reference/get_arcgis_layer.html">get_arcgis_layer()</a></code> for a compatible public ArcGIS layer URL. See the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html">retrieval guide</a> for field filters, integrity checks, and resumable downloads.</p>
+<p>A checked ID is a stable package name for a maintainer-validated layer. Retrieval uses the publisher’s live service and returns a tibble by default. An ID shared by multiple catalog jurisdictions requires an explicit <code>jurisdiction</code> argument; unique IDs resolve without one. Pass a public <code>FeatureServer/&lt;id&gt;</code> or <code>MapServer/&lt;id&gt;</code> URL to <code><a href="reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> to retrieve a layer outside the bundled catalog. See the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html">retrieval guide</a> for field filters, integrity checks, and resumable downloads.</p>
+<p>Checked entries include a field, geometry, and CRS snapshot. Retrieval checks the live layer metadata against that snapshot before querying records. Added fields or changed aliases produce a warning; removed, renamed, or changed-type fields, object-ID, geometry, CRS, endpoint changes, and vanished endpoints stop retrieval. Inspect a layer first with <code>tbod_schema(id)</code> and <code>tbod_check_schema(id)</code>. For a direct URL, save <code>tbod_schema(url, refresh = TRUE)</code> and later pass it as <code>tbod_check_schema(url, expected = baseline)</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="see-spatial-data">See spatial data<a class="anchor" aria-label="anchor" href="#see-spatial-data"></a>
 </h2>
 <p>This map uses the checked City of Tampa <code>city-boundary</code> and <code>capital-projects</code> layers. Both can be retrieved as <code>sf</code> objects:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">boundary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">boundary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
 <span>                        spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
-<span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"capital-projects"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
+<span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"capital-projects"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
 <span>                        spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">boundary</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"#CFE5D8"</span>, border <span class="op">=</span> <span class="st">"#527A76"</span><span class="op">)</span></span>
@@ -132,8 +140,8 @@ Discover and retrieve public data across Tampa Bay from one R interface.
 <div class="section level2">
 <h2 id="trace-the-source">Trace the source<a class="anchor" aria-label="anchor" href="#trace-the-source"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span>
 <span><span class="va">source</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"retrieved_at"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>Provenance also records validation status, the query, returned row counts, and the integrity method. Save it with results before transformations that may drop R attributes. The <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage and provenance guide</a> explains how to interpret the source and its limits.</p>
 </div>
@@ -223,10 +231,10 @@ Discover and retrieve public data across Tampa Bay from one R interface.
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>Cite both <code>tampaBayOpenData</code> and the original data publisher and dataset. After installation, get the package citation or a BibTeX entry with:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/toLatex.html" class="external-link">toBibtex</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>The <a href="https://jaclenga.github.io/tampaBayOpenData/authors.html#citation">citation page</a> has the package details. <code>dataset_info(id)</code> provides source information, and <code>dataset_provenance(result)</code> records the retrieval source and time.</p>
+<p>The <a href="https://jaclenga.github.io/tampaBayOpenData/authors.html#citation">citation page</a> has the package details. <code>tbod_dataset_info(id)</code> provides source information, and <code>tbod_provenance(result)</code> records the retrieval source and time. Existing unprefixed function names remain available for compatibility.</p>
 </div>
 <div class="section level2">
 <h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>

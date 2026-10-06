@@ -90,7 +90,7 @@ list of package IDs:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/list_portals.html">list_portals</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"publisher"</span>, <span class="st">"jurisdiction"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_list_portals.html">tbod_list_portals</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"publisher"</span>, <span class="st">"jurisdiction"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
 <span><span class="co">#&gt;   id           publisher                           jurisdiction</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
@@ -100,7 +100,7 @@ list of package IDs:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> clearwater   City of Clearwater                  clearwater  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> hillsborough Hillsborough County                 hillsborough</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pinellas     Pinellas County                     pinellas</span></span>
-<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"park"</span>, source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span><span class="op">[</span>,</span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"park"</span>, source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span><span class="op">[</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"jurisdiction"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
 <span><span class="co">#&gt;   id                       title                  jurisdiction validation_status</span></span>
@@ -111,7 +111,7 @@ list of package IDs:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> hillsborough-parks       Hillsborough County p… hillsborough checked          </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> pinellas-park-boundaries Pinellas County park … pinellas     checked          </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pinellas-trail           Pinellas Trail segmen… pinellas     checked</span></span>
-<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/dataset_info.html">dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span><span class="op">[</span></span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span><span class="op">[</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"scope_note"</span>, <span class="st">"verified"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $title</span></span>
 <span><span class="co">#&gt; [1] "Permits (active GIS view)"</span></span>
@@ -124,11 +124,11 @@ list of package IDs:</p>
 <p><code>source = "checked"</code> uses a bundled registry without
 making a network request. Checked IDs, including
 <code>stpete-parks</code> and <code>construction-permits</code>, remain
-stable package names. <code><a href="../reference/dataset_info.html">dataset_info()</a></code> reports the source,
-terms, and scope of a checked entry. For more choices, search live
-portal indexes:</p>
+stable package names. <code><a href="../reference/tbod_dataset_info.html">tbod_dataset_info()</a></code> reports the
+source, terms, and scope of a checked entry. For more choices, search
+live portal indexes:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
 <span><span class="va">found</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>Catalog searches scan all six publishers by default. Set
 <code>portals</code> or <code>jurisdiction</code> to narrow them.
@@ -136,16 +136,19 @@ portal indexes:</p>
 configured layer; <code>discovered</code> means it appeared in a live
 portal index but has not received the same validation. Inspect a
 discovered source and its reuse terms before analysis. See <a href="discovery.html">discovering Tampa Bay data</a> for all filters,
-live scan limits, and discovery status.</p>
+live scan limits, discovery status, and the <code><a href="../reference/tbod_discover.html">tbod_discover()</a></code>
+path for ArcGIS sources outside the bundled region.</p>
 </div>
 <div class="section level2">
 <h2 id="retrieve-records">Retrieve records<a class="anchor" aria-label="anchor" href="#retrieve-records"></a>
 </h2>
 <p>Pass a checked ID, a discovered stable ID, or a one-row search result
-to <code><a href="../reference/get_dataset.html">get_dataset()</a></code>. This example requests a small subset of a
-checked Tampa layer as a tibble:</p>
+to <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code>. This example requests a small subset
+of a checked Tampa layer as a tibble. A checked ID that appears in
+multiple jurisdictions also needs a <code>jurisdiction</code>
+argument:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">permits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">permits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"construction-permits"</span>,</span>
 <span>  where <span class="op">=</span> <span class="st">"PROJECTSTATUS IS NOT NULL"</span>,</span>
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RECORD_ID"</span>, <span class="st">"PROJECTSTATUS"</span>, <span class="st">"LASTUPDATE"</span><span class="op">)</span>,</span>
@@ -157,8 +160,14 @@ checked Tampa layer as a tibble:</p>
 Omit <code>limit</code> to retrieve all matching rows. A discovered
 result can travel to retrieval with its source information:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">housing</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"validation_status"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">housing</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"validation_status"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>Checked retrieval compares current ArcGIS metadata with the bundled
+schema snapshot before querying records. Use
+<code>tbod_schema(id)</code> to see the saved schema and
+<code>tbod_check_schema(id)</code> to inspect drift. Compatible changes
+warn; incompatible changes stop retrieval. The <a href="retrieval.html">retrieval article</a> lists drift categories and
+shows how to check an external URL against a saved schema.</p>
 </div>
 <div class="section level2">
 <h2 id="work-with-spatial-data">Work with spatial data<a class="anchor" aria-label="anchor" href="#work-with-spatial-data"></a>
@@ -168,7 +177,7 @@ result can travel to retrieval with its source information:</p>
 <code>out_sr = 4326</code> asks the service for WGS 84 coordinates;
 without <code>out_sr</code>, the client keeps the native CRS.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dataset.html">get_dataset</a></span><span class="op">(</span><span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                        out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span></span></code></pre></div>
 <p>The <a href="retrieval.html">retrieval article</a> shows a map with
@@ -184,7 +193,7 @@ time, row counts, validation status, integrity method, and whether the
 result is complete. Save it separately before transforming the data,
 because some R operations may discard attached attributes.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dataset_provenance.html">dataset_provenance</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">projects</span>, provenance <span class="op">=</span> <span class="va">source</span><span class="op">)</span>,</span>
 <span>        <span class="st">"development-cases.rds"</span><span class="op">)</span></span></code></pre></div>
 <p>Read <a href="coverage.html">coverage, provenance, and source

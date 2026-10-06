@@ -87,7 +87,7 @@ built. The checked-catalog example runs offline.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/list_portals.html">list_portals</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"publisher"</span>, <span class="st">"jurisdiction"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_list_portals.html">tbod_list_portals</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"publisher"</span>, <span class="st">"jurisdiction"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
 <span><span class="co">#&gt;   id           publisher                           jurisdiction</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
@@ -97,7 +97,7 @@ built. The checked-catalog example runs offline.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> clearwater   City of Clearwater                  clearwater  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> hillsborough Hillsborough County                 hillsborough</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pinellas     Pinellas County                     pinellas</span></span>
-<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/list_datasets.html">list_datasets</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span><span class="op">[</span>,</span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_list_datasets</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span><span class="op">[</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"jurisdiction"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 35 × 4</span></span></span>
 <span><span class="co">#&gt;    id                   title                     jurisdiction validation_status</span></span>
@@ -113,7 +113,7 @@ built. The checked-catalog example runs offline.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> fire-stations        City of Tampa fire stati… tampa        checked          </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> bike-lanes           Bicycle network segments  tampa        checked          </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 25 more rows</span></span></span>
-<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span></span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
 <span>  <span class="st">"park"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  jurisdiction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stpete"</span>, <span class="st">"clearwater"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -127,7 +127,7 @@ built. The checked-catalog example runs offline.</p>
 <span><span class="co">#&gt; <span style="color: #949494;">#   item_id &lt;chr&gt;, portal &lt;chr&gt;, validation_status &lt;chr&gt;, modified &lt;dttm&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   modified_source &lt;chr&gt;, service_type &lt;chr&gt;, layer_type &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   categories &lt;list&gt;, original_metadata &lt;list&gt;</span></span></span>
-<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/dataset_info.html">dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span><span class="op">[</span></span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span><span class="op">[</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"scope_note"</span>, <span class="st">"verified"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $title</span></span>
 <span><span class="co">#&gt; [1] "Permits (active GIS view)"</span></span>
@@ -140,43 +140,44 @@ built. The checked-catalog example runs offline.</p>
 <p><code>source = "checked"</code> reads the bundled registry without
 HTTP. Its IDs, such as <code>construction-permits</code> and
 <code>stpete-parks</code>, are stable package names rather than ArcGIS
-item IDs. <code>dataset_info(id)</code> reports each checked entry’s
-scope, terms, source URL, and endpoint-verification date. The latter is
-not a record-freshness date. There are 20 Tampa checked layers and three
-each from St. Petersburg, Clearwater, Hillsborough County, Pinellas
-County, and the Tampa Bay Regional Planning Council. All six publishers
-also support live discovery.</p>
+item IDs. <code>tbod_dataset_info(id)</code> reports each checked
+entry’s scope, terms, source URL, and endpoint-verification date. The
+latter is not a record-freshness date. There are 20 Tampa checked layers
+and three each from St. Petersburg, Clearwater, Hillsborough County,
+Pinellas County, and the Tampa Bay Regional Planning Council. All six
+publishers also support live discovery.</p>
 </div>
 <div class="section level2">
 <h2 id="discover-live-portal-layers">Discover live portal layers<a class="anchor" aria-label="anchor" href="#discover-live-portal-layers"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
 <span><span class="va">found</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"validation_status"</span>, <span class="st">"modified"</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># A one-row result carries the source needed for inspection or retrieval.</span></span>
 <span><span class="va">selected</span> <span class="op">&lt;-</span> <span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span></span>
 <span><span class="va">selected</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item_id"</span>, <span class="st">"service_url"</span>, <span class="st">"layer_id"</span>, <span class="st">"portal"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="fu"><a href="../reference/dataset_info.html">dataset_info</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span></code></pre></div>
-<p>By default, <code><a href="../reference/list_datasets.html">list_datasets()</a></code> and
-<code><a href="../reference/search_datasets.html">search_datasets()</a></code> use <code>source = "all"</code> and
+<span><span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span></code></pre></div>
+<p>By default, <code><a href="../reference/tbod_list_datasets.html">tbod_list_datasets()</a></code> and
+<code><a href="../reference/tbod_list_datasets.html">tbod_search_datasets()</a></code> use <code>source = "all"</code> and
 search all six configured organizations, then overlay the checked
 registry. <code>source = "live"</code> returns only layers found through
 portal indexes, including checked layers when a live endpoint matches a
 checked entry. If a source is not indexed or an index lags, it may not
 appear in live results; a compatible public ArcGIS layer can still be
-retrieved by URL with <code><a href="../reference/get_arcgis_layer.html">get_arcgis_layer()</a></code>.</p>
+retrieved by URL with <code><a href="../reference/tbod_get_arcgis_layer.html">tbod_get_arcgis_layer()</a></code>.</p>
 <p>Use <code>portals = "city"</code> for Tampa, <code>"tbrpc"</code> for
 the regional planning council, or <code>"stpete"</code>,
 <code>"clearwater"</code>, <code>"hillsborough"</code>, or
 <code>"pinellas"</code> for the other publishers. A vector selects
-several. <code><a href="../reference/list_portals.html">list_portals()</a></code> shows their publisher names and
-source locations offline. <code>jurisdiction</code> defaults to
+several. <code><a href="../reference/tbod_list_portals.html">tbod_list_portals()</a></code> shows their publisher names
+and source locations offline. <code>jurisdiction</code> defaults to
 <code>"all"</code> for catalog functions and can be a code or a vector
 of codes. A jurisdiction or publisher filter narrows the organizations
-scanned. Retrieval and download functions have a different default,
-<code>jurisdiction = "tampa"</code>; omitting it still resolves a
-uniquely named checked ID across publishers.</p>
+scanned. Retrieval and download functions default to
+<code>jurisdiction = NULL</code>: a checked ID resolves across the
+bundled catalog when it is unique. If two jurisdictions use the same ID,
+supply <code>jurisdiction</code> to select one.</p>
 <p><code>validation_status = "checked"</code> means maintainers
 validated the configured layer. <code>"discovered"</code> means the item
 was found in a public portal index, not that its contents or reuse terms
@@ -184,10 +185,39 @@ were checked. Discovery keeps checked IDs, scope, and terms when the
 live endpoint matches the registry, while using current live tags,
 categories, and item modification time. Newly discovered IDs have the
 form <code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code> and can be
-passed to <code><a href="../reference/get_dataset.html">get_dataset()</a></code> in a later online session. The item
-or its service can still change or disappear. Retrieval validates query
-responses and requires <code>Query</code> when a layer advertises a
-capabilities list.</p>
+passed to <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> in a later online session. The
+item or its service can still change or disappear. Retrieval validates
+query responses and requires <code>Query</code> when a layer advertises
+a capabilities list.</p>
+</div>
+<div class="section level2">
+<h2 id="search-beyond-the-bundled-publishers">Search beyond the bundled publishers<a class="anchor" aria-label="anchor" href="#search-beyond-the-bundled-publishers"></a>
+</h2>
+<p><code><a href="../reference/tbod_discover.html">tbod_discover()</a></code> accepts a public ArcGIS sharing REST
+root, FeatureServer or MapServer service root, or a layer URL. It uses
+the same discovery rows and retrieval API without adding the source to
+the Tampa Bay catalog. For a portal, <code>query</code> searches public
+service items; for a service URL, it filters layer names. A queryable
+MapServer layer can be retrieved in the same way as a FeatureServer
+layer. Portal search rows receive stable <code>arcgis:</code> IDs; rows
+enumerated directly from a service use the layer URL as their ID.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Replace this example address with your portal's public sharing REST root.</span></span>
+<span><span class="va">portal</span> <span class="op">&lt;-</span> <span class="st">"https://example.maps.arcgis.com/sharing/rest"</span></span>
+<span><span class="va">other</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_discover.html">tbod_discover</a></span><span class="op">(</span><span class="va">portal</span>, query <span class="op">=</span> <span class="st">"parks"</span>, max_items <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">other</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="va">other</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span>  <span class="co"># A stable ArcGIS ID can also be resolved later through its own portal.</span></span>
+<span>  <span class="va">same_layer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="va">other</span><span class="op">$</span><span class="va">id</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, portal <span class="op">=</span> <span class="va">portal</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Custom sources default to an <code>"unspecified"</code> jurisdiction.
+Set <code>publisher</code> and <code>jurisdiction</code> in
+<code><a href="../reference/tbod_discover.html">tbod_discover()</a></code> when you know them; these labels then
+travel with the discovery row and its retrieval provenance. The
+<code>portal</code> argument on retrieval applies only to a stable
+<code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code> ID. When retrieving
+a direct layer URL, <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> does not accept a
+<code>jurisdiction</code> override.</p>
 </div>
 <div class="section level2">
 <h2 id="filter-results">Filter results<a class="anchor" aria-label="anchor" href="#filter-results"></a>
@@ -205,13 +235,13 @@ capabilities list.</p>
 <tbody>
 <tr class="odd">
 <td><code>jurisdiction</code></td>
-<td>One or more codes from <code><a href="../reference/list_portals.html">list_portals()</a></code>; default
+<td>One or more codes from <code><a href="../reference/tbod_list_portals.html">tbod_list_portals()</a></code>; default
 <code>"all"</code>.</td>
 </tr>
 <tr class="even">
 <td><code>publisher</code></td>
-<td>Exact publisher names from <code><a href="../reference/list_portals.html">list_portals()</a></code>, ignoring
-case.</td>
+<td>Exact publisher names from <code><a href="../reference/tbod_list_portals.html">tbod_list_portals()</a></code>,
+ignoring case.</td>
 </tr>
 <tr class="odd">
 <td><code>validation_status</code></td>
@@ -247,8 +277,8 @@ bounds accept a <code>Date</code> or strict <code>"YYYY-MM-DD"</code>
 string for a whole UTC day, or a <code>POSIXct</code> value for an exact
 instant. Rows with unknown modification times are excluded only when a
 date bound is supplied.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">county_transport</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_datasets.html">search_datasets</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">county_transport</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
 <span>  <span class="st">"road"</span>, source <span class="op">=</span> <span class="st">"live"</span>, jurisdiction <span class="op">=</span> <span class="st">"pinellas"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  topic <span class="op">=</span> <span class="st">"transportation"</span>, modified_after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2025-01-01"</span><span class="op">)</span>,</span>
 <span>  max_items <span class="op">=</span> <span class="fl">10</span></span>
@@ -273,8 +303,8 @@ items beyond the scan limit. <code>jurisdiction</code> and
 filters apply after discovery and the checked overlay. Consequently, an
 item matching <code>topic</code> or <code>modified_after</code> may be
 missed by a capped scan.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/list_datasets.html">list_datasets</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"stpete"</span>, max_items <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_list_datasets</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"stpete"</span>, max_items <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_complete"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_truncated_portals"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_scanned_items"</span><span class="op">)</span></span>
@@ -284,7 +314,8 @@ missed by a capped scan.</p>
 complete portal catalog. Truncation and scanned-item attributes describe
 how far each scan went. Skipped items and failed portals are reported in
 the issue and failure attributes. If one portal fails, a combined search
-can still use other publishers. If every selected live portal fails,
+can still use other publishers or rows collected before a later failure.
+If every selected live portal fails before yielding rows,
 <code>source = "live"</code> errors; the default combined search warns
 and returns checked rows. The checked catalog remains available offline
 with <code>source = "checked"</code>.</p>
