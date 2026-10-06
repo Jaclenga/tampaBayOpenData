@@ -10,7 +10,7 @@ for (case in list(
       skip_if_not(identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true"),
                   "Set TAMPA_OPEN_DATA_LIVE=true to opt into county ArcGIS calls")
       config <- .portal_registry()[[county$portal]]
-      found <- search_datasets(county$query, jurisdiction = config$jurisdiction,
+      found <- tbod_search_datasets(county$query, jurisdiction = config$jurisdiction,
         source = "live", portals = county$portal, max_items = 1,
         timeout = 15, total_timeout = 45)
       expect_gt(nrow(found), 0L)
@@ -21,7 +21,7 @@ for (case in list(
       expect_identical(unique(found$jurisdiction), config$jurisdiction)
       expect_true(all(found$validation_status %in% c("checked", "discovered")))
       row <- found[1L, ]
-      checked <- list_datasets(jurisdiction = config$jurisdiction,
+      checked <- tbod_list_datasets(jurisdiction = config$jurisdiction,
                                source = "checked")
       matching <- checked[
         tolower(sub("/+$", "", checked$service_url)) ==
@@ -41,7 +41,7 @@ for (case in list(
       tags <- tags[!is.na(tags) & nzchar(trimws(tags))]
       categories <- row$categories[[1L]]
       categories <- categories[!is.na(categories) & nzchar(trimws(categories))]
-      filtered <- search_datasets(county$query, jurisdiction = config$jurisdiction,
+      filtered <- tbod_search_datasets(county$query, jurisdiction = config$jurisdiction,
         source = "live", portals = county$portal, publisher = config$publisher,
         validation_status = row$validation_status[[1L]], spatial = TRUE,
         modified_after = modified_day, modified_before = modified_day,
@@ -54,12 +54,12 @@ for (case in list(
                        setNames(1L, county$portal))
       expect_true(all(!is.na(filtered$geometry_type) &
                         filtered$geometry_type != "none"))
-      info <- dataset_info(row, refresh = TRUE, timeout = 15, total_timeout = 45)
+      info <- tbod_dataset_info(row, refresh = TRUE, timeout = 15, total_timeout = 45)
       oid <- info$metadata$objectIdField
       expect_true(is.character(oid) && length(oid) == 1L && nzchar(oid))
-      descriptor <- get_dataset(row, fields = oid, limit = 2, page_size = 1,
+      descriptor <- tbod_get_dataset(row, fields = oid, limit = 2, page_size = 1,
                                 timeout = 15, total_timeout = 45)
-      stable <- get_dataset(row$id, fields = oid, limit = 2, page_size = 1,
+      stable <- tbod_get_dataset(row$id, fields = oid, limit = 2, page_size = 1,
                             timeout = 15, total_timeout = 45)
       expect_s3_class(descriptor, "tbl_df")
       expect_identical(names(descriptor), oid)
@@ -69,7 +69,7 @@ for (case in list(
       expect_identical(anyDuplicated(descriptor[[oid]]), 0L)
       expect_identical(stable[[oid]], descriptor[[oid]])
       for (result in list(descriptor, stable)) {
-        source <- dataset_provenance(result)
+        source <- tbod_provenance(result)
         expect_identical(source$publisher, config$publisher)
         expect_identical(source$jurisdiction, config$jurisdiction)
         expect_identical(source$validation_status, row$validation_status[[1L]])
@@ -86,14 +86,14 @@ for (case in list(
                   "Set TAMPA_OPEN_DATA_LIVE=true to opt into county ArcGIS calls")
       skip_if_not_installed("sf")
       config <- .portal_registry()[[county$portal]]
-      found <- search_datasets(county$query, jurisdiction = config$jurisdiction,
+      found <- tbod_search_datasets(county$query, jurisdiction = config$jurisdiction,
         source = "live", portals = county$portal, max_items = 1,
         timeout = 15, total_timeout = 45)
       expect_gt(nrow(found), 0L)
       row <- found[1L, ]
-      info <- dataset_info(row, refresh = TRUE, timeout = 15, total_timeout = 45)
+      info <- tbod_dataset_info(row, refresh = TRUE, timeout = 15, total_timeout = 45)
       oid <- info$metadata$objectIdField
-      spatial <- get_dataset(row$id, fields = oid, spatial = TRUE, out_sr = 4326,
+      spatial <- tbod_get_dataset(row$id, fields = oid, spatial = TRUE, out_sr = 4326,
         limit = 2, page_size = 1, timeout = 15, total_timeout = 45)
       expect_s3_class(spatial, "sf")
       expect_identical(names(sf::st_drop_geometry(spatial)), oid)
@@ -104,7 +104,7 @@ for (case in list(
       expect_false(any(sf::st_is_empty(spatial)))
       expect_true(all(is.finite(sf::st_coordinates(spatial))))
       expect_identical(anyDuplicated(spatial[[oid]]), 0L)
-      source <- dataset_provenance(spatial)
+      source <- tbod_provenance(spatial)
       expect_identical(source$publisher, config$publisher)
       expect_identical(source$jurisdiction, config$jurisdiction)
       expect_identical(source$validation_status, row$validation_status[[1L]])

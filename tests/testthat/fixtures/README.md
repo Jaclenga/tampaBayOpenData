@@ -34,9 +34,12 @@ when the endpoint also appears as a separate checked registry entry.
 
 ## Checked regional schemas
 
-`regional-layer-schemas.json` contains trimmed metadata for 15 checked layers:
-three each from St. Petersburg, Clearwater, Hillsborough County, Pinellas
-County, and the Tampa Bay Regional Planning Council. It preserves the source
+`regional-layer-schemas.json` contains metadata for the 15 baseline checked
+layers outside Tampa: three each from St. Petersburg, Clearwater,
+Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning
+Council. The additional checked layers have their dated expected schemas in
+`inst/extdata/expected-schemas.json`; this fixture is a selected source sample,
+not a second copy of the complete catalog. It preserves the source
 object-ID and date fields, selected attribute types, geometry, query limits,
 and CRS differences. In particular, Clearwater's zoning and library MapServer
 outputs use EPSG:3857 even though their underlying source references differ;

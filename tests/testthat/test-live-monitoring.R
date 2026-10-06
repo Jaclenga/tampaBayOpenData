@@ -4,7 +4,7 @@ test_that("live monitoring samples every checked publisher's source identity and
   skip_if_not(identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true"),
               "Set TAMPA_OPEN_DATA_LIVE=true to opt into scheduled source checks")
   skip_if_not_installed("sf")
-  checked <- list_datasets(source = "checked", jurisdiction = "all")
+  checked <- tbod_list_datasets(source = "checked", jurisdiction = "all")
   expect_setequal(checked$jurisdiction,
                   c("tampa", "stpete", "clearwater", "hillsborough", "pinellas", "tampa-bay"))
   selected <- list(
@@ -13,12 +13,12 @@ test_that("live monitoring samples every checked publisher's source identity and
     "clearwater-libraries" = c("OBJECTID", "NAME", "FACILITYID")
   )
   for (id in checked$id) {
-    entry <- dataset_info(id, jurisdiction = "all")
+    entry <- tbod_dataset_info(id, jurisdiction = "all")
     fields <- selected[[id]] %||% entry$object_id_field
-    data <- get_dataset(id, jurisdiction = "all", fields = fields,
+    data <- tbod_get_dataset(id, jurisdiction = "all", fields = fields,
                         spatial = TRUE, out_sr = 4326, limit = 2, page_size = 1,
                         timeout = 15, total_timeout = 45)
-    source <- dataset_provenance(data)
+    source <- tbod_provenance(data)
     expect_s3_class(data, "sf")
     expect_identical(names(sf::st_drop_geometry(data)), fields, info = id)
     expect_gt(nrow(data), 0L)
@@ -53,8 +53,8 @@ test_that("live monitoring samples every checked publisher's source identity and
 test_that("live monitoring checks bounded portal discovery and regional retrieval", {
   skip_if_not(identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true"),
               "Set TAMPA_OPEN_DATA_LIVE=true to opt into scheduled portal checks")
-  for (portal in list_portals()$id) {
-    found <- list_datasets(source = "live", portals = portal, max_items = 1,
+  for (portal in tbod_list_portals()$id) {
+    found <- tbod_list_datasets(source = "live", portals = portal, max_items = 1,
                           timeout = 15, total_timeout = 45)
     expect_s3_class(found, "tbl_df")
     expect_length(attr(found, "discovery_failed_portals"), 0L)
@@ -62,12 +62,12 @@ test_that("live monitoring checks bounded portal discovery and regional retrieva
     if (portal == "tbrpc") {
       expect_gt(nrow(found), 0L)
       descriptor <- found[1, , drop = FALSE]
-      info <- dataset_info(descriptor, refresh = TRUE, timeout = 15,
+      info <- tbod_dataset_info(descriptor, refresh = TRUE, timeout = 15,
                            total_timeout = 45)
       oid <- info$metadata$objectIdField
-      data <- get_dataset(descriptor, fields = oid, limit = 2, page_size = 1,
+      data <- tbod_get_dataset(descriptor, fields = oid, limit = 2, page_size = 1,
                           timeout = 15, total_timeout = 45)
-      source <- dataset_provenance(data)
+      source <- tbod_provenance(data)
       expect_s3_class(data, "tbl_df")
       expect_identical(names(data), oid)
       expect_lte(nrow(data), 2L)

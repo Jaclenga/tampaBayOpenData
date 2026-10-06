@@ -1,24 +1,21 @@
 #' Discover and retrieve public ArcGIS data
 #'
-#' The bundled Tampa Bay configuration covers Tampa, St. Petersburg, Clearwater,
-#' Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning
-#' Council. [tbod_list_datasets()] and [tbod_search_datasets()] browse its
-#' checked catalog and configured live portals. The catalog identifies 35
-#' layers checked by package maintainers; `source = "checked"` reads them offline.
-#' [tbod_list_portals()] shows the bundled publisher configuration.
+#' The package bundles 52 checked layers from Tampa Bay publishers. Use
+#' [tbod_list_datasets()] or [tbod_search_datasets()] with `source = "checked"`
+#' to browse them offline. The default also searches the public ArcGIS portals
+#' configured for Tampa, St. Petersburg, Clearwater, Hillsborough County,
+#' Pinellas County, and the Tampa Bay Regional Planning Council.
+#' [tbod_list_portals()] lists those publishers.
 #'
-#' [tbod_discover()] searches another public ArcGIS sharing REST portal or
-#' enumerates a FeatureServer or MapServer service. Pass a discovered row,
-#' bundled ID, stable ArcGIS item ID, or direct layer URL to [tbod_get_dataset()].
-#' Results are tibbles or optional `sf` objects. [tbod_provenance()] exposes
-#' their source, validation status, and query. [tbod_download_dataset()] saves
-#' validated chunks and can resume an interrupted download.
+#' [tbod_discover()] searches another ArcGIS portal or lists layers in a
+#' FeatureServer or MapServer service. [tbod_get_dataset()] accepts a bundled
+#' ID, discovered row, stable ArcGIS ID, or direct layer URL and returns a tibble
+#' or optional `sf` object. [tbod_provenance()] reads its source and query
+#' record. [tbod_download_dataset()] saves resumable chunks.
 #'
-#' The bundled checked layers have expected schema snapshots. [tbod_schema()]
-#' inspects an expected or current schema, and [tbod_check_schema()] reports
-#' changes. Retrieval warns for compatible drift and stops before querying for
-#' incompatible drift. Unprefixed function names remain available for existing
-#' code; new code can use the `tbod_` entry points.
+#' Checked layers have saved schema snapshots. [tbod_schema()] reads a saved or
+#' current schema, and [tbod_check_schema()] reports changes. Retrieval warns
+#' for compatible drift and stops before querying for incompatible drift.
 #'
 #' This independent package was inspired by rOpenSci's nycOpenData; it is not
 #' affiliated with rOpenSci or any government publisher. Government datasets

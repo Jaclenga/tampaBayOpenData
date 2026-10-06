@@ -1,11 +1,10 @@
 url: https://jaclenga.github.io/tampaBayOpenData/
 
 home:
-  title: Discover Tampa Bay and other public ArcGIS data
+  title: Tampa Bay open data from R
   description: >
-    An R interface for six bundled Tampa Bay ArcGIS publishers and other public
-    ArcGIS portals or layer URLs, with checked dataset IDs, schema checks,
-    provenance, and spatial results.
+    Search six Tampa Bay ArcGIS publishers, retrieve a checked layer, or use
+    another public ArcGIS portal or layer URL.
 
 template:
   bootstrap: 5
@@ -15,23 +14,35 @@ template:
 
 navbar:
   structure:
-    left: [intro, articles, reference, news]
+    left: [intro, articles, reference, coverage, news]
     right: [search, github, lightswitch]
   components:
     intro:
       text: Get started
       href: articles/introduction.html
+    articles:
+      text: Articles
+      menu:
+        - text: Discovering data
+          href: articles/discovery.html
+        - text: Retrieving and downloading
+          href: articles/retrieval.html
+        - text: All articles
+          href: articles/index.html
+    coverage:
+      text: Data coverage
+      href: articles/coverage.html
     news:
       text: Changelog
       href: news/index.html
 
 articles:
   - title: Start here
-    desc: The basic path from discovery to a reproducible analysis.
+    desc: Find a layer and retrieve its records.
     contents:
       - introduction
   - title: In depth
-    desc: Search, retrieval, source coverage, and limitations.
+    desc: Discovery, retrieval, and source limits.
     contents:
       - discovery
       - retrieval
@@ -63,17 +74,3 @@ reference:
       - tbod_get_permits
       - tbod_get_capital_projects
       - tbod_get_development_cases
-  - title: Compatibility functions
-    contents:
-      - list_portals
-      - list_datasets
-      - search_datasets
-      - dataset_info
-      - dataset_provenance
-      - get_dataset
-      - get_arcgis_layer
-      - download_dataset
-      - download_arcgis_layer
-      - get_permits
-      - get_capital_projects
-      - get_development_cases

@@ -5,31 +5,63 @@
 \title{Discover datasets from an ArcGIS portal}
 \usage{
 tbod_discover(
-  portal, query = NULL, max_items = 25, timeout = 30,
-  total_timeout = 90, org_id = NULL, publisher = NULL,
+  portal,
+  query = NULL,
+  max_items = 25,
+  timeout = 30,
+  total_timeout = 90,
+  org_id = NULL,
+  publisher = NULL,
   jurisdiction = "unspecified"
 )
 }
 \arguments{
-\item{portal}{Public HTTPS ArcGIS sharing REST root ending in \code{/sharing/rest}, or FeatureServer/MapServer service or layer URL.}
-\item{query}{Optional portal search text. For a service URL, a literal case-insensitive layer-name filter.}
-\item{max_items}{Maximum service items to scan in a portal or layers to inspect in a service; \code{Inf} scans all available entries. A capped portal search can omit matching layers from older items.}
+\item{portal}{Public HTTPS ArcGIS sharing REST root ending in
+\verb{/sharing/rest}, or FeatureServer/MapServer service or layer URL.}
+
+\item{query}{Optional portal search text. For a service URL, a literal
+case-insensitive layer-name filter.}
+
+\item{max_items}{Maximum service items to scan in a portal or layers to
+inspect in a service. Defaults to 25; \code{Inf} scans all available entries.
+A capped portal search can omit matching layers from older items.}
+
 \item{timeout}{Per-request timeout in seconds.}
-\item{total_timeout}{Overall operation budget in seconds; \code{Inf} disables it.}
-\item{org_id}{Optional ArcGIS organization ID used to restrict a portal search. This argument does not apply to service URLs.}
-\item{publisher}{Optional publisher label for returned descriptors. If NULL, a portal organization name is used when available; service URLs use an unknown-publisher label.}
-\item{jurisdiction}{Jurisdiction label for returned descriptors; defaults to \code{"unspecified"}.}
+
+\item{total_timeout}{Maximum elapsed seconds for the operation. Defaults to
+90; \code{Inf} disables this limit.}
+
+\item{org_id}{Optional ArcGIS organization ID to restrict a portal search.
+This argument does not apply to service URLs.}
+
+\item{publisher}{Publisher label to attach to discovery rows. If NULL, a
+portal organization name is used when available; service URLs use an
+unknown-publisher label.}
+
+\item{jurisdiction}{Jurisdiction label to attach to discovery rows. Defaults
+to \code{"unspecified"} for a custom portal.}
 }
-\value{A tibble of discovered ArcGIS layers. Discovery issue, scan count, truncation, and completeness attributes describe the scan. Check \code{attr(rows, "discovery_complete")} before assuming a complete search.}
+\value{
+A tibble of discovered ArcGIS layers. Discovery issues, scan counts,
+truncation, and completeness are attached as attributes; check
+\code{attr(rows, "discovery_complete")} before assuming a complete search.
+}
 \description{
-Searches public service items in an ArcGIS portal or enumerates layers from a
-FeatureServer or MapServer service root or layer URL. A result row can be passed to
-\code{\link{tbod_get_dataset}}. Portal rows have \code{discovered} status; service URL rows
-have \code{not_checked} status because no portal item identity is available. Discovery
-does not guarantee that a layer will remain available.
+Searches a public ArcGIS portal or lists layers from a FeatureServer or
+MapServer service or layer URL. Pass a result row to \code{\link[=tbod_get_dataset]{tbod_get_dataset()}} to
+retrieve it. Portal rows have \code{discovered} status; service URL rows have
+\code{not_checked} status because they have no portal item identity. Publisher
+services can change after discovery.
+}
+\details{
+A portal search scans at most \code{max_items} service items, then
+expands queryable layers. For a FeatureServer or MapServer URL, discovery
+enumerates the service's layers; \code{query} filters their names. The result
+reports scan completeness and item errors as attributes.
 }
 \examples{
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-  tbod_discover("https://www.arcgis.com/sharing/rest", query = "parks", max_items = 5)
+  rows <- tbod_discover("https://www.arcgis.com/sharing/rest",
+                        query = "parks", max_items = 5)
 }
 }

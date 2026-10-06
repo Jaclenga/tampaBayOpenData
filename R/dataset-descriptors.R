@@ -172,12 +172,32 @@
 .descriptor_portal <- function(portal) {
   if (is.null(portal) || (length(portal) == 1L && is.na(portal))) return(NULL)
   .string(portal, "descriptor.portal")
-  if (!grepl("^https://[A-Za-z0-9][A-Za-z0-9.-]*(/[A-Za-z0-9._~!$&'()*+,;=:@%/-]*)?$", portal) ||
+  parts <- regmatches(portal, regexec(
+    "^https://([^/?#@]+)(/[A-Za-z0-9._~!$&'()*+,;=:@%/-]*)?$",
+    portal, perl = TRUE))[[1L]]
+  if (length(parts) < 2L || !.public_arcgis_authority(parts[[2L]]) ||
       grepl("[?#\\\\]", portal)) {
     .abort("`descriptor.portal` must be an HTTPS portal root without credentials or query parameters.",
            subclass = "tampa_input_error")
   }
   portal
+}
+
+.public_arcgis_authority <- function(authority) {
+  if (!is.character(authority) || length(authority) != 1L ||
+      is.na(authority) || grepl(":$", authority)) return(FALSE)
+  parts <- strsplit(authority, ":", fixed = TRUE)[[1L]]
+  if (length(parts) < 1L || length(parts) > 2L) return(FALSE)
+  host <- parts[[1L]]
+  if (!grepl("^[A-Za-z0-9][A-Za-z0-9.-]*[A-Za-z0-9]$", host) ||
+      grepl("\\.\\.|^[0-9.]+$|(^|\\.)localhost$|\\.(local|internal|home|lan)$",
+            host, ignore.case = TRUE)) return(FALSE)
+  if (length(parts) == 2L) {
+    if (!grepl("^[0-9]{1,5}$", parts[[2L]])) return(FALSE)
+    port <- as.integer(parts[[2L]])
+    if (port < 1L || port > 65535L) return(FALSE)
+  }
+  TRUE
 }
 
 .direct_arcgis_descriptor <- function(url) {
@@ -198,10 +218,7 @@
     .abort("Use a public HTTPS ArcGIS layer URL ending in `/FeatureServer/<id>` or `/MapServer/<id>`.",
            subclass = "tampa_input_error")
   }
-  host <- pieces[[2L]]
-  if (!grepl("^[A-Za-z0-9][A-Za-z0-9.-]*[A-Za-z0-9]$", host) ||
-      grepl("\\.\\.|^[0-9.]+$|(^|\\.)localhost$|\\.(local|internal|home|lan)$", host,
-            ignore.case = TRUE) ||
+  if (!.public_arcgis_authority(pieces[[2L]]) ||
       grepl("%2[fF]|%5[cC]|(^|/)\\.\\.?(/|$)", pieces[[3L]])) {
     .abort("The ArcGIS layer URL must use a public DNS host and ordinary path segments.",
            subclass = "tampa_input_error")

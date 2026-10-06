@@ -19,7 +19,7 @@ test_that("default public discovery queries all six configured organizations wit
   }
   transport <- discovery_test_transport(pages, resources)
   local_mocked_bindings(arcgis_http = transport$http)
-  found <- list_datasets(source = "live")
+  found <- tbod_list_datasets(source = "live")
   expect_setequal(found$jurisdiction, vapply(registry, `[[`, character(1), "jurisdiction"))
   expect_setequal(found$publisher, vapply(registry, `[[`, character(1), "publisher"))
   expect_true(attr(found, "discovery_complete"))
@@ -51,7 +51,7 @@ test_that("finite portal scans expose truncation and exhaustive opt-in clears it
     type = "Feature Layer", geometryType = "esriGeometryPoint")), 3), endpoints)
   bounded <- discovery_test_transport(pages, resources)
   local_mocked_bindings(arcgis_http = bounded$http)
-  found <- list_datasets(portals = "stpete", max_items = 2)
+  found <- tbod_list_datasets(portals = "stpete", max_items = 2)
   expect_false(attr(found, "discovery_complete"))
   expect_identical(attr(found, "discovery_scanned_items"), c(stpete = 2L))
   expect_identical(attr(found, "discovery_truncated_portals"), "stpete")
@@ -63,7 +63,7 @@ test_that("finite portal scans expose truncation and exhaustive opt-in clears it
 
   exhaustive <- discovery_test_transport(pages, resources)
   local_mocked_bindings(arcgis_http = exhaustive$http)
-  all <- list_datasets(source = "live", portals = "stpete", max_items = Inf)
+  all <- tbod_list_datasets(source = "live", portals = "stpete", max_items = Inf)
   expect_setequal(all$source_url, endpoints)
   expect_true(attr(all, "discovery_complete"))
   expect_identical(attr(all, "discovery_scanned_items"), c(stpete = 3L))
@@ -75,7 +75,7 @@ test_that("new municipal portal endpoints inherit checked IDs across catalog jur
   for (id in c("stpete-parks", "clearwater-zoning")) {
     case <- cases[[id]]
     config <- .portal_registry()[[case$jurisdiction]]
-    info <- dataset_info(id)
+    info <- tbod_dataset_info(id)
     pages <- resources <- list()
     pages[[paste0(config$root, "/search/1")]] <- list(
       total = 1L, start = 1L, nextStart = -1L,
@@ -84,11 +84,11 @@ test_that("new municipal portal endpoints inherit checked IDs across catalog jur
     resources[[case$metadata_url]] <- case$metadata
     transport <- discovery_test_transport(pages, resources)
     local_mocked_bindings(arcgis_http = transport$http)
-    found <- list_datasets(source = "live", portals = case$jurisdiction)
+    found <- tbod_list_datasets(source = "live", portals = case$jurisdiction)
     expect_identical(found$id, id)
     expect_identical(found$jurisdiction, case$jurisdiction)
     expect_identical(found$validation_status, "checked")
-    expect_identical(dataset_info(found)$publisher, case$publisher)
+    expect_identical(tbod_dataset_info(found)$publisher, case$publisher)
     expect_identical(found$portal, config$root)
     expect_true(attr(found, "discovery_complete"))
   }
@@ -111,7 +111,7 @@ test_that("global item lookup resolves the new supported municipal organizations
     expect_identical(found$publisher, config$publisher)
     expect_identical(found$portal, config$root)
     expect_identical(found$validation_status, "discovered")
-    expect_identical(dataset_info(found$id, jurisdiction = "all")$jurisdiction, key)
+    expect_identical(tbod_dataset_info(found$id, jurisdiction = "all")$jurisdiction, key)
   }
 })
 
@@ -121,6 +121,6 @@ test_that("elapsed discovery budgets remain explicit errors instead of stale-ite
   })
   expect_error(.discover_arcgis(portals = "all"), "deadline",
                class = "tampa_timeout_error")
-  expect_error(list_datasets(source = "all"), "deadline",
+  expect_error(tbod_list_datasets(source = "all"), "deadline",
                class = "tampa_timeout_error")
 })

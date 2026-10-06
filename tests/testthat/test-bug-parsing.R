@@ -49,7 +49,7 @@ test_that("invalid numeric big integers raise package errors consistently", {
 })
 
 test_that("malformed field aliases fail metadata inspection with source context", {
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   endpoint <- paste0(entry$service_url, "/", entry$layer_id)
   for (alias in list(42, c("one", "two"), list("one"), list("one", "two"),
                      NA_character_, NA_real_)) {
@@ -58,7 +58,7 @@ test_that("malformed field aliases fail metadata inspection with source context"
     # Preserve malformed NA values here; JSON null is a valid absent alias.
     local_mocked_bindings(arcgis_request = function(...) metadata,
                           .package = "tampaBayOpenData")
-    failure <- tryCatch(dataset_info(entry$id, refresh = TRUE), error = identity)
+    failure <- tryCatch(tbod_dataset_info(entry$id, refresh = TRUE), error = identity)
     expect_s3_class(failure, "tampa_response_error")
     if (inherits(failure, "error")) {
       expect_identical(failure$dataset_id, entry$id)
@@ -78,7 +78,7 @@ test_that("metadata inspection preserves valid aliases and absent-alias fallback
     transport <- fixture_transport(metadata = metadata)
     local_mocked_bindings(arcgis_http = transport$http,
                           .package = "tampaBayOpenData")
-    inspected <- dataset_info("construction-permits", refresh = TRUE)
+    inspected <- tbod_dataset_info("construction-permits", refresh = TRUE)
     expected <- if (kind == "valid") "Source Alias" else "RECORD_ID"
     expect_identical(inspected$fields$alias[2L], expected)
     expect_identical(inspected$fields$name[2L], "RECORD_ID")

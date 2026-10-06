@@ -1,7 +1,7 @@
 test_that("unordered retrieval validates and reorders several service-sized batches", {
   transport <- fixture_transport()
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("construction-permits", page_size = 20)
+  result <- tbod_get_dataset("construction-permits", page_size = 20)
   expect_identical(result$OBJECTID, 1:5)
   expect_identical(result$RECORD_ID, paste0("synthetic-", 1:5))
   expect_false("SHAPE" %in% names(result))
@@ -12,32 +12,32 @@ test_that("unordered retrieval validates and reorders several service-sized batc
   expect_true(all(vapply(requests, function(x) identical(x$params$returnGeometry, "false"),
                         logical(1))))
   expect_true(all(vapply(requests, function(x) is.null(x$params$resultOffset), logical(1))))
-  expect_identical(dataset_provenance(result)$pagination, "object-id batches")
-  expect_true(dataset_provenance(result)$complete)
+  expect_identical(tbod_provenance(result)$pagination, "object-id batches")
+  expect_true(tbod_provenance(result)$complete)
 })
 
 test_that("field selection requests a hidden OID then returns only selected attributes", {
   transport <- fixture_transport()
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("construction-permits", fields = c("RECORD_ID", "LASTUPDATE"))
+  result <- tbod_get_dataset("construction-permits", fields = c("RECORD_ID", "LASTUPDATE"))
   expect_identical(names(result), c("RECORD_ID", "LASTUPDATE"))
   expect_s3_class(result$LASTUPDATE, "POSIXct")
   requests <- fixture_queries(transport, "features")
   expect_true(all(vapply(requests, function(x)
     identical(x$params$outFields, "RECORD_ID,LASTUPDATE,OBJECTID"), logical(1))))
-  expect_identical(dataset_provenance(result)$query$fields, c("RECORD_ID", "LASTUPDATE"))
-  expect_error(get_dataset("construction-permits", fields = "made_up"), "Unknown source field")
-  expect_error(get_dataset("construction-permits", fields = c("RECORD_ID", "RECORD_ID")),
+  expect_identical(tbod_provenance(result)$query$fields, c("RECORD_ID", "LASTUPDATE"))
+  expect_error(tbod_get_dataset("construction-permits", fields = "made_up"), "Unknown source field")
+  expect_error(tbod_get_dataset("construction-permits", fields = c("RECORD_ID", "RECORD_ID")),
                "unique source field")
-  expect_error(get_dataset("construction-permits", fields = character()), "nonempty vector")
-  expect_error(get_dataset("construction-permits", fields = NA_character_), "unique source field")
+  expect_error(tbod_get_dataset("construction-permits", fields = character()), "nonempty vector")
+  expect_error(tbod_get_dataset("construction-permits", fields = NA_character_), "unique source field")
 })
 
 test_that("ID batching works on services without offset or ordering capability", {
   transport <- fixture_transport(metadata = fixture_metadata(pagination = FALSE, ordering = FALSE))
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  expect_identical(get_dataset("construction-permits")$OBJECTID, 1:5)
-  expect_error(get_dataset("construction-permits", order_by = "LASTUPDATE DESC"),
+  expect_identical(tbod_get_dataset("construction-permits")$OBJECTID, 1:5)
+  expect_error(tbod_get_dataset("construction-permits", order_by = "LASTUPDATE DESC"),
                "reliable server-side ordering")
 })
 
@@ -51,12 +51,12 @@ test_that("transfer-limited ID batches split until every requested record is pre
       payload
     })
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("construction-permits", page_size = 4)
+  result <- tbod_get_dataset("construction-permits", page_size = 4)
   expect_identical(result$OBJECTID, 1:5)
   batches <- vapply(fixture_queries(transport, "features"),
                     function(x) x$params$objectIds, character(1))
   expect_identical(batches, c("1,2,3,4", "1,2", "1", "2", "3,4", "3", "4", "5"))
-  expect_true(dataset_provenance(result)$complete)
+  expect_true(tbod_provenance(result)$complete)
 })
 
 test_that("a truncated singleton or missing batch record cannot look complete", {
@@ -65,14 +65,14 @@ test_that("a truncated singleton or missing batch record cannot look complete", 
     payload
   })
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "truncated a single-record batch",
+  expect_error(tbod_get_dataset("construction-permits"), "truncated a single-record batch",
                class = "tampa_integrity_error")
   missing <- fixture_transport(transform = function(payload, params, ...) {
     if (!is.null(params$objectIds)) payload$features <- payload$features[-1L]
     payload
   })
   local_mocked_bindings(arcgis_http = missing$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "missing requested records",
+  expect_error(tbod_get_dataset("construction-permits"), "missing requested records",
                class = "tampa_integrity_error")
 })
 
@@ -82,21 +82,21 @@ test_that("unexpected and duplicate IDs in batches fail integrity checks", {
     payload
   })
   local_mocked_bindings(arcgis_http = unexpected$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "unexpected object IDs",
+  expect_error(tbod_get_dataset("construction-permits"), "unexpected object IDs",
                class = "tampa_integrity_error")
   duplicate <- fixture_transport(transform = function(payload, params, ...) {
     if (!is.null(params$objectIds)) payload$features <- rep(payload$features[1L], 2L)
     payload
   })
   local_mocked_bindings(arcgis_http = duplicate$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "duplicate object IDs",
+  expect_error(tbod_get_dataset("construction-permits"), "duplicate object IDs",
                class = "tampa_integrity_error")
 })
 
 test_that("counts and complete ID manifests must agree before feature retrieval", {
   disagreement <- fixture_transport(count = 6L)
   local_mocked_bindings(arcgis_http = disagreement$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "count and object-ID manifest disagree",
+  expect_error(tbod_get_dataset("construction-permits"), "count and object-ID manifest disagree",
                class = "tampa_integrity_error")
   expect_length(fixture_queries(disagreement, "features"), 0L)
   truncated <- fixture_transport(transform = function(payload, params, ...) {
@@ -104,14 +104,14 @@ test_that("counts and complete ID manifests must agree before feature retrieval"
     payload
   })
   local_mocked_bindings(arcgis_http = truncated$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "complete object-ID manifest",
+  expect_error(tbod_get_dataset("construction-permits"), "complete object-ID manifest",
                class = "tampa_integrity_error")
   changed_oid <- fixture_transport(transform = function(payload, params, ...) {
     if (identical(params$returnIdsOnly, "true")) payload$objectIdFieldName <- "NEWOID"
     payload
   })
   local_mocked_bindings(arcgis_http = changed_oid$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "object-ID field changed",
+  expect_error(tbod_get_dataset("construction-permits"), "object-ID field changed",
                class = "tampa_integrity_error")
 })
 
@@ -119,14 +119,14 @@ test_that("malformed counts and object-ID manifests fail explicitly", {
   for (value in list(-1L, 1.5, "five", NULL)) {
     transport <- fixture_transport(count = value)
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-    expect_error(get_dataset("construction-permits"), "invalid matching-record count",
+    expect_error(tbod_get_dataset("construction-permits"), "invalid matching-record count",
                  class = "tampa_response_error")
   }
   for (ids in list(c(1, 1, 2, 3, 4), c(1, 2, 3, 4, 5.5),
                    as.character(1:5), c(1, 2, 3, 4, 1e20))) {
     transport <- fixture_transport(ids = ids)
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-    expect_error(get_dataset("construction-permits"), "(malformed|duplicate).*object IDs",
+    expect_error(tbod_get_dataset("construction-permits"), "(malformed|duplicate).*object IDs",
                  class = "tampa_integrity_error")
   }
   missing_manifest <- fixture_transport(transform = function(payload, params, ...) {
@@ -134,14 +134,14 @@ test_that("malformed counts and object-ID manifests fail explicitly", {
     payload
   })
   local_mocked_bindings(arcgis_http = missing_manifest$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "complete object-ID manifest",
+  expect_error(tbod_get_dataset("construction-permits"), "complete object-ID manifest",
                class = "tampa_integrity_error")
 })
 
 test_that("oversized manifests are rejected before attempting IDs or feature downloads", {
   transport <- fixture_transport(count = 1000001L)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "one million.*Narrow",
+  expect_error(tbod_get_dataset("construction-permits"), "one million.*Narrow",
                class = "tampa_integrity_error")
   expect_length(fixture_queries(transport, "ids"), 0L)
   expect_length(fixture_queries(transport, "features"), 0L)
@@ -150,7 +150,7 @@ test_that("oversized manifests are rejected before attempting IDs or feature dow
 test_that("empty matches and deliberate zero limits retain a typed schema", {
   empty <- fixture_transport(features = list())
   local_mocked_bindings(arcgis_http = empty$http, .package = "tampaBayOpenData")
-  result <- get_dataset("construction-permits")
+  result <- tbod_get_dataset("construction-permits")
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0L)
   expect_type(result$OBJECTID, "integer")
@@ -158,42 +158,42 @@ test_that("empty matches and deliberate zero limits retain a typed schema", {
   expect_type(result$NEWCONSTRUCTIONSF, "integer")
   expect_s3_class(result$LASTUPDATE, "POSIXct")
   expect_false("SHAPE" %in% names(result))
-  expect_true(dataset_provenance(result)$complete)
+  expect_true(tbod_provenance(result)$complete)
   expect_length(fixture_queries(empty, "features"), 0L)
   zero <- fixture_transport()
   local_mocked_bindings(arcgis_http = zero$http, .package = "tampaBayOpenData")
-  result <- get_dataset("construction-permits", limit = 0)
+  result <- tbod_get_dataset("construction-permits", limit = 0)
   expect_equal(nrow(result), 0L)
-  expect_false(dataset_provenance(result)$complete)
-  expect_equal(dataset_provenance(result)$matched_rows, 5)
+  expect_false(tbod_provenance(result)$complete)
+  expect_equal(tbod_provenance(result)$matched_rows, 5)
   expect_length(fixture_queries(zero, "features"), 0L)
 })
 
 test_that("ordered offsets add an OID tie breaker and honor source ordering", {
   transport <- fixture_transport()
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("construction-permits", order_by = "PROJECTSTATUS DESC", page_size = 2)
+  result <- tbod_get_dataset("construction-permits", order_by = "PROJECTSTATUS DESC", page_size = 2)
   expect_identical(result$OBJECTID, c(2L, 4L, 1L, 3L, 5L))
   requests <- fixture_queries(transport, "features")
   expect_identical(vapply(requests, function(x) x$params$orderByFields, character(1)),
                    rep("PROJECTSTATUS DESC,OBJECTID ASC", 3L))
   expect_equal(vapply(requests, function(x) x$params$resultOffset, numeric(1)), c(0, 2, 4))
   expect_equal(vapply(requests, function(x) x$params$resultRecordCount, numeric(1)), c(2, 2, 1))
-  expect_identical(dataset_provenance(result)$pagination, "ordered offsets")
-  expect_true(dataset_provenance(result)$complete)
+  expect_identical(tbod_provenance(result)$pagination, "ordered offsets")
+  expect_true(tbod_provenance(result)$complete)
 })
 
 test_that("an explicit OID ordering is preserved and invalid ordering is refused", {
   transport <- fixture_transport()
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  expect_identical(get_dataset("construction-permits", order_by = "OBJECTID DESC")$OBJECTID,
+  expect_identical(tbod_get_dataset("construction-permits", order_by = "OBJECTID DESC")$OBJECTID,
                    5:1)
   requests <- fixture_queries(transport, "features")
   expect_true(all(vapply(requests, function(x) identical(x$params$orderByFields, "OBJECTID DESC"),
                         logical(1))))
   for (value in list("badfield DESC", c("OBJECTID", "OBJECTID DESC"),
                      "OBJECTID;DROP TABLE permits", NA_character_, 1)) {
-    expect_error(get_dataset("construction-permits", order_by = value), "order_by")
+    expect_error(tbod_get_dataset("construction-permits", order_by = value), "order_by")
   }
 })
 
@@ -221,7 +221,7 @@ test_that("stalled, repeated, oversized, and unexpected ordered pages are errors
   for (transform in transforms) {
     transport <- fixture_transport(transform = transform)
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-    expect_error(get_dataset("construction-permits", order_by = "OBJECTID", page_size = 2),
+    expect_error(tbod_get_dataset("construction-permits", order_by = "OBJECTID", page_size = 2),
                  "empty, repeated, oversized, or unexpected page", class = "tampa_integrity_error")
   }
 })
@@ -235,7 +235,7 @@ test_that("ordered short pages only continue when the service declares truncatio
     payload
   })
   local_mocked_bindings(arcgis_http = early_stop$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits", order_by = "OBJECTID"),
+  expect_error(tbod_get_dataset("construction-permits", order_by = "OBJECTID"),
                "stopped before all requested records", class = "tampa_integrity_error")
   short_page <- fixture_transport(transform = function(payload, params, ...) {
     if (!is.null(params$resultOffset) && length(payload$features) > 1L) {
@@ -245,7 +245,7 @@ test_that("ordered short pages only continue when the service declares truncatio
     payload
   })
   local_mocked_bindings(arcgis_http = short_page$http, .package = "tampaBayOpenData")
-  expect_identical(get_dataset("construction-permits", order_by = "OBJECTID")$OBJECTID, 1:5)
+  expect_identical(tbod_get_dataset("construction-permits", order_by = "OBJECTID")$OBJECTID, 1:5)
   expect_equal(vapply(fixture_queries(short_page, "features"),
                      function(x) x$params$resultOffset, numeric(1)), 0:4)
 })
@@ -254,7 +254,7 @@ test_that("filters and advanced geometry parameters reach every stage unchanged"
   transport <- fixture_transport()
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
   geometry <- list(xmin = -83, ymin = 27, xmax = -82, ymax = 29)
-  get_dataset("construction-permits", where = "PROJECTSTATUS = 'Issued'",
+  tbod_get_dataset("construction-permits", where = "PROJECTSTATUS = 'Issued'",
     query = list(geometry = geometry, geometryType = "esriGeometryEnvelope",
                  inSR = 4326, spatialRel = "esriSpatialRelIntersects", time = "0,10000"),
     timeout = 17)
@@ -281,48 +281,48 @@ test_that("protected query arguments and invalid scalar inputs fail before HTTP"
   for (name in c("f", "outFields", "returnGeometry", "objectIds", "resultOffset",
                  "resultRecordCount", "returnCountOnly", "outStatistics", "geometryPrecision")) {
     query <- setNames(list("override"), name)
-    expect_error(get_dataset("construction-permits", query = query), "protected.*query.*parameter")
+    expect_error(tbod_get_dataset("construction-permits", query = query), "protected.*query.*parameter")
   }
   for (query in list(1, list(1), list(time = c(1, 2)), list(time = NA),
                      structure(list(1, 2), names = c("time", "time")))) {
-    expect_error(get_dataset("construction-permits", query = query), "query")
+    expect_error(tbod_get_dataset("construction-permits", query = query), "query")
   }
   for (args in list(list(where = ""), list(where = NA_character_), list(spatial = "yes"),
                     list(limit = -1), list(limit = 1.5), list(page_size = 0),
                     list(page_size = 1.2), list(timeout = 0), list(timeout = Inf),
                     list(out_sr = 4326), list(out_sr = -1, spatial = TRUE))) {
-    expect_error(do.call(get_dataset, c(list(id = "construction-permits"), args)),
+    expect_error(do.call(tbod_get_dataset, c(list(id = "construction-permits"), args)),
                  class = "tampa_data_error")
   }
   expect_false(called)
 })
 
 test_that("HTTP, network, ArcGIS, and malformed-body errors expose the source", {
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   local_mocked_bindings(arcgis_http = function(...) fixture_response(list(), 404L),
                         .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "endpoint_disappeared",
+  expect_error(tbod_get_dataset("construction-permits"), "endpoint_disappeared",
                class = "tampa_schema_error")
-  error <- tryCatch(get_dataset("construction-permits"), error = identity)
+  error <- tryCatch(tbod_get_dataset("construction-permits"), error = identity)
   expect_identical(error$dataset_id, entry$id)
   expect_match(conditionMessage(error), entry$source_url, fixed = TRUE)
   local_mocked_bindings(arcgis_http = function(...) stop("connection refused"),
                         .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "could not be reached.*connection refused",
+  expect_error(tbod_get_dataset("construction-permits"), "could not be reached.*connection refused",
                class = "tampa_http_error")
   local_mocked_bindings(arcgis_http = function(...) fixture_response(
     list(error = list(code = 400L, message = "Invalid SQL", details = list("Unknown field")))),
     .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "ArcGIS error 400.*Invalid SQL.*Unknown field",
+  expect_error(tbod_get_dataset("construction-permits"), "ArcGIS error 400.*Invalid SQL.*Unknown field",
                class = "tampa_arcgis_error")
   for (body in c("<html>Outside the United States</html>", "not JSON", "[]", "null", "42")) {
     local_mocked_bindings(arcgis_http = function(...) list(status = 200L, body = body),
                           .package = "tampaBayOpenData")
-    expect_error(get_dataset("construction-permits"), class = "tampa_response_error")
+    expect_error(tbod_get_dataset("construction-permits"), class = "tampa_response_error")
   }
   local_mocked_bindings(arcgis_http = function(...) fixture_response(list(error = "broken")),
                         .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), class = "tampa_response_error")
+  expect_error(tbod_get_dataset("construction-permits"), class = "tampa_response_error")
 })
 
 test_that("layer metadata must provide a schema, an OID, and a usable record cap", {
@@ -339,13 +339,13 @@ test_that("layer metadata must provide a schema, an OID, and a usable record cap
   for (metadata in invalid) {
     transport <- fixture_transport(metadata = metadata)
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-    expect_error(get_dataset("construction-permits"), class = "tampa_data_error")
+    expect_error(tbod_get_dataset("construction-permits"), class = "tampa_data_error")
   }
   metadata <- fixture_metadata()
   metadata$objectIdField <- NULL
   transport <- fixture_transport(metadata = metadata)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  expect_identical(get_dataset("construction-permits")$OBJECTID, 1:5)
+  expect_identical(tbod_get_dataset("construction-permits")$OBJECTID, 1:5)
 })
 
 test_that("malformed feature arrays or absent IDs are never silently dropped", {
@@ -370,14 +370,14 @@ test_that("malformed feature arrays or absent IDs are never silently dropped", {
   for (transform in transforms) {
     transport <- fixture_transport(transform = transform)
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-    expect_error(get_dataset("construction-permits"), class = "tampa_response_error")
+    expect_error(tbod_get_dataset("construction-permits"), class = "tampa_response_error")
   }
   null_oid <- fixture_transport(transform = function(payload, params, ...) {
     if (!is.null(params$objectIds)) payload$features[[1L]]$attributes["OBJECTID"] <- list(NULL)
     payload
   })
   local_mocked_bindings(arcgis_http = null_oid$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "null object ID",
+  expect_error(tbod_get_dataset("construction-permits"), "null object ID",
                class = "tampa_integrity_error")
 })
 
@@ -409,7 +409,7 @@ test_that("malformed per-page flags, geometry types, and spatial references fail
   for (transform in transforms) {
     transport <- fixture_transport(transform = transform)
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-    expect_error(get_dataset("construction-permits"), class = "tampa_response_error")
+    expect_error(tbod_get_dataset("construction-permits"), class = "tampa_response_error")
   }
 })
 
@@ -422,13 +422,13 @@ test_that("spatial pages cannot change CRS or contradict a requested projection"
     payload
   })
   local_mocked_bindings(arcgis_http = changed$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits", spatial = TRUE), "CRS changed between pages",
+  expect_error(tbod_get_dataset("construction-permits", spatial = TRUE), "CRS changed between pages",
                class = "tampa_integrity_error")
   wrong_projection <- fixture_transport(transform = function(payload, params, ...) {
     if (!is.null(params$objectIds)) payload$spatialReference <- list(wkid = 3857)
     payload
   })
   local_mocked_bindings(arcgis_http = wrong_projection$http, .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits", spatial = TRUE, out_sr = 4326),
+  expect_error(tbod_get_dataset("construction-permits", spatial = TRUE, out_sr = 4326),
                "projection|spatial reference|CRS", class = "tampa_spatial_error")
 })

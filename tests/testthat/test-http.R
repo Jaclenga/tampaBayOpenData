@@ -147,7 +147,7 @@ test_that("the HTTP boundary preserves status codes and UTF-8 response bodies", 
 })
 
 test_that("incomplete successful HTTP statuses are rejected before JSON parsing", {
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   url <- paste0(entry$service_url, "/", entry$layer_id)
   for (status in c(202L, 206L)) {
     capture <- http_capture('{"name":"looks complete"}', status)
@@ -163,7 +163,7 @@ test_that("incomplete successful HTTP statuses are rejected before JSON parsing"
 
 test_that("HTTP response errors retain dataset and endpoint context after transport", {
   capture <- http_capture('{"error":"maintenance"}', 503L)
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   url <- paste0(entry$service_url, "/", entry$layer_id)
   error <- tryCatch(arcgis_request(url, dataset = entry), error = identity)
 
@@ -182,7 +182,7 @@ test_that("transport failures are wrapped with their cause and source context", 
     requests[[length(requests) + 1L]] <<- req
     stop("synthetic connection reset", call. = FALSE)
   }, .package = "httr2")
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   url <- paste0(entry$service_url, "/", entry$layer_id, "/query")
   error <- tryCatch(arcgis_request(url, list(where = "1=1"), entry, timeout = 9),
                     error = identity)
@@ -209,7 +209,7 @@ test_that("dataset retrieval traverses real HTTP request construction for every 
     http_fixture_response(req, response$body, response$status)
   }, .package = "httr2")
   where <- "RECORD_ID = 'synthetic & Jos\u00e9 + 50%'"
-  result <- get_dataset("construction-permits", where = where,
+  result <- tbod_get_dataset("construction-permits", where = where,
                         page_size = 2, timeout = 11)
 
   expect_identical(result$OBJECTID, 1:5)
@@ -226,5 +226,5 @@ test_that("dataset retrieval traverses real HTTP request construction for every 
                         logical(1))))
   expect_true(all(vapply(transport$state$requests, function(x) identical(x$timeout, 11),
                         logical(1))))
-  expect_true(dataset_provenance(result)$complete)
+  expect_true(tbod_provenance(result)$complete)
 })

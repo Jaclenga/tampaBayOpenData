@@ -25,7 +25,7 @@
 #' Bundled checked layers are compared with their expected schemas before a
 #' download starts or resumes. Compatible drift warns; incompatible drift stops
 #' the download. Inspect differences with [tbod_check_schema()].
-#' @inheritParams get_dataset
+#' @inheritParams .get_dataset_impl
 #' @param path Local directory for the manifest, checkpoints, and chunk files.
 #' @param page_size Positive integer batch size, capped at 1,000 and the service
 #'   maximum. The effective batch size must remain unchanged when resuming.
@@ -36,20 +36,20 @@
 #' @return A named list with `path`, ordered chunk `files`, `matched_rows`,
 #'   `returned_rows`, `complete`, and summary `source` provenance. A query with
 #'   no matches returns no chunk files. Individual chunks retain object IDs in
-#'   `dataset_provenance(chunk)$download$object_ids`, including when the ID
+#'   `tbod_provenance(chunk)$download$object_ids`, including when the ID
 #'   column was not selected.
-#' @export
+#' @noRd
 #' @examples
-#' dataset_info("construction-permits")$object_id_field
+#' tbod_dataset_info("construction-permits")$object_id_field
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   saved <- download_dataset("construction-permits", tempfile("permit-download-"),
+#'   saved <- tbod_download_dataset("construction-permits", tempfile("permit-download-"),
 #'     where = "OBJECTID <= 10", page_size = 5)
 #'   if (length(saved$files)) {
 #'     first <- readRDS(saved$files[[1]])
-#'     dataset_provenance(first)$download$chunk
+#'     tbod_provenance(first)$download$chunk
 #'   }
 #' }
-download_dataset <- function(id, path, jurisdiction = NULL, where = "1=1",
+.download_dataset_impl <- function(id, path, jurisdiction = NULL, where = "1=1",
                              fields = NULL, spatial = FALSE, out_sr = NULL,
                              page_size = 1000, query = list(), timeout = 30,
                              total_timeout = Inf, resume = TRUE) {
@@ -120,27 +120,27 @@ download_dataset <- function(id, path, jurisdiction = NULL, where = "1=1",
 
 #' Download a direct ArcGIS layer into resumable local chunks
 #'
-#' Uses the same resumable, bounded-memory path as [download_dataset()]. A direct
+#' Uses the same resumable, bounded-memory path as [tbod_download_dataset()]. A direct
 #' layer URL retains `not_checked` provenance and no inferred publisher identity.
 #' @param url Public HTTPS ArcGIS FeatureServer or MapServer layer URL.
-#' @inheritParams download_dataset
+#' @inheritParams .download_dataset_impl
 #' @return A named list with `path`, ordered chunk `files`, `matched_rows`,
 #'   `returned_rows`, `complete`, and summary `source` provenance, as described
-#'   in [download_dataset()]. Direct URLs have `not_checked` provenance.
-#' @export
+#'   in [tbod_download_dataset()]. Direct URLs have `not_checked` provenance.
+#' @noRd
 #' @examples
-#' url <- dataset_info("construction-permits")$source_url
+#' url <- tbod_dataset_info("construction-permits")$source_url
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   saved <- download_arcgis_layer(url, tempfile("permit-url-download-"),
+#'   saved <- tbod_download_arcgis_layer(url, tempfile("permit-url-download-"),
 #'     where = "OBJECTID <= 10", page_size = 5)
 #'   saved[c("matched_rows", "returned_rows", "complete")]
 #' }
-download_arcgis_layer <- function(url, path, where = "1=1", fields = NULL,
+.download_arcgis_layer_impl <- function(url, path, where = "1=1", fields = NULL,
                                  spatial = FALSE, out_sr = NULL, page_size = 1000,
                                  query = list(), timeout = 30,
                                  total_timeout = Inf, resume = TRUE) {
   descriptor <- .direct_arcgis_descriptor(url)
-  download_dataset(descriptor, path, where = where, fields = fields,
+  .download_dataset_impl(descriptor, path, where = where, fields = fields,
                     spatial = spatial, out_sr = out_sr, page_size = page_size,
                     query = query, timeout = timeout,
                     total_timeout = total_timeout, resume = resume)
@@ -314,7 +314,7 @@ download_arcgis_layer <- function(url, path, where = "1=1", fields = NULL,
   fetched <- list(matched_rows = manifest$count, returned_rows = returned,
                    complete = returned == manifest$count, pagination = "object-id chunks",
                    integrity = "full-manifest", spatial_reference = reference)
-  source <- dataset_provenance(.attach_provenance(tibble::tibble(), dataset,
+  source <- .dataset_provenance_impl(.attach_provenance(tibble::tibble(), dataset,
     metadata, fetched, query_options, saved$started_at))
   list(path = path, files = files, matched_rows = manifest$count,
        returned_rows = returned, complete = returned == manifest$count,

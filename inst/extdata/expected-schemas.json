@@ -3162,9 +3162,29 @@
         "alias": "OBJECTID"
       },
       {
+        "name": "FACILITYID",
+        "type": "esriFieldTypeString",
+        "alias": "Facility ID"
+      },
+      {
         "name": "NAME",
         "type": "esriFieldTypeString",
         "alias": "Name"
+      },
+      {
+        "name": "FULLADDR",
+        "type": "esriFieldTypeString",
+        "alias": "Full Address"
+      },
+      {
+        "name": "MUNICIPALITY",
+        "type": "esriFieldTypeString",
+        "alias": "Municipality"
+      },
+      {
+        "name": "CRITICALFACILITY",
+        "type": "esriFieldTypeString",
+        "alias": "Critical Facility"
       },
       {
         "name": "RESTORATIONPRIORITY",
@@ -3172,14 +3192,79 @@
         "alias": "Restoration Priority"
       },
       {
+        "name": "RESTORATIONNOTE",
+        "type": "esriFieldTypeString",
+        "alias": "Restoration Note"
+      },
+      {
+        "name": "LATITUDE",
+        "type": "esriFieldTypeString",
+        "alias": "Latitude"
+      },
+      {
+        "name": "LONGITUDE",
+        "type": "esriFieldTypeString",
+        "alias": "Longitude"
+      },
+      {
+        "name": "OPSSTATUS",
+        "type": "esriFieldTypeString",
+        "alias": "Operational Status"
+      },
+      {
+        "name": "AGENCY",
+        "type": "esriFieldTypeString",
+        "alias": "Agency"
+      },
+      {
+        "name": "CONTACT",
+        "type": "esriFieldTypeString",
+        "alias": "Contact"
+      },
+      {
+        "name": "CONTACTPHONE",
+        "type": "esriFieldTypeString",
+        "alias": "Contact Phone"
+      },
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID"
+      },
+      {
+        "name": "int_created_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Created User"
+      },
+      {
         "name": "int_created_date",
         "type": "esriFieldTypeDate",
         "alias": "Internal Created Date"
       },
       {
+        "name": "int_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Edited User"
+      },
+      {
         "name": "int_edited_date",
         "type": "esriFieldTypeDate",
         "alias": "Internal Edited Date"
+      },
+      {
+        "name": "CFUNDUNITS",
+        "type": "esriFieldTypeString",
+        "alias": "C Fund Units"
+      },
+      {
+        "name": "AFUNDUNITS",
+        "type": "esriFieldTypeString",
+        "alias": "A Fund Units"
+      },
+      {
+        "name": "STATUS",
+        "type": "esriFieldTypeString",
+        "alias": "Status"
       }
     ],
     "geometry_type": "esriGeometryPoint",
@@ -3203,9 +3288,39 @@
         "alias": "Site Name"
       },
       {
+        "name": "NAME_SHORT",
+        "type": "esriFieldTypeString",
+        "alias": "Short Name"
+      },
+      {
+        "name": "NAME_COLLECTIVE",
+        "type": "esriFieldTypeString",
+        "alias": "Collective Name"
+      },
+      {
+        "name": "SITETYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Site Type"
+      },
+      {
+        "name": "DISTRICTID",
+        "type": "esriFieldTypeString",
+        "alias": "District ID"
+      },
+      {
+        "name": "GROUPID",
+        "type": "esriFieldTypeString",
+        "alias": "Group ID"
+      },
+      {
         "name": "GISACRES",
         "type": "esriFieldTypeDouble",
         "alias": "GIS Acres"
+      },
+      {
+        "name": "int_created_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Created User"
       },
       {
         "name": "int_created_date",
@@ -3213,9 +3328,59 @@
         "alias": "Internal Created Date"
       },
       {
+        "name": "int_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Edited User"
+      },
+      {
         "name": "int_edited_date",
         "type": "esriFieldTypeDate",
         "alias": "Internal Edited Date"
+      },
+      {
+        "name": "ADDRESS",
+        "type": "esriFieldTypeString",
+        "alias": "Address"
+      },
+      {
+        "name": "ACQSOURCE",
+        "type": "esriFieldTypeString",
+        "alias": "Acquisition Source(s)"
+      },
+      {
+        "name": "ACQDATE",
+        "type": "esriFieldTypeString",
+        "alias": "Acquisition Date(s)"
+      },
+      {
+        "name": "COMMENTS",
+        "type": "esriFieldTypeString",
+        "alias": "Comments"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "StatePlane_Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "StatePlane_Length"
+      },
+      {
+        "name": "StatePlane_Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "StatePlane_Area"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
       }
     ],
     "geometry_type": "esriGeometryPolygon",
@@ -3234,9 +3399,19 @@
         "alias": "OBJECTID"
       },
       {
+        "name": "FACILITYID",
+        "type": "esriFieldTypeString",
+        "alias": "Facility ID"
+      },
+      {
         "name": "NAME",
         "type": "esriFieldTypeString",
         "alias": "NAME"
+      },
+      {
+        "name": "WIDTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "Width"
       },
       {
         "name": "LENGTH",
@@ -3244,9 +3419,79 @@
         "alias": "Length"
       },
       {
+        "name": "FROMSTREET",
+        "type": "esriFieldTypeString",
+        "alias": "From Street"
+      },
+      {
+        "name": "TOSTREET",
+        "type": "esriFieldTypeString",
+        "alias": "To Street"
+      },
+      {
+        "name": "FROMMARKER",
+        "type": "esriFieldTypeString",
+        "alias": "From 911 Marker"
+      },
+      {
+        "name": "TOMARKER",
+        "type": "esriFieldTypeString",
+        "alias": "To 911 Marker"
+      },
+      {
+        "name": "OWNEDBY",
+        "type": "esriFieldTypeString",
+        "alias": "Owned By"
+      },
+      {
+        "name": "MAINTAINEDBY",
+        "type": "esriFieldTypeString",
+        "alias": "Maintained By"
+      },
+      {
+        "name": "CONSEQUENCEOFFAILURE",
+        "type": "esriFieldTypeDouble",
+        "alias": "Consequence of Failure"
+      },
+      {
+        "name": "LIKELIHOODOFFAILURE",
+        "type": "esriFieldTypeDouble",
+        "alias": "Likelihood of Failure"
+      },
+      {
+        "name": "CRITICALITY",
+        "type": "esriFieldTypeDouble",
+        "alias": "BRE"
+      },
+      {
+        "name": "CURRENTCONDITIONRATING",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Current Condition Rating"
+      },
+      {
+        "name": "LIFECYCLESTATUS",
+        "type": "esriFieldTypeString",
+        "alias": "Life Cycle Status"
+      },
+      {
+        "name": "DATACOLLECTIONMETHOD",
+        "type": "esriFieldTypeString",
+        "alias": "Data Collection Method"
+      },
+      {
         "name": "INSTALLDATE",
         "type": "esriFieldTypeDate",
         "alias": "Install Date"
+      },
+      {
+        "name": "SURFACETYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Surface Type"
+      },
+      {
+        "name": "PURCHASEPRICE",
+        "type": "esriFieldTypeDouble",
+        "alias": "Purchase Price"
       },
       {
         "name": "CONDITIONDATE",
@@ -3259,9 +3504,34 @@
         "alias": "Last Inspection Date"
       },
       {
+        "name": "LIFEEXPECTANCY",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Life Expectancy"
+      },
+      {
+        "name": "LOCATION",
+        "type": "esriFieldTypeString",
+        "alias": "Location Description"
+      },
+      {
         "name": "WARRANTYDATE",
         "type": "esriFieldTypeDate",
         "alias": "Warranty Date"
+      },
+      {
+        "name": "LEGACYID",
+        "type": "esriFieldTypeString",
+        "alias": "LegacyID"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "int_created_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Created User"
       },
       {
         "name": "int_created_date",
@@ -3269,9 +3539,34 @@
         "alias": "Internal Created Date"
       },
       {
+        "name": "int_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Edited User"
+      },
+      {
         "name": "int_edited_date",
         "type": "esriFieldTypeDate",
         "alias": "Internal Edited Date"
+      },
+      {
+        "name": "SITE_ID",
+        "type": "esriFieldTypeString",
+        "alias": "Site ID"
+      },
+      {
+        "name": "PRCNT_FEE",
+        "type": "esriFieldTypeDouble",
+        "alias": "SW Fee Percent"
+      },
+      {
+        "name": "SW_FEE",
+        "type": "esriFieldTypeString",
+        "alias": "SW Fee"
+      },
+      {
+        "name": "SITE_NAME",
+        "type": "esriFieldTypeString",
+        "alias": "Site Name"
       },
       {
         "name": "ENDOFLIFEDATE",
@@ -3279,14 +3574,49 @@
         "alias": "End of Life Date"
       },
       {
+        "name": "PCTREMAININGUSEFULLIFE",
+        "type": "esriFieldTypeDouble",
+        "alias": "Pct Remaining Useful Life"
+      },
+      {
         "name": "CRITICALITYDATE",
         "type": "esriFieldTypeDate",
         "alias": "BRE Date"
       },
       {
+        "name": "REMAININGUSEFULLIFE",
+        "type": "esriFieldTypeInteger",
+        "alias": "Remaining Useful Life"
+      },
+      {
+        "name": "REPLACEMENTCOST",
+        "type": "esriFieldTypeInteger",
+        "alias": "Replacement Cost"
+      },
+      {
+        "name": "COMMISSIONINGCOST",
+        "type": "esriFieldTypeInteger",
+        "alias": "Commissioning Cost"
+      },
+      {
         "name": "REPLACEMENTCOSTDATE",
         "type": "esriFieldTypeDate",
         "alias": "Replacement Cost Date"
+      },
+      {
+        "name": "OPERATIONALSTATUS",
+        "type": "esriFieldTypeString",
+        "alias": "Operational Status"
+      },
+      {
+        "name": "StatePlane_Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "StatePlane_Length"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
       }
     ],
     "geometry_type": "esriGeometryPolyline",
@@ -3305,9 +3635,34 @@
         "alias": "FID"
       },
       {
+        "name": "DEVELOPER",
+        "type": "esriFieldTypeString",
+        "alias": "DEVELOPER"
+      },
+      {
+        "name": "TYPE",
+        "type": "esriFieldTypeString",
+        "alias": "TYPE"
+      },
+      {
+        "name": "LUTYPETEXT",
+        "type": "esriFieldTypeString",
+        "alias": "LUTYPETEXT"
+      },
+      {
+        "name": "LOCATION",
+        "type": "esriFieldTypeString",
+        "alias": "LOCATION"
+      },
+      {
         "name": "COUNTY1",
         "type": "esriFieldTypeString",
         "alias": "COUNTY1"
+      },
+      {
+        "name": "COUNTY2",
+        "type": "esriFieldTypeString",
+        "alias": "COUNTY2"
       },
       {
         "name": "DRINAME",
@@ -3315,9 +3670,29 @@
         "alias": "DRINAME"
       },
       {
+        "name": "SELECT_DAT",
+        "type": "esriFieldTypeInteger",
+        "alias": "SELECT_DAT"
+      },
+      {
+        "name": "NUM_TXT",
+        "type": "esriFieldTypeString",
+        "alias": "NUM_TXT"
+      },
+      {
         "name": "DRINUM",
         "type": "esriFieldTypeInteger",
         "alias": "DRINUM"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeString",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "created_us",
+        "type": "esriFieldTypeString",
+        "alias": "created_us"
       },
       {
         "name": "created_da",
@@ -3325,9 +3700,29 @@
         "alias": "created_da"
       },
       {
+        "name": "last_edite",
+        "type": "esriFieldTypeString",
+        "alias": "last_edite"
+      },
+      {
         "name": "last_edi_1",
         "type": "esriFieldTypeDate",
         "alias": "last_edi_1"
+      },
+      {
+        "name": "Shape_Leng",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape_Leng"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
       }
     ],
     "geometry_type": "esriGeometryPolygon",
@@ -3348,9 +3743,9 @@
         "alias": "OBJECTID_1"
       },
       {
-        "name": "CAT",
-        "type": "esriFieldTypeString",
-        "alias": "CAT"
+        "name": "OBJECTID",
+        "type": "esriFieldTypeInteger",
+        "alias": "OBJECTID"
       },
       {
         "name": "COUNTY",
@@ -3358,9 +3753,29 @@
         "alias": "COUNTY"
       },
       {
+        "name": "CAT",
+        "type": "esriFieldTypeString",
+        "alias": "CAT"
+      },
+      {
+        "name": "COUNTY_SSZ",
+        "type": "esriFieldTypeString",
+        "alias": "COUNTY_SSZ"
+      },
+      {
+        "name": "Shape_Leng",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape_Leng"
+      },
+      {
         "name": "Shape__Area",
         "type": "esriFieldTypeDouble",
         "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
       }
     ],
     "geometry_type": "esriGeometryPolygon",
@@ -3378,14 +3793,19 @@
         "alias": "OBJECTID"
       },
       {
+        "name": "County",
+        "type": "esriFieldTypeString",
+        "alias": "County"
+      },
+      {
         "name": "Name",
         "type": "esriFieldTypeString",
         "alias": "Name"
       },
       {
-        "name": "County",
+        "name": "Address",
         "type": "esriFieldTypeString",
-        "alias": "County"
+        "alias": "Address"
       },
       {
         "name": "Latitude",
@@ -3393,15 +3813,1897 @@
         "alias": "Latitude"
       },
       {
+        "name": "Longitude",
+        "type": "esriFieldTypeDouble",
+        "alias": "Longitude"
+      },
+      {
         "name": "Status",
         "type": "esriFieldTypeString",
         "alias": "Status"
+      },
+      {
+        "name": "Services_Provided",
+        "type": "esriFieldTypeString",
+        "alias": "Services Provided"
+      },
+      {
+        "name": "Estimated_Size",
+        "type": "esriFieldTypeString",
+        "alias": "Estimated Size"
+      },
+      {
+        "name": "Data_Source",
+        "type": "esriFieldTypeString",
+        "alias": "Data Source"
       }
     ],
     "geometry_type": "esriGeometryPoint",
     "spatial_reference": {
       "wkid": 4326,
       "latestWkid": 4326
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "stpete/stpete-zoning-districts": {
+    "endpoint": "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/ZoningDistricts_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "ZONECLASS",
+        "type": "esriFieldTypeString",
+        "alias": "Zoning Classification"
+      },
+      {
+        "name": "ZONEDESC",
+        "type": "esriFieldTypeString",
+        "alias": "Zoning Description"
+      },
+      {
+        "name": "PDFURL",
+        "type": "esriFieldTypeString",
+        "alias": "PDF Web URL"
+      },
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "stpete/stpete-future-land-use": {
+    "endpoint": "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/FutureLandUse_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "LANDUSECODE",
+        "type": "esriFieldTypeString",
+        "alias": "Land Use Code"
+      },
+      {
+        "name": "LANDUSEDESC",
+        "type": "esriFieldTypeString",
+        "alias": "Land Use Description"
+      },
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "stpete/stpete-sidewalks": {
+    "endpoint": "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/Sidewalks_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "SURFTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Surface Type"
+      },
+      {
+        "name": "WIDTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "Sidewalk Width"
+      },
+      {
+        "name": "OWNEDBY",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Owned By"
+      },
+      {
+        "name": "MAINTBY",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Managed By"
+      },
+      {
+        "name": "HEXBLOCKSIZE",
+        "type": "esriFieldTypeDouble",
+        "alias": "Hex Block Size"
+      },
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "stpete/stpete-public-works-projects": {
+    "endpoint": "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/PWAProjectTracking/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "ProjectNumber",
+        "type": "esriFieldTypeString",
+        "alias": "Project Number"
+      },
+      {
+        "name": "ProjectName",
+        "type": "esriFieldTypeString",
+        "alias": "Project Name"
+      },
+      {
+        "name": "ProjectScope",
+        "type": "esriFieldTypeString",
+        "alias": "Project Scope"
+      },
+      {
+        "name": "CouncilDistrict",
+        "type": "esriFieldTypeString",
+        "alias": "Council District"
+      },
+      {
+        "name": "Department",
+        "type": "esriFieldTypeString",
+        "alias": "Department"
+      },
+      {
+        "name": "ProjectType",
+        "type": "esriFieldTypeString",
+        "alias": "Project Type"
+      },
+      {
+        "name": "Status",
+        "type": "esriFieldTypeString",
+        "alias": "Status"
+      },
+      {
+        "name": "ProjectManager",
+        "type": "esriFieldTypeString",
+        "alias": "ProjectManager"
+      },
+      {
+        "name": "Budget",
+        "type": "esriFieldTypeDouble",
+        "alias": "Budget"
+      },
+      {
+        "name": "DateCreated",
+        "type": "esriFieldTypeDate",
+        "alias": "DateCreated"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "clearwater/clearwater-future-land-use": {
+    "endpoint": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/FLU_w_PPC_Colors_WGS84/MapServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "LU",
+        "type": "esriFieldTypeString",
+        "alias": "LU"
+      },
+      {
+        "name": "created_user",
+        "type": "esriFieldTypeString",
+        "alias": "created_user"
+      },
+      {
+        "name": "created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "created_date"
+      },
+      {
+        "name": "last_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "last_edited_user"
+      },
+      {
+        "name": "last_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "last_edited_date"
+      },
+      {
+        "name": "adopted_ordinance",
+        "type": "esriFieldTypeString",
+        "alias": "adopted_ordinance"
+      },
+      {
+        "name": "amend_effective_date",
+        "type": "esriFieldTypeDate",
+        "alias": "amend_effective_date"
+      },
+      {
+        "name": "TUO",
+        "type": "esriFieldTypeString",
+        "alias": "Transportation Utility Overlay"
+      },
+      {
+        "name": "Shape",
+        "type": "esriFieldTypeGeometry",
+        "alias": "Shape"
+      },
+      {
+        "name": "Shape.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape.STArea()"
+      },
+      {
+        "name": "Shape.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape.STLength()"
+      },
+      {
+        "name": "Global_ID",
+        "type": "esriFieldTypeString",
+        "alias": "Global_ID"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "clearwater/clearwater-critical-assets": {
+    "endpoint": "https://services1.arcgis.com/3GsNorcb0Mn5rMt8/arcgis/rest/services/Vulnerability_Assessment/FeatureServer/11",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "EL_DEMRaster_Clip_WM",
+        "type": "esriFieldTypeDouble",
+        "alias": "EL_DEMRaster_Clip_WM"
+      },
+      {
+        "name": "FFH",
+        "type": "esriFieldTypeDouble",
+        "alias": "FFH"
+      },
+      {
+        "name": "IsCritical",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "IsCritical"
+      },
+      {
+        "name": "FACSUBTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "FACSUBTYPE"
+      },
+      {
+        "name": "Asset_Class",
+        "type": "esriFieldTypeString",
+        "alias": "Asset_Class"
+      },
+      {
+        "name": "Asset_Type",
+        "type": "esriFieldTypeString",
+        "alias": "Asset_Type"
+      },
+      {
+        "name": "Asset_Name",
+        "type": "esriFieldTypeString",
+        "alias": "Asset_Name"
+      },
+      {
+        "name": "CityOwnedOrMaintained",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "City Owned Or Maintained"
+      },
+      {
+        "name": "RegSignificant",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Regionally Significant Asset"
+      },
+      {
+        "name": "ResultID1",
+        "type": "esriFieldTypeInteger",
+        "alias": "ResultID1"
+      },
+      {
+        "name": "ID",
+        "type": "esriFieldTypeInteger",
+        "alias": "ID"
+      },
+      {
+        "name": "LonX",
+        "type": "esriFieldTypeDouble",
+        "alias": "Longitude"
+      },
+      {
+        "name": "LatY",
+        "type": "esriFieldTypeDouble",
+        "alias": "Latitude"
+      },
+      {
+        "name": "CTF_RL_2040_IL",
+        "type": "esriFieldTypeString",
+        "alias": "Tidal_Risk_2040_IntLow"
+      },
+      {
+        "name": "CTF_RL_2040_IH",
+        "type": "esriFieldTypeString",
+        "alias": "Tidal_Risk_2040_IntHigh"
+      },
+      {
+        "name": "CTF_RL_2070_IL",
+        "type": "esriFieldTypeString",
+        "alias": "Tidal_Risk_2070_IntLow"
+      },
+      {
+        "name": "CTF_RL_2070_IH",
+        "type": "esriFieldTypeString",
+        "alias": "Tidal_Risk_2070_IntHigh"
+      },
+      {
+        "name": "CTF_RL_2100_IL",
+        "type": "esriFieldTypeString",
+        "alias": "Tidal_Risk_2100_IntLow"
+      },
+      {
+        "name": "CTF_RL_2100_IH",
+        "type": "esriFieldTypeString",
+        "alias": "Tidal_Risk_2100_IntHigh"
+      },
+      {
+        "name": "SSF_RL_100YR_2040_IL",
+        "type": "esriFieldTypeString",
+        "alias": "Surge_Risk_2040_IntLow"
+      },
+      {
+        "name": "SSF_RL_100YR_2040_IH",
+        "type": "esriFieldTypeString",
+        "alias": "Surge_Risk_2040_IntHigh"
+      },
+      {
+        "name": "SSF_RL_100YR_2070_IL",
+        "type": "esriFieldTypeString",
+        "alias": "Surge_Risk_2070_IntLow"
+      },
+      {
+        "name": "SSF_RL_100YR_2070_IH",
+        "type": "esriFieldTypeString",
+        "alias": "Surge_Risk_2070_IntHigh"
+      },
+      {
+        "name": "SSF_RL_100YR_2100_IL",
+        "type": "esriFieldTypeString",
+        "alias": "Surge_Risk_2100_IntLow"
+      },
+      {
+        "name": "SSF_RL_100YR_2100_IH",
+        "type": "esriFieldTypeString",
+        "alias": "Surge_Risk_2100_IntHigh"
+      },
+      {
+        "name": "RIF_RL_100YR_2040",
+        "type": "esriFieldTypeString",
+        "alias": "Rain_Risk_100Yr_2040"
+      },
+      {
+        "name": "RIF_RL_100YR_2070",
+        "type": "esriFieldTypeString",
+        "alias": "Rain_Risk_100Yr_2070"
+      },
+      {
+        "name": "RIF_RL_500YR_2040",
+        "type": "esriFieldTypeString",
+        "alias": "Rain_Risk_500Yr_2040"
+      },
+      {
+        "name": "RIF_RL_500YR_2070",
+        "type": "esriFieldTypeString",
+        "alias": "Rain_Risk_500Yr_2070"
+      },
+      {
+        "name": "RIF_RL_500YR_2100",
+        "type": "esriFieldTypeString",
+        "alias": "Rain_Risk_500Yr_2100"
+      },
+      {
+        "name": "RIF_RL_100YR_2100",
+        "type": "esriFieldTypeString",
+        "alias": "Rain_Risk_100Yr_2100"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 4326,
+      "latestWkid": 4326
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "clearwater/clearwater-sidewalks": {
+    "endpoint": "https://gis.myclearwater.com/arcgis/rest/services/PublicWorksServices/PW_Sup_Sidewalks_NAD83/MapServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "TYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Type"
+      },
+      {
+        "name": "MATERIAL",
+        "type": "esriFieldTypeString",
+        "alias": "MATERIAL"
+      },
+      {
+        "name": "WIDTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "WIDTH"
+      },
+      {
+        "name": "OWNER",
+        "type": "esriFieldTypeString",
+        "alias": "Owner"
+      },
+      {
+        "name": "COMMENTS",
+        "type": "esriFieldTypeString",
+        "alias": "Comments"
+      },
+      {
+        "name": "created_user",
+        "type": "esriFieldTypeString",
+        "alias": "created_user"
+      },
+      {
+        "name": "created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "created_date"
+      },
+      {
+        "name": "last_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "last_edited_user"
+      },
+      {
+        "name": "last_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "last_edited_date"
+      },
+      {
+        "name": "Shape",
+        "type": "esriFieldTypeGeometry",
+        "alias": "Shape"
+      },
+      {
+        "name": "Shape.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape.STLength()"
+      },
+      {
+        "name": "Global_ID",
+        "type": "esriFieldTypeString",
+        "alias": "Global_ID"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "pinellas/pinellas-countywide-plan": {
+    "endpoint": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_Countywide_Plan_Map_Categories_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "PLAN_MAP_CATEGORY",
+        "type": "esriFieldTypeString",
+        "alias": "Plan_Map_Category"
+      },
+      {
+        "name": "PLAN_MAP_SYMBOL",
+        "type": "esriFieldTypeString",
+        "alias": "Plan_Map_Symbol"
+      },
+      {
+        "name": "PREVIOUS_CATEGORY",
+        "type": "esriFieldTypeString",
+        "alias": "Previous_Category"
+      },
+      {
+        "name": "ACRES_1",
+        "type": "esriFieldTypeDouble",
+        "alias": "Acres_1"
+      },
+      {
+        "name": "SHAPE_LENG",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape_Leng"
+      },
+      {
+        "name": "SHAPE_AREA_1",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape_Area_1"
+      },
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID"
+      },
+      {
+        "name": "int_created_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Created User"
+      },
+      {
+        "name": "int_created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Created Date"
+      },
+      {
+        "name": "int_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Edited User"
+      },
+      {
+        "name": "int_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Edited Date"
+      },
+      {
+        "name": "StatePlane_Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "StatePlane_Length"
+      },
+      {
+        "name": "StatePlane_Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "StatePlane_Area"
+      },
+      {
+        "name": "SHAPE__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE__Area"
+      },
+      {
+        "name": "SHAPE__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "pinellas/pinellas-bicycle-facilities": {
+    "endpoint": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_BicycleFacilities_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "FACILITYID",
+        "type": "esriFieldTypeString",
+        "alias": "Facility Identifier"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "Facility Name"
+      },
+      {
+        "name": "FROMRD",
+        "type": "esriFieldTypeString",
+        "alias": "From"
+      },
+      {
+        "name": "TORD",
+        "type": "esriFieldTypeString",
+        "alias": "To"
+      },
+      {
+        "name": "LENGTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "Length/Miles"
+      },
+      {
+        "name": "LOCALNAME",
+        "type": "esriFieldTypeString",
+        "alias": "Local Name"
+      },
+      {
+        "name": "FACSUBCATEGORY",
+        "type": "esriFieldTypeString",
+        "alias": "Facility Subcategory"
+      },
+      {
+        "name": "FACILITYTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Facility Type"
+      },
+      {
+        "name": "WIDTH",
+        "type": "esriFieldTypeString",
+        "alias": "Width/Feet"
+      },
+      {
+        "name": "RESPONSIBLEJURIS",
+        "type": "esriFieldTypeString",
+        "alias": "Responsible Jursidiction"
+      },
+      {
+        "name": "ROADWAYFUNC",
+        "type": "esriFieldTypeString",
+        "alias": "Roadway Functional Class"
+      },
+      {
+        "name": "AADT",
+        "type": "esriFieldTypeDouble",
+        "alias": "AADT"
+      },
+      {
+        "name": "POSTEDSPEED",
+        "type": "esriFieldTypeDouble",
+        "alias": "Posted Speed"
+      },
+      {
+        "name": "ONSTREETPARKING",
+        "type": "esriFieldTypeString",
+        "alias": "On Street Parking"
+      },
+      {
+        "name": "HIN",
+        "type": "esriFieldTypeString",
+        "alias": "On High Injury Network"
+      },
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID"
+      },
+      {
+        "name": "int_created_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Created User"
+      },
+      {
+        "name": "int_created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Created Date"
+      },
+      {
+        "name": "int_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Edited User"
+      },
+      {
+        "name": "int_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Edited Date"
+      },
+      {
+        "name": "NUMLANES",
+        "type": "esriFieldTypeString",
+        "alias": "Number of Lanes"
+      },
+      {
+        "name": "COASTTOCOAST",
+        "type": "esriFieldTypeString",
+        "alias": "Coast to Coast"
+      },
+      {
+        "name": "GULFTOTRAIL",
+        "type": "esriFieldTypeString",
+        "alias": "Gulf to Trail"
+      },
+      {
+        "name": "PINELLASTRAILLOOP",
+        "type": "esriFieldTypeString",
+        "alias": "Pinellas Trail Loop"
+      },
+      {
+        "name": "StatePlane_Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "StatePlane_Length"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "pinellas/pinellas-sidewalks": {
+    "endpoint": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_Sidewalk_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "FACILITYID",
+        "type": "esriFieldTypeString",
+        "alias": "Facility Identifier"
+      },
+      {
+        "name": "SURFTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Surface Type"
+      },
+      {
+        "name": "ADACOMPLY",
+        "type": "esriFieldTypeString",
+        "alias": "ADA Compliant"
+      },
+      {
+        "name": "CONDITION",
+        "type": "esriFieldTypeString",
+        "alias": "Condition"
+      },
+      {
+        "name": "WIDTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "Sidewalk Width"
+      },
+      {
+        "name": "INSTALLDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Install Date"
+      },
+      {
+        "name": "OWNEDBY",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Owned By"
+      },
+      {
+        "name": "MAINTBY",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Managed By"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Last Update Date"
+      },
+      {
+        "name": "LASTEDITOR",
+        "type": "esriFieldTypeString",
+        "alias": "Last Editor"
+      },
+      {
+        "name": "DATASOURCE",
+        "type": "esriFieldTypeString",
+        "alias": "Data Source"
+      },
+      {
+        "name": "MUNICIPALITY",
+        "type": "esriFieldTypeString",
+        "alias": "Municipality"
+      },
+      {
+        "name": "CLASS",
+        "type": "esriFieldTypeString",
+        "alias": "Class"
+      },
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID"
+      },
+      {
+        "name": "int_created_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Created User"
+      },
+      {
+        "name": "int_created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Created Date"
+      },
+      {
+        "name": "int_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Edited User"
+      },
+      {
+        "name": "int_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Edited Date"
+      },
+      {
+        "name": "StatePlane_Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "StatePlane_Length"
+      },
+      {
+        "name": "SHAPE__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "pinellas/pinellas-assisted-housing": {
+    "endpoint": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_AssistedHousing_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "PID",
+        "type": "esriFieldTypeString",
+        "alias": "Parcel Number"
+      },
+      {
+        "name": "DEVELOPMENT",
+        "type": "esriFieldTypeString",
+        "alias": "Development Name"
+      },
+      {
+        "name": "ADDRESS",
+        "type": "esriFieldTypeString",
+        "alias": "Address"
+      },
+      {
+        "name": "CITY",
+        "type": "esriFieldTypeString",
+        "alias": "City"
+      },
+      {
+        "name": "ZIP",
+        "type": "esriFieldTypeString",
+        "alias": "Zip Code"
+      },
+      {
+        "name": "HOUSINGPROGRAM",
+        "type": "esriFieldTypeString",
+        "alias": "Housing Program"
+      },
+      {
+        "name": "TOTALUNITS",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Total Units"
+      },
+      {
+        "name": "ASSISTEDUNITS",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Assisted Units"
+      },
+      {
+        "name": "HUDRDRENTASSISTANCE",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "HUD Rental Assistance"
+      },
+      {
+        "name": "FHFCFUNDED",
+        "type": "esriFieldTypeString",
+        "alias": "FHFC Funded"
+      },
+      {
+        "name": "HUDMULTIFAMILY",
+        "type": "esriFieldTypeString",
+        "alias": "HUD Multi Family"
+      },
+      {
+        "name": "HUDPUBLIC",
+        "type": "esriFieldTypeString",
+        "alias": "HUD Public"
+      },
+      {
+        "name": "RDFUNDED",
+        "type": "esriFieldTypeString",
+        "alias": "RD Funded"
+      },
+      {
+        "name": "LHFAFUNDED",
+        "type": "esriFieldTypeString",
+        "alias": "LHFA Funded"
+      },
+      {
+        "name": "TARGETPOP",
+        "type": "esriFieldTypeString",
+        "alias": "Target Population"
+      },
+      {
+        "name": "OCCUPANCY",
+        "type": "esriFieldTypeString",
+        "alias": "Occupancy Status"
+      },
+      {
+        "name": "AFFORDABILITY",
+        "type": "esriFieldTypeString",
+        "alias": "Affordability Start Date"
+      },
+      {
+        "name": "YEARBUILD",
+        "type": "esriFieldTypeString",
+        "alias": "Year Built"
+      },
+      {
+        "name": "OWNERTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Owner Type"
+      },
+      {
+        "name": "SUBSIDYEXPIRE",
+        "type": "esriFieldTypeString",
+        "alias": "Overall year of subsidy expiration"
+      },
+      {
+        "name": "NUM0BR",
+        "type": "esriFieldTypeString",
+        "alias": "Number of 0 Bedrooms"
+      },
+      {
+        "name": "NUM1BR",
+        "type": "esriFieldTypeString",
+        "alias": "Number of 1 Bedrooms"
+      },
+      {
+        "name": "NUM2BR",
+        "type": "esriFieldTypeString",
+        "alias": "Number of 2 Bedrooms"
+      },
+      {
+        "name": "NUM3BR",
+        "type": "esriFieldTypeString",
+        "alias": "Number of 3 Bedrooms"
+      },
+      {
+        "name": "NUM4BR",
+        "type": "esriFieldTypeString",
+        "alias": "Number of 4 Bedrooms"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "int_created_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Created User"
+      },
+      {
+        "name": "int_created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Created Date"
+      },
+      {
+        "name": "int_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "Internal Edited User"
+      },
+      {
+        "name": "int_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Edited Date"
+      },
+      {
+        "name": "PHONENUM",
+        "type": "esriFieldTypeString",
+        "alias": "Phone Number"
+      },
+      {
+        "name": "StatePlane_Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "StatePlane_Length"
+      },
+      {
+        "name": "StatePlane_Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "StatePlane_Area"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "hillsborough/hillsborough-hart-routes": {
+    "endpoint": "https://services.arcgis.com/apTfC6SUmnNfnxuF/ArcGIS/rest/services/HART_Bus_Stops_and_Routes/FeatureServer/21",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "FullName",
+        "type": "esriFieldTypeString",
+        "alias": "Full Name"
+      },
+      {
+        "name": "DirectionID",
+        "type": "esriFieldTypeString",
+        "alias": "Direction ID"
+      },
+      {
+        "name": "DirectionType",
+        "type": "esriFieldTypeString",
+        "alias": "Direction Type"
+      },
+      {
+        "name": "pattern",
+        "type": "esriFieldTypeString",
+        "alias": "Pattern"
+      },
+      {
+        "name": "LineID",
+        "type": "esriFieldTypeString",
+        "alias": "Line ID"
+      },
+      {
+        "name": "LineName",
+        "type": "esriFieldTypeString",
+        "alias": "Line Name"
+      },
+      {
+        "name": "Color",
+        "type": "esriFieldTypeString",
+        "alias": "Color"
+      },
+      {
+        "name": "MapID",
+        "type": "esriFieldTypeString",
+        "alias": "Map ID"
+      },
+      {
+        "name": "MapSource",
+        "type": "esriFieldTypeString",
+        "alias": "Source"
+      },
+      {
+        "name": "url",
+        "type": "esriFieldTypeString",
+        "alias": "URL"
+      },
+      {
+        "name": "Miles",
+        "type": "esriFieldTypeDouble",
+        "alias": "Miles"
+      },
+      {
+        "name": "VehicleType",
+        "type": "esriFieldTypeString",
+        "alias": "Vehicle Type"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "hillsborough/hillsborough-fema-flood-zones": {
+    "endpoint": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/FloodZone_FEMA/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "DFIRM_ID",
+        "type": "esriFieldTypeString",
+        "alias": "DFIRM_ID"
+      },
+      {
+        "name": "VERSION_ID",
+        "type": "esriFieldTypeString",
+        "alias": "VERSION_ID"
+      },
+      {
+        "name": "FLD_AR_ID",
+        "type": "esriFieldTypeString",
+        "alias": "FLD_AR_ID"
+      },
+      {
+        "name": "STUDY_TYP",
+        "type": "esriFieldTypeString",
+        "alias": "STUDY_TYP"
+      },
+      {
+        "name": "FLD_ZONE",
+        "type": "esriFieldTypeString",
+        "alias": "FLD_ZONE"
+      },
+      {
+        "name": "ZONE_SUBTY",
+        "type": "esriFieldTypeString",
+        "alias": "ZONE_SUBTY"
+      },
+      {
+        "name": "SFHA_TF",
+        "type": "esriFieldTypeString",
+        "alias": "SFHA_TF"
+      },
+      {
+        "name": "STATIC_BFE",
+        "type": "esriFieldTypeDouble",
+        "alias": "STATIC_BFE"
+      },
+      {
+        "name": "V_DATUM",
+        "type": "esriFieldTypeString",
+        "alias": "V_DATUM"
+      },
+      {
+        "name": "DEPTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "DEPTH"
+      },
+      {
+        "name": "LEN_UNIT",
+        "type": "esriFieldTypeString",
+        "alias": "LEN_UNIT"
+      },
+      {
+        "name": "VELOCITY",
+        "type": "esriFieldTypeDouble",
+        "alias": "VELOCITY"
+      },
+      {
+        "name": "VEL_UNIT",
+        "type": "esriFieldTypeString",
+        "alias": "VEL_UNIT"
+      },
+      {
+        "name": "AR_REVERT",
+        "type": "esriFieldTypeString",
+        "alias": "AR_REVERT"
+      },
+      {
+        "name": "AR_SUBTRV",
+        "type": "esriFieldTypeString",
+        "alias": "AR_SUBTRV"
+      },
+      {
+        "name": "BFE_REVERT",
+        "type": "esriFieldTypeDouble",
+        "alias": "BFE_REVERT"
+      },
+      {
+        "name": "DEP_REVERT",
+        "type": "esriFieldTypeDouble",
+        "alias": "DEP_REVERT"
+      },
+      {
+        "name": "DUAL_ZONE",
+        "type": "esriFieldTypeString",
+        "alias": "DUAL_ZONE"
+      },
+      {
+        "name": "SOURCE_CIT",
+        "type": "esriFieldTypeString",
+        "alias": "SOURCE_CIT"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "hillsborough/hillsborough-zoning": {
+    "endpoint": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Zoning/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "NZONE",
+        "type": "esriFieldTypeString",
+        "alias": "Zone"
+      },
+      {
+        "name": "NZONE_DESC",
+        "type": "esriFieldTypeString",
+        "alias": "Zone Descrip."
+      },
+      {
+        "name": "RZ",
+        "type": "esriFieldTypeString",
+        "alias": "RZ"
+      },
+      {
+        "name": "ACRES",
+        "type": "esriFieldTypeDouble",
+        "alias": "ACRES"
+      },
+      {
+        "name": "CATEGORY",
+        "type": "esriFieldTypeString",
+        "alias": "CATEGORY"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "created_user",
+        "type": "esriFieldTypeString",
+        "alias": "created_user"
+      },
+      {
+        "name": "created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "created_date"
+      },
+      {
+        "name": "last_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "last_edited_user"
+      },
+      {
+        "name": "last_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "last_edited_date"
+      },
+      {
+        "name": "LandDevCode",
+        "type": "esriFieldTypeString",
+        "alias": "Land Development Code"
+      },
+      {
+        "name": "Status",
+        "type": "esriFieldTypeString",
+        "alias": "Status"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "hillsborough/hillsborough-water-quality": {
+    "endpoint": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/EPC_WQM_DATA/FeatureServer/0",
+    "fields": [
+      {
+        "name": "StationNumber",
+        "type": "esriFieldTypeString",
+        "alias": "StationNumber"
+      },
+      {
+        "name": "Class",
+        "type": "esriFieldTypeString",
+        "alias": "Class"
+      },
+      {
+        "name": "PrimaryStationType",
+        "type": "esriFieldTypeString",
+        "alias": "PrimaryStationType"
+      },
+      {
+        "name": "Latitude",
+        "type": "esriFieldTypeDouble",
+        "alias": "Latitude"
+      },
+      {
+        "name": "Longitude",
+        "type": "esriFieldTypeDouble",
+        "alias": "Longitude"
+      },
+      {
+        "name": "YearMonth",
+        "type": "esriFieldTypeString",
+        "alias": "YearMonth"
+      },
+      {
+        "name": "SampleTime",
+        "type": "esriFieldTypeDate",
+        "alias": "SampleTime"
+      },
+      {
+        "name": "AreaName",
+        "type": "esriFieldTypeString",
+        "alias": "AreaName"
+      },
+      {
+        "name": "ProgramName",
+        "type": "esriFieldTypeString",
+        "alias": "ProgramName"
+      },
+      {
+        "name": "RunName",
+        "type": "esriFieldTypeString",
+        "alias": "RunName"
+      },
+      {
+        "name": "TotalDepth",
+        "type": "esriFieldTypeDouble",
+        "alias": "TotalDepth"
+      },
+      {
+        "name": "SampleDepth",
+        "type": "esriFieldTypeDouble",
+        "alias": "SampleDepth"
+      },
+      {
+        "name": "AirTemp",
+        "type": "esriFieldTypeString",
+        "alias": "AirTemp"
+      },
+      {
+        "name": "SecchiDepth",
+        "type": "esriFieldTypeDouble",
+        "alias": "SecchiDepth"
+      },
+      {
+        "name": "Secchi_Q",
+        "type": "esriFieldTypeString",
+        "alias": "Secchi_Q"
+      },
+      {
+        "name": "Secchi",
+        "type": "esriFieldTypeString",
+        "alias": "Secchi"
+      },
+      {
+        "name": "Notes",
+        "type": "esriFieldTypeString",
+        "alias": "Notes"
+      },
+      {
+        "name": "Depth_T",
+        "type": "esriFieldTypeDouble",
+        "alias": "Depth_T"
+      },
+      {
+        "name": "Depth_M",
+        "type": "esriFieldTypeDouble",
+        "alias": "Depth_M"
+      },
+      {
+        "name": "Depth_B",
+        "type": "esriFieldTypeDouble",
+        "alias": "Depth_B"
+      },
+      {
+        "name": "TempWater_T",
+        "type": "esriFieldTypeDouble",
+        "alias": "TempWater_T"
+      },
+      {
+        "name": "TempWater_M",
+        "type": "esriFieldTypeDouble",
+        "alias": "TempWater_M"
+      },
+      {
+        "name": "TempWater_B",
+        "type": "esriFieldTypeDouble",
+        "alias": "TempWater_B"
+      },
+      {
+        "name": "DO_T",
+        "type": "esriFieldTypeDouble",
+        "alias": "DO_T"
+      },
+      {
+        "name": "DO_M",
+        "type": "esriFieldTypeDouble",
+        "alias": "DO_M"
+      },
+      {
+        "name": "DO_B",
+        "type": "esriFieldTypeDouble",
+        "alias": "DO_B"
+      },
+      {
+        "name": "DOp_T",
+        "type": "esriFieldTypeDouble",
+        "alias": "DOp_T"
+      },
+      {
+        "name": "DOp_M",
+        "type": "esriFieldTypeDouble",
+        "alias": "DOp_M"
+      },
+      {
+        "name": "DOp_B",
+        "type": "esriFieldTypeDouble",
+        "alias": "DOp_B"
+      },
+      {
+        "name": "Cond_T",
+        "type": "esriFieldTypeDouble",
+        "alias": "Cond_T"
+      },
+      {
+        "name": "Cond_M",
+        "type": "esriFieldTypeDouble",
+        "alias": "Cond_M"
+      },
+      {
+        "name": "Cond_B",
+        "type": "esriFieldTypeDouble",
+        "alias": "Cond_B"
+      },
+      {
+        "name": "pH_T",
+        "type": "esriFieldTypeDouble",
+        "alias": "pH_T"
+      },
+      {
+        "name": "pH_M",
+        "type": "esriFieldTypeDouble",
+        "alias": "pH_M"
+      },
+      {
+        "name": "pH_B",
+        "type": "esriFieldTypeDouble",
+        "alias": "pH_B"
+      },
+      {
+        "name": "Sal_T",
+        "type": "esriFieldTypeDouble",
+        "alias": "Sal_T"
+      },
+      {
+        "name": "Sal_M",
+        "type": "esriFieldTypeDouble",
+        "alias": "Sal_M"
+      },
+      {
+        "name": "Sal_B",
+        "type": "esriFieldTypeDouble",
+        "alias": "Sal_B"
+      },
+      {
+        "name": "E_Coliform",
+        "type": "esriFieldTypeString",
+        "alias": "E_Coliform"
+      },
+      {
+        "name": "Enterococci",
+        "type": "esriFieldTypeString",
+        "alias": "Enterococci"
+      },
+      {
+        "name": "Fecal_Coliform",
+        "type": "esriFieldTypeString",
+        "alias": "Fecal_Coliform"
+      },
+      {
+        "name": "Ammonia",
+        "type": "esriFieldTypeDouble",
+        "alias": "Ammonia"
+      },
+      {
+        "name": "Kjeldahl_Nitrogen",
+        "type": "esriFieldTypeDouble",
+        "alias": "Kjeldahl_Nitrogen"
+      },
+      {
+        "name": "Nitrates_Nitrites",
+        "type": "esriFieldTypeDouble",
+        "alias": "Nitrates_Nitrites"
+      },
+      {
+        "name": "Organic_Nitrogen",
+        "type": "esriFieldTypeDouble",
+        "alias": "Organic_Nitrogen"
+      },
+      {
+        "name": "Ortho_Phosphates",
+        "type": "esriFieldTypeDouble",
+        "alias": "Ortho_Phosphates"
+      },
+      {
+        "name": "Silica",
+        "type": "esriFieldTypeString",
+        "alias": "Silica"
+      },
+      {
+        "name": "Total_Nitrogen",
+        "type": "esriFieldTypeDouble",
+        "alias": "Total_Nitrogen"
+      },
+      {
+        "name": "Total_Phosphorus",
+        "type": "esriFieldTypeDouble",
+        "alias": "Total_Phosphorus"
+      },
+      {
+        "name": "Chloride",
+        "type": "esriFieldTypeString",
+        "alias": "Chloride"
+      },
+      {
+        "name": "Chlorophyll_a",
+        "type": "esriFieldTypeDouble",
+        "alias": "Chlorophyll_a"
+      },
+      {
+        "name": "Chlorophyll_b",
+        "type": "esriFieldTypeDouble",
+        "alias": "Chlorophyll_b"
+      },
+      {
+        "name": "Chlorophyll_c",
+        "type": "esriFieldTypeDouble",
+        "alias": "Chlorophyll_c"
+      },
+      {
+        "name": "Chlorophyll_t",
+        "type": "esriFieldTypeDouble",
+        "alias": "Chlorophyll_t"
+      },
+      {
+        "name": "Chlorophylla_Corr",
+        "type": "esriFieldTypeString",
+        "alias": "Chlorophylla_Corr"
+      },
+      {
+        "name": "Chlorophyll_pheo",
+        "type": "esriFieldTypeString",
+        "alias": "Chlorophyll_pheo"
+      },
+      {
+        "name": "Fluoride",
+        "type": "esriFieldTypeString",
+        "alias": "Fluoride"
+      },
+      {
+        "name": "Sulfates_modified_",
+        "type": "esriFieldTypeString",
+        "alias": "Sulfates_modified_"
+      },
+      {
+        "name": "Total_Dissolved_Solids",
+        "type": "esriFieldTypeString",
+        "alias": "Total_Dissolved_Solids"
+      },
+      {
+        "name": "Turbidity",
+        "type": "esriFieldTypeDouble",
+        "alias": "Turbidity"
+      },
+      {
+        "name": "Color_345_F_45",
+        "type": "esriFieldTypeString",
+        "alias": "Color_345_F_45"
+      },
+      {
+        "name": "Arsenic",
+        "type": "esriFieldTypeString",
+        "alias": "Arsenic"
+      },
+      {
+        "name": "Cadmium",
+        "type": "esriFieldTypeString",
+        "alias": "Cadmium"
+      },
+      {
+        "name": "Calcium",
+        "type": "esriFieldTypeString",
+        "alias": "Calcium"
+      },
+      {
+        "name": "Chromium",
+        "type": "esriFieldTypeString",
+        "alias": "Chromium"
+      },
+      {
+        "name": "Copper",
+        "type": "esriFieldTypeString",
+        "alias": "Copper"
+      },
+      {
+        "name": "Iron",
+        "type": "esriFieldTypeString",
+        "alias": "Iron"
+      },
+      {
+        "name": "Lead",
+        "type": "esriFieldTypeString",
+        "alias": "Lead"
+      },
+      {
+        "name": "Magnesium",
+        "type": "esriFieldTypeString",
+        "alias": "Magnesium"
+      },
+      {
+        "name": "Manganese",
+        "type": "esriFieldTypeString",
+        "alias": "Manganese"
+      },
+      {
+        "name": "Potassium",
+        "type": "esriFieldTypeString",
+        "alias": "Potassium"
+      },
+      {
+        "name": "Sodium",
+        "type": "esriFieldTypeString",
+        "alias": "Sodium"
+      },
+      {
+        "name": "Zinc",
+        "type": "esriFieldTypeString",
+        "alias": "Zinc"
+      },
+      {
+        "name": "TOC_L",
+        "type": "esriFieldTypeDouble",
+        "alias": "TOC_L"
+      },
+      {
+        "name": "ID",
+        "type": "esriFieldTypeOID",
+        "alias": "ID"
+      }
+    ],
+    "geometry_type": "esriGeometryPoint",
+    "spatial_reference": {
+      "wkid": 103023,
+      "latestWkid": 6443
+    },
+    "object_id_field": "ID"
+  },
+  "hillsborough/hillsborough-land-cover-2023": {
+    "endpoint": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/LandUseLandCover_SWFWMD2023/FeatureServer/64",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "FLUCCSCODE",
+        "type": "esriFieldTypeInteger",
+        "alias": "FLUCCSCODE"
+      },
+      {
+        "name": "FLUCSDESC",
+        "type": "esriFieldTypeString",
+        "alias": "FLUCSDESC"
+      },
+      {
+        "name": "LEV1",
+        "type": "esriFieldTypeInteger",
+        "alias": "LEV1"
+      },
+      {
+        "name": "LEV2",
+        "type": "esriFieldTypeInteger",
+        "alias": "LEV2"
+      },
+      {
+        "name": "LEV3",
+        "type": "esriFieldTypeInteger",
+        "alias": "LEV3"
+      },
+      {
+        "name": "LEV4",
+        "type": "esriFieldTypeInteger",
+        "alias": "LEV4"
+      },
+      {
+        "name": "DATESTAMP",
+        "type": "esriFieldTypeDate",
+        "alias": "DATESTAMP"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa-bay/tbrpc-regional-boundary": {
+    "endpoint": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/tbrpc_regional_boundary/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID_1"
+      },
+      {
+        "name": "Name",
+        "type": "esriFieldTypeString",
+        "alias": "Name"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkt": "PROJCS[\"NAD_1983_HARN_StatePlane_Florida_West_FIPS_0902_Feet\",GEOGCS[\"GCS_North_American_1983_HARN\",DATUM[\"D_North_American_1983_HARN\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",656166.667],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-82.0],PARAMETER[\"Scale_Factor\",0.999941177],PARAMETER[\"Latitude_Of_Origin\",24.3333333333333],UNIT[\"US survey foot\",0.3048006096012192]]",
+      "wkt2": "PROJCS[\"NAD_1983_HARN_StatePlane_Florida_West_FIPS_0902_Feet\",GEOGCS[\"GCS_North_American_1983_HARN\",DATUM[\"D_North_American_1983_HARN\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",656166.667],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-82.0],PARAMETER[\"Scale_Factor\",0.999941177],PARAMETER[\"Latitude_Of_Origin\",24.3333333333333],UNIT[\"US survey foot\",0.3048006096012192]]"
     },
     "object_id_field": "OBJECTID"
   }

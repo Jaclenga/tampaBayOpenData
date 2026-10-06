@@ -1,5 +1,5 @@
 test_that("invalid transport statuses fail with source context before body parsing", {
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   url <- paste0(entry$service_url, "/", entry$layer_id)
   for (status in list(NULL, NA_real_, NaN, Inf, "200", TRUE, c(200, 201))) {
     local_mocked_bindings(arcgis_http = function(...) {
@@ -107,7 +107,7 @@ test_that("object-ID manifests require JSON arrays, including for zero matches",
         payload
       })
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-    error <- tryCatch(get_dataset("construction-permits"), error = identity)
+    error <- tryCatch(tbod_get_dataset("construction-permits"), error = identity)
     expect_s3_class(error, "tampa_integrity_error")
     expect_match(conditionMessage(error), "malformed or duplicate object IDs")
     expect_length(fixture_queries(transport, "features"), 0L)
@@ -115,9 +115,9 @@ test_that("object-ID manifests require JSON arrays, including for zero matches",
 
   empty <- fixture_transport(features = list())
   local_mocked_bindings(arcgis_http = empty$http, .package = "tampaBayOpenData")
-  result <- get_dataset("construction-permits", fields = "OBJECTID")
+  result <- tbod_get_dataset("construction-permits", fields = "OBJECTID")
   expect_identical(result$OBJECTID, integer())
-  expect_true(dataset_provenance(result)$complete)
+  expect_true(tbod_provenance(result)$complete)
   expect_length(fixture_queries(empty, "features"), 0L)
 })
 
@@ -128,7 +128,7 @@ test_that("sparse object IDs cross the 32 bit boundary without rounding or omiss
   transport <- fixture_transport(features = features)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
 
-  result <- get_dataset("construction-permits", fields = c("OBJECTID", "RECORD_ID"),
+  result <- tbod_get_dataset("construction-permits", fields = c("OBJECTID", "RECORD_ID"),
                         page_size = 2)
   expect_identical(result$OBJECTID, sort(ids))
   expect_identical(result$RECORD_ID, c("synthetic-2", "synthetic-4",
@@ -136,7 +136,7 @@ test_that("sparse object IDs cross the 32 bit boundary without rounding or omiss
   batches <- vapply(fixture_queries(transport, "features"),
                     function(x) x$params$objectIds, character(1))
   expect_identical(batches, c("-3,0", "2147483648,2147483649"))
-  expect_true(dataset_provenance(result)$complete)
+  expect_true(tbod_provenance(result)$complete)
 })
 
 test_that("page and limit boundaries preserve exact counts in both retrieval modes", {
@@ -145,12 +145,12 @@ test_that("page and limit boundaries preserve exact counts in both retrieval mod
       transport <- fixture_transport()
       local_mocked_bindings(arcgis_http = transport$http,
                             .package = "tampaBayOpenData")
-      result <- get_dataset("construction-permits", order_by = order_by,
+      result <- tbod_get_dataset("construction-permits", order_by = order_by,
                             page_size = 3, limit = limit)
       target <- min(limit, 5)
       expected <- if (is.null(order_by)) seq_len(target) else (5:1)[seq_len(target)]
       expect_identical(result$OBJECTID, expected)
-      provenance <- dataset_provenance(result)
+      provenance <- tbod_provenance(result)
       expect_equal(provenance$matched_rows, 5)
       expect_equal(provenance$returned_rows, target)
       expect_identical(provenance$complete, target == 5)

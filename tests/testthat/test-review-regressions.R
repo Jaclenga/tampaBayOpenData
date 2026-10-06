@@ -118,7 +118,7 @@ test_that("ordering rejects empty strings and empty comma-separated terms", {
 test_that("a later page cannot confirm an earlier projected page's missing CRS", {
   skip_if_not_installed("sf")
   local_mocked_bindings(arcgis_http = review_transport())
-  expect_error(get_arcgis_layer(review_layer_url, fields = "VALUE",
+  expect_error(tbod_get_arcgis_layer(review_layer_url, fields = "VALUE",
                            spatial = TRUE, out_sr = 4326, page_size = 1),
                "projected spatial page did not identify", class = "tampa_spatial_error")
 })
@@ -126,7 +126,7 @@ test_that("a later page cannot confirm an earlier projected page's missing CRS",
 test_that("native metadata fallback cannot hide a CRS change on a later page", {
   skip_if_not_installed("sf")
   local_mocked_bindings(arcgis_http = review_transport())
-  expect_error(get_arcgis_layer(review_layer_url, fields = "VALUE",
+  expect_error(tbod_get_arcgis_layer(review_layer_url, fields = "VALUE",
                            spatial = TRUE, page_size = 1),
                "CRS changed between pages", class = "tampa_integrity_error")
 })
@@ -134,13 +134,13 @@ test_that("native metadata fallback cannot hide a CRS change on a later page", {
 test_that("empty projected results retain the requested CRS in provenance", {
   skip_if_not_installed("sf")
   local_mocked_bindings(arcgis_http = review_transport())
-  result <- get_arcgis_layer(review_layer_url, fields = "VALUE", spatial = TRUE,
+  result <- tbod_get_arcgis_layer(review_layer_url, fields = "VALUE", spatial = TRUE,
                         out_sr = 4326, limit = 0)
   expect_s3_class(result, "sf")
   expect_identical(nrow(result), 0L)
   expect_identical(result$VALUE, character())
   expect_equal(sf::st_crs(result)$epsg, 4326L)
-  provenance <- dataset_provenance(result)
+  provenance <- tbod_provenance(result)
   expect_equal(provenance$spatial_reference$wkid, 4326L)
   expect_equal(provenance$matched_rows, 2L)
   expect_identical(provenance$complete, FALSE)

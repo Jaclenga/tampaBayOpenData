@@ -342,10 +342,20 @@ tbod_check_schema <- function(id, jurisdiction = NULL, expected = NULL,
   dataset <- .schema_descriptor(id, jurisdiction, missing(jurisdiction), timeout)
   expected <- expected %||% dataset$expected_schema
   if (!is.null(expected)) {
+    if (!is.list(expected)) {
+      .abort("An expected schema is missing required metadata.",
+             subclass = "tampa_input_error")
+    }
     # tbod_schema() returns a field tibble; accept it as a saved expectation.
     if (inherits(expected$fields, "data.frame")) {
+      required <- c("name", "type", "alias")
+      if (!all(required %in% names(expected$fields)) ||
+          anyDuplicated(names(expected$fields))) {
+        .abort("An expected schema field table needs unique name, type, and alias columns.",
+               subclass = "tampa_input_error")
+      }
       expected$fields <- lapply(seq_len(nrow(expected$fields)), function(i) {
-        as.list(expected$fields[i, c("name", "type", "alias"), drop = FALSE])
+        as.list(expected$fields[i, required, drop = FALSE])
       })
     }
     .validate_expected_schema(expected)

@@ -10,7 +10,7 @@ test_that("declared source types preserve strings and produce typed missing valu
   features[[3L]]$attributes$LASTUPDATE <- NULL
   transport <- fixture_transport(features = features, metadata = fixture_metadata(extra = TRUE))
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_arcgis_layer(parsing_layer_url)
+  result <- tbod_get_arcgis_layer(parsing_layer_url)
   expect_identical(result$RECORD_ID, c("", NA_character_, "synthetic-3"))
   expect_identical(result$PROJECTSTATUS[1L], " source spelling ")
   expect_identical(result$NEWCONSTRUCTIONSF, c(101L, NA_integer_, 103L))
@@ -28,12 +28,12 @@ test_that("epoch milliseconds become UTC instants without a second local-zone sh
   for (i in seq_along(features)) features[[i]]$attributes$LASTUPDATE <- epochs[i]
   transport <- fixture_transport(features = features)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("construction-permits", fields = "LASTUPDATE")
+  result <- tbod_get_dataset("construction-permits", fields = "LASTUPDATE")
   expect_identical(attr(result$LASTUPDATE, "tzone"), "UTC")
   expect_equal(as.numeric(result$LASTUPDATE), epochs / 1000)
   expect_identical(format(result$LASTUPDATE[2L], tz = "UTC", usetz = FALSE),
                    "2019-05-28 04:00:00")
-  expect_identical(dataset_provenance(result)$date_fields_time_reference$timeZoneIANA,
+  expect_identical(tbod_provenance(result)$date_fields_time_reference$timeZoneIANA,
                    "America/New_York")
 })
 
@@ -44,20 +44,20 @@ test_that("unknown date zones remain raw with one clear warning", {
     within(fixture_metadata(extra = TRUE), dateFieldsTimeReference <- list(timeZone = "unspecified")))) {
     transport <- fixture_transport(metadata = metadata)
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-    expect_warning(result <- get_arcgis_layer(parsing_layer_url,
+    expect_warning(result <- tbod_get_arcgis_layer(parsing_layer_url,
       fields = c("LASTUPDATE", "CREATEDDATE", "TENTATIVEHEARING")),
       "unknown date time zone.*raw epoch milliseconds")
     expect_type(result$LASTUPDATE, "double")
     expect_identical(result$LASTUPDATE, as.numeric(1:5) * 1000)
     expect_identical(result$CREATEDDATE, rep(NA_real_, 5L))
     expect_identical(result$TENTATIVEHEARING, rep("09/29/2026", 5L))
-    expect_true(dataset_provenance(result)$dates_in_unknown_timezone)
+    expect_true(tbod_provenance(result)$dates_in_unknown_timezone)
   }
   metadata <- fixture_metadata()
   metadata$datesInUnknownTimezone <- TRUE
   transport <- fixture_transport(metadata = metadata)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  expect_no_warning(get_dataset("construction-permits", fields = "RECORD_ID"))
+  expect_no_warning(tbod_get_dataset("construction-permits", fields = "RECORD_ID"))
 })
 
 test_that("editor tracking dates stay UTC when other date zones are unknown", {

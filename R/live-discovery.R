@@ -3,7 +3,7 @@
 # publication and contains only public items.
 .discovery_portal_keys <- function(portals, registry = .portal_registry()) {
   message <- paste0("`portals` must contain unique configured publisher names: ",
-                     paste(c(names(registry), "all"), collapse = ", "), ". Use list_portals() to inspect them.")
+                     paste(c(names(registry), "all"), collapse = ", "), ". Use tbod_list_portals() to inspect them.")
   if (!is.character(portals) || !length(portals) || anyNA(portals) ||
       any(!nzchar(portals)) || anyDuplicated(portals) ||
       (!identical(portals, "all") && any(!portals %in% names(registry)))) {
@@ -131,6 +131,10 @@
   if (is.null(parts$layer_id)) {
     key <- parts$service_url
     service <- .discovery_cached_request(key, timeout, service_cache)
+    if (!is.list(service)) {
+      .abort("Service metadata is malformed.", url = key,
+             subclass = "tampa_response_error")
+    }
     if (is.null(service$layers) && is.null(service$tables)) {
       .abort("Service does not contain layer or table arrays.", url = key,
              subclass = "tampa_response_error")
@@ -148,7 +152,7 @@
     # incorrectly add unrelated layers to the search result.
     layer <- .discovery_cached_request(
       paste0(parts$service_url, "/", parts$layer_id), timeout, service_cache)
-    if (!is.numeric(layer$id) || length(layer$id) != 1L ||
+    if (!is.list(layer) || !is.numeric(layer$id) || length(layer$id) != 1L ||
         is.na(layer$id) || layer$id != parts$layer_id) {
       .abort("Direct layer item has an invalid or changed layer ID.",
              url = paste0(parts$service_url, "/", parts$layer_id),
@@ -344,7 +348,7 @@
   result <- .attach_discovery_metadata(result, .discovery_metadata(
     issues, failed_portals, scanned_items, truncated_portals))
   if (length(failed_portals)) {
-    warning(paste0("ArcGIS discovery returned partial results; portal(s) failed: ",
+    warning(paste0("ArcGIS discovery returned partial results; failed portals: ",
                    paste(failed_portals, collapse = ", "),
                    ". See the returned table's `discovery_issues` attribute."),
             call. = FALSE)
@@ -438,19 +442,25 @@
   issues <- character()
   for (i in seq_len(count)) {
     candidate <- candidates[[i]]
-    id <- candidate$id
-    if (!is.numeric(id) || length(id) != 1L || is.na(id) ||
-        !is.finite(id) || id < 0 || id != floor(id) ||
-        id > .Machine$integer.max) {
+    if (!is.list(candidate) || !is.numeric(candidate$id) ||
+        length(candidate$id) != 1L || is.na(candidate$id) ||
+        !is.finite(candidate$id) || candidate$id < 0 ||
+        candidate$id != floor(candidate$id) ||
+        candidate$id > .Machine$integer.max) {
       issues <- c(issues, paste0("Layer entry ", i, " has an invalid ID."))
       next
     }
+    id <- candidate$id
     endpoint <- paste0(parts$service_url, "/", as.integer(id))
     layer <- tryCatch(if (is.null(parts$layer_id))
       arcgis_request(endpoint, timeout = timeout) else candidate,
       error = .discovery_error)
     if (inherits(layer, "error")) {
       issues <- c(issues, paste0("Layer ", id, ": ", conditionMessage(layer)))
+      next
+    }
+    if (!is.list(layer)) {
+      issues <- c(issues, paste0("Layer ", id, " returned malformed metadata."))
       next
     }
     if (!is.null(layer$id) &&

@@ -14,9 +14,12 @@ tbod_schema(
 )
 }
 \arguments{
-\item{id}{Checked dataset ID, discovered descriptor, stable ArcGIS item ID, or public HTTPS ArcGIS layer URL.}
+\item{id}{Checked dataset ID, discovered descriptor, stable ArcGIS item ID,
+or public HTTPS ArcGIS layer URL.}
 
-\item{jurisdiction}{Optional checked-catalog jurisdiction. \code{NULL} resolves a unique bundled ID and preserves a discovery row's source. Direct URLs do not accept a jurisdiction override.}
+\item{jurisdiction}{Optional checked-catalog jurisdiction. \code{NULL} resolves a
+unique bundled ID and preserves a discovery row's source. Direct URLs do
+not accept a jurisdiction override.}
 
 \item{refresh}{Request current layer metadata when TRUE.}
 
@@ -24,11 +27,18 @@ tbod_schema(
 
 \item{total_timeout}{Overall operation budget in seconds; \code{Inf} disables it.}
 
-\item{portal}{Optional public ArcGIS sharing REST portal URL for a stable \code{arcgis:<item-id>:<layer-id>} identifier. It does not apply to other IDs.}
+\item{portal}{Optional public ArcGIS sharing REST portal URL for a stable
+\verb{arcgis:<item-id>:<layer-id>} identifier. It does not apply to other IDs.}
 }
 \value{
-A list with endpoint, a tibble of field names, types and aliases, geometry type, spatial reference, object-ID field, and dataset ID.
+A list with endpoint, a tibble of field names, types and aliases,
+geometry type, spatial reference, object-ID field, and dataset ID.
 }
 \description{
-For a checked dataset, the default returns the bundled schema snapshot without a network request. \code{refresh = TRUE} requests current ArcGIS layer metadata. A direct ArcGIS layer URL or discovered descriptor has no bundled expected schema and requires \code{refresh = TRUE}. Call \code{tbod_check_schema()} to compare a current service against its expected schema. A stable ArcGIS item ID from an Enterprise portal can be resolved with \code{portal}.
+For a checked dataset, the default returns the bundled schema snapshot
+without a network request. \code{refresh = TRUE} requests current ArcGIS layer
+metadata. A direct ArcGIS layer URL or discovered descriptor has no bundled
+expected schema and requires \code{refresh = TRUE}. Call \code{\link[=tbod_check_schema]{tbod_check_schema()}} to
+compare a current service against its expected schema. A stable ArcGIS item
+ID from an Enterprise portal can be resolved with \code{portal}.
 }

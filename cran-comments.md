@@ -1,27 +1,26 @@
+## Submission status
+
+This is a new submission. `tampaBayOpenData` has not previously been on CRAN
+and has no downstream CRAN dependencies. Version 0.1.0 currently exports 15
+`tbod_*` functions and bundles 52 checked ArcGIS layers. Earlier unprefixed
+development aliases were removed before the first CRAN release.
+
 ## Test environments
 
-* Windows 11 x64, R 4.6.1 (local, 2026-10-04).
-* GitHub Actions matrix: Ubuntu R release, devel, and oldrel-1; Windows R
-  release; macOS R release. The latest completed five-job run before this
-  submission revision passed on
+* Windows 11 x64, R 4.5.1 (local, 2026-10-06).
+* The latest completed five-platform GitHub Actions R check, on an earlier
+  source revision, passed on
   [2026-10-04](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/37223299725).
 
 ## R CMD check results
 
-The 2026-10-04 local `R CMD check --as-cran` ran on a fresh source archive,
-including PDF and HTML manuals and rebuilt vignettes: **0 errors, 0 warnings,
-1 note**. The note is `New submission`; this package has not previously been
-on CRAN. Its offline tests passed 3,861 assertions with 18 expected live-test
-skips.
+The 2026-10-06 local `R CMD check --no-manual` ran on a fresh source archive:
+**0 errors, 0 warnings, 0 notes**. It built and checked the vignettes, ran
+examples, and passed 5,541 offline test expectations with 18 expected opt-in
+live-test skips.
 
-## Additional checks
-
-The opt-in live suite on 2026-10-04 exercised all six configured publishers
-and all 35 checked layers: 1,489 passing assertions, no failures or skips, and
-one GDAL performance warning while processing a large source polygon.
-
-The latest completed rOpenSci `pkgcheck` Action reported 95% offline coverage,
-examples for all 12 exported functions, and four HTML vignettes. Routine
-package checks use offline fixtures and set `TAMPA_OPEN_DATA_LIVE=false`;
-live integration tests run separately. There are no downstream CRAN
-dependencies for this initial release.
+An earlier source revision passed a local 2026-10-04
+`R CMD check --as-cran` including PDF and HTML manuals: 0 errors, 0 warnings,
+and 1 expected `New submission` note. That result predates the current catalog
+and public API changes. Live integration tests run separately from routine
+package checks; they have not been rerun for this source revision.

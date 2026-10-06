@@ -7,7 +7,7 @@ schema_test_case <- function() {
 test_that("all checked layers carry field snapshots matching the verified metadata", {
   entries <- .read_registry()
   snapshots <- source_schema_fixtures()
-  expect_length(entries, 35L)
+  expect_length(entries, 52L)
   for (entry in entries) {
     metadata <- snapshots[[entry$id]]$metadata
     metadata$objectIdField <- entry$object_id_field
@@ -29,7 +29,7 @@ test_that("added fields are compatible drift and warn during checked retrieval",
 
   transport <- fixture_transport(metadata = changed)
   local_mocked_bindings(arcgis_http = transport$http)
-  expect_warning(result <- get_dataset("construction-permits",
+  expect_warning(result <- tbod_get_dataset("construction-permits",
                                        fields = "RECORD_ID", limit = 1),
                  "added_field.*NEW_FIELD")
   expect_identical(result$RECORD_ID, "synthetic-1")
@@ -47,9 +47,9 @@ test_that("removed fields stop retrieval before querying", {
 
   transport <- fixture_transport(metadata = changed)
   local_mocked_bindings(arcgis_http = transport$http)
-  expect_error(get_dataset("construction-permits", fields = "RECORD_ID"),
+  expect_error(tbod_get_dataset("construction-permits", fields = "RECORD_ID"),
                "removed_field.*PROJECTSTATUS", class = "tampa_schema_error")
-  expect_error(download_dataset("construction-permits", tempfile("schema-download-"),
+  expect_error(tbod_download_dataset("construction-permits", tempfile("schema-download-"),
                                 fields = "RECORD_ID"),
                "removed_field.*PROJECTSTATUS", class = "tampa_schema_error")
   expect_length(fixture_queries(transport), 0L)
@@ -66,7 +66,7 @@ test_that("a removed object-ID field is reported as schema drift", {
   expect_identical(report$status, "incompatible")
   expect_true("removed_field" %in% report$issues$category)
   expect_true("OBJECTID" %in% report$issues$field)
-  expect_error(get_dataset("construction-permits"), "removed_field.*OBJECTID",
+  expect_error(tbod_get_dataset("construction-permits"), "removed_field.*OBJECTID",
                class = "tampa_schema_error")
   expect_length(fixture_queries(transport), 0L)
 })
@@ -154,6 +154,28 @@ test_that("malformed expected CRS values produce input errors before network", {
                "invalid spatial reference", class = "tampa_input_error")
 })
 
+test_that("malformed expected schema values fail before a network request", {
+  local_mocked_bindings(arcgis_http = function(...) stop("unexpected network"))
+  expect_error(tbod_check_schema("construction-permits", expected = "bad"),
+               "missing required metadata", class = "tampa_input_error")
+
+  expected <- tbod_schema("construction-permits")
+  expected$fields <- data.frame(foo = 1L)
+  expect_error(tbod_check_schema("construction-permits", expected = expected),
+               "unique name, type, and alias columns",
+               class = "tampa_input_error")
+})
+
+test_that("a saved field tibble remains a valid schema expectation", {
+  expected <- tbod_schema("construction-permits")
+  expect_s3_class(expected$fields, "tbl_df")
+  transport <- fixture_transport(metadata = schema_test_case()$metadata)
+  local_mocked_bindings(arcgis_http = transport$http)
+  report <- tbod_check_schema("construction-permits", expected = expected)
+  expect_identical(report$status, "unchanged")
+  expect_equal(nrow(report$issues), 0L)
+})
+
 test_that("a missing endpoint and a missing layer receive explicit drift reports", {
   case <- schema_test_case()
   local_mocked_bindings(arcgis_http = function(url, params, timeout) {
@@ -162,7 +184,7 @@ test_that("a missing endpoint and a missing layer receive explicit drift reports
   report <- tbod_check_schema("construction-permits")
   expect_identical(report$status, "incompatible")
   expect_identical(report$issues$category, "endpoint_disappeared")
-  expect_error(get_dataset("construction-permits"),
+  expect_error(tbod_get_dataset("construction-permits"),
                "endpoint_disappeared", class = "tampa_schema_error")
 
   local_mocked_bindings(arcgis_http = function(url, params, timeout) {
@@ -172,7 +194,7 @@ test_that("a missing endpoint and a missing layer receive explicit drift reports
   report <- tbod_check_schema("construction-permits")
   expect_identical(report$status, "incompatible")
   expect_identical(report$issues$category, "endpoint_disappeared")
-  expect_error(get_dataset("construction-permits"),
+  expect_error(tbod_get_dataset("construction-permits"),
                "endpoint_disappeared", class = "tampa_schema_error")
 
   local_mocked_bindings(arcgis_http = function(url, params, timeout) {
@@ -181,7 +203,7 @@ test_that("a missing endpoint and a missing layer receive explicit drift reports
   report <- tbod_check_schema("construction-permits")
   expect_identical(report$status, "incompatible")
   expect_identical(report$issues$category, "endpoint_disappeared")
-  expect_error(get_dataset("construction-permits"),
+  expect_error(tbod_get_dataset("construction-permits"),
                "endpoint_disappeared", class = "tampa_schema_error")
 })
 

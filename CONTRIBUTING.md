@@ -1,7 +1,7 @@
 # Contributing
 
-For bugs, include the package version, dataset ID, query, and exact error. Keep
-changes focused on discovery, retrieval, parsing, provenance, or reliability.
+For bugs, include the package version, dataset ID or URL, query, and exact
+error. For source-data issues, include the publisher's item or layer URL.
 
 ## Develop and check
 
@@ -19,33 +19,34 @@ devtools::check(args = "--no-manual")
 Commit generated `man/` and `NAMESPACE` changes when updating roxygen comments.
 Add tests for changed behavior. Ordinary tests and package checks use mocked
 responses and block live HTTP. Keep examples and vignettes offline; set network
-retrieval chunks to `eval = FALSE`. See the [test guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md) for
-focused and opt-in live checks.
-The live workflow schedules bounded city, regional, and county smoke checks
-twice weekly, including county descriptor, stable-ID, and projected geometry
-retrieval with at most two rows per call. Manual runs keep the complete
-integration suite. When adding a monitored source, use a small
-row limit, current IDs rather than fixed counts, a finite portal item limit,
-and explicit timeouts. A source schema or availability failure should remain
-visible in the opted-in run.
+retrieval chunks to `eval = FALSE`. The [test guide](tests/README.md) covers
+focused checks, bounded scheduled monitoring, and opt-in live tests. When
+adding a monitored source, use a small row limit, current IDs rather than
+fixed counts, a finite portal item limit, and explicit timeouts. Leave source
+schema and availability failures visible in the opt-in run.
 
 ## Registry and retrieval changes
 
-Before editing `inst/extdata/datasets.json`, verify the official publisher source
-page, layer metadata, and a small query. Record source and service URLs, layer
-ID, publisher, stable ID, geometry, useful date fields, data terms, and
-verification date. Add a fixture or test when a new schema exercises different
-behavior. The checked registry has 20 Tampa layers and three each from
-St. Petersburg, Clearwater, Hillsborough County, Pinellas County, and the
-Tampa Bay Regional Planning Council. Live discovery supports all six public
-ArcGIS organizations. A configured portal does not itself validate its layers.
-`get_arcgis_layer()` accepts compatible direct
-public layer URLs. Convenience functions should delegate to `get_dataset()`.
+Use the [checked catalog policy](docs/checked-catalog-policy.md) when proposing,
+refreshing, or retiring a layer. Before editing `inst/extdata/datasets.json`,
+verify the official publisher source page, layer metadata, terms, and a small
+query. Record source and service URLs, layer ID, publisher, stable ID, geometry,
+useful date fields, scope limits, and verification date. The live candidate
+helper can prepare a draft entry, schema snapshot, and bounded query evidence:
+
+```text
+Rscript tools/prepare-checked-candidate.R https://example.org/arcgis/rest/services/Example/FeatureServer/0 hillsborough example-layer
+```
+
+Its output under ignored `.research/checked-candidates/` needs editorial review
+before either registry file is changed. Add a fixture or test when a new schema
+exercises different behavior; run offline catalog quality checks and separate
+opt-in live validation after adding the entry.
 
 ### Add a discovery publisher
 
 Discovery publishers are configured in `inst/extdata/portals.json`.
-`list_portals()` exposes this registry without a network request. To add one:
+`tbod_list_portals()` exposes this registry without a network request. To add one:
 
 1. Follow an official publisher page to its ArcGIS portal. Query that portal's
    `sharing/rest/portals/self?f=pjson` metadata and verify its organization ID.
@@ -58,18 +59,18 @@ Discovery publishers are configured in `inst/extdata/portals.json`.
    publisher-specific branch.
    Store `metadata_url` as the root's `/portals/self` or `/portals/<org_id>` URL
    without `?f=pjson`; registry URLs omit query parameters.
-3. Check `list_portals()` and run the portal registry and discovery tests. Then
+3. Check `tbod_list_portals()` and run the portal registry and discovery tests. Then
    opt into a bounded live search for the new ID, with `max_items = 1`,
    `timeout = 15`, and `total_timeout = 45`. Inspect discovery issues and source
    identity as well as returned rows.
 4. Add curated layer entries separately when their schemas, scope, and terms
    have been checked. Registering a portal does not mark its layers `checked`.
 
-Scheduled monitoring reads `list_portals()`, so a new configured publisher is
+Scheduled monitoring reads `tbod_list_portals()`, so a new configured publisher is
 included automatically. Ordinary tests continue to block live network access.
 
 ```r
-list_portals()
+tbod_list_portals()
 testthat::test_local(filter = "portal-registry|live-discovery|regional-discovery",
                      stop_on_failure = TRUE)
 ```

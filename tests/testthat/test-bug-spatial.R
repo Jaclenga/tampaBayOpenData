@@ -140,12 +140,12 @@ test_that("resolvable WKID identifiers cannot disagree within one spatial refere
     )
     local_mocked_bindings(arcgis_http = transport$http,
                           .package = "tampaBayOpenData")
-    error <- tryCatch(get_dataset("construction-permits", spatial = TRUE),
+    error <- tryCatch(tbod_get_dataset("construction-permits", spatial = TRUE),
                        error = identity)
     expect_s3_class(error, "tampa_spatial_error")
     expect_match(conditionMessage(error), "conflicting WKID")
     expect_identical(error$dataset_id, "construction-permits")
-    entry <- dataset_info("construction-permits")
+    entry <- tbod_dataset_info("construction-permits")
     expect_match(conditionMessage(error), entry$source_url, fixed = TRUE)
     expect_match(conditionMessage(error), "Publisher: City of Tampa", fixed = TRUE)
   }

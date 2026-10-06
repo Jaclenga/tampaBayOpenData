@@ -4,6 +4,25 @@ These are local results on Windows 11 with R 4.5.1 or R 4.6.1 as noted.
 Each result describes the source and dependencies used for that run; live
 services can change.
 
+## Canonical API and checked catalog check (2026-10-06)
+
+A fresh source archive built on Windows 11 with R 4.5.1 passed
+`R CMD check --no-manual` with **zero errors, warnings, and notes**. The check
+built and rebuilt the vignettes, ran examples, and passed **5,541 offline test
+expectations** with 18 expected opt-in live-test skips. It checked all 15
+canonical `tbod_*` exports and their Rd usage, arguments, and cross-references.
+The 12 unprefixed development exports and help pages are absent. A temporary
+pkgdown reference build also produced all 15 canonical pages.
+
+The archive at
+`.research/package-stage-api-20261006-004111/tampaBayOpenData_0.1.0.tar.gz`
+has SHA-256
+`fb45e7a760753b4d76e8194451e3ca09b6b53428f1eb8d3089e6959c2852c74c`.
+Its check log is under the adjacent `.check/` directory; both paths are
+ignored local validation artifacts. This run did not check the PDF manual or
+call live ArcGIS services. Earlier CI and live results below describe earlier
+source revisions.
+
 ## Final rOpenSci readiness preflight (2026-10-04)
 
 Local checks ran on an isolated copy of the source before the final submission
@@ -87,7 +106,7 @@ clipped against a 2004 shoreline; they are not current emergency guidance.
 The data-center inventory is research-based and requires independent
 confirmation. Hillsborough's listed items state CC BY 4.0; the Pinellas items
 carry publisher disclaimers without a verified unrestricted reuse license.
-The TBRPC items' terms differ by layer; `dataset_info(id)$terms` and the linked
+The TBRPC items' terms differ by layer; `tbod_dataset_info(id)$terms` and the linked
 item pages give the exact source statements.
 
 The full R 4.6.1 offline suite passed **3,861 assertions** with zero failures
@@ -145,7 +164,7 @@ passed on an earlier revision; the post-edit source has not run in CI.
 ## Publisher registry and search filters (2026-10-02)
 
 The publisher configuration now lives in `inst/extdata/portals.json` and is
-available offline through `list_portals()`. It contains six organizations:
+available offline through `tbod_list_portals()`. It contains six organizations:
 Tampa, TBRPC, St. Petersburg, Clearwater, Hillsborough County, and Pinellas
 County. County identities were verified through the
 [Hillsborough open-data page](https://hcfl.gov/about-hillsborough/open-data-and-gis),
@@ -253,7 +272,7 @@ responses, decoded body sizes were 36,947 and 139,699 bytes. The retained
 summary contains request parameters and aggregate measurements, not feature
 attribute or geometry records.
 
-The live `download_dataset()` check filtered the same streets layer to two
+The live download check filtered the same streets layer to two
 current IDs, using one-row chunks. The initial call made two feature requests
 and saved two chunks. Repeating it rechecked metadata, count, and the full
 filtered manifest, then made **zero feature requests**. Both summaries were
@@ -361,7 +380,7 @@ and one WGS 84 geometry sample per layer. The package check exercised their
 saved schemas and synthetic records offline. The opt-in R client live suite was
 not run for these nine during this check.
 
-In the later October 2 live recheck, bounded `get_dataset()` calls returned one
+In the later October 2 live recheck, bounded retrieval calls returned one
 or two real `sf` rows in EPSG:4326 for all 20 catalog layers. Each call checked
 unique IDs, count and ID manifests, row counts, and provenance. The expanded
 opt-in live suite passed 232 assertions with no failures or skips, including a
@@ -376,7 +395,7 @@ failure rather than returning incomplete data. These dated runs do not
 guarantee future upstream availability or feature freshness.
 
 After moving `parks` to ParksPolygons/0 and `fire-stations` to Fire/10, bounded
-live `get_dataset()` queries again returned EPSG:4326 `sf` samples for all 20
+live retrieval queries again returned EPSG:4326 `sf` samples for all 20
 catalog layers with unique IDs and consistent provenance. The opt-in live suite
 passed 232 assertions with no failures or skips. Full spatial downloads
 returned all 208 parks and all 28 fire stations with complete provenance. The
@@ -391,11 +410,11 @@ this validation pass.
 
 The live-discovery check searched the City and regional planning council ArcGIS
 organizations, expanded their paginated service items, and returned 323 distinct
-portal layer URLs. The merged public `list_datasets()` result contained 327
+portal layer URLs. The merged public catalog result contained 327
 rows: 20 checked and 307 discovered. One City portal item pointed to an HTTP
 403 service; discovery recorded that issue and returned the other layers. A
 live City housing search found four candidate layers; its first result returned
-100 rows through the public `get_dataset()` workflow. Separate discovered City
+100 rows through the public retrieval workflow. Separate discovered City
 and regional samples each returned two EPSG:4326 `sf` rows, with matching
 provenance. Retrieval by a stable ArcGIS item/layer ID and by a direct layer
 URL also succeeded. The opt-in suite passed 274 assertions with no failures or
@@ -454,7 +473,7 @@ EPSG:2882 geometry agreed with each server's EPSG:4326 projection within the
 tests' 1e-5 coordinate comparison tolerance. Both runs used R 4.6.1, sf 1.1.3,
 testthat 3.3.2, and `LC_ALL=C`.
 
-These checks exercised `get_arcgis_layer()` compatibility. Both direct sources
+These checks exercised direct ArcGIS layer retrieval. Both direct sources
 retained `not_checked` provenance; at that revision, the checked catalog and
 automatic discovery sources were not expanded. The manual live workflow's
 existing `filter = "live"`

@@ -30,10 +30,10 @@ test_that("a custom portal uses its own public organization metadata and retriev
   expect_length(search, 1L)
   expect_match(search[[1L]]$params$q, paste0("orgid:", org), fixed = TRUE)
 
-  data <- get_dataset(found, fields = "OBJECTID", limit = 1)
+  data <- tbod_get_dataset(found, fields = "OBJECTID", limit = 1)
   expect_identical(data$OBJECTID, 1L)
-  expect_identical(dataset_provenance(data)$portal, portal)
-  expect_identical(dataset_provenance(data)$validation_status, "discovered")
+  expect_identical(tbod_provenance(data)$portal, portal)
+  expect_identical(tbod_provenance(data)$validation_status, "discovered")
 })
 
 test_that("explicit custom portal identity skips self and rejects conflicting items", {
@@ -137,13 +137,41 @@ test_that("FeatureServer roots enumerate retrievable layers with a bounded scan"
   expect_identical(found$item_id, NA_character_)
   expect_identical(found$publisher, "Example Department")
   expect_identical(attr(found, "discovery_truncated_portals"), "service")
-  data <- get_dataset(found, fields = "OBJECTID", limit = 1)
+  data <- tbod_get_dataset(found, fields = "OBJECTID", limit = 1)
   expect_identical(data$OBJECTID, 1L)
-  expect_identical(dataset_provenance(data)$validation_status, "not_checked")
+  expect_identical(tbod_provenance(data)$validation_status, "not_checked")
 
   filtered <- .discover_custom_portal(root, query = "places", max_items = 2)
   expect_identical(filtered$source_url, second)
   expect_true(attr(filtered, "discovery_complete"))
+})
+
+test_that("malformed service layers are reported without hiding valid siblings", {
+  root <- "https://services.example.org/arcgis/rest/services/Mixed/FeatureServer"
+  valid <- paste0(root, "/2")
+  resources <- list()
+  resources[[root]] <- list(
+    layers = list(
+      "malformed candidate",
+      list(id = 1L, name = "Broken metadata", type = "Feature Layer"),
+      list(id = 2L, name = "Valid places", type = "Feature Layer")),
+    tables = list())
+  resources[[paste0(root, "/1")]] <- "malformed layer metadata"
+  resources[[valid]] <- list(id = 2L, name = "Valid places",
+                             type = "Feature Layer",
+                             geometryType = "esriGeometryPoint",
+                             capabilities = "Query")
+  transport <- discovery_test_transport(resources = resources)
+  local_mocked_bindings(arcgis_http = transport$http,
+                        .package = "tampaBayOpenData")
+
+  found <- tbod_discover(root, max_items = 3)
+  expect_identical(found$source_url, valid)
+  expect_identical(found$validation_status, "not_checked")
+  issues <- attr(found, "discovery_issues")
+  expect_length(issues, 2L)
+  expect_match(issues[[1L]], "invalid ID")
+  expect_match(issues[[2L]], "not an ArcGIS JSON object")
 })
 
 test_that("custom portal roots reject local hosts and ambiguous URL forms", {
@@ -165,4 +193,29 @@ test_that("custom portal roots reject local hosts and ambiguous URL forms", {
   expect_error(.discover_custom_portal("https://example.org/sharing/rest",
                                       org_id = "orgid:injected", max_items = 0),
                "org_id", class = "tampa_input_error")
+})
+
+test_that("public Enterprise HTTPS ports work for layers and portals", {
+  local_mocked_bindings(arcgis_http = function(...) stop("unexpected network"),
+                        .package = "tampaBayOpenData")
+  layer_path <- "/arcgis/rest/services/TEST/FeatureServer/0"
+  portal_path <- "/arcgis/sharing/rest"
+  layer <- paste0("https://gis.example.org:6443", layer_path)
+  portal <- paste0("https://gis.example.org:6443", portal_path)
+
+  info <- tbod_dataset_info(layer)
+  expect_identical(info$source_url, layer)
+  expect_identical(info$validation_status, "not_checked")
+  found <- tbod_discover(portal, max_items = 0)
+  expect_s3_class(found, "tbl_df")
+  expect_identical(nrow(found), 0L)
+
+  for (authority in c("gis.example.org:0", "gis.example.org:65536",
+                      "localhost:6443", "127.0.0.1:6443")) {
+    expect_error(tbod_dataset_info(paste0("https://", authority, layer_path)),
+                 class = "tampa_input_error", info = authority)
+    expect_error(tbod_discover(paste0("https://", authority, portal_path),
+                               max_items = 0),
+                 class = "tampa_input_error", info = authority)
+  }
 })

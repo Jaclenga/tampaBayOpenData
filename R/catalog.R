@@ -1,12 +1,12 @@
 #' List Tampa Bay ArcGIS datasets
 #'
-#' Live discovery searches the organizations in [list_portals()] and expands
+#' Live discovery searches the organizations in [tbod_list_portals()] and expands
 #' public services into candidate layers and tables. Retrieval requires Query
 #' when a layer supplies a capabilities list and validates its query responses.
 #' The bundled registry supplies a separate
 #' `"checked"` validation layer and remains available without a network request.
 #' A portal item can be stale or a layer can change after discovery.
-#' @param jurisdiction Jurisdiction code or vector of codes from [list_portals()],
+#' @param jurisdiction Jurisdiction code or vector of codes from [tbod_list_portals()],
 #'   or `"all"` (default). Filters checked and live results and narrows the portal
 #'   scan. A supported jurisdiction may have no checked entries.
 #' @param source `"all"` (default) combines live discovery with the checked
@@ -17,7 +17,7 @@
 #'   available search pages. This limits items, not expanded layers. Inspect
 #'   `attr(result, "discovery_complete")` before treating a live result as a
 #'   complete portal listing.
-#' @param portals Live organization IDs from [list_portals()], or `"all"`
+#' @param portals Live organization IDs from [tbod_list_portals()], or `"all"`
 #'   (default). A character vector of IDs is also accepted. Intersects with
 #'   jurisdiction and publisher filters before any portal requests.
 #'   This does not filter the bundled checked catalog.
@@ -25,7 +25,7 @@
 #' @param total_timeout Maximum elapsed seconds for the complete operation,
 #'   including discovery and retries. Defaults to 90; `Inf` disables this limit.
 #' @param publisher Publisher name or vector of names, matched exactly without
-#'   regard to case. See [list_portals()] for names. Filters all results and
+#'   regard to case. See [tbod_list_portals()] for names. Filters all results and
 #'   narrows the portal scan; an unmatched name returns no rows.
 #' @param validation_status `"checked"`, `"discovered"`, or a vector of both.
 #'   NULL includes both. This filters the final classification; `source = "live"`
@@ -55,14 +55,14 @@
 #'   `discovery_truncated_portals` identifies scans stopped at `max_items`.
 #'   `discovery_complete` is FALSE if a scan was truncated or any item or portal
 #'   failed. These attributes describe live discovery, not checked coverage.
-#' @export
+#' @noRd
 #' @examples
-#' checked <- list_datasets(source = "checked")
+#' checked <- tbod_list_datasets(source = "checked")
 #' checked[, c("id", "title", "jurisdiction", "validation_status")]
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   list_datasets(max_items = 1)
+#'   tbod_list_datasets(max_items = 1)
 #' }
-list_datasets <- function(jurisdiction = "all", source = "all",
+.list_datasets_impl <- function(jurisdiction = "all", source = "all",
                           portals = "all", max_items = 25, timeout = 30,
                           total_timeout = 90, publisher = NULL,
                           validation_status = NULL, spatial = NULL, topic = NULL,
@@ -83,18 +83,18 @@ list_datasets <- function(jurisdiction = "all", source = "all",
 #' fields, so its results need not follow the checked catalog's literal matching.
 #' @param query A single search string. Checked matching treats punctuation
 #'   literally; live matching uses the ArcGIS portal search index.
-#' @inheritParams list_datasets
+#' @inheritParams .list_datasets_impl
 #' @return A tibble with the catalog columns and, for live searches, the
-#'   discovery attributes described in [list_datasets()]. A checked-only
+#'   discovery attributes described in [tbod_list_datasets()]. A checked-only
 #'   search reads the bundled registry without network access.
-#' @export
+#' @noRd
 #' @examples
-#' permits <- search_datasets("permit", source = "checked")
+#' permits <- tbod_search_datasets("permit", source = "checked")
 #' permits[, c("id", "title", "jurisdiction")]
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   search_datasets("housing", max_items = 1)
+#'   tbod_search_datasets("housing", max_items = 1)
 #' }
-search_datasets <- function(query, jurisdiction = "all", source = "all",
+.search_datasets_impl <- function(query, jurisdiction = "all", source = "all",
                             portals = "all", max_items = 25, timeout = 30,
                             total_timeout = 90, publisher = NULL,
                             validation_status = NULL, spatial = NULL, topic = NULL,
@@ -240,15 +240,15 @@ search_datasets <- function(query, jurisdiction = "all", source = "all",
 #'   jurisdiction, source URL, and service URL. With `refresh = TRUE`, the list
 #'   also contains `fields` (a tibble of source field names, types, and aliases),
 #'   `metadata` (raw ArcGIS layer metadata), and `inspected_at` (UTC).
-#' @export
+#' @noRd
 #' @examples
-#' info <- dataset_info("construction-permits")
+#' info <- tbod_dataset_info("construction-permits")
 #' info[c("id", "title", "publisher", "source_url")]
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   current <- dataset_info("construction-permits", refresh = TRUE)
+#'   current <- tbod_dataset_info("construction-permits", refresh = TRUE)
 #'   current$fields
 #' }
-dataset_info <- function(id, jurisdiction = NULL, refresh = FALSE, timeout = 30,
+.dataset_info_impl <- function(id, jurisdiction = NULL, refresh = FALSE, timeout = 30,
                          total_timeout = 60) {
   .flag(refresh, "refresh")
   timeout <- .operation_timeout(timeout, total_timeout)

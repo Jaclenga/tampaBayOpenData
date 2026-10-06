@@ -58,7 +58,7 @@ attributes matched as well. The replacement returned two distinct ordered
 one-row pages and EPSG:4326 geometry; it adds a `LASTEDITOR` field. During a
 later three-ID geometry comparison, Location/10 returned ArcGIS error 400,
 while the replacement returned all three records. A complete 208-row spatial
-retrieval through `get_dataset()` succeeded in 50-row pages. The
+retrieval through the package succeeded in 50-row pages. The
 [replacement service iteminfo](https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer/info/iteminfo?f=pjson)
 identifies City of Tampa in its access information but has empty
 `licenseInfo`. The older [Location/10 public item](https://www.arcgis.com/sharing/rest/content/items/a8488dc7a4fa4cc5a7dcc4f3840d307a?f=pjson)

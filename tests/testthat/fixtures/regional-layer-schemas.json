@@ -1457,15 +1457,93 @@
           "alias": "OBJECTID"
         },
         {
+          "name": "FACILITYID",
+          "type": "esriFieldTypeString",
+          "alias": "Facility ID",
+          "length": 50
+        },
+        {
           "name": "NAME",
           "type": "esriFieldTypeString",
           "alias": "Name",
           "length": 255
         },
         {
+          "name": "FULLADDR",
+          "type": "esriFieldTypeString",
+          "alias": "Full Address",
+          "length": 250
+        },
+        {
+          "name": "MUNICIPALITY",
+          "type": "esriFieldTypeString",
+          "alias": "Municipality",
+          "length": 100
+        },
+        {
+          "name": "CRITICALFACILITY",
+          "type": "esriFieldTypeString",
+          "alias": "Critical Facility",
+          "length": 1
+        },
+        {
           "name": "RESTORATIONPRIORITY",
           "type": "esriFieldTypeDouble",
           "alias": "Restoration Priority"
+        },
+        {
+          "name": "RESTORATIONNOTE",
+          "type": "esriFieldTypeString",
+          "alias": "Restoration Note",
+          "length": 50
+        },
+        {
+          "name": "LATITUDE",
+          "type": "esriFieldTypeString",
+          "alias": "Latitude",
+          "length": 17
+        },
+        {
+          "name": "LONGITUDE",
+          "type": "esriFieldTypeString",
+          "alias": "Longitude",
+          "length": 17
+        },
+        {
+          "name": "OPSSTATUS",
+          "type": "esriFieldTypeString",
+          "alias": "Operational Status",
+          "length": 50
+        },
+        {
+          "name": "AGENCY",
+          "type": "esriFieldTypeString",
+          "alias": "Agency",
+          "length": 50
+        },
+        {
+          "name": "CONTACT",
+          "type": "esriFieldTypeString",
+          "alias": "Contact",
+          "length": 50
+        },
+        {
+          "name": "CONTACTPHONE",
+          "type": "esriFieldTypeString",
+          "alias": "Contact Phone",
+          "length": 50
+        },
+        {
+          "name": "GLOBALID",
+          "type": "esriFieldTypeGlobalID",
+          "alias": "GLOBALID",
+          "length": 38
+        },
+        {
+          "name": "int_created_user",
+          "type": "esriFieldTypeString",
+          "alias": "Internal Created User",
+          "length": 255
         },
         {
           "name": "int_created_date",
@@ -1474,10 +1552,34 @@
           "length": 8
         },
         {
+          "name": "int_edited_user",
+          "type": "esriFieldTypeString",
+          "alias": "Internal Edited User",
+          "length": 255
+        },
+        {
           "name": "int_edited_date",
           "type": "esriFieldTypeDate",
           "alias": "Internal Edited Date",
           "length": 8
+        },
+        {
+          "name": "CFUNDUNITS",
+          "type": "esriFieldTypeString",
+          "alias": "C Fund Units",
+          "length": 100
+        },
+        {
+          "name": "AFUNDUNITS",
+          "type": "esriFieldTypeString",
+          "alias": "A Fund Units",
+          "length": 100
+        },
+        {
+          "name": "STATUS",
+          "type": "esriFieldTypeString",
+          "alias": "Status",
+          "length": 30
         }
       ],
       "maxRecordCount": 1000,
@@ -1511,7 +1613,7 @@
         "dataLastEditDate": 1791124385198
       }
     },
-    "verified": "2026-10-04"
+    "verified": "2026-10-05"
   },
   "pinellas-park-boundaries": {
     "metadata_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_ParkBoundaries_view/FeatureServer/0",
@@ -1544,9 +1646,45 @@
           "length": 255
         },
         {
+          "name": "NAME_SHORT",
+          "type": "esriFieldTypeString",
+          "alias": "Short Name",
+          "length": 255
+        },
+        {
+          "name": "NAME_COLLECTIVE",
+          "type": "esriFieldTypeString",
+          "alias": "Collective Name",
+          "length": 50
+        },
+        {
+          "name": "SITETYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Site Type",
+          "length": 50
+        },
+        {
+          "name": "DISTRICTID",
+          "type": "esriFieldTypeString",
+          "alias": "District ID",
+          "length": 50
+        },
+        {
+          "name": "GROUPID",
+          "type": "esriFieldTypeString",
+          "alias": "Group ID",
+          "length": 50
+        },
+        {
           "name": "GISACRES",
           "type": "esriFieldTypeDouble",
           "alias": "GIS Acres"
+        },
+        {
+          "name": "int_created_user",
+          "type": "esriFieldTypeString",
+          "alias": "Internal Created User",
+          "length": 255
         },
         {
           "name": "int_created_date",
@@ -1555,10 +1693,66 @@
           "length": 8
         },
         {
+          "name": "int_edited_user",
+          "type": "esriFieldTypeString",
+          "alias": "Internal Edited User",
+          "length": 255
+        },
+        {
           "name": "int_edited_date",
           "type": "esriFieldTypeDate",
           "alias": "Internal Edited Date",
           "length": 8
+        },
+        {
+          "name": "ADDRESS",
+          "type": "esriFieldTypeString",
+          "alias": "Address",
+          "length": 250
+        },
+        {
+          "name": "ACQSOURCE",
+          "type": "esriFieldTypeString",
+          "alias": "Acquisition Source(s)",
+          "length": 255
+        },
+        {
+          "name": "ACQDATE",
+          "type": "esriFieldTypeString",
+          "alias": "Acquisition Date(s)",
+          "length": 150
+        },
+        {
+          "name": "COMMENTS",
+          "type": "esriFieldTypeString",
+          "alias": "Comments",
+          "length": 255
+        },
+        {
+          "name": "GlobalID",
+          "type": "esriFieldTypeGlobalID",
+          "alias": "GlobalID",
+          "length": 38
+        },
+        {
+          "name": "StatePlane_Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "StatePlane_Length"
+        },
+        {
+          "name": "StatePlane_Area",
+          "type": "esriFieldTypeDouble",
+          "alias": "StatePlane_Area"
+        },
+        {
+          "name": "Shape__Area",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Area"
+        },
+        {
+          "name": "Shape__Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Length"
         }
       ],
       "maxRecordCount": 1000,
@@ -1592,7 +1786,7 @@
         "dataLastEditDate": 1791058513380
       }
     },
-    "verified": "2026-10-04"
+    "verified": "2026-10-05"
   },
   "pinellas-trail": {
     "metadata_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PinellasTrail_view/FeatureServer/0",
@@ -1619,10 +1813,21 @@
           "alias": "OBJECTID"
         },
         {
+          "name": "FACILITYID",
+          "type": "esriFieldTypeString",
+          "alias": "Facility ID",
+          "length": 50
+        },
+        {
           "name": "NAME",
           "type": "esriFieldTypeString",
           "alias": "NAME",
           "length": 254
+        },
+        {
+          "name": "WIDTH",
+          "type": "esriFieldTypeDouble",
+          "alias": "Width"
         },
         {
           "name": "LENGTH",
@@ -1630,10 +1835,89 @@
           "alias": "Length"
         },
         {
+          "name": "FROMSTREET",
+          "type": "esriFieldTypeString",
+          "alias": "From Street",
+          "length": 255
+        },
+        {
+          "name": "TOSTREET",
+          "type": "esriFieldTypeString",
+          "alias": "To Street",
+          "length": 255
+        },
+        {
+          "name": "FROMMARKER",
+          "type": "esriFieldTypeString",
+          "alias": "From 911 Marker",
+          "length": 50
+        },
+        {
+          "name": "TOMARKER",
+          "type": "esriFieldTypeString",
+          "alias": "To 911 Marker",
+          "length": 50
+        },
+        {
+          "name": "OWNEDBY",
+          "type": "esriFieldTypeString",
+          "alias": "Owned By",
+          "length": 50
+        },
+        {
+          "name": "MAINTAINEDBY",
+          "type": "esriFieldTypeString",
+          "alias": "Maintained By",
+          "length": 50
+        },
+        {
+          "name": "CONSEQUENCEOFFAILURE",
+          "type": "esriFieldTypeDouble",
+          "alias": "Consequence of Failure"
+        },
+        {
+          "name": "LIKELIHOODOFFAILURE",
+          "type": "esriFieldTypeDouble",
+          "alias": "Likelihood of Failure"
+        },
+        {
+          "name": "CRITICALITY",
+          "type": "esriFieldTypeDouble",
+          "alias": "BRE"
+        },
+        {
+          "name": "CURRENTCONDITIONRATING",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Current Condition Rating"
+        },
+        {
+          "name": "LIFECYCLESTATUS",
+          "type": "esriFieldTypeString",
+          "alias": "Life Cycle Status",
+          "length": 50
+        },
+        {
+          "name": "DATACOLLECTIONMETHOD",
+          "type": "esriFieldTypeString",
+          "alias": "Data Collection Method",
+          "length": 50
+        },
+        {
           "name": "INSTALLDATE",
           "type": "esriFieldTypeDate",
           "alias": "Install Date",
           "length": 8
+        },
+        {
+          "name": "SURFACETYPE",
+          "type": "esriFieldTypeString",
+          "alias": "Surface Type",
+          "length": 50
+        },
+        {
+          "name": "PURCHASEPRICE",
+          "type": "esriFieldTypeDouble",
+          "alias": "Purchase Price"
         },
         {
           "name": "CONDITIONDATE",
@@ -1648,10 +1932,39 @@
           "length": 8
         },
         {
+          "name": "LIFEEXPECTANCY",
+          "type": "esriFieldTypeSmallInteger",
+          "alias": "Life Expectancy"
+        },
+        {
+          "name": "LOCATION",
+          "type": "esriFieldTypeString",
+          "alias": "Location Description",
+          "length": 255
+        },
+        {
           "name": "WARRANTYDATE",
           "type": "esriFieldTypeDate",
           "alias": "Warranty Date",
           "length": 8
+        },
+        {
+          "name": "LEGACYID",
+          "type": "esriFieldTypeString",
+          "alias": "LegacyID",
+          "length": 50
+        },
+        {
+          "name": "GlobalID",
+          "type": "esriFieldTypeGlobalID",
+          "alias": "GlobalID",
+          "length": 38
+        },
+        {
+          "name": "int_created_user",
+          "type": "esriFieldTypeString",
+          "alias": "Internal Created User",
+          "length": 255
         },
         {
           "name": "int_created_date",
@@ -1660,10 +1973,39 @@
           "length": 8
         },
         {
+          "name": "int_edited_user",
+          "type": "esriFieldTypeString",
+          "alias": "Internal Edited User",
+          "length": 255
+        },
+        {
           "name": "int_edited_date",
           "type": "esriFieldTypeDate",
           "alias": "Internal Edited Date",
           "length": 8
+        },
+        {
+          "name": "SITE_ID",
+          "type": "esriFieldTypeString",
+          "alias": "Site ID",
+          "length": 50
+        },
+        {
+          "name": "PRCNT_FEE",
+          "type": "esriFieldTypeDouble",
+          "alias": "SW Fee Percent"
+        },
+        {
+          "name": "SW_FEE",
+          "type": "esriFieldTypeString",
+          "alias": "SW Fee",
+          "length": 16
+        },
+        {
+          "name": "SITE_NAME",
+          "type": "esriFieldTypeString",
+          "alias": "Site Name",
+          "length": 100
         },
         {
           "name": "ENDOFLIFEDATE",
@@ -1672,16 +2014,52 @@
           "length": 8
         },
         {
+          "name": "PCTREMAININGUSEFULLIFE",
+          "type": "esriFieldTypeDouble",
+          "alias": "Pct Remaining Useful Life"
+        },
+        {
           "name": "CRITICALITYDATE",
           "type": "esriFieldTypeDate",
           "alias": "BRE Date",
           "length": 8
         },
         {
+          "name": "REMAININGUSEFULLIFE",
+          "type": "esriFieldTypeInteger",
+          "alias": "Remaining Useful Life"
+        },
+        {
+          "name": "REPLACEMENTCOST",
+          "type": "esriFieldTypeInteger",
+          "alias": "Replacement Cost"
+        },
+        {
+          "name": "COMMISSIONINGCOST",
+          "type": "esriFieldTypeInteger",
+          "alias": "Commissioning Cost"
+        },
+        {
           "name": "REPLACEMENTCOSTDATE",
           "type": "esriFieldTypeDate",
           "alias": "Replacement Cost Date",
           "length": 8
+        },
+        {
+          "name": "OPERATIONALSTATUS",
+          "type": "esriFieldTypeString",
+          "alias": "Operational Status",
+          "length": 50
+        },
+        {
+          "name": "StatePlane_Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "StatePlane_Length"
+        },
+        {
+          "name": "Shape__Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Length"
         }
       ],
       "maxRecordCount": 1000,
@@ -1715,7 +2093,7 @@
         "dataLastEditDate": 1790985405383
       }
     },
-    "verified": "2026-10-04"
+    "verified": "2026-10-05"
   },
   "tbrpc-developments-of-regional-impact": {
     "metadata_url": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Developments_of_Regional_Impact/FeatureServer/0",
@@ -1747,9 +2125,39 @@
           "alias": "FID"
         },
         {
+          "name": "DEVELOPER",
+          "type": "esriFieldTypeString",
+          "alias": "DEVELOPER",
+          "length": 24
+        },
+        {
+          "name": "TYPE",
+          "type": "esriFieldTypeString",
+          "alias": "TYPE",
+          "length": 7
+        },
+        {
+          "name": "LUTYPETEXT",
+          "type": "esriFieldTypeString",
+          "alias": "LUTYPETEXT",
+          "length": 25
+        },
+        {
+          "name": "LOCATION",
+          "type": "esriFieldTypeString",
+          "alias": "LOCATION",
+          "length": 32
+        },
+        {
           "name": "COUNTY1",
           "type": "esriFieldTypeString",
           "alias": "COUNTY1",
+          "length": 2
+        },
+        {
+          "name": "COUNTY2",
+          "type": "esriFieldTypeString",
+          "alias": "COUNTY2",
           "length": 2
         },
         {
@@ -1759,9 +2167,32 @@
           "length": 35
         },
         {
+          "name": "SELECT_DAT",
+          "type": "esriFieldTypeInteger",
+          "alias": "SELECT_DAT"
+        },
+        {
+          "name": "NUM_TXT",
+          "type": "esriFieldTypeString",
+          "alias": "NUM_TXT",
+          "length": 5
+        },
+        {
           "name": "DRINUM",
           "type": "esriFieldTypeInteger",
           "alias": "DRINUM"
+        },
+        {
+          "name": "GlobalID",
+          "type": "esriFieldTypeString",
+          "alias": "GlobalID",
+          "length": 38
+        },
+        {
+          "name": "created_us",
+          "type": "esriFieldTypeString",
+          "alias": "created_us",
+          "length": 254
         },
         {
           "name": "created_da",
@@ -1770,10 +2201,31 @@
           "length": 8
         },
         {
+          "name": "last_edite",
+          "type": "esriFieldTypeString",
+          "alias": "last_edite",
+          "length": 254
+        },
+        {
           "name": "last_edi_1",
           "type": "esriFieldTypeDate",
           "alias": "last_edi_1",
           "length": 8
+        },
+        {
+          "name": "Shape_Leng",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape_Leng"
+        },
+        {
+          "name": "Shape__Area",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Area"
+        },
+        {
+          "name": "Shape__Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Length"
         }
       ],
       "maxRecordCount": 2000,
@@ -1806,7 +2258,7 @@
         "respectsDaylightSaving": false
       }
     },
-    "verified": "2026-10-04"
+    "verified": "2026-10-05"
   },
   "tbrpc-regional-storm-surge-zones": {
     "metadata_url": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/region_storm_surge_zones/FeatureServer/0",
@@ -1837,10 +2289,9 @@
           "alias": "OBJECTID_1"
         },
         {
-          "name": "CAT",
-          "type": "esriFieldTypeString",
-          "alias": "CAT",
-          "length": 8
+          "name": "OBJECTID",
+          "type": "esriFieldTypeInteger",
+          "alias": "OBJECTID"
         },
         {
           "name": "COUNTY",
@@ -1849,9 +2300,31 @@
           "length": 20
         },
         {
+          "name": "CAT",
+          "type": "esriFieldTypeString",
+          "alias": "CAT",
+          "length": 8
+        },
+        {
+          "name": "COUNTY_SSZ",
+          "type": "esriFieldTypeString",
+          "alias": "COUNTY_SSZ",
+          "length": 254
+        },
+        {
+          "name": "Shape_Leng",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape_Leng"
+        },
+        {
           "name": "Shape__Area",
           "type": "esriFieldTypeDouble",
           "alias": "Shape__Area"
+        },
+        {
+          "name": "Shape__Length",
+          "type": "esriFieldTypeDouble",
+          "alias": "Shape__Length"
         }
       ],
       "maxRecordCount": 2000,
@@ -1878,7 +2351,7 @@
         "respectsDaylightSaving": false
       }
     },
-    "verified": "2026-10-04"
+    "verified": "2026-10-05"
   },
   "tbrpc-regional-data-centers": {
     "metadata_url": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Tampa_Bay_Region_Data_Centers/FeatureServer/0",
@@ -1910,15 +2383,21 @@
           "alias": "OBJECTID"
         },
         {
+          "name": "County",
+          "type": "esriFieldTypeString",
+          "alias": "County",
+          "length": 8000
+        },
+        {
           "name": "Name",
           "type": "esriFieldTypeString",
           "alias": "Name",
           "length": 8000
         },
         {
-          "name": "County",
+          "name": "Address",
           "type": "esriFieldTypeString",
-          "alias": "County",
+          "alias": "Address",
           "length": 8000
         },
         {
@@ -1927,9 +2406,32 @@
           "alias": "Latitude"
         },
         {
+          "name": "Longitude",
+          "type": "esriFieldTypeDouble",
+          "alias": "Longitude"
+        },
+        {
           "name": "Status",
           "type": "esriFieldTypeString",
           "alias": "Status",
+          "length": 8000
+        },
+        {
+          "name": "Services_Provided",
+          "type": "esriFieldTypeString",
+          "alias": "Services Provided",
+          "length": 8000
+        },
+        {
+          "name": "Estimated_Size",
+          "type": "esriFieldTypeString",
+          "alias": "Estimated Size",
+          "length": 8000
+        },
+        {
+          "name": "Data_Source",
+          "type": "esriFieldTypeString",
+          "alias": "Data Source",
           "length": 8000
         }
       ],
@@ -1959,6 +2461,6 @@
         "respectsDaylightSaving": false
       }
     },
-    "verified": "2026-10-04"
+    "verified": "2026-10-05"
   }
 }

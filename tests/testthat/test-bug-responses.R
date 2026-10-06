@@ -3,7 +3,7 @@ bug_response_error <- function(expr, endpoint, class = "tampa_response_error") {
   failure <- tryCatch(force(expr), error = identity)
   expect_s3_class(failure, class)
   if (inherits(failure, "error")) {
-    entry <- dataset_info("construction-permits")
+    entry <- tbod_dataset_info("construction-permits")
     expect_identical(failure$dataset_id, entry$id)
     expect_identical(failure$url, endpoint)
     expect_match(conditionMessage(failure), entry$source_url, fixed = TRUE)
@@ -23,11 +23,11 @@ test_that("duplicate nested metadata keys fail during live schema inspection", {
     }
     response
   }, .package = "tampaBayOpenData")
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   endpoint <- paste0(entry$service_url, "/", entry$layer_id)
 
   failure <- bug_response_error(
-    dataset_info(entry$id, refresh = TRUE), endpoint)
+    tbod_dataset_info(entry$id, refresh = TRUE), endpoint)
   if (inherits(failure, "error")) {
     expect_match(conditionMessage(failure), "duplicate JSON object keys")
   }
@@ -42,7 +42,7 @@ test_that("duplicate nested feature and spatial keys cannot select one interpret
     '{"features":[{"attributes":{"OBJECTID":1,"RECORD_ID":"synthetic-1"},"geometry":{"x":-9170000,"x":-82.4,"y":3250000}}]}',
     '{"features":[{"attributes":{"OBJECTID":1,"RECORD_ID":"synthetic-1"}}],"spatialReference":{"wkid":3857,"wkid":4326}}'
   )
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   endpoint <- paste0(entry$service_url, "/", entry$layer_id, "/query")
   for (body in bodies) {
     transport <- fixture_transport(features = fixture_features(1L))
@@ -53,7 +53,7 @@ test_that("duplicate nested feature and spatial keys cannot select one interpret
     }, .package = "tampaBayOpenData")
 
     failure <- bug_response_error(
-      get_dataset(entry$id, fields = c("OBJECTID", "RECORD_ID")), endpoint)
+      tbod_get_dataset(entry$id, fields = c("OBJECTID", "RECORD_ID")), endpoint)
     if (inherits(failure, "error")) {
       expect_match(conditionMessage(failure), "duplicate JSON object keys")
     }
@@ -64,7 +64,7 @@ test_that("duplicate nested feature and spatial keys cannot select one interpret
 test_that("object-valued layer metadata cannot be a nonempty JSON array", {
   properties <- c("advancedQueryCapabilities", "dateFieldsTimeReference", "extent",
                   "spatialReference", "sourceSpatialReference")
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   endpoint <- paste0(entry$service_url, "/", entry$layer_id)
   for (property in properties) {
     metadata <- fixture_metadata()
@@ -74,7 +74,7 @@ test_that("object-valued layer metadata cannot be a nonempty JSON array", {
                           .package = "tampaBayOpenData")
 
     failure <- bug_response_error(
-      get_dataset(entry$id, fields = "LASTUPDATE"), endpoint)
+      tbod_get_dataset(entry$id, fields = "LASTUPDATE"), endpoint)
     if (inherits(failure, "error")) {
       expect_match(conditionMessage(failure), property, fixed = TRUE)
     }
@@ -93,13 +93,13 @@ test_that("empty optional metadata containers retain table retrieval compatibili
   transport <- fixture_transport(metadata = metadata)
   local_mocked_bindings(arcgis_http = transport$http,
                         .package = "tampaBayOpenData")
-  result <- get_dataset("construction-permits", fields = "OBJECTID")
+  result <- tbod_get_dataset("construction-permits", fields = "OBJECTID")
   expect_identical(result$OBJECTID, 1:5)
-  expect_true(dataset_provenance(result)$complete)
+  expect_true(tbod_provenance(result)$complete)
 })
 
 test_that("manifest transfer-limit flags obey the same contract as feature pages", {
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   endpoint <- paste0(entry$service_url, "/", entry$layer_id, "/query")
   for (flag in list("true", "false", 1L, list(TRUE), list(TRUE, FALSE))) {
     transport <- fixture_transport(transform = function(payload, params, ...) {
@@ -111,7 +111,7 @@ test_that("manifest transfer-limit flags obey the same contract as feature pages
     local_mocked_bindings(arcgis_http = transport$http,
                           .package = "tampaBayOpenData")
 
-    failure <- bug_response_error(get_dataset(entry$id), endpoint)
+    failure <- bug_response_error(tbod_get_dataset(entry$id), endpoint)
     if (inherits(failure, "error")) {
       expect_match(conditionMessage(failure), "transfer-limit flag")
     }
@@ -126,10 +126,10 @@ test_that("a changed feature-page OID declaration cannot claim complete retrieva
   })
   local_mocked_bindings(arcgis_http = transport$http,
                         .package = "tampaBayOpenData")
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   endpoint <- paste0(entry$service_url, "/", entry$layer_id, "/query")
 
-  failure <- bug_response_error(get_dataset(entry$id), endpoint,
+  failure <- bug_response_error(tbod_get_dataset(entry$id), endpoint,
                                 class = "tampa_integrity_error")
   if (inherits(failure, "error")) {
     expect_match(conditionMessage(failure), "object-ID field changed")

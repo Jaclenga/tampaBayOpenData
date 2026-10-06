@@ -24,21 +24,21 @@ if (!requireNamespace("tampaBayOpenData", quietly = TRUE) ||
 }
 
 for (id in c("city-boundary", "capital-projects")) {
-  info <- tampaBayOpenData::dataset_info(id)
+  info <- tampaBayOpenData::tbod_dataset_info(id)
   if (!identical(info$license_info, "CC0")) {
     stop("Review data reuse terms before rendering: ", id)
   }
 }
 
-boundary <- tampaBayOpenData::get_dataset(
+boundary <- tampaBayOpenData::tbod_get_dataset(
   "city-boundary", fields = "OBJECTID", spatial = TRUE, out_sr = 4326
 )
-projects <- tampaBayOpenData::get_dataset(
+projects <- tampaBayOpenData::tbod_get_dataset(
   "capital-projects", fields = "OBJECTID", spatial = TRUE, out_sr = 4326
 )
 
-boundary_source <- tampaBayOpenData::dataset_provenance(boundary)
-projects_source <- tampaBayOpenData::dataset_provenance(projects)
+boundary_source <- tampaBayOpenData::tbod_provenance(boundary)
+projects_source <- tampaBayOpenData::tbod_provenance(projects)
 if (!isTRUE(boundary_source$complete) || !isTRUE(projects_source$complete)) {
   stop("Map generation requires complete source retrievals.")
 }

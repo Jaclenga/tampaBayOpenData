@@ -17,6 +17,7 @@ testthat::test_local(filter = "dataset-sources", stop_on_failure = TRUE)
 testthat::test_local(filter = "live-discovery", stop_on_failure = TRUE)
 testthat::test_local(filter = "portal-registry", stop_on_failure = TRUE)
 testthat::test_local(filter = "catalog-filters", stop_on_failure = TRUE)
+testthat::test_local(filter = "catalog-quality", stop_on_failure = TRUE)
 testthat::test_local(filter = "generic-retrieval", stop_on_failure = TRUE)
 testthat::test_local(filter = "other-cities", stop_on_failure = TRUE)
 testthat::test_local(filter = "download", stop_on_failure = TRUE)
@@ -25,9 +26,9 @@ testthat::test_local(filter = "custom-portal", stop_on_failure = TRUE)
 testthat::test_local(filter = "schema-drift", stop_on_failure = TRUE)
 ```
 
-The suite covers the 35 checked source schemas across six publishers, live portal
+The suite covers the 52 checked source schemas across six publishers, live portal
 paging and searching, checked versus discovered overlays, item/layer resolution, direct
-URL retrieval, the prefixed `tbod_` API, schema drift, HTTP requests and retries,
+URL retrieval, the canonical `tbod_` API, schema drift, HTTP requests and retries,
 record pagination, parsing, spatial
 conversion, provenance, convenience functions, and error and security
 regressions. Discovery uses synthetic portal items and service metadata, so
@@ -35,6 +36,10 @@ ordinary tests do not depend on the live ArcGIS index. The
 [portal registry cases](testthat/test-portal-registry.R) validate publisher
 identities and evidence and prove that a configured synthetic publisher works
 through discovery and retrieval. The
+[catalog quality cases](testthat/test-catalog-quality.R) enforce editorial
+registry invariants offline, including configured jurisdictions, unique checked
+IDs and endpoints, valid source URLs, scope and terms documentation, and
+matching schema snapshots. The
 [catalog filter cases](testthat/test-catalog-filters.R) cover publisher and
 jurisdiction selection, status and geometry, literal topics, category labels,
 UTC date bounds, live metadata on checked matches, and retained scan attributes. The
@@ -50,9 +55,11 @@ entries alongside discovered results. The
 discovered, and direct URL paths use the same query engine.
 [schema drift cases](testthat/test-schema-drift.R) simulate added, removed,
 renamed, and changed-type fields, geometry and CRS changes, disappeared layers,
-and checked retrieval warnings or errors. [Custom portal cases](testthat/test-custom-portal.R)
-cover another ArcGIS organization, and [prefixed API cases](testthat/test-namespaced-api.R)
-check the `tbod_` entry points.
+invalid expected schemas, and checked retrieval warnings or errors.
+[Custom portal cases](testthat/test-custom-portal.R) cover another ArcGIS
+organization, malformed service layers, and public Enterprise HTTPS ports.
+[Canonical API cases](testthat/test-namespaced-api.R)
+check all `tbod_` entry points and the namespace export surface.
 [test-http.R](testthat/test-http.R) checks real `httr2` request construction
 with `req_perform()` mocked. The retry tests in
 [test-http-integrity.R](testthat/test-http-integrity.R) and
@@ -116,7 +123,7 @@ manifest requests still run, with a 45-second overall deadline per operation.
 
 The manual [live-check workflow](../.github/workflows/live-check.yaml) runs
 opt-in checks against current Tampa, regional, St. Petersburg, Clearwater, and
-county ArcGIS services. It covers all 35 checked layers, live portal discovery,
+county ArcGIS services. It covers all 52 checked layers, live portal discovery,
 and a complete multi-page permit download. The
 [other-city live tests](testthat/test-live-other-cities.R) retrieve at most two
 features per call, check a complete filter using IDs from the current run, and

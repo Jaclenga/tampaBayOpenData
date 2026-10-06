@@ -2,7 +2,7 @@ test_that("publisher metadata is available offline from one validated registry",
   local_mocked_bindings(arcgis_http = function(...) stop("Unexpected network call"))
   registry <- .portal_registry()
   expect_invisible(.validate_portals(unname(registry)))
-  portals <- list_portals()
+  portals <- tbod_list_portals()
   expect_s3_class(portals, "tbl_df")
   expect_identical(portals$id, names(registry))
   expect_identical(names(portals), c("id", "root", "org_id", "publisher",
@@ -54,7 +54,7 @@ test_that("publisher configuration rejects broken identities and evidence", {
   }
   for (selection in list(c("city", "city"), c("all", "pinellas"),
                          "unconfigured", NA_character_, character())) {
-    expect_error(.discovery_portal_keys(selection), "list_portals", class = "tampa_input_error")
+    expect_error(.discovery_portal_keys(selection), "tbod_list_portals", class = "tampa_input_error")
   }
 })
 
@@ -70,7 +70,7 @@ test_that("a seventh configured publisher uses exhaustive discovery and retrieva
   registry[[extra$id]] <- extra
   expect_invisible(.validate_portals(unname(registry)))
   local_mocked_bindings(.portal_registry = function() registry)
-  expect_identical(tail(list_portals()$id, 1L), extra$id)
+  expect_identical(tail(tbod_list_portals()$id, 1L), extra$id)
   pages <- resources <- list()
   endpoints <- character()
   item_ids <- character()
@@ -100,7 +100,7 @@ test_that("a seventh configured publisher uses exhaustive discovery and retrieva
     if (grepl("/query$", url)) features$http(url, params, timeout) else
       discovery$http(url, params, timeout)
   })
-  found <- list_datasets(source = "live", portals = "all", max_items = Inf)
+  found <- tbod_list_datasets(source = "live", portals = "all", max_items = Inf)
   expect_setequal(found$source_url, endpoints)
   expect_true(attr(found, "discovery_complete"))
   expect_identical(attr(found, "discovery_scanned_items"),
@@ -112,14 +112,14 @@ test_that("a seventh configured publisher uses exhaustive discovery and retrieva
   expect_identical(row$publisher, extra$publisher)
   expect_identical(row$portal, extra$root)
   expect_identical(row$validation_status, "discovered")
-  by_descriptor <- get_dataset(row, fields = "OBJECTID", limit = 2, page_size = 1)
-  by_stable_id <- get_dataset(row$id, fields = "OBJECTID", limit = 2, page_size = 1)
+  by_descriptor <- tbod_get_dataset(row, fields = "OBJECTID", limit = 2, page_size = 1)
+  by_stable_id <- tbod_get_dataset(row$id, fields = "OBJECTID", limit = 2, page_size = 1)
   expect_identical(by_descriptor$OBJECTID, c(1L, 2L))
   expect_identical(by_stable_id$OBJECTID, by_descriptor$OBJECTID)
-  expect_true(dataset_provenance(by_stable_id)$complete)
-  expect_identical(dataset_provenance(by_stable_id)$publisher, extra$publisher)
-  expect_identical(dataset_provenance(by_stable_id)$jurisdiction, extra$jurisdiction)
-  expect_identical(dataset_provenance(by_stable_id)$validation_status, "discovered")
+  expect_true(tbod_provenance(by_stable_id)$complete)
+  expect_identical(tbod_provenance(by_stable_id)$publisher, extra$publisher)
+  expect_identical(tbod_provenance(by_stable_id)$jurisdiction, extra$jurisdiction)
+  expect_identical(tbod_provenance(by_stable_id)$validation_status, "discovered")
   for (selector in c(extra$id, extra$root)) {
     item <- .discover_arcgis_item(row$item_id, 0L, portal = selector)
     expect_identical(item$id, row$id)
@@ -181,9 +181,9 @@ test_that("organizations can share a global ArcGIS root without losing attributi
     expect_identical(by_root$jurisdiction, configs[[i]]$jurisdiction)
   }
   expect_equal(nrow(.discover_arcgis_item(ids[[2L]], 0L, portal = "tbrpc")), 0L)
-  stable <- get_dataset(paste0("arcgis:", ids[[2L]], ":0"),
+  stable <- tbod_get_dataset(paste0("arcgis:", ids[[2L]], ":0"),
                         fields = "OBJECTID", limit = 2, page_size = 1)
   expect_identical(stable$OBJECTID, c(1L, 2L))
-  expect_identical(dataset_provenance(stable)$publisher, shared$publisher)
-  expect_identical(dataset_provenance(stable)$jurisdiction, shared$jurisdiction)
+  expect_identical(tbod_provenance(stable)$publisher, shared$publisher)
+  expect_identical(tbod_provenance(stable)$jurisdiction, shared$jurisdiction)
 })

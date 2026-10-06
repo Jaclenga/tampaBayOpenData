@@ -1,101 +1,60 @@
 # tampaBayOpenData 0.1.0
 
-- Adds the `tbod_` API for catalog search, arbitrary ArcGIS portal discovery,
-  layer retrieval, provenance, and schema inspection. Existing unprefixed
-  functions remain available for compatibility.
-- Bundles expected field, geometry, and CRS schemas for checked datasets.
-  Retrieval and downloads compare current layer metadata before querying;
-  additive fields warn and incompatible changes stop the operation.
-- Classifies removed object-ID fields and disappeared layers as incompatible
-  schema drift, validates malformed CRS metadata, and scopes saved checked
-  schemas by jurisdiction and dataset ID.
-- Lets the same retrieval API accept a public ArcGIS layer URL or a discovered
-  row from an arbitrary public ArcGIS portal. Tampa Bay remains the bundled
-  catalog and publisher configuration.
-- Searches queryable Map Service items as well as Feature Service items, reads
-  full metadata for each service layer, and retains rows found before a later
-  portal page fails. Direct URLs reject jurisdiction overrides.
-- Adds Hillsborough County and Pinellas County publishers to live discovery and
-  exposes the six configured organizations through offline `list_portals()`.
-  The checked catalog now spans all six publishers.
-- Makes `jurisdiction = "all"` the catalog default and adds jurisdiction,
-  publisher, validation status, geometry, topic, category, and item-modification
-  filters to listing and searching. Publisher and jurisdiction filters narrow
-  portal scans; other filters retain the bounded-scan caveat. Retrieval and
-  download resolve checked IDs across the registry by default. Live checked matches preserve
-  current item dates, tags, and categories alongside checked identity and terms.
-  Catalog `modified_source` distinguishes live item timestamps from saved
-  checked-source timestamps.
-- Adds twice-weekly bounded live smoke checks for checked city, regional, and
-  county sources, including county descriptor, stable-ID, and projected geometry
-  retrieval, while preserving manually triggered full
-  integration checks. Offline package checks continue to block live requests.
-- Aligns the README, vignette, and architecture documentation on conditional
-  Query capabilities, declared date types, and UTC editor-tracking exceptions
-  when other dates have unknown time-zone semantics.
-- Expands checked coverage to 35 layers across Tampa, St. Petersburg,
-  Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional
-  Planning Council. Adds the two municipal ArcGIS organizations to live discovery.
-  `jurisdiction = "all"` selects all checked layers. Live checked overlays are
-  matched against the full registry.
-- Limits default live discovery to 25 service items per organization, reports
-  partial-scan attributes, and adds overall operation deadlines. Eligible small
-  previews verify a returned-ID subset manifest; explicit full integrity and
-  complete retrieval continue to verify the full matching manifest.
-- Adds `download_dataset()` and `download_arcgis_layer()` for resumable local
-  RDS chunks. Each resume rechecks current metadata and full record membership,
-  validates chunk checksums and provenance, and skips completed feature batches.
-  Atomic writes and an exclusive directory lock protect saved progress; chunk
-  attributes can still vary across requests and resumed sessions.
-- Introduces an offline, verified City of Tampa dataset registry and the
-  `list_datasets()`, `search_datasets()`, and `dataset_info()` discovery API.
-- Expands the curated Tampa catalog to 20 layers, adding fire stations, bicycle and
-  truck routes, recycling and water service areas, historic sites, police
-  districts, zoning, redevelopment areas, and transportation safety layers.
-- Adds live discovery across public Tampa, St. Petersburg, Clearwater, and
-  Tampa Bay Regional Planning Council ArcGIS service items. The checked layers remain an
-  offline `checked` overlay; other portal layers are marked `discovered`.
-- Lets the generic `get_dataset()` retrieve a discovery row or stable ArcGIS
-  item/layer ID, and adds `get_arcgis_layer()` for a direct compatible layer URL.
-  Provenance records the portal, item ID, validation status, and source metadata.
-- Adds generic retrieval from ArcGIS FeatureServer and queryable MapServer
-  layers, field selection, server-side filters, ordering, and explicit row limits.
-- Checks matching counts and object-ID manifests against retrieved batches to
-  detect truncation, missing records, and duplicate pages.
-- Retries the City's intermittent generic ArcGIS query error within a fixed
-  limit, while preserving count and ID checks; live samples cover all 20 Tampa
-  layers.
-- Moves `parks` to the dedicated ParksPolygons service and `fire-stations` to
-  the Fire service after matching their IDs against the earlier Location layers.
-  Fire-station fields are now unqualified (for example, `NAME`), and joined
-  `GIS.GovServiceInfo.*` fields are no longer available. Source terms were
-  updated for the exact replacement endpoints; neither is labeled CC0.
-- Returns tibbles by default and `sf` objects on request, using declared field
-  types, date metadata, geometry, and spatial references.
-- Attaches source, retrieval, query, and completeness provenance, exposed through
-  `dataset_provenance()`.
-- Adds thin convenience functions for permits, development cases, and capital
-  projects.
-- Includes deterministic tests, an offline-safe introductory vignette, platform
-  checks, and separate scheduled and manual live integration checks.
-- Exercises HTTP request construction and all 35 checked source schemas
-  offline, and rejects malformed timezone and query-capability metadata before
-  retrieving features.
-- Separates pagination, declared-type parsing, and geometry decoding into
-  focused helpers, passes retrieval state explicitly, and shares native CRS
-  lookup while preparing advanced query parameters once.
-- Accepts closed polygon rings with equivalent integer and decimal coordinates
-  and rejects fractional or nonfinite numeric big integers before formatting.
-- Rejects nested duplicate JSON keys, malformed metadata/aliases, invalid
-  manifest flags, changed page ID declarations, named coordinate objects, and
-  conflicting resolved WKIDs while preserving supported aliases and WKT.
-- Requires httr2 1.2.3 or later for the configured transport retry option and
-  locale-independent UTF-8 query encoding; tests the prepared POST bytes.
-- Parses HTTP bodies as literal JSON with jsonlite 1.6.0 or later, and permits
-  only inline spatial WKT, preventing response text from selecting files or URLs.
-- Disables HTTP redirects, bounds server-requested retry waits at 30 seconds,
-  rejects JSON nesting beyond 64 containers, and limits accepted responses to
-  50 MiB. Older native curl builds still need decompression security updates.
-- Pins CI actions to verified commits and configures weekly action updates.
-- Credits `nycOpenData` as design inspiration. Client code is independently
-  implemented for Tampa's ArcGIS services.
+- Bundles 52 checked ArcGIS layers from Tampa, St. Petersburg, Clearwater,
+  Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning
+  Council. The [catalog policy](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md)
+  records selection criteria, source limits, candidate decisions, and topic
+  coverage. The catalog is selective; it does not mirror publisher data.
+- Exports 15 consistently named `tbod_*` functions for discovery, inspection,
+  retrieval, and download. Twelve unprefixed development names were removed
+  before the first release. See the [API migration
+  guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/api-migration.md)
+  for their replacements.
+- Searches the six configured public ArcGIS organizations as well as the
+  offline checked catalog. Catalog searches support jurisdiction, publisher,
+  validation status, geometry, topic, category, and item-date filters. Live
+  scans default to 25 service items per organization and report truncation,
+  issues, and failed portals. A bounded scan can miss matches.
+- Adds `tbod_discover()` for another public ArcGIS sharing REST root,
+  FeatureServer, MapServer, or layer URL. Queryable MapServer layers and
+  FeatureServer layers use the same retrieval API. Discovered rows retain
+  live item dates, tags, and categories; checked matches retain package IDs,
+  scope, and terms. Direct URLs have `not_checked` status.
+- Compares current fields, object ID, geometry, CRS, and endpoint metadata
+  against saved schemas before checked retrieval and downloads. Added fields
+  or changed aliases warn; removed or type-changed fields, geometry or CRS
+  changes, and vanished layers stop retrieval. `tbod_schema()` and
+  `tbod_check_schema()` expose the metadata and drift report.
+- Retrieves tibbles or optional `sf` results with field selection, ArcGIS
+  filters, ordering, row limits, and source provenance. Count and object-ID
+  checks catch missing, duplicate, or unexpected pages. Eligible small
+  previews can use a subset manifest; complete retrieval checks the full
+  matching manifest. Deliberate subsets remain marked incomplete. Sources
+  can still change record attributes between requests.
+- Parses declared ArcGIS field types, dates, geometry, and spatial references.
+  Date fields with unknown time-zone semantics remain raw milliseconds, except
+  UTC editor-tracking fields identified by metadata. Request and operation
+  timeouts bound live work.
+- Adds resumable RDS chunk downloads. Resuming rechecks current schema and
+  full record membership, verifies saved checksums and provenance, and skips
+  completed chunks. Atomic writes and an exclusive directory lock protect
+  progress; live record attributes may differ across chunks or sessions.
+- Moves Tampa `parks` and `fire-stations` to their dedicated services after
+  matching source IDs. The current fire-station fields are unqualified (for
+  example, `NAME`); older joined `GIS.GovServiceInfo.*` fields are unavailable.
+  Terms were updated for the replacement endpoints. The source data is not
+  labeled CC0 by the package.
+- Adds offline catalog and schema checks, bounded twice-weekly live checks
+  across all six publishers, and a separate manual integration suite. The
+  [validation record](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md)
+  gives dated evidence; live services can change afterward. CI actions are
+  pinned to verified commits.
+- Rejects malformed metadata and query responses, duplicate JSON keys,
+  conflicting CRS identifiers, and invalid numeric object IDs. HTTP requests
+  do not follow redirects; retry waits are capped at 30 seconds, accepted
+  responses at 50 MiB, and JSON nesting at 64 containers. JSON is parsed as
+  literal text, and spatial WKT must be inline. The package requires
+  httr2 1.2.3 or later and jsonlite 1.6.0 or later; older native curl builds
+  still need decompression security updates.
+- Credits `nycOpenData` as design inspiration. The ArcGIS client code is
+  independently implemented.

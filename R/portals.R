@@ -10,11 +10,11 @@
 #' @return A tibble with `id` (the discovery selector), `root`, `org_id`,
 #'   `publisher`, `jurisdiction`, `website`, `verified` (a Date), `metadata_url`,
 #'   and `evidence_url`. Use `id` values in the `portals` argument of
-#'   [list_datasets()] or [search_datasets()].
-#' @export
+#'   [tbod_list_datasets()] or [tbod_search_datasets()].
+#' @noRd
 #' @examples
-#' list_portals()
-list_portals <- function() {
+#' tbod_list_portals()
+.list_portals_impl <- function() {
   entries <- .portal_registry()
   columns <- lapply(names(entries[[1L]]), function(name) {
     unname(vapply(entries, `[[`, character(1), name))
@@ -47,10 +47,7 @@ list_portals <- function() {
     .abort("`portal` must be a public HTTPS ArcGIS root ending in /sharing/rest.",
            subclass = "tampa_input_error")
   }
-  host <- match[[2L]]
-  if (!grepl("^[A-Za-z0-9][A-Za-z0-9.-]*[A-Za-z0-9]$", host) ||
-      grepl("\\.\\.|^[0-9.]+$|(^|\\.)localhost$|\\.(local|internal|home|lan)$",
-            host, ignore.case = TRUE)) {
+  if (!.public_arcgis_authority(match[[2L]])) {
     .abort("`portal` must use a public DNS host.", subclass = "tampa_input_error")
   }
   segments <- strsplit(sub("^/", "", match[[3L]]), "/", fixed = TRUE)[[1L]]

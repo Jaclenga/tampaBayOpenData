@@ -12,56 +12,48 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 ```
 
-The package provides access to public ArcGIS services; it does not publish or
-archive the government data. Its geographic reach, the number of checked
-layers, and the completeness of a government dataset are three different
-things. This article concerns **data coverage**. The project's [test coverage
-workflow](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml)
-measures a separate property of the package code.
+The package retrieves public ArcGIS data; it does not host or archive the
+records. This article describes the checked catalog's coverage and source
+limits that matter when using the data.
 
-## Which publishers are configured?
+## Bundled publishers
 
-The registry contains six publishers or jurisdictions. The checked column
-counts configured layers that package maintainers validated; live discovery
-searches each listed publisher's public ArcGIS organization. These counts come
-from the bundled `inst/extdata/datasets.json` and `portals.json` registries.
+The package checks the following layers and searches each publisher's public
+ArcGIS organization. Counts come from the bundled `datasets.json` and
+`portals.json` registries.
 
 | Publisher or jurisdiction | Checked layers | Live discovery |
 | --- | ---: | :---: |
 | Tampa | 20 | Yes |
-| St. Petersburg | 3 | Yes |
-| Clearwater | 3 | Yes |
-| Hillsborough County | 3 | Yes |
-| Pinellas County | 3 | Yes |
-| Tampa Bay Regional Planning Council | 3 | Yes |
+| St. Petersburg | 7 | Yes |
+| Clearwater | 6 | Yes |
+| Hillsborough County | 8 | Yes |
+| Pinellas County | 7 | Yes |
+| Tampa Bay Regional Planning Council | 4 | Yes |
 
-The checked catalog is a selected set of **35 layers**, not a complete
-inventory of each publisher's holdings. Live discovery may find other layers,
-but it is subject to portal indexing, service availability, scan limits, and
-the publishers' metadata. Neither path establishes comprehensive historical
-coverage of Tampa Bay. See [discovering data](discovery.html) for the meaning
-of `max_items`, scan completeness, and checked versus discovered status.
+The 52 checked layers are a selection, not a publisher inventory. Live
+discovery can find others, subject to portal indexing, availability, and
+scan limits. The [discovery article](discovery.html) explains scan
+completeness; the [catalog policy](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md)
+records selection criteria, topic coverage, and layer-specific limits.
 
 ## Interpret source scope before analysis
 
-The Tampa checked layers include active permit and development-case views,
-not complete historical ledgers. The `city-boundary` layer follows a
-shoreline representation and is not a legal survey. The catalog also includes
-parks, historic sites, police districts, transportation, zoning, and utility
-service areas. St. Petersburg checked layers cover parks, city boundaries,
-and streets; Clearwater layers cover park buffers, zoning, and libraries.
-Hillsborough County adds cooperative libraries, sidewalks, and parks. Pinellas
-County adds fire stations, park boundaries, and a trail. The Tampa Bay Regional
-Planning Council adds developments of regional impact, storm surge, and data
-centers. Its storm surge layer is a historical planning model, not current
-emergency guidance.
+Tampa's permits and development cases are active views, not complete
+historical ledgers. Its `city-boundary` follows a shoreline representation,
+not a legal survey, and `water-service-area` extends beyond city limits.
+Clearwater's park buffers are not park footprints; its critical-assets layer
+locates assets, not hazards. The Pinellas housing layer is a program inventory,
+not all housing. Hillsborough transit routes are not a live schedule. The
+regional planning council's storm surge layer is a historical planning model,
+not current emergency guidance.
 
-Park buffers are areas around parks, rather than exact park footprints.
-These maps do not by themselves establish legal boundaries, current road
-restrictions, service eligibility, or operating status. The
-`water-service-area` extends beyond city limits. The current `fire-stations`
-source uses unqualified field names such as `NAME` and supports `order_by`;
-joined service-information fields from an older source are unavailable.
+These layers alone do not establish legal boundaries, road restrictions,
+service eligibility, or facility status. Comparable demographic coverage and
+current flood and environmental coverage across all six publishers remain
+limited. Inspect each layer's `scope_note` and source metadata for its own
+limits. The current Tampa `fire-stations` source uses unqualified fields such
+as `NAME`; older joined `GIS.GovServiceInfo.*` fields are unavailable.
 
 ```{r inspect-source}
 library(tampaBayOpenData)
@@ -70,27 +62,21 @@ info <- tbod_dataset_info("construction-permits")
 info[c("title", "source_url", "scope_note", "terms", "verified")]
 ```
 
-Read `scope_note` and `terms` for a checked entry before analysis. The
-`verified` date records a maintainer endpoint check, not the freshness of
-every feature. A portal item's `modified` date describes its item, not
-necessarily the age of its records. `modified_source` distinguishes a live
-portal-item timestamp from a saved checked snapshot; neither substitutes
-for a feature update date.
+Read `scope_note` and `terms` before analysis. `verified` records an endpoint
+check, not feature freshness. A portal item's `modified` date can also differ
+from its records' dates; `modified_source` distinguishes live item timestamps
+from saved catalog snapshots.
 
-Discovered items may change, become unavailable, or lack clear reuse terms.
-The package does not validate their contents or verify their reuse terms.
-Inspect their source metadata and publisher terms before use. A live portal
-failure does not prevent offline browsing of the checked catalog with
-`source = "checked"`.
+Discovered items may change, disappear, or lack clear reuse terms. Inspect
+their source metadata and publisher terms. The checked catalog remains
+available offline if a live portal fails.
 
 ## Keep provenance with results
 
-`tbod_provenance()` returns a record attached to a retrieved tibble or
-`sf` object. It includes the publisher, source layer or item URL, portal and
-item ID when known, validation status, query endpoint and options, retrieval
-time, row counts, integrity method, and completeness. Status is `checked`
-for a bundled validated layer, `discovered` for an unvalidated live result,
-or `not_checked` for direct URL retrieval.
+`tbod_provenance()` reads a record attached to a retrieved tibble or `sf`
+object. It includes publisher and source URLs, portal and item ID when known,
+validation status, query, retrieval time, row counts, integrity method, and
+completeness. Direct URL retrieval has `not_checked` status.
 
 ```{r preserve-provenance}
 projects <- tbod_get_dataset("development-cases", spatial = TRUE, out_sr = 4326)
@@ -99,31 +85,27 @@ saveRDS(list(data = projects, provenance = source), "development-cases.rds")
 ```
 
 Save provenance separately before transformations or exports that may discard
-R attributes. A finite subset remains marked incomplete when more matching
-rows exist. Full and subset object-ID checks can detect missing, duplicate,
-or unexpected records; they cannot freeze live attribute values across
-requests. See [retrieval and downloads](retrieval.html) for integrity and
-resume behavior.
+attributes. A finite subset is marked incomplete when more rows match.
+Object-ID checks detect missing, duplicate, or unexpected records, but cannot
+freeze live attributes across requests. See [retrieval and
+downloads](retrieval.html) for the integrity methods.
 
 ## Monitoring and evidence
 
-The scheduled monitoring workflow runs twice weekly and samples the 35
-checked layers across all six publishers, live discovery, and county facility
-retrievals. County checks use both discovery descriptors and stable IDs and verify server
-projection to EPSG:4326. Each retrieval requests at most two rows with
-explicit timeouts; portal scans examine at most one service item per
-publisher. The [test guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md)
-describes these bounded checks and the full manual live suite.
-Completed runs provide dated evidence of source behavior, not a guarantee of
-future service availability, complete publisher coverage, or record
-freshness. The [dated validation
+Twice weekly monitoring checks the 52 layers across all six publishers,
+bounded live discovery, and county facility retrieval by descriptor and
+stable ID. It also checks server projection to EPSG:4326. Retrievals request
+at most two rows; scans inspect at most one service item per publisher. The
+[test guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md)
+describes these bounds and the manual live suite. The [validation
 record](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md)
-provides additional check history.
+dates completed checks; they cannot guarantee future availability or record
+freshness.
 
 ## Cite the package and its data sources
 
-If you use `tampaBayOpenData` in published work, cite the package version you
-used. After installation, obtain its citation text or a BibTeX entry in R:
+For published work, cite the package version you used. R provides citation
+text and BibTeX after installation:
 
 ```{r citation}
 citation("tampaBayOpenData")
@@ -131,11 +113,10 @@ toBibtex(citation("tampaBayOpenData"))
 ```
 
 Cite the original data publisher and dataset separately. `tbod_dataset_info(id)`
-provides source details, and `tbod_provenance(result)` records the source
-and retrieval time for a downloaded result. The package's MIT license applies
-to its software, **not** to government datasets. The publishers remain
-responsible for their data and reuse terms. `tampaBayOpenData` is independent
-of those organizations and of rOpenSci.
+gives source details; `tbod_provenance(result)` records source and retrieval
+time. The MIT license applies to the package software, **not** government
+datasets. Publishers set their data terms. The package is independent of them
+and of rOpenSci.
 
 For implementation details, see the [architecture and research
 basis](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/architecture.md).

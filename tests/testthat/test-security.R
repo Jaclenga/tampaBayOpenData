@@ -49,16 +49,16 @@ test_that("public spatial retrieval gives source context for a malicious WKT loc
     payload
   })
   local_mocked_bindings(arcgis_http = transport$http)
-  error <- tryCatch(get_dataset("construction-permits", spatial = TRUE), error = identity)
+  error <- tryCatch(tbod_get_dataset("construction-permits", spatial = TRUE), error = identity)
   expect_s3_class(error, "tampa_spatial_error")
   expect_identical(error$dataset_id, "construction-permits")
   expect_match(conditionMessage(error), "inline coordinate-system definition")
-  expect_match(conditionMessage(error), dataset_info("construction-permits")$source_url,
+  expect_match(conditionMessage(error), tbod_dataset_info("construction-permits")$source_url,
                fixed = TRUE)
 })
 
 test_that("deep JSON is rejected with context before recursive validation exhausts R", {
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   url <- paste0(entry$service_url, "/", entry$layer_id)
   for (depth in c(64L, 3000L)) {
     body <- paste0('{"ignored":', strrep("[", depth), "0", strrep("]", depth), "}")
@@ -86,7 +86,7 @@ test_that("HTTP redirects fail without authorizing a second destination", {
   # Override the ordinary test dispatch guard; actual sockets remain mocked.
   local_mocked_bindings(req_perform = fixture_req_perform,
                         .package = "httr2")
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   url <- paste0(entry$service_url, "/", entry$layer_id)
   error <- tryCatch(arcgis_request(url, dataset = entry), error = identity)
   expect_s3_class(error, "tampa_http_error")
@@ -138,7 +138,7 @@ test_that("the actual retry loop limits a one-day header without real sleeps", {
 test_that("oversized responses fail before JSON parsing with source context", {
   # Lower the internal ceiling to exercise rejection without allocating 50 MiB.
   local_mocked_bindings(.arcgis_response_limit = 12L)
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   url <- paste0(entry$service_url, "/", entry$layer_id)
   body <- strrep("x", 13L)
   local_mocked_bindings(arcgis_http = function(...) list(status = 200L, body = body))
@@ -165,7 +165,7 @@ test_that("HTTP response text cannot select an alternate JSON source", {
   path <- tempfile(fileext = ".json")
   on.exit(unlink(path))
   writeLines('{"name":"benign local data"}', path)
-  entry <- dataset_info("construction-permits")
+  entry <- tbod_dataset_info("construction-permits")
   url <- paste0(entry$service_url, "/", entry$layer_id)
   for (body in c(path, "https://example.invalid/json", "http://127.0.0.1/json")) {
     local_mocked_bindings(arcgis_http = function(...) list(status = 200L, body = body))

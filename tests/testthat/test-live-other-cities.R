@@ -1,7 +1,7 @@
 # These bounded checks run only when explicitly enabled from an allowed network.
 # They exercise direct URLs; they do not add these cities to portal discovery.
 expect_live_other_city_provenance <- function(data, case, where = "1=1") {
-  source <- dataset_provenance(data)
+  source <- tbod_provenance(data)
   expect_identical(source$validation_status, "not_checked")
   expect_identical(source$publisher, "Unknown ArcGIS publisher")
   expect_identical(source$jurisdiction, "unspecified")
@@ -28,7 +28,7 @@ for (case in other_city_cases()) {
     skip_if_not(identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true"),
                 "Set TAMPA_OPEN_DATA_LIVE=true to opt into municipal API calls")
     fields <- other_city_fields(case)
-    sample <- get_arcgis_layer(case$metadata_url, fields = fields,
+    sample <- tbod_get_arcgis_layer(case$metadata_url, fields = fields,
                                limit = 2, page_size = 1, timeout = 15)
     expect_s3_class(sample, "tbl_df")
     expect_identical(names(sample), fields)
@@ -50,7 +50,7 @@ for (case in other_city_cases()) {
 
     # Select IDs from this run so changing upstream counts never become fixtures.
     where <- other_city_live_where(case, ids)
-    filtered <- get_arcgis_layer(case$metadata_url, where = where, fields = fields,
+    filtered <- tbod_get_arcgis_layer(case$metadata_url, where = where, fields = fields,
                                  limit = 2, page_size = 1, timeout = 15)
     expect_s3_class(filtered, "tbl_df")
     expect_identical(names(filtered), fields)
@@ -68,17 +68,17 @@ for (case in other_city_cases()) {
                 "Set TAMPA_OPEN_DATA_LIVE=true to opt into municipal API calls")
     skip_if_not_installed("sf")
     fields <- other_city_fields(case)
-    sample <- get_arcgis_layer(case$metadata_url, fields = case$object_id_field,
+    sample <- tbod_get_arcgis_layer(case$metadata_url, fields = case$object_id_field,
                                limit = 2, page_size = 1, timeout = 15)
     expect_gt(nrow(sample), 0L)
     expect_lte(nrow(sample), 2L)
     ids <- sample[[case$object_id_field]]
     expect_equal(anyDuplicated(ids), 0L)
     where <- other_city_live_where(case, ids)
-    native <- get_arcgis_layer(case$metadata_url, where = where, fields = fields,
+    native <- tbod_get_arcgis_layer(case$metadata_url, where = where, fields = fields,
                                spatial = TRUE, limit = 2, page_size = 1,
                                timeout = 15)
-    projected <- get_arcgis_layer(case$metadata_url, where = where, fields = fields,
+    projected <- tbod_get_arcgis_layer(case$metadata_url, where = where, fields = fields,
                                   spatial = TRUE, out_sr = 4326, limit = 2,
                                   page_size = 1, timeout = 15)
 
@@ -101,8 +101,8 @@ for (case in other_city_cases()) {
     }
     expect_equal(sf::st_crs(native)$epsg, case$native_epsg)
     expect_equal(sf::st_crs(projected)$epsg, 4326)
-    expect_null(dataset_provenance(native)$query$out_sr)
-    expect_equal(dataset_provenance(projected)$query$out_sr, 4326)
+    expect_null(tbod_provenance(native)$query$out_sr)
+    expect_equal(tbod_provenance(projected)$query$out_sr, 4326)
 
     # Align by object ID before comparing attributes and coordinates.
     projected <- projected[match(native[[case$object_id_field]],

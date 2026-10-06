@@ -25,13 +25,13 @@ test_that("malformed timezone and capability metadata cannot change parsing sile
     transport <- fixture_transport(metadata = change(fixture_metadata()))
     local_mocked_bindings(arcgis_http = transport$http,
                           .package = "tampaBayOpenData")
-    failure <- tryCatch(get_dataset("construction-permits"), error = identity)
+    failure <- tryCatch(tbod_get_dataset("construction-permits"), error = identity)
     expect_s3_class(failure, "tampa_response_error")
     if (inherits(failure, "error")) {
       expect_identical(failure$dataset_id, "construction-permits")
       expect_match(conditionMessage(failure), "metadata|time zone")
       expect_match(conditionMessage(failure),
-                    dataset_info("construction-permits")$source_url, fixed = TRUE)
+                    tbod_dataset_info("construction-permits")$source_url, fixed = TRUE)
     }
     expect_length(fixture_queries(transport), 0L)
   }
@@ -44,7 +44,7 @@ test_that("Query support requires a complete capability token", {
     transport <- fixture_transport(metadata = metadata)
     local_mocked_bindings(arcgis_http = transport$http,
                           .package = "tampaBayOpenData")
-    expect_error(get_dataset("construction-permits"),
+    expect_error(tbod_get_dataset("construction-permits"),
                  "no longer advertises query support", class = "tampa_data_error")
     expect_length(fixture_queries(transport), 0L)
   }
@@ -55,7 +55,7 @@ test_that("Query support requires a complete capability token", {
     transport <- fixture_transport(metadata = metadata)
     local_mocked_bindings(arcgis_http = transport$http,
                           .package = "tampaBayOpenData")
-    expect_identical(get_dataset("construction-permits")$OBJECTID, 1:5)
+    expect_identical(tbod_get_dataset("construction-permits")$OBJECTID, 1:5)
   }
 
   metadata <- fixture_metadata()
@@ -64,7 +64,7 @@ test_that("Query support requires a complete capability token", {
   transport <- fixture_transport(metadata = metadata)
   local_mocked_bindings(arcgis_http = transport$http,
                         .package = "tampaBayOpenData")
-  expect_identical(get_dataset("construction-permits")$OBJECTID, 1:5)
+  expect_identical(tbod_get_dataset("construction-permits")$OBJECTID, 1:5)
 })
 
 test_that("response spatial reference requires an exact JSON key", {
@@ -85,10 +85,10 @@ test_that("a missing optional spatial dependency fails before contacting a sourc
   local_mocked_bindings(arcgis_has_sf = function() FALSE,
                         arcgis_http = transport$http,
                         .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits", spatial = TRUE),
+  expect_error(tbod_get_dataset("construction-permits", spatial = TRUE),
                "requires the sf package.*install.packages", class = "tampa_data_error")
   expect_length(transport$state$requests, 0L)
-  attributes <- get_dataset("construction-permits", fields = "RECORD_ID")
+  attributes <- tbod_get_dataset("construction-permits", fields = "RECORD_ID")
   expect_s3_class(attributes, "tbl_df")
   expect_identical(attributes$RECORD_ID, paste0("synthetic-", 1:5))
 })

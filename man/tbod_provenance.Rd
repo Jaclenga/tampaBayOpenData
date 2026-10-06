@@ -3,9 +3,35 @@
 \name{tbod_provenance}
 \alias{tbod_provenance}
 \title{Read retrieval provenance}
-\usage{tbod_provenance(x)}
-\arguments{
-\item{x}{A result from \code{\link{tbod_get_dataset}} or a downloaded chunk.}
+\usage{
+tbod_provenance(x)
 }
-\value{The result's attached source and retrieval provenance record.}
-\description{Reads the source, query, completeness, and schema information attached to a retrieval result.}
+\arguments{
+\item{x}{A retrieval result or a chunk read from \code{\link[=tbod_download_dataset]{tbod_download_dataset()}}
+or \code{\link[=tbod_download_arcgis_layer]{tbod_download_arcgis_layer()}}.}
+}
+\value{
+The attached \code{source} list, including \code{dataset_id}, \code{publisher},
+\code{jurisdiction}, \code{source_url}, query \code{endpoint}, \code{validation_status}, UTC
+\code{started_at} and \code{retrieved_at}, submitted \code{query}, \code{matched_rows},
+\code{returned_rows}, \code{complete}, and \code{integrity}. Download chunks also include
+\code{download} with the chunk number and object IDs.
+}
+\description{
+Reads the source, query, completeness, and schema information attached to
+a tabular or spatial result from \code{\link[=tbod_get_dataset]{tbod_get_dataset()}}, or a chunk saved by
+\code{\link[=tbod_download_dataset]{tbod_download_dataset()}}. The record includes publisher, source and query
+URLs, UTC retrieval time, returned and matching row counts, and integrity
+status. \code{validation_status} is \code{checked} for bundled entries, \code{discovered}
+for live portal results, and \code{not_checked} for direct layer URLs. Item ID,
+portal, and original metadata are included when available. A successful
+full retrieval checks object-ID membership, but upstream attributes are
+not a transactionally frozen snapshot. R transformations can discard
+attributes; save provenance before transforming or exporting the result.
+}
+\examples{
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  permits <- tbod_get_permits(limit = 10)
+  tbod_provenance(permits)$source_url
+}
+}

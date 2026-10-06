@@ -47,23 +47,23 @@
 #' upstream attributes are not guaranteed to be a transactionally frozen snapshot.
 #' Attributes can be lost in subsequent R transformations; save provenance before
 #' exporting data or transforming objects with tools that discard attributes.
-#' @param x A retrieval result or a chunk read from [download_dataset()] or
-#'   [download_arcgis_layer()].
+#' @param x A retrieval result or a chunk read from [tbod_download_dataset()] or
+#'   [tbod_download_arcgis_layer()].
 #' @return A named list with `dataset_id`, `publisher`, `jurisdiction`,
 #'   `source_url`, the query `endpoint`, `validation_status`, UTC `started_at`
 #'   and `retrieved_at` times, the submitted `query`, `matched_rows`,
 #'   `returned_rows`, `complete`, and `integrity`.
 #'   Download chunks also include a `download` entry with the chunk number and
 #'   object IDs. The list is the result's attached `source` attribute.
-#' @export
+#' @noRd
 #' @examples
-#' dataset_info("construction-permits")$publisher
+#' tbod_dataset_info("construction-permits")$publisher
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   permits <- get_permits(limit = 10)
-#'   dataset_provenance(permits)
+#'   permits <- tbod_get_permits(limit = 10)
+#'   tbod_provenance(permits)
 #'   attr(permits, "retrieved_at")
 #' }
-dataset_provenance <- function(x) {
+.dataset_provenance_impl <- function(x) {
   source <- attr(x, "source", exact = TRUE)
   if (!is.list(source) || is.null(source$dataset_id)) .abort("This object has no tampaBayOpenData retrieval provenance.")
   source

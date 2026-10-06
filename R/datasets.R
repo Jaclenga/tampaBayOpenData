@@ -1,10 +1,10 @@
 #' Retrieve a checked or discovered ArcGIS dataset
 #'
-#' Accepts a checked package ID from [list_datasets()], a single discovery
-#' result row from [search_datasets()], or a stable `arcgis:<item-id>:<layer-id>`
+#' Accepts a checked package ID from [tbod_list_datasets()], a single discovery
+#' result row from [tbod_search_datasets()], or a stable `arcgis:<item-id>:<layer-id>`
 #' identifier. The latter two paths use current ArcGIS portal metadata; they
 #' have not received the package's curated source validation. For a compatible
-#' layer URL outside the discovery portal, use [get_arcgis_layer()].
+#' layer URL outside the discovery portal, use [tbod_get_arcgis_layer()].
 #' Bundled checked layers are compared with expected schema snapshots before
 #' querying. Compatible changes warn; incompatible changes stop retrieval.
 #' [tbod_check_schema()] returns a categorized report of current differences.
@@ -17,7 +17,7 @@
 #' response, or upstream error fails explicitly. With `limit = Inf`, all matching
 #' records are retrieved. Queries matching more than one million records must be
 #' narrowed with filters for full retrieval because it requires a complete ID
-#' manifest. See `integrity` for previews and [download_dataset()] for downloads
+#' manifest. See `integrity` for previews and [tbod_download_dataset()] for downloads
 #' that save validated chunks to disk and can resume after interruption.
 #'
 #' Source column names, strings, coded values, and date-looking strings are
@@ -45,9 +45,9 @@
 #' @param jurisdiction Bundled checked-catalog jurisdiction code, or `"all"`.
 #'   Omit to resolve a unique checked ID across the catalog or to use a
 #'   discovered result's or stable ArcGIS ID's jurisdiction. See
-#'   [list_portals()] for the bundled jurisdiction codes.
+#'   [tbod_list_portals()] for the bundled jurisdiction codes.
 #' @param where ArcGIS SQL WHERE clause, using actual source field names.
-#'   Defaults to `"1=1"` (all records). See [dataset_info()] with `refresh = TRUE`.
+#'   Defaults to `"1=1"` (all records). See [tbod_dataset_info()] with `refresh = TRUE`.
 #' @param fields Character vector of exact source field names, or NULL/`"*"` for
 #'   all nongeometry attributes. An object-ID field is requested internally for
 #'   integrity checks and removed when it was not selected.
@@ -61,7 +61,7 @@
 #'   offset pagination. An object-ID tie breaker is added automatically.
 #' @param limit Maximum number of records; Inf retrieves all, and 0 returns a
 #'   typed empty result. A deliberate subset is recorded as incomplete in
-#'   [dataset_provenance()] when additional matching records exist.
+#'   [tbod_provenance()] when additional matching records exist.
 #' @param page_size Optional positive integer batch size. Defaults to at most
 #'   1,000, bounded by the advertised service maximum; larger values are capped.
 #' @param query Named list of advanced ArcGIS filter parameters: `geometry`,
@@ -84,16 +84,16 @@
 #'   method and never labels a deliberate subset complete.
 #' @return A tibble, or an sf object when spatial retrieval is requested. Source
 #'   metadata are attached as `source`, `dataset_id`, `jurisdiction`, and
-#'   `retrieved_at` attributes; [dataset_provenance()] returns the full record.
-#' @export
+#'   `retrieved_at` attributes; [tbod_provenance()] returns the full record.
+#' @noRd
 #' @examples
-#' dataset_info("construction-permits")$source_url
+#' tbod_dataset_info("construction-permits")$source_url
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   permits <- get_dataset("construction-permits", limit = 10,
+#'   permits <- tbod_get_dataset("construction-permits", limit = 10,
 #'     fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"))
-#'   dataset_provenance(permits)$returned_rows
+#'   tbod_provenance(permits)$returned_rows
 #' }
-get_dataset <- function(id, jurisdiction = NULL, where = "1=1", fields = NULL,
+.get_dataset_impl <- function(id, jurisdiction = NULL, where = "1=1", fields = NULL,
                         spatial = FALSE, out_sr = NULL, order_by = NULL,
                         limit = Inf, page_size = NULL, query = list(), timeout = 30,
                         total_timeout = 120, integrity = "auto") {
@@ -163,30 +163,30 @@ get_dataset <- function(id, jurisdiction = NULL, where = "1=1", fields = NULL,
 #' Retrieve a compatible ArcGIS layer by URL
 #'
 #' Reads a public HTTPS ArcGIS FeatureServer or MapServer layer through the same
-#' checked pagination and parsing engine as [get_dataset()]. Pass a layer URL
+#' checked pagination and parsing engine as [tbod_get_dataset()]. Pass a layer URL
 #' ending in `/FeatureServer/<id>` or `/MapServer/<id>`. This direct path is
-#' marked `not_checked` in [dataset_provenance()]; it has no portal item ID.
+#' marked `not_checked` in [tbod_provenance()]; it has no portal item ID.
 #' A table without geometry can be retrieved with `spatial = FALSE`.
 #'
 #' @param url Public HTTPS ArcGIS layer URL.
-#' @inheritParams get_dataset
+#' @inheritParams .get_dataset_impl
 #' @return A tibble, or an sf object when `spatial = TRUE`, with source,
 #'   retrieval, and completeness details attached as attributes. Use
-#'   [dataset_provenance()] to read the full provenance record; its
+#'   [tbod_provenance()] to read the full provenance record; its
 #'   `validation_status` is `not_checked` for a direct URL.
-#' @export
+#' @noRd
 #' @examples
-#' url <- dataset_info("construction-permits")$source_url
+#' url <- tbod_dataset_info("construction-permits")$source_url
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   data <- get_arcgis_layer(url, limit = 10)
-#'   dataset_provenance(data)$validation_status
+#'   data <- tbod_get_arcgis_layer(url, limit = 10)
+#'   tbod_provenance(data)$validation_status
 #' }
-get_arcgis_layer <- function(url, where = "1=1", fields = NULL,
+.get_arcgis_layer_impl <- function(url, where = "1=1", fields = NULL,
                              spatial = FALSE, out_sr = NULL, order_by = NULL,
                              limit = Inf, page_size = NULL, query = list(),
                              timeout = 30, total_timeout = 120, integrity = "auto") {
   descriptor <- .direct_arcgis_descriptor(url)
-  get_dataset(descriptor, where = where, fields = fields, spatial = spatial,
+  .get_dataset_impl(descriptor, where = where, fields = fields, spatial = spatial,
               out_sr = out_sr, order_by = order_by, limit = limit,
               page_size = page_size, query = query, timeout = timeout,
               total_timeout = total_timeout, integrity = integrity)

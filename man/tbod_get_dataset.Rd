@@ -5,43 +5,126 @@
 \title{Retrieve a bundled, discovered, or direct ArcGIS dataset}
 \usage{
 tbod_get_dataset(
-  id, jurisdiction = NULL, where = "1=1", fields = NULL, spatial = FALSE,
-  out_sr = NULL, order_by = NULL, limit = Inf, page_size = NULL,
-  query = list(), timeout = 30, total_timeout = 120,
-  integrity = "auto", portal = NULL
+  id,
+  jurisdiction = NULL,
+  where = "1=1",
+  fields = NULL,
+  spatial = FALSE,
+  out_sr = NULL,
+  order_by = NULL,
+  limit = Inf,
+  page_size = NULL,
+  query = list(),
+  timeout = 30,
+  total_timeout = 120,
+  integrity = "auto",
+  portal = NULL
 )
 }
 \arguments{
-\item{id}{Bundled ID, one-row discovery result, stable \code{arcgis:<item-id>:<layer-id>} identifier, or public HTTPS ArcGIS layer URL ending in \code{/FeatureServer/<id>} or \code{/MapServer/<id>}.}
-\item{jurisdiction}{Optional bundled catalog jurisdiction. \code{NULL} resolves a unique checked ID and preserves a discovery row's jurisdiction. Direct URLs use \code{"unspecified"} and do not accept a jurisdiction override.}
-\item{where}{ArcGIS SQL WHERE clause; defaults to all records.}
-\item{fields}{Exact source field names, or \code{NULL} or \code{"*"} for all nongeometry attributes.}
-\item{spatial}{Return an \code{sf} object. Requires the optional sf package.}
-\item{out_sr}{Optional positive output spatial reference ID for server projection; requires \code{spatial = TRUE}.}
-\item{order_by}{Optional source fields with ASC or DESC, such as \code{"LASTUPDATE DESC"}.}
-\item{limit}{Maximum number of records. \code{Inf} retrieves all; zero returns a typed empty result.}
-\item{page_size}{Optional positive batch size, bounded by service limits.}
-\item{query}{Named list of advanced ArcGIS filter parameters, such as \code{geometry}, \code{time}, and \code{spatialRel}.}
-\item{timeout}{Per-request timeout in seconds.}
-\item{total_timeout}{Overall operation budget in seconds; \code{Inf} disables it.}
-\item{integrity}{\code{"auto"} uses bounded preview validation when possible; \code{"full"} always requires the complete object-ID manifest.}
-\item{portal}{Optional public HTTPS ArcGIS sharing REST portal root for a stable ArcGIS ID from a custom Enterprise portal. Not used with other input types.}
+\item{id}{Bundled ID, one-row discovery result, stable
+\verb{arcgis:<item-id>:<layer-id>} identifier, or public HTTPS ArcGIS layer URL
+ending in \verb{/FeatureServer/<id>} or \verb{/MapServer/<id>}.}
+
+\item{jurisdiction}{Optional checked-catalog jurisdiction. \code{NULL} resolves a
+unique checked ID across the bundled catalog and preserves the source
+jurisdiction of a discovery result. Direct URLs use \code{"unspecified"} and
+do not accept a jurisdiction override.}
+
+\item{where}{ArcGIS SQL WHERE clause using source field names; defaults to
+\code{"1=1"} for all records. Inspect names with
+\code{tbod_dataset_info(id, refresh = TRUE)}.}
+
+\item{fields}{Character vector of exact source field names, or \code{NULL} or
+\code{"*"} for all nongeometry attributes. An object-ID field is requested
+internally for integrity checks and omitted from the result if unselected.}
+
+\item{spatial}{Return an \code{sf} object. Requires the optional sf package and
+supported geometry with a reliably determined CRS.}
+
+\item{out_sr}{Optional positive ArcGIS/EPSG spatial reference ID for server
+projection, such as 4326. Requires \code{spatial = TRUE}; \code{NULL} keeps the
+native CRS. The response must confirm a requested projection.}
+
+\item{order_by}{Source fields with ASC or DESC, such as
+\code{c("LASTUPDATE DESC", "RECORD_ID ASC")}. Requires server ordering and
+offset pagination; an object-ID tie breaker is added automatically.}
+
+\item{limit}{Maximum records. \code{Inf} retrieves all; zero returns a typed
+empty result. A deliberate subset is \code{complete = FALSE} in
+\code{\link[=tbod_provenance]{tbod_provenance()}} when more matching records exist.}
+
+\item{page_size}{Optional positive integer batch size, capped at 1,000 and
+the service maximum.}
+
+\item{query}{Named list of advanced ArcGIS filters: \code{geometry},
+\code{geometryType}, \code{inSR}, \code{spatialRel}, \code{relationParam}, \code{time}, \code{distance},
+\code{units}, \code{gdbVersion}, \code{historicMoment}, \code{sqlFormat}, and
+\code{datumTransformation}. Values can be scalars or JSON-style lists.
+Response format, field selection, aggregation, geometry simplification,
+and pagination parameters are protected.}
+
+\item{timeout}{Per-request timeout in seconds. Transient transport and HTTP
+failures may receive three attempts; a generic ArcGIS query error may
+receive four.}
+
+\item{total_timeout}{Overall operation budget in seconds. Defaults to 120;
+\code{Inf} disables it. Requests and retry waits use the remaining budget.}
+
+\item{integrity}{\code{"auto"} (default) uses bounded preview validation when a
+finite limit is at most 1,000, more than 10,000 records match, and the
+layer supports ordering and pagination. The returned IDs are checked
+against the original filter. Full retrieval always uses the full object-ID
+manifest; \code{"full"} requires it even for a preview. A zero limit requests
+only the count. Provenance records the method used.}
+
+\item{portal}{Optional public HTTPS ArcGIS sharing REST portal URL for a
+stable \verb{arcgis:<item-id>:<layer-id>} identifier. Omit to use the global
+ArcGIS item lookup. This argument does not apply to other input types.}
 }
-\value{A tibble or sf object with source, completeness, retrieval, and schema metadata attached. Read the full record with \code{\link{tbod_provenance}}.}
+\value{
+A tibble, or an sf object when \code{spatial = TRUE}. \code{source},
+\code{dataset_id}, \code{jurisdiction}, and \code{retrieved_at} attributes record the
+source and retrieval. Read the complete record with \code{\link[=tbod_provenance]{tbod_provenance()}}.
+}
 \description{
-Retrieves a checked catalog entry, a discovered layer, or a direct ArcGIS
-FeatureServer or MapServer layer. Direct URL provenance is \code{not_checked}.
-The unprefixed entry points remain available for existing code.
+Accepts a checked catalog ID, a one-row discovery result, a stable
+\verb{arcgis:<item-id>:<layer-id>} identifier, or a public HTTPS ArcGIS layer URL
+ending in \verb{/FeatureServer/<id>} or \verb{/MapServer/<id>}. For a stable ArcGIS ID
+from an Enterprise portal, supply that portal's sharing REST URL in \code{portal}.
+Direct URLs use the same retrieval engine and carry \code{not_checked} provenance.
+For a bundled checked layer, retrieval compares current metadata with its
+expected schema, warns for compatible drift, and errors before querying for
+incompatible drift. Use \code{\link[=tbod_check_schema]{tbod_check_schema()}} to inspect the differences.
 }
 \details{
-Retrieval requests live layer metadata and validates pagination and record
-membership. A bundled layer's metadata is compared with its expected schema;
-compatible changes warn and incompatible changes fail before querying. Use
-\code{\link{tbod_check_schema}} to inspect the differences.
+Retrieval requests the current layer schema and matching count.
+Full requests also retrieve and validate an object-ID manifest. A small
+preview of a large queryable layer can validate only its returned IDs
+against the original filter. Missing or duplicate records, truncated
+manifests, unexpected responses, and upstream errors fail explicitly.
+Full retrieval requires a complete manifest and must be narrowed by
+filters if more than one million records match. Use
+\code{\link[=tbod_download_dataset]{tbod_download_dataset()}} to save validated chunks to disk.
+
+Source field names, strings, coded values, and date-looking strings are
+preserved. ArcGIS epoch-millisecond dates become UTC POSIXct and date-only
+fields become Date. Dates declared to have an unknown timezone remain raw
+milliseconds with a warning; UTC editor tracking dates can still convert.
+Integer values remain integers when safe, larger numeric values become
+doubles, and exact big integers can be represented as character values.
+NULL or absent attributes become typed missing values. Spatial results
+use two-dimensional XY coordinates and exclude Z and M values.
+
+The package does not cache live data. Record membership changes detected
+during retrieval cause an error, but attribute changes cannot be frozen.
+Accepted responses are limited to 50 MiB and 64 nested JSON containers;
+requests do not follow redirects. Native curl, GDAL, and PROJ parsing
+remains subject to the installed libraries' behavior.
 }
 \examples{
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-  permits <- tbod_get_dataset("construction-permits", limit = 5)
-  tbod_provenance(permits)$source_url
+  data <- tbod_get_dataset("construction-permits", limit = 5)
+  tbod_provenance(data)$source_url
 }
 }

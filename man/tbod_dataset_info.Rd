@@ -5,22 +5,48 @@
 \title{Inspect a dataset and its source}
 \usage{
 tbod_dataset_info(
-  id, jurisdiction = NULL, refresh = FALSE, timeout = 30,
-  total_timeout = 60, portal = NULL
+  id,
+  jurisdiction = NULL,
+  refresh = FALSE,
+  timeout = 30,
+  total_timeout = 60,
+  portal = NULL
 )
 }
 \arguments{
-\item{id}{Bundled ID, one-row discovery result, stable ArcGIS ID, or public HTTPS ArcGIS layer URL.}
-\item{jurisdiction}{Optional bundled catalog jurisdiction; \code{NULL} resolves a unique ID or preserves the discovery source. Direct URLs do not accept a jurisdiction override.}
-\item{refresh}{Whether to retrieve the current ArcGIS layer metadata.}
+\item{id}{Bundled ID, one-row discovery result, stable ArcGIS ID, or public
+HTTPS ArcGIS layer URL.}
+
+\item{jurisdiction}{Optional bundled catalog jurisdiction. \code{NULL} resolves a
+unique bundled ID and preserves a discovery result's jurisdiction. Direct
+URLs do not accept a jurisdiction override.}
+
+\item{refresh}{Whether to request current ArcGIS layer metadata.}
+
 \item{timeout}{Per-request timeout in seconds.}
-\item{total_timeout}{Overall operation budget in seconds; \code{Inf} disables it.}
-\item{portal}{Optional sharing REST portal root when \code{id} is a stable \code{arcgis:<item-id>:<layer-id>} identifier.}
+
+\item{total_timeout}{Maximum elapsed seconds for inspection, including
+metadata requests and retries. Defaults to 60; \code{Inf} disables it.}
+
+\item{portal}{Optional ArcGIS sharing REST portal URL when \code{id} is a stable
+\verb{arcgis:<item-id>:<layer-id>} identifier.}
 }
-\value{A named source information list. With \code{refresh = TRUE}, includes current fields and raw ArcGIS metadata.}
+\value{
+A named list with the dataset ID, title, publisher, jurisdiction,
+source and service URLs, scope, and terms. With \code{refresh = TRUE}, it also
+contains \code{fields} (a tibble of source names, types, and aliases),
+\code{metadata} (raw ArcGIS layer metadata), and UTC \code{inspected_at}.
+}
 \description{
-Inspects a bundled, discovered, or direct ArcGIS dataset. Use
-\code{\link{tbod_schema}} to inspect expected or current fields and
-\code{\link{tbod_check_schema}} to compare them.
+Accepts a bundled ID, one-row discovery result, stable ArcGIS ID, or direct
+public HTTPS layer URL. A checked ID reads its bundled record offline;
+a stable ArcGIS ID resolves the current portal item. \code{refresh = TRUE}
+retrieves current fields, aliases, types, geometry, CRS, query capabilities,
+and editing metadata. The registry's \code{verified} date records an endpoint
+check, not record freshness. Use \code{\link[=tbod_schema]{tbod_schema()}} to inspect the schema or
+\code{\link[=tbod_check_schema]{tbod_check_schema()}} to compare it with the checked snapshot.
 }
-\examples{tbod_dataset_info("construction-permits")}
+\examples{
+info <- tbod_dataset_info("construction-permits")
+info[c("id", "title", "publisher", "source_url")]
+}

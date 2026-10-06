@@ -7,12 +7,12 @@ test_that("operation budgets validate inputs and preserve a tighter parent deadl
   expect_identical(.operation_timeout(timeout, Inf), timeout)
   expect_null(attr(.operation_timeout(30, Inf), "tampa_deadline"))
   for (invalid in list(0, -1, NA_real_, NaN, "10", c(1, 2))) {
-    expect_error(get_dataset("construction-permits", total_timeout = invalid),
+    expect_error(tbod_get_dataset("construction-permits", total_timeout = invalid),
                  class = "tampa_input_error")
   }
-  expect_error(get_dataset("construction-permits", integrity = "unchecked"),
+  expect_error(tbod_get_dataset("construction-permits", integrity = "unchecked"),
                class = "tampa_input_error")
-  expect_error(get_dataset("construction-permits", timeout = 0.0001),
+  expect_error(tbod_get_dataset("construction-permits", timeout = 0.0001),
                class = "tampa_input_error")
 })
 
@@ -28,7 +28,7 @@ test_that("expiration between requests fails before fetching any feature page", 
       response
     }
   )
-  error <- tryCatch(get_dataset("construction-permits", total_timeout = 3),
+  error <- tryCatch(tbod_get_dataset("construction-permits", total_timeout = 3),
                     error = identity)
   expect_s3_class(error, "tampa_timeout_error")
   expect_identical(error$dataset_id, "construction-permits")
@@ -50,7 +50,7 @@ test_that("late parsing cannot return a successful result after the budget expir
       result
     }
   )
-  expect_error(get_dataset("construction-permits", total_timeout = 1),
+  expect_error(tbod_get_dataset("construction-permits", total_timeout = 1),
                "total_timeout", class = "tampa_timeout_error")
 })
 

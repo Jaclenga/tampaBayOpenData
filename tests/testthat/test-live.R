@@ -3,9 +3,9 @@
 test_that("live permits retrieve the complete multi-page source view", {
   skip_if_not(identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true"),
               "Set TAMPA_OPEN_DATA_LIVE=true to opt into City API calls")
-  result <- get_dataset("construction-permits",
+  result <- tbod_get_dataset("construction-permits",
     fields = c("OBJECTID", "RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"), page_size = 500)
-  provenance <- dataset_provenance(result)
+  provenance <- tbod_provenance(result)
   expect_s3_class(result, "tbl_df")
   expect_true(provenance$complete)
   expect_equal(provenance$matched_rows, nrow(result))
@@ -21,26 +21,26 @@ test_that("live spatial samples confirm projected and native CRS handling", {
   skip_if_not(identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true"),
               "Set TAMPA_OPEN_DATA_LIVE=true to opt into City API calls")
   skip_if_not_installed("sf")
-  capital <- get_dataset("capital-projects", spatial = TRUE, limit = 2,
+  capital <- tbod_get_dataset("capital-projects", spatial = TRUE, limit = 2,
                          fields = c("OBJECTID", "projid"))
   expect_s3_class(capital, "sf")
   expect_equal(sf::st_crs(capital)$epsg, 6443)
-  capital_wgs84 <- get_dataset("capital-projects", spatial = TRUE, out_sr = 4326,
+  capital_wgs84 <- tbod_get_dataset("capital-projects", spatial = TRUE, out_sr = 4326,
                                limit = 2, fields = c("OBJECTID", "projid"))
   expect_equal(sf::st_crs(capital_wgs84)$epsg, 4326)
   expect_equal(sf::st_coordinates(sf::st_transform(capital, 4326)),
                sf::st_coordinates(capital_wgs84), tolerance = 1e-5)
-  riverwalk <- get_dataset("riverwalk", spatial = TRUE, out_sr = 4326, limit = 2)
+  riverwalk <- tbod_get_dataset("riverwalk", spatial = TRUE, out_sr = 4326, limit = 2)
   expect_s3_class(riverwalk, "sf")
   expect_true(all(as.character(sf::st_geometry_type(riverwalk)) %in%
                     c("LINESTRING", "MULTILINESTRING")))
-  boundary <- get_dataset("city-boundary", spatial = TRUE, out_sr = 4326)
+  boundary <- tbod_get_dataset("city-boundary", spatial = TRUE, out_sr = 4326)
   expect_s3_class(boundary, "sf")
   expect_true(all(as.character(sf::st_geometry_type(boundary)) %in%
                     c("POLYGON", "MULTIPOLYGON")))
   for (sample in list(capital, capital_wgs84, riverwalk, boundary)) {
-    expect_equal(dataset_provenance(sample)$returned_rows, nrow(sample))
-    expect_identical(dataset_provenance(sample)$publisher, "City of Tampa")
+    expect_equal(tbod_provenance(sample)$returned_rows, nrow(sample))
+    expect_identical(tbod_provenance(sample)$publisher, "City of Tampa")
     expect_false(is.na(sf::st_crs(sample)))
   }
 })
@@ -56,10 +56,10 @@ test_that("remaining original City layers return bounded spatial samples", {
     list(id = "parks", geometry = "POLYGON|MULTIPOLYGON")
   )
   for (case in cases) {
-    oid <- dataset_info(case$id)$object_id_field
-    data <- get_dataset(case$id, fields = oid, spatial = TRUE, out_sr = 4326,
+    oid <- tbod_dataset_info(case$id)$object_id_field
+    data <- tbod_get_dataset(case$id, fields = oid, spatial = TRUE, out_sr = 4326,
                         limit = 2, page_size = 1)
-    source <- dataset_provenance(data)
+    source <- tbod_provenance(data)
     expect_s3_class(data, "sf")
     expect_gt(nrow(data), 0L)
     expect_lte(nrow(data), 2L)
@@ -87,8 +87,8 @@ test_that("new City sources return checked attribute and spatial samples", {
          pagination = "object-id batches", geometry = "POLYGON")
   )
   for (case in cases) {
-    data <- get_dataset(case$id, fields = case$fields, limit = 2, page_size = 1)
-    source <- dataset_provenance(data)
+    data <- tbod_get_dataset(case$id, fields = case$fields, limit = 2, page_size = 1)
+    source <- tbod_provenance(data)
     expect_s3_class(data, "tbl_df")
     expect_identical(names(data), case$fields)
     expect_gt(nrow(data), 0L)
@@ -97,7 +97,7 @@ test_that("new City sources return checked attribute and spatial samples", {
     expect_gte(source$matched_rows, source$returned_rows)
     expect_identical(source$pagination, case$pagination)
     if (requireNamespace("sf", quietly = TRUE)) {
-      spatial <- get_dataset(case$id, fields = case$fields,
+      spatial <- tbod_get_dataset(case$id, fields = case$fields,
                              spatial = TRUE, out_sr = 4326, limit = 2)
       expect_s3_class(spatial, "sf")
       expect_equal(sf::st_crs(spatial)$epsg, 4326)
@@ -134,8 +134,8 @@ test_that("nine additional City layers return small live samples", {
   )
 
   for (case in cases) {
-    data <- get_dataset(case$id, fields = case$fields, limit = 1, page_size = 1)
-    source <- dataset_provenance(data)
+    data <- tbod_get_dataset(case$id, fields = case$fields, limit = 1, page_size = 1)
+    source <- tbod_provenance(data)
     expect_s3_class(data, "tbl_df")
     expect_identical(names(data), case$fields)
     expect_gt(nrow(data), 0L)
@@ -150,7 +150,7 @@ test_that("nine additional City layers return small live samples", {
       expect_s3_class(data$DATEREDUCED, "POSIXct")
 
     if (requireNamespace("sf", quietly = TRUE)) {
-      spatial <- get_dataset(case$id, fields = case$fields,
+      spatial <- tbod_get_dataset(case$id, fields = case$fields,
                              spatial = TRUE, out_sr = 4326, limit = 2)
       expect_s3_class(spatial, "sf")
       expect_identical(names(sf::st_drop_geometry(spatial)), case$fields)
@@ -160,7 +160,7 @@ test_that("nine additional City layers return small live samples", {
       observed <- as.character(sf::st_geometry_type(spatial))
       expect_true(all(sf::st_is_empty(spatial) | grepl(case$geometry, observed)),
                   info = case$id)
-      expect_equal(dataset_provenance(spatial)$returned_rows, nrow(spatial))
+      expect_equal(tbod_provenance(spatial)$returned_rows, nrow(spatial))
     }
   }
 })

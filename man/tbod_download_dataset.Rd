@@ -2,41 +2,103 @@
 % Please edit documentation in R/namespaced-api.R
 \name{tbod_download_dataset}
 \alias{tbod_download_dataset}
-\alias{tbod_download_arcgis_layer}
-\title{Download an ArcGIS dataset into resumable chunks}
+\title{Download a dataset into resumable chunks}
 \usage{
 tbod_download_dataset(
-  id, path, jurisdiction = NULL, where = "1=1", fields = NULL,
-  spatial = FALSE, out_sr = NULL, page_size = 1000, query = list(),
-  timeout = 30, total_timeout = Inf, resume = TRUE, portal = NULL
-)
-
-tbod_download_arcgis_layer(
-  url, path, where = "1=1", fields = NULL, spatial = FALSE,
-  out_sr = NULL, page_size = 1000, query = list(), timeout = 30,
-  total_timeout = Inf, resume = TRUE
+  id,
+  path,
+  jurisdiction = NULL,
+  where = "1=1",
+  fields = NULL,
+  spatial = FALSE,
+  out_sr = NULL,
+  page_size = 1000,
+  query = list(),
+  timeout = 30,
+  total_timeout = Inf,
+  resume = TRUE,
+  portal = NULL
 )
 }
 \arguments{
-\item{id}{Bundled ID, one-row discovery result, stable ArcGIS ID, or direct public HTTPS layer URL.}
-\item{url}{Public HTTPS ArcGIS FeatureServer or MapServer layer URL.}
-\item{path}{Local directory for manifest, checkpoints, and chunk files.}
-\item{jurisdiction}{Optional bundled catalog jurisdiction. \code{NULL} resolves a unique ID or preserves the discovery source. Direct URLs do not accept a jurisdiction override.}
-\item{where}{ArcGIS SQL WHERE clause.}
-\item{fields}{Exact source field names, or \code{NULL} or \code{"*"} for all nongeometry attributes.}
-\item{spatial}{Write \code{sf} chunks. Requires the optional sf package.}
-\item{out_sr}{Optional output spatial reference ID; requires \code{spatial = TRUE}.}
-\item{page_size}{Positive batch size, capped at 1,000 and the service maximum.}
-\item{query}{Named list of advanced ArcGIS filter parameters.}
+\item{id}{Bundled ID, one-row discovery result, stable ArcGIS ID, or direct
+public HTTPS ArcGIS layer URL.}
+
+\item{path}{Local directory for the manifest, checkpoints, and chunk files.}
+
+\item{jurisdiction}{Optional bundled catalog jurisdiction. \code{NULL} resolves a
+unique bundled ID and preserves a discovery result's jurisdiction. Direct
+URLs do not accept a jurisdiction override.}
+
+\item{where}{ArcGIS SQL WHERE clause using source field names; defaults to
+\code{"1=1"}. Inspect names with \code{tbod_dataset_info(id, refresh = TRUE)}.}
+
+\item{fields}{Character vector of exact source field names, or \code{NULL} or
+\code{"*"} for all nongeometry attributes. Object IDs remain in chunk
+provenance even if the column was not selected.}
+
+\item{spatial}{Write \code{sf} chunks; requires the optional sf package and a
+layer with supported geometry and a known CRS.}
+
+\item{out_sr}{Optional positive ArcGIS/EPSG output reference for server
+projection; requires \code{spatial = TRUE}. \code{NULL} keeps the native CRS.}
+
+\item{page_size}{Positive integer batch size capped at 1,000 and the
+service maximum. The effective size must stay fixed when resuming.}
+
+\item{query}{Named list of advanced ArcGIS filters such as \code{geometry},
+\code{spatialRel}, and \code{time}. Response format, field selection, aggregation,
+geometry simplification, and pagination parameters are protected.}
+
 \item{timeout}{Per-request timeout in seconds.}
-\item{total_timeout}{Overall operation budget in seconds; \code{Inf} permits a long download.}
+
+\item{total_timeout}{Overall operation deadline in seconds. The default
+\code{Inf} allows a long download; completed chunks remain for a later resume
+if a finite deadline expires.}
+
 \item{resume}{Reuse a matching saved download and skip validated chunks.}
-\item{portal}{Optional sharing REST portal root for a stable ArcGIS ID from a custom Enterprise portal.}
+
+\item{portal}{Optional ArcGIS sharing REST portal URL when \code{id} is a stable
+\verb{arcgis:<item-id>:<layer-id>} identifier.}
 }
-\value{A summary with the download path, ordered chunk files, matched and returned row counts, completeness, and provenance.}
+\value{
+A named list with \code{path}, ordered chunk \code{files}, \code{matched_rows},
+\code{returned_rows}, \code{complete}, and summary \code{source} provenance. Each RDS
+chunk has its own provenance; \code{tbod_provenance(chunk)$download} includes
+its chunk number and object IDs.
+}
 \description{
-Downloads a bundled, discovered, or direct ArcGIS layer in bounded chunks.
-The \code{tbod_download_arcgis_layer} entry point accepts only direct URLs.
+Accepts a bundled ID, discovery row, stable ArcGIS ID, or direct ArcGIS
+layer URL. A custom Enterprise portal can be provided with stable IDs.
 Bundled checked layers are compared with expected schemas before downloading;
 compatible drift warns and incompatible drift stops the download.
+}
+\details{
+The client retrieves the full matching object-ID manifest, then
+writes bounded RDS chunks to a caller-selected directory. Each chunk is
+a tibble or \code{sf} object with its own provenance; read files one at a time
+with \code{\link[=readRDS]{readRDS()}}. Feature pages are not accumulated in memory, but the
+manifest itself is subject to the one-million-record limit.
+
+A saved manifest fixes the endpoint, query, fields, schema, CRS metadata,
+matching IDs, and batch size. With \code{resume = TRUE}, current metadata and
+IDs are rechecked before saved chunks are used. Changed options, schema,
+CRS, or membership cause an error. Completed chunks must match their
+checkpoint checksums, expected IDs, columns, and provenance. Temporary
+files from interrupted writes are ignored.
+
+The directory must be empty on the first call. Unrelated files and
+existing downloads with \code{resume = FALSE} are rejected. An exclusive lock
+prevents concurrent writers. If a terminated process leaves \code{.lock},
+confirm no writer remains, remove that empty directory, and resume.
+Record attributes can change between chunks or resumed calls even when
+IDs and schema remain stable; this is not a frozen snapshot. The returned
+summary records whether the complete matching manifest was downloaded.
+}
+\examples{
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  saved <- tbod_download_dataset("construction-permits",
+    tempfile("permit-download-"), where = "OBJECTID <= 10", page_size = 5)
+  if (length(saved$files)) tbod_provenance(readRDS(saved$files[[1L]]))
+}
 }

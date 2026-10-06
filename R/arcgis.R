@@ -247,7 +247,7 @@ arcgis_layers <- function(service_url, timeout = 30) {
   bad <- setdiff(names(query), allowed)
   if (length(bad)) {
     .abort(paste0("Unsupported or protected `query` parameter(s): ", paste(bad, collapse = ", "),
-                  ". Use the documented get_dataset() arguments for fields, ordering, limits, and CRS."),
+                  ". Use the documented tbod_get_dataset() arguments for fields, ordering, limits, and CRS."),
            subclass = "tampa_input_error")
   }
   lapply(query, function(value) {
@@ -266,7 +266,7 @@ arcgis_layers <- function(service_url, timeout = 30) {
       any(!nzchar(fields)) || anyDuplicated(fields)) .abort("`fields` must be a nonempty vector of unique source field names.")
   bad <- setdiff(fields, available)
   if (length(bad)) .abort(paste0("Unknown source field(s): ", paste(bad, collapse = ", "),
-                                ". Inspect dataset_info(id, refresh = TRUE)$fields."))
+                                ". Inspect tbod_dataset_info(id, refresh = TRUE)$fields."))
   fields
 }
 

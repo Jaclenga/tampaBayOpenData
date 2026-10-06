@@ -3,7 +3,22 @@
 \name{tbod_list_portals}
 \alias{tbod_list_portals}
 \title{List bundled ArcGIS publisher configurations}
-\usage{tbod_list_portals()}
-\value{A tibble with configured publisher names, jurisdiction labels, ArcGIS organization IDs, and portal roots.}
-\description{Returns the bundled Tampa Bay publisher configurations without a network request. Use \code{\link{tbod_discover}} to scan another portal.}
-\examples{tbod_list_portals()}
+\usage{
+tbod_list_portals()
+}
+\value{
+A tibble with \code{id} (the discovery selector), \code{root}, \code{org_id},
+\code{publisher}, \code{jurisdiction}, \code{website}, \code{verified} (a Date),
+\code{metadata_url}, and \code{evidence_url}. Use \code{id} in the \code{portals} argument of
+\code{\link[=tbod_list_datasets]{tbod_list_datasets()}} or \code{\link[=tbod_search_datasets]{tbod_search_datasets()}}.
+}
+\description{
+Returns the package's Tampa Bay publisher configurations without a network
+request. Each entry provides an ArcGIS organization ID and sharing REST
+root. Its \code{verified} date checks publisher identity, not every layer's
+contents or reuse terms. To scan another portal, pass its sharing REST URL
+to \code{\link[=tbod_discover]{tbod_discover()}}.
+}
+\examples{
+tbod_list_portals()
+}

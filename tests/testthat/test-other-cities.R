@@ -7,7 +7,7 @@ test_that("other cities' MapServer schemas infer IDs and retrieve every page", {
                                    metadata = case$metadata)
     local_mocked_bindings(arcgis_http = transport$http)
     fields <- other_city_fields(case)
-    result <- get_arcgis_layer(case$metadata_url, fields = fields, page_size = 1)
+    result <- tbod_get_arcgis_layer(case$metadata_url, fields = fields, page_size = 1)
 
     expect_s3_class(result, "tbl_df")
     expect_identical(names(result), fields)
@@ -22,7 +22,7 @@ test_that("other cities' MapServer schemas infer IDs and retrieve every page", {
                      as.POSIXct(c("2024-01-03", NA_character_, "2024-01-15"),
                                 tz = "UTC"))
 
-    source <- dataset_provenance(result)
+    source <- tbod_provenance(result)
     expect_identical(source$dataset_id, case$metadata_url)
     expect_identical(source$source_url, case$metadata_url)
     expect_identical(source$endpoint, paste0(case$metadata_url, "/query"))
@@ -59,11 +59,11 @@ test_that("other cities' ordered samples and zero limits retain types and counts
                                    metadata = case$metadata)
     local_mocked_bindings(arcgis_http = transport$http)
     fields <- other_city_fields(case)
-    result <- get_arcgis_layer(case$metadata_url, fields = fields, limit = 2,
+    result <- tbod_get_arcgis_layer(case$metadata_url, fields = fields, limit = 2,
                                page_size = 1,
                                order_by = paste(case$object_id_field, "DESC"))
     expect_identical(result[[case$object_id_field]], c(14L, 8L))
-    source <- dataset_provenance(result)
+    source <- tbod_provenance(result)
     expect_false(source$complete)
     expect_identical(source$matched_rows, 3L)
     expect_identical(source$returned_rows, 2L)
@@ -76,15 +76,15 @@ test_that("other cities' ordered samples and zero limits retain types and counts
     transport <- fixture_transport(features = other_city_features(case),
                                    metadata = case$metadata)
     local_mocked_bindings(arcgis_http = transport$http)
-    zero <- get_arcgis_layer(case$metadata_url, fields = fields, limit = 0)
+    zero <- tbod_get_arcgis_layer(case$metadata_url, fields = fields, limit = 0)
     expect_identical(nrow(zero), 0L)
     expect_identical(names(zero), fields)
     expect_type(zero[[case$object_id_field]], "integer")
     expect_type(zero[[case$label_field]], "character")
     expect_type(zero[[case$integer_field]], "integer")
     expect_s3_class(zero[[case$date_field]], "POSIXct")
-    expect_false(dataset_provenance(zero)$complete)
-    expect_identical(dataset_provenance(zero)$matched_rows, 3L)
+    expect_false(tbod_provenance(zero)$complete)
+    expect_identical(tbod_provenance(zero)$matched_rows, 3L)
     expect_length(fixture_queries(transport, "features"), 0L)
   }
 })
@@ -94,12 +94,12 @@ test_that("other cities' empty filters produce complete results without feature 
     transport <- fixture_transport(features = list(), metadata = case$metadata)
     local_mocked_bindings(arcgis_http = transport$http)
     fields <- other_city_fields(case)
-    result <- get_arcgis_layer(case$metadata_url, fields = fields, where = "1=0")
+    result <- tbod_get_arcgis_layer(case$metadata_url, fields = fields, where = "1=0")
     expect_s3_class(result, "tbl_df")
     expect_identical(nrow(result), 0L)
     expect_identical(names(result), fields)
     expect_s3_class(result[[case$date_field]], "POSIXct")
-    source <- dataset_provenance(result)
+    source <- tbod_provenance(result)
     expect_true(source$complete)
     expect_identical(source$matched_rows, 0L)
     expect_identical(source$returned_rows, 0L)
@@ -116,7 +116,7 @@ test_that("other cities' native point and polygon results handle missing geometr
                                    metadata = case$metadata)
     local_mocked_bindings(arcgis_http = transport$http)
     fields <- other_city_fields(case)
-    result <- get_arcgis_layer(case$metadata_url, fields = fields, spatial = TRUE,
+    result <- tbod_get_arcgis_layer(case$metadata_url, fields = fields, spatial = TRUE,
                                page_size = 1)
     expect_s3_class(result, "sf")
     expect_identical(names(sf::st_drop_geometry(result)), fields)
@@ -126,7 +126,7 @@ test_that("other cities' native point and polygon results handle missing geometr
                           as.character(sf::st_geometry_type(result)))))
     expect_equal(sf::st_crs(result)$epsg, case$native_epsg)
     expect_true(all(sf::st_is_valid(result)))
-    source <- dataset_provenance(result)
+    source <- tbod_provenance(result)
     expect_true(source$complete)
     expect_identical(source$spatial_reference$wkid, case$native_epsg)
     expect_identical(source$validation_status, "not_checked")
@@ -135,12 +135,12 @@ test_that("other cities' native point and polygon results handle missing geometr
       identical(x$params$returnGeometry, "true") && is.null(x$params$outSR)
     }, logical(1))))
 
-    zero <- get_arcgis_layer(case$metadata_url, fields = fields, spatial = TRUE,
+    zero <- tbod_get_arcgis_layer(case$metadata_url, fields = fields, spatial = TRUE,
                              out_sr = 4326, limit = 0)
     expect_s3_class(zero, "sf")
     expect_identical(nrow(zero), 0L)
     expect_identical(names(sf::st_drop_geometry(zero)), fields)
     expect_equal(sf::st_crs(zero)$epsg, 4326)
-    expect_equal(dataset_provenance(zero)$spatial_reference$wkid, 4326)
+    expect_equal(tbod_provenance(zero)$spatial_reference$wkid, 4326)
   }
 })

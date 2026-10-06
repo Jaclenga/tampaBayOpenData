@@ -2,11 +2,11 @@ test_that("full retrieval records the publisher, query, timing, and integrity ou
   transport <- fixture_transport()
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
   started <- Sys.time()
-  result <- get_dataset("construction-permits", fields = c("RECORD_ID", "NEWCONSTRUCTIONSF"),
+  result <- tbod_get_dataset("construction-permits", fields = c("RECORD_ID", "NEWCONSTRUCTIONSF"),
                          where = "PROJECTSTATUS = 'Issued'", timeout = 9)
   finished <- Sys.time()
-  provenance <- dataset_provenance(result)
-  entry <- dataset_info("construction-permits")
+  provenance <- tbod_provenance(result)
+  entry <- tbod_dataset_info("construction-permits")
   expect_identical(provenance$dataset_id, "construction-permits")
   expect_identical(provenance$publisher, "City of Tampa")
   expect_identical(provenance$jurisdiction, "tampa")
@@ -41,20 +41,20 @@ test_that("full retrieval records the publisher, query, timing, and integrity ou
 test_that("a caller-selected subset is visibly incomplete when more rows match", {
   transport <- fixture_transport()
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("construction-permits", limit = 3)
-  provenance <- dataset_provenance(result)
+  result <- tbod_get_dataset("construction-permits", limit = 3)
+  provenance <- tbod_provenance(result)
   expect_identical(result$OBJECTID, 1:3)
   expect_equal(provenance$matched_rows, 5)
   expect_equal(provenance$returned_rows, 3)
   expect_false(provenance$complete)
   expect_equal(provenance$query$limit, 3)
   expect_length(fixture_queries(transport, "features"), 2L)
-  expect_true(dataset_provenance(get_dataset("construction-permits", limit = 10))$complete)
+  expect_true(tbod_provenance(tbod_get_dataset("construction-permits", limit = 10))$complete)
 })
 
 test_that("objects without package source attributes explain the missing provenance", {
-  expect_error(dataset_provenance(tibble::tibble(id = 1L)), "no tampaBayOpenData")
-  expect_error(dataset_provenance(structure(list(), source = "invalid")), "no tampaBayOpenData")
-  expect_error(dataset_provenance(structure(list(), source = list(publisher = "someone"))),
+  expect_error(tbod_provenance(tibble::tibble(id = 1L)), "no tampaBayOpenData")
+  expect_error(tbod_provenance(structure(list(), source = "invalid")), "no tampaBayOpenData")
+  expect_error(tbod_provenance(structure(list(), source = list(publisher = "someone"))),
                "no tampaBayOpenData")
 })

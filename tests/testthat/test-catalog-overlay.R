@@ -1,5 +1,5 @@
 test_that("live catalog rows share the checked schema and search provenance", {
-  checked <- list_datasets(source = "checked")
+  checked <- tbod_list_datasets(source = "checked")
   parks <- checked[checked$id == "parks", , drop = FALSE]
   live <- tibble::tibble(
     id = c(paste0("arcgis:", strrep("a", 32), ":0"),
@@ -37,8 +37,8 @@ test_that("live catalog rows share the checked schema and search provenance", {
     live
   }, .package = "tampaBayOpenData")
 
-  catalog <- list_datasets(max_items = 3, timeout = 12)
-  expect_identical(nrow(catalog), 36L)
+  catalog <- tbod_list_datasets(max_items = 3, timeout = 12)
+  expect_identical(nrow(catalog), 53L)
   expect_identical(names(catalog), names(checked))
   expect_identical(attr(catalog, "discovery_issues"), "one skipped portal item")
   expect_identical(attr(catalog, "discovery_failed_portals"), "tbrpc")
@@ -51,49 +51,52 @@ test_that("live catalog rows share the checked schema and search provenance", {
   expect_identical(calls[[1L]], list(query = NULL, portals = "all",
                                      max_items = 3, timeout = 12))
 
-  portal_only <- list_datasets(source = "live", portals = "all")
+  portal_only <- tbod_list_datasets(source = "live", portals = "all")
   expect_identical(nrow(portal_only), 2L)
   expect_setequal(portal_only$validation_status, c("checked", "discovered"))
   expect_identical(calls[[2L]]$portals, "all")
 
-  results <- search_datasets("housing", portals = "tbrpc")
-  expect_identical(results$id, paste0("arcgis:", strrep("b", 32), ":4"))
+  results <- tbod_search_datasets("housing", portals = "tbrpc")
+  discovered <- results[results$validation_status == "discovered", , drop = FALSE]
+  expect_setequal(results$id, c("pinellas-assisted-housing",
+                                paste0("arcgis:", strrep("b", 32), ":4")))
+  expect_identical(discovered$id, paste0("arcgis:", strrep("b", 32), ":4"))
   expect_identical(calls[[3L]]$query, "housing")
   expect_identical(calls[[3L]]$portals, "tbrpc")
-  expect_identical(results$jurisdiction, "tampa-bay")
-  info <- dataset_info(results)
+  expect_identical(discovered$jurisdiction, "tampa-bay")
+  info <- tbod_dataset_info(discovered)
   expect_identical(info$validation_status, "discovered")
   expect_identical(info$item_id, strrep("b", 32))
 
-  expect_identical(nrow(search_datasets("zzportalonlyzz", source = "checked")), 0L)
+  expect_identical(nrow(tbod_search_datasets("zzportalonlyzz", source = "checked")), 0L)
   for (source in c("live", "all")) {
-    result <- search_datasets("zzportalonlyzz", source = source)
+    result <- tbod_search_datasets("zzportalonlyzz", source = source)
     expect_identical(result$id, "parks")
     expect_identical(result$validation_status, "checked")
     expect_identical(result$title, parks$title)
     expect_identical(result$service_url, parks$service_url)
     expect_identical(nrow(result), 1L)
   }
-  expect_identical(nrow(search_datasets("parks", source = "live")), 0L)
-  expect_identical(search_datasets("parks", jurisdiction = "tampa", source = "all")$id, "parks")
+  expect_identical(nrow(tbod_search_datasets("parks", source = "live")), 0L)
+  expect_identical(tbod_search_datasets("parks", jurisdiction = "tampa", source = "all")$id, "parks")
 })
 
 test_that("checked catalog stays available when live discovery fails", {
   local_mocked_bindings(.discover_arcgis = function(...) {
     .abort("The portal is unavailable.", subclass = "tampa_http_error")
   }, .package = "tampaBayOpenData")
-  expect_warning(all <- list_datasets(), "returning checked datasets only")
-  expect_identical(nrow(all), 35L)
+  expect_warning(all <- tbod_list_datasets(), "returning checked datasets only")
+  expect_identical(nrow(all), 52L)
   expect_true(all(all$validation_status == "checked"))
-  expect_error(list_datasets(source = "live"), "portal is unavailable")
-  expect_silent(checked <- list_datasets(source = "checked"))
-  expect_identical(nrow(checked), 35L)
+  expect_error(tbod_list_datasets(source = "live"), "portal is unavailable")
+  expect_silent(checked <- tbod_list_datasets(source = "checked"))
+  expect_identical(nrow(checked), 52L)
 })
 
 test_that("catalog source and portal options reject invalid values", {
-  expect_error(list_datasets(source = "unknown"), "source")
-  expect_error(list_datasets(portals = c("all", "city")), "portals")
-  expect_error(list_datasets(portals = c("city", "city")), "portals")
-  expect_error(list_datasets(max_items = 0), "max_items")
-  expect_error(list_datasets(timeout = 0), "timeout")
+  expect_error(tbod_list_datasets(source = "unknown"), "source")
+  expect_error(tbod_list_datasets(portals = c("all", "city")), "portals")
+  expect_error(tbod_list_datasets(portals = c("city", "city")), "portals")
+  expect_error(tbod_list_datasets(max_items = 0), "max_items")
+  expect_error(tbod_list_datasets(timeout = 0), "timeout")
 })

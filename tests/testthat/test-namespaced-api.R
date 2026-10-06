@@ -1,20 +1,38 @@
-test_that("prefixed catalog functions retain the bundled catalog behavior", {
-  expect_identical(tbod_list_datasets(source = "checked"),
-                   list_datasets(source = "checked"))
-  expect_identical(tbod_search_datasets("permit", source = "checked"),
-                   search_datasets("permit", source = "checked"))
-  expect_identical(tbod_list_portals(), list_portals())
-  expect_identical(tbod_dataset_info("construction-permits"),
-                   dataset_info("construction-permits"))
+test_that("only canonical tbod names are exported", {
+  expected <- c(
+    "tbod_check_schema", "tbod_dataset_info", "tbod_discover",
+    "tbod_download_arcgis_layer", "tbod_download_dataset",
+    "tbod_get_arcgis_layer", "tbod_get_capital_projects",
+    "tbod_get_dataset", "tbod_get_development_cases", "tbod_get_permits",
+    "tbod_list_datasets", "tbod_list_portals", "tbod_provenance",
+    "tbod_schema", "tbod_search_datasets"
+  )
+  exports <- getNamespaceExports("tampaBayOpenData")
+  expect_setequal(exports, expected)
+  expect_false(any(c("get_dataset", "search_datasets", "list_datasets",
+                     "dataset_info", "dataset_provenance", "download_dataset",
+                     "get_arcgis_layer", "download_arcgis_layer", "list_portals",
+                     "get_permits", "get_development_cases", "get_capital_projects") %in% exports))
 })
 
-test_that("prefixed provenance reads existing retrieval attributes", {
+test_that("canonical catalog functions use the bundled catalog", {
+  checked <- tbod_list_datasets(source = "checked")
+  expect_true("construction-permits" %in% checked$id)
+  expect_true("construction-permits" %in%
+                tbod_search_datasets("permit", source = "checked")$id)
+  portals <- tbod_list_portals()
+  expect_true(all(c("city", "pinellas") %in% portals$id))
+  expect_identical(tbod_dataset_info("construction-permits")$id,
+                   "construction-permits")
+})
+
+test_that("canonical provenance reads existing retrieval attributes", {
   data <- tibble::tibble(id = 1L)
   attr(data, "source") <- list(dataset_id = "example", source_url = "https://example.org")
-  expect_identical(tbod_provenance(data), dataset_provenance(data))
+  expect_identical(tbod_provenance(data), attr(data, "source", exact = TRUE))
 })
 
-test_that("prefixed discovery passes through a custom portal and operation budget", {
+test_that("canonical discovery passes through a custom portal and operation budget", {
   seen <- NULL
   expected <- tibble::tibble(id = "arcgis:abcdef0123456789abcdef0123456789:0")
   local_mocked_bindings(
@@ -40,7 +58,7 @@ test_that("prefixed discovery passes through a custom portal and operation budge
   expect_identical(seen$jurisdiction, "other")
 })
 
-test_that("prefixed discovery accepts direct service and layer URL inputs", {
+test_that("canonical discovery accepts direct service and layer URL inputs", {
   local_mocked_bindings(arcgis_http = function(...) stop("unexpected network"),
                         .package = "tampaBayOpenData")
   root <- "https://services.example.org/arcgis/rest/services/Parks/FeatureServer"
@@ -52,16 +70,16 @@ test_that("prefixed discovery accepts direct service and layer URL inputs", {
   expect_identical(layer, service)
 })
 
-test_that("prefixed retrieval sends direct URLs through the ArcGIS layer path", {
+test_that("canonical retrieval sends direct URLs through the ArcGIS layer path", {
   url <- "https://other.example.org/arcgis/rest/services/Parks/FeatureServer/2"
   seen <- NULL
   expected <- tibble::tibble(record = 1L)
   local_mocked_bindings(
-    get_arcgis_layer = function(url, ...) {
+    .get_arcgis_layer_impl = function(url, ...) {
       seen <<- list(url = url, options = list(...))
       expected
     },
-    get_dataset = function(...) stop("should not use catalog retrieval"),
+    .get_dataset_impl = function(...) stop("should not use catalog retrieval"),
     .package = "tampaBayOpenData")
   actual <- tbod_get_dataset(url, fields = "NAME", limit = 5)
   expect_identical(actual, expected)
@@ -74,7 +92,7 @@ test_that("prefixed retrieval sends direct URLs through the ArcGIS layer path", 
                "does not apply to a direct ArcGIS URL", class = "tampa_input_error")
 })
 
-test_that("prefixed retrieval resolves stable IDs in custom portals", {
+test_that("canonical retrieval resolves stable IDs in custom portals", {
   item_id <- "abcdef0123456789abcdef0123456789"
   id <- paste0("arcgis:", item_id, ":2")
   portal <- "https://other.example.org/sharing/rest"
@@ -86,7 +104,7 @@ test_that("prefixed retrieval resolves stable IDs in custom portals", {
                           portal = portal, timeout = timeout)
       descriptor
     },
-    get_dataset = function(id, jurisdiction, ...) {
+    .get_dataset_impl = function(id, jurisdiction, ...) {
       seen$retrieval <<- list(id = id, jurisdiction = jurisdiction,
                              options = list(...))
       "retrieved"
@@ -101,18 +119,18 @@ test_that("prefixed retrieval resolves stable IDs in custom portals", {
   expect_identical(seen$retrieval$options$limit, 3)
 })
 
-test_that("prefixed information and download accept direct layer URLs", {
+test_that("canonical information and download accept direct layer URLs", {
   url <- "https://other.example.org/arcgis/rest/services/Parks/FeatureServer/2"
   info <- tbod_dataset_info(url)
   expect_identical(info$source_url, url)
   expect_identical(info$validation_status, "not_checked")
   seen <- NULL
   local_mocked_bindings(
-    download_arcgis_layer = function(url, path, ...) {
+    .download_arcgis_layer_impl = function(url, path, ...) {
       seen <<- list(url = url, path = path, options = list(...))
       list(complete = TRUE)
     },
-    download_dataset = function(...) stop("should not use catalog download"),
+    .download_dataset_impl = function(...) stop("should not use catalog download"),
     .package = "tampaBayOpenData")
   expect_identical(tbod_download_dataset(url, "download-here")$complete, TRUE)
   expect_identical(seen$url, url)

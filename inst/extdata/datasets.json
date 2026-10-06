@@ -278,7 +278,7 @@
     "supports_order_by": true,
     "upstream_modified": "2018-03-05T18:50:01+00:00",
     "date_time_reference": null,
-    "scope_note": ""
+    "scope_note": "Polygons represent the four geographic City Council districts (4–7). Districts 1–3 are elected at large citywide and appear only as attributes, not separate district polygons. Representative names may change between GIS updates; consult the City for current representation and official boundaries."
   },
   {
     "id": "riverwalk",
@@ -1340,7 +1340,7 @@
       "emergency services",
       "public safety"
     ],
-    "verified": "2026-10-04",
+    "verified": "2026-10-05",
     "terms": "The county ArcGIS item offers the data as is, without an accuracy or completeness warranty, and says it is for reference rather than survey precision. It does not declare an unrestricted reuse license. Source: https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/79694c385b164c57ab578db1e104cf2c?f=pjson",
     "terms_url": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/79694c385b164c57ab578db1e104cf2c?f=pjson",
     "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
@@ -1390,7 +1390,7 @@
       "boundaries",
       "recreation"
     ],
-    "verified": "2026-10-04",
+    "verified": "2026-10-05",
     "terms": "The county ArcGIS item offers the data as is, without an accuracy or completeness warranty, and says it is for reference rather than survey precision. It does not declare an unrestricted reuse license. Source: https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/f2f1711bd0ba4291bbcb290fd60220d4?f=pjson",
     "terms_url": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/f2f1711bd0ba4291bbcb290fd60220d4?f=pjson",
     "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
@@ -1447,7 +1447,7 @@
       "cycling",
       "recreation"
     ],
-    "verified": "2026-10-04",
+    "verified": "2026-10-05",
     "terms": "The county ArcGIS item offers the data as is, without an accuracy or completeness warranty, and says it is for reference rather than survey precision. It does not declare an unrestricted reuse license. Source: https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/c3a5621e533e44148eef67784be2721f?f=pjson",
     "terms_url": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/c3a5621e533e44148eef67784be2721f?f=pjson",
     "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
@@ -1497,7 +1497,7 @@
       "DRI",
       "boundaries"
     ],
-    "verified": "2026-10-04",
+    "verified": "2026-10-05",
     "terms": "The ArcGIS item instructs users to check source, scale, accuracy, and currentness; it requests acknowledgement of the Florida Regional Planning Councils and Florida Division of Emergency Management. It does not state a permissive reuse license. Source: https://www.arcgis.com/sharing/rest/content/items/f0f925147e714beca2ae7b723c5a0e69?f=pjson",
     "terms_url": "https://www.arcgis.com/sharing/rest/content/items/f0f925147e714beca2ae7b723c5a0e69?f=pjson",
     "license_info": "No explicit permissive reuse license stated; source verification and acknowledgement requested",
@@ -1546,7 +1546,7 @@
       "hazards",
       "planning"
     ],
-    "verified": "2026-10-04",
+    "verified": "2026-10-05",
     "terms": "The ArcGIS item instructs users to check source, scale, accuracy, and currentness; it requests acknowledgement of the Florida Regional Planning Councils and Florida Division of Emergency Management. It does not state a permissive reuse license. Source: https://www.arcgis.com/sharing/rest/content/items/78308e23f12c411ebbb8cfccc58f5895?f=pjson",
     "terms_url": "https://www.arcgis.com/sharing/rest/content/items/78308e23f12c411ebbb8cfccc58f5895?f=pjson",
     "license_info": "No explicit permissive reuse license stated; source verification and acknowledgement requested",
@@ -1591,7 +1591,7 @@
       "infrastructure",
       "regional planning"
     ],
-    "verified": "2026-10-04",
+    "verified": "2026-10-05",
     "terms": "The ArcGIS item states 'No restrictions' and asks users to contact the Council about outdated or missing data. Source and completeness limitations still apply. Source: https://www.arcgis.com/sharing/rest/content/items/3a754de6bf5f4d2791d8b27b8204dc88?f=pjson",
     "terms_url": "https://www.arcgis.com/sharing/rest/content/items/3a754de6bf5f4d2791d8b27b8204dc88?f=pjson",
     "license_info": "No restrictions",
@@ -1618,5 +1618,794 @@
     },
     "scope_note": "Research inventory based on websites, Google Maps, Gemini comparison, visual checks, property information, and news reports for planned sites, as described by the Council. Locations, operational status, and estimated size require independent confirmation; this is not a comprehensive or authoritative facility register.",
     "portal": "https://www.arcgis.com/sharing/rest"
+  },
+  {
+    "id": "stpete-zoning-districts",
+    "title": "St. Petersburg zoning districts",
+    "description": "City zoning district polygons with class, description, and ordinance reference links.",
+    "jurisdiction": "stpete",
+    "publisher": "City of St. Petersburg",
+    "source_url": "https://csp.maps.arcgis.com/home/item.html?id=db80bf8cae334213ac59d038482a35ba",
+    "service_url": "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/ZoningDistricts_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "Zoning Districts",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [],
+    "category": "Planning",
+    "tags": [
+      "zoning",
+      "land use",
+      "districts"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official City item supplies information for personal use as-is, disclaims accuracy and completeness, and does not name an unrestricted reuse license. Source: https://csp.maps.arcgis.com/sharing/rest/content/items/db80bf8cae334213ac59d038482a35ba?f=pjson",
+    "terms_url": "https://csp.maps.arcgis.com/sharing/rest/content/items/db80bf8cae334213ac59d038482a35ba?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://csp.maps.arcgis.com/sharing/rest/content/items/db80bf8cae334213ac59d038482a35ba?f=pjson",
+    "item_id": "db80bf8cae334213ac59d038482a35ba",
+    "publisher_evidence": [
+      "https://csp.maps.arcgis.com/home/item.html?id=db80bf8cae334213ac59d038482a35ba",
+      "https://csp.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/ZoningDistricts_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-10-05T06:02:58+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Planning reference only: confirm current permitted uses and legal zoning with the City. This public view has no record-date field."
+  },
+  {
+    "id": "stpete-future-land-use",
+    "title": "St. Petersburg future land use",
+    "description": "City future-land-use plan polygons with land-use code and description.",
+    "jurisdiction": "stpete",
+    "publisher": "City of St. Petersburg",
+    "source_url": "https://csp.maps.arcgis.com/home/item.html?id=96965b6e4ad54b438e355e86b8bd8d7b",
+    "service_url": "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/FutureLandUse_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "Future Land Use",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [],
+    "category": "Planning",
+    "tags": [
+      "future land use",
+      "comprehensive plan",
+      "planning"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official City item supplies information for personal use as-is, disclaims accuracy and completeness, and does not name an unrestricted reuse license. Source: https://csp.maps.arcgis.com/sharing/rest/content/items/96965b6e4ad54b438e355e86b8bd8d7b?f=pjson",
+    "terms_url": "https://csp.maps.arcgis.com/sharing/rest/content/items/96965b6e4ad54b438e355e86b8bd8d7b?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://csp.maps.arcgis.com/sharing/rest/content/items/96965b6e4ad54b438e355e86b8bd8d7b?f=pjson",
+    "item_id": "96965b6e4ad54b438e355e86b8bd8d7b",
+    "publisher_evidence": [
+      "https://csp.maps.arcgis.com/home/item.html?id=96965b6e4ad54b438e355e86b8bd8d7b",
+      "https://csp.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/FutureLandUse_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-10-05T06:02:31+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "A plan classification, distinct from current zoning or a parcel-level legal determination. The public view has no record-date field."
+  },
+  {
+    "id": "stpete-sidewalks",
+    "title": "St. Petersburg sidewalks",
+    "description": "Mapped sidewalk segments with surface, width, ownership, and maintenance attributes.",
+    "jurisdiction": "stpete",
+    "publisher": "City of St. Petersburg",
+    "source_url": "https://csp.maps.arcgis.com/home/item.html?id=f52c48737a9f4fa9b61c12dac8f980fe",
+    "service_url": "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/Sidewalks_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "Sidewalks",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [],
+    "category": "Transportation",
+    "tags": [
+      "sidewalks",
+      "pedestrian",
+      "accessibility"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official City item supplies information for personal use as-is, disclaims accuracy and completeness, and does not name an unrestricted reuse license. Source: https://csp.maps.arcgis.com/sharing/rest/content/items/f52c48737a9f4fa9b61c12dac8f980fe?f=pjson",
+    "terms_url": "https://csp.maps.arcgis.com/sharing/rest/content/items/f52c48737a9f4fa9b61c12dac8f980fe?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://csp.maps.arcgis.com/sharing/rest/content/items/f52c48737a9f4fa9b61c12dac8f980fe?f=pjson",
+    "item_id": "f52c48737a9f4fa9b61c12dac8f980fe",
+    "publisher_evidence": [
+      "https://csp.maps.arcgis.com/home/item.html?id=f52c48737a9f4fa9b61c12dac8f980fe",
+      "https://csp.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/Sidewalks_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-10-05T06:03:51+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "An inventory of mapped segments, not a guarantee of present condition, ADA accessibility, or route safety. Ownership and maintenance codes require the source domains."
+  },
+  {
+    "id": "stpete-public-works-projects",
+    "title": "St. Petersburg mapped public works projects",
+    "description": "Mapped City public works projects with scope, status, department, and budget attributes.",
+    "jurisdiction": "stpete",
+    "publisher": "City of St. Petersburg",
+    "source_url": "https://csp.maps.arcgis.com/home/item.html?id=dc7fabd74c6b4d709b9454253c665bfd",
+    "service_url": "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/PWAProjectTracking/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "PWAProjectTracking",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "DateCreated"
+    ],
+    "category": "Infrastructure",
+    "tags": [
+      "capital projects",
+      "public works",
+      "infrastructure"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official City item supplies project data as-is and says status, scope, and timelines may change. It does not name an unrestricted reuse license. Source: https://csp.maps.arcgis.com/sharing/rest/content/items/dc7fabd74c6b4d709b9454253c665bfd?f=pjson",
+    "terms_url": "https://csp.maps.arcgis.com/sharing/rest/content/items/dc7fabd74c6b4d709b9454253c665bfd?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://csp.maps.arcgis.com/sharing/rest/content/items/dc7fabd74c6b4d709b9454253c665bfd?f=pjson",
+    "item_id": "dc7fabd74c6b4d709b9454253c665bfd",
+    "publisher_evidence": [
+      "https://csp.maps.arcgis.com/home/item.html?id=dc7fabd74c6b4d709b9454253c665bfd",
+      "https://csp.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/PWAProjectTracking/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-09-30T17:05:33+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Only spatially mapped projects are included. The publisher identifies a separate PWACitywideProjectTracking table needed for a complete citywide portfolio. Status, scope, budget, and timelines may change; confirm with the managing department."
+  },
+  {
+    "id": "clearwater-future-land-use",
+    "title": "Clearwater future land use",
+    "description": "City planning polygons with future-land-use code and adopted amendment attributes.",
+    "jurisdiction": "clearwater",
+    "publisher": "City of Clearwater",
+    "source_url": "https://cityofclearwater.maps.arcgis.com/home/item.html?id=4d25938e0ee4484e822f5ab516507b53",
+    "service_url": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/FLU_w_PPC_Colors_WGS84/MapServer",
+    "layer_id": 0,
+    "layer_name": "Future Land Use",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "created_date",
+      "last_edited_date",
+      "amend_effective_date"
+    ],
+    "category": "Planning",
+    "tags": [
+      "future land use",
+      "comprehensive plan",
+      "planning"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The exact City portal item states Open Data Commons Public Domain Dedication and License v1.0 and disclaims data accuracy and timeliness. Source: https://cityofclearwater.maps.arcgis.com/sharing/rest/content/items/4d25938e0ee4484e822f5ab516507b53?f=pjson",
+    "terms_url": "https://cityofclearwater.maps.arcgis.com/sharing/rest/content/items/4d25938e0ee4484e822f5ab516507b53?f=pjson",
+    "license_info": "ODC PDDL 1.0",
+    "license_source": "https://cityofclearwater.maps.arcgis.com/sharing/rest/content/items/4d25938e0ee4484e822f5ab516507b53?f=pjson",
+    "item_id": "4d25938e0ee4484e822f5ab516507b53",
+    "publisher_evidence": [
+      "https://cityofclearwater.maps.arcgis.com/home/item.html?id=4d25938e0ee4484e822f5ab516507b53",
+      "https://cityofclearwater.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/FLU_w_PPC_Colors_WGS84/MapServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": null,
+    "date_time_reference": null,
+    "scope_note": "Use as a planning reference, not a legal parcel determination or current zoning. The portal item was last modified in 2016, which does not establish the feature update date."
+  },
+  {
+    "id": "clearwater-critical-assets",
+    "title": "Clearwater vulnerability-assessment critical assets",
+    "description": "Mapped critical-asset polygons with modeled tidal, storm-surge, and rainfall exposure scenarios.",
+    "jurisdiction": "clearwater",
+    "publisher": "City of Clearwater",
+    "source_url": "https://cityofclearwater.maps.arcgis.com/home/item.html?id=96b0ca177b914f209be21fc99c0ad649",
+    "service_url": "https://services1.arcgis.com/3GsNorcb0Mn5rMt8/arcgis/rest/services/Vulnerability_Assessment/FeatureServer",
+    "layer_id": 11,
+    "layer_name": " Critical Assets",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [],
+    "category": "Hazards",
+    "tags": [
+      "resilience",
+      "flooding",
+      "critical assets",
+      "climate"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The exact City of Clearwater portal item has no licenseInfo statement; no explicit dataset reuse license was found. Source: https://cityofclearwater.maps.arcgis.com/sharing/rest/content/items/96b0ca177b914f209be21fc99c0ad649?f=pjson",
+    "terms_url": "https://cityofclearwater.maps.arcgis.com/sharing/rest/content/items/96b0ca177b914f209be21fc99c0ad649?f=pjson",
+    "license_info": null,
+    "license_source": null,
+    "item_id": "96b0ca177b914f209be21fc99c0ad649",
+    "publisher_evidence": [
+      "https://cityofclearwater.maps.arcgis.com/home/item.html?id=96b0ca177b914f209be21fc99c0ad649",
+      "https://cityofclearwater.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services1.arcgis.com/3GsNorcb0Mn5rMt8/arcgis/rest/services/Vulnerability_Assessment/FeatureServer/11?f=pjson",
+      "https://www.myclearwater.com/Sustainability-Resiliency/01-Clearwaters-Vulnerability-Assessment"
+    ],
+    "spatial_reference": {
+      "wkid": 4326,
+      "latestWkid": 4326
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-09-14T17:55:48+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "This service contains 406 asset polygons and is not the full City assessment or a complete infrastructure inventory. Scenario codes require the City's methodology. It is not live hazard or emergency guidance."
+  },
+  {
+    "id": "clearwater-sidewalks",
+    "title": "Clearwater sidewalks",
+    "description": "City sidewalk segments with type, material, width, ownership, and edit-date fields.",
+    "jurisdiction": "clearwater",
+    "publisher": "City of Clearwater",
+    "source_url": "https://cityofclearwater.maps.arcgis.com/home/item.html?id=e3b7e675f2b04ec8939226b801bd4fa3",
+    "service_url": "https://gis.myclearwater.com/arcgis/rest/services/PublicWorksServices/PW_Sup_Sidewalks_NAD83/MapServer",
+    "layer_id": 0,
+    "layer_name": "Sidewalks",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [
+      "created_date",
+      "last_edited_date"
+    ],
+    "category": "Transportation",
+    "tags": [
+      "sidewalks",
+      "pedestrian",
+      "public works"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The exact City of Clearwater portal item has no licenseInfo statement; no explicit dataset reuse license was found. Source: https://cityofclearwater.maps.arcgis.com/sharing/rest/content/items/e3b7e675f2b04ec8939226b801bd4fa3?f=pjson",
+    "terms_url": "https://cityofclearwater.maps.arcgis.com/sharing/rest/content/items/e3b7e675f2b04ec8939226b801bd4fa3?f=pjson",
+    "license_info": null,
+    "license_source": null,
+    "item_id": "e3b7e675f2b04ec8939226b801bd4fa3",
+    "publisher_evidence": [
+      "https://cityofclearwater.maps.arcgis.com/home/item.html?id=e3b7e675f2b04ec8939226b801bd4fa3",
+      "https://cityofclearwater.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://gis.myclearwater.com/arcgis/rest/services/PublicWorksServices/PW_Sup_Sidewalks_NAD83/MapServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": null,
+    "date_time_reference": null,
+    "scope_note": "The layer description reports 2011 field collection and aerial verification and says the City maintains the data. Present completeness, condition, and ADA accessibility are not guaranteed."
+  },
+  {
+    "id": "pinellas-countywide-plan",
+    "title": "Pinellas countywide plan map categories",
+    "description": "Countywide plan polygons with current and previous future-land-use categories.",
+    "jurisdiction": "pinellas",
+    "publisher": "Pinellas County",
+    "source_url": "https://pinellas-egis.maps.arcgis.com/home/item.html?id=c4679b6609234442bbefc3b667725809",
+    "service_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_Countywide_Plan_Map_Categories_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "Countywide_Plan_Map_Categories",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "int_created_date",
+      "int_edited_date"
+    ],
+    "category": "Planning",
+    "tags": [
+      "future land use",
+      "countywide plan",
+      "planning"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official County item offers data as-is for reference, says it is not of survey precision, and does not name an unrestricted reuse license. Source: https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/c4679b6609234442bbefc3b667725809?f=pjson",
+    "terms_url": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/c4679b6609234442bbefc3b667725809?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/c4679b6609234442bbefc3b667725809?f=pjson",
+    "item_id": "c4679b6609234442bbefc3b667725809",
+    "publisher_evidence": [
+      "https://pinellas-egis.maps.arcgis.com/home/item.html?id=c4679b6609234442bbefc3b667725809",
+      "https://pinellas-egis.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_Countywide_Plan_Map_Categories_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-10-05T22:44:57+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Countywide plan categories support regional analysis but are not parcel zoning or a legal survey. The hosted view may change as Forward Pinellas updates its plan."
+  },
+  {
+    "id": "pinellas-bicycle-facilities",
+    "title": "Pinellas bicycle facilities",
+    "description": "Bicycle facility segments with type, width, jurisdiction, roadway, and high-injury-network attributes.",
+    "jurisdiction": "pinellas",
+    "publisher": "Pinellas County",
+    "source_url": "https://pinellas-egis.maps.arcgis.com/home/item.html?id=271578471c694165b90b58c868e8a4bb",
+    "service_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_BicycleFacilities_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "BicycleFacilities",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [
+      "int_created_date",
+      "int_edited_date"
+    ],
+    "category": "Transportation",
+    "tags": [
+      "bicycle",
+      "transportation",
+      "streets"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official County item offers data as-is for reference, says it is not of survey precision, and does not name an unrestricted reuse license. Source: https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/271578471c694165b90b58c868e8a4bb?f=pjson",
+    "terms_url": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/271578471c694165b90b58c868e8a4bb?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/271578471c694165b90b58c868e8a4bb?f=pjson",
+    "item_id": "271578471c694165b90b58c868e8a4bb",
+    "publisher_evidence": [
+      "https://pinellas-egis.maps.arcgis.com/home/item.html?id=271578471c694165b90b58c868e8a4bb",
+      "https://pinellas-egis.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_BicycleFacilities_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-10-03T20:11:35+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Facility classes vary and mapped segments do not establish current safety or continuity. This inventory complements, rather than duplicates, the Pinellas Trail layer."
+  },
+  {
+    "id": "pinellas-sidewalks",
+    "title": "Pinellas sidewalks",
+    "description": "Countywide sidewalk segments with surface, width, condition, accessibility, and municipality attributes.",
+    "jurisdiction": "pinellas",
+    "publisher": "Pinellas County",
+    "source_url": "https://pinellas-egis.maps.arcgis.com/home/item.html?id=1b7e0d3791d94ffc8e8cadd15b392a37",
+    "service_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_Sidewalk_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "Sidewalk",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [
+      "INSTALLDATE",
+      "LASTUPDATE",
+      "int_created_date",
+      "int_edited_date"
+    ],
+    "category": "Transportation",
+    "tags": [
+      "sidewalks",
+      "pedestrian",
+      "accessibility"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official County item offers data as-is for reference, says it is not of survey precision, and does not name an unrestricted reuse license. Source: https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/1b7e0d3791d94ffc8e8cadd15b392a37?f=pjson",
+    "terms_url": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/1b7e0d3791d94ffc8e8cadd15b392a37?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/1b7e0d3791d94ffc8e8cadd15b392a37?f=pjson",
+    "item_id": "1b7e0d3791d94ffc8e8cadd15b392a37",
+    "publisher_evidence": [
+      "https://pinellas-egis.maps.arcgis.com/home/item.html?id=1b7e0d3791d94ffc8e8cadd15b392a37",
+      "https://pinellas-egis.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_Sidewalk_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-10-03T20:25:11+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Mapped inventory and source attributes are for planning; accessibility and condition classifications do not guarantee current on-the-ground conditions."
+  },
+  {
+    "id": "pinellas-assisted-housing",
+    "title": "Pinellas assisted housing",
+    "description": "Assisted-housing development polygons with program, unit-count, target-population, and subsidy attributes.",
+    "jurisdiction": "pinellas",
+    "publisher": "Pinellas County",
+    "source_url": "https://pinellas-egis.maps.arcgis.com/home/item.html?id=2277d597855b4fba9e4c3e892bc5ddd7",
+    "service_url": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_AssistedHousing_view/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "AssistedHousing",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "int_created_date",
+      "int_edited_date"
+    ],
+    "category": "Housing",
+    "tags": [
+      "housing",
+      "affordable housing",
+      "assisted units"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official County item offers data as-is for reference, says it is not of survey precision, and does not name an unrestricted reuse license. Source: https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/2277d597855b4fba9e4c3e892bc5ddd7?f=pjson",
+    "terms_url": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/2277d597855b4fba9e4c3e892bc5ddd7?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://pinellas-egis.maps.arcgis.com/sharing/rest/content/items/2277d597855b4fba9e4c3e892bc5ddd7?f=pjson",
+    "item_id": "2277d597855b4fba9e4c3e892bc5ddd7",
+    "publisher_evidence": [
+      "https://pinellas-egis.maps.arcgis.com/home/item.html?id=2277d597855b4fba9e4c3e892bc5ddd7",
+      "https://pinellas-egis.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_AssistedHousing_view/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-04-30T18:01:34+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Program participation, assisted-unit counts, and subsidy expiration may change. This layer does not establish current eligibility, availability, or a complete affordable-housing inventory."
+  },
+  {
+    "id": "hillsborough-hart-routes",
+    "title": "Hillsborough HART bus routes",
+    "description": "Hillsborough-hosted HART route linework with route, direction, and vehicle-type attributes.",
+    "jurisdiction": "hillsborough",
+    "publisher": "Hillsborough County",
+    "source_url": "https://hillsborough.maps.arcgis.com/home/item.html?id=6de4b3ac6ebd4d139edbb5758c2790ec",
+    "service_url": "https://services.arcgis.com/apTfC6SUmnNfnxuF/ArcGIS/rest/services/HART_Bus_Stops_and_Routes/FeatureServer",
+    "layer_id": 21,
+    "layer_name": "HART_Routes_2026",
+    "geometry_type": "esriGeometryPolyline",
+    "date_fields": [],
+    "category": "Transportation",
+    "tags": [
+      "transit",
+      "bus routes",
+      "HART"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official Hillsborough County item disclaims accuracy, completeness, and suitability; no explicit unrestricted reuse license is identified. Source: https://hillsborough.maps.arcgis.com/sharing/rest/content/items/6de4b3ac6ebd4d139edbb5758c2790ec?f=pjson",
+    "terms_url": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/6de4b3ac6ebd4d139edbb5758c2790ec?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/6de4b3ac6ebd4d139edbb5758c2790ec?f=pjson",
+    "item_id": "6de4b3ac6ebd4d139edbb5758c2790ec",
+    "publisher_evidence": [
+      "https://hillsborough.maps.arcgis.com/home/item.html?id=6de4b3ac6ebd4d139edbb5758c2790ec",
+      "https://hillsborough.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/apTfC6SUmnNfnxuF/ArcGIS/rest/services/HART_Bus_Stops_and_Routes/FeatureServer/21?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-06-29T15:25:33+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "The item identifies a March 2025 HART source even though the hosted layer was edited later. Use for route-planning research, not live schedules, stops, or navigation."
+  },
+  {
+    "id": "hillsborough-fema-flood-zones",
+    "title": "Hillsborough FEMA flood hazard zones",
+    "description": "County-hosted FEMA National Flood Hazard Layer polygons with zone and base-flood-elevation attributes.",
+    "jurisdiction": "hillsborough",
+    "publisher": "Hillsborough County",
+    "source_url": "https://hillsborough.maps.arcgis.com/home/item.html?id=eab9b28e7af94f0dbd8eaaacf7c55f0a",
+    "service_url": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/FloodZone_FEMA/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "S_FLD_HAZ_AR",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [],
+    "category": "Hazards",
+    "tags": [
+      "flooding",
+      "FEMA",
+      "hazards"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official Hillsborough County item disclaims accuracy, completeness, and suitability; no explicit unrestricted reuse license is identified. Source: https://hillsborough.maps.arcgis.com/sharing/rest/content/items/eab9b28e7af94f0dbd8eaaacf7c55f0a?f=pjson",
+    "terms_url": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/eab9b28e7af94f0dbd8eaaacf7c55f0a?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/eab9b28e7af94f0dbd8eaaacf7c55f0a?f=pjson",
+    "item_id": "eab9b28e7af94f0dbd8eaaacf7c55f0a",
+    "publisher_evidence": [
+      "https://hillsborough.maps.arcgis.com/home/item.html?id=eab9b28e7af94f0dbd8eaaacf7c55f0a",
+      "https://hillsborough.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/FloodZone_FEMA/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-09-29T19:03:59+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "The item identifies a latest Letter of Map Revision effective September 28, 2026. A GIS copy is for planning only; use FEMA and County official records for property or legal determinations and current emergency guidance."
+  },
+  {
+    "id": "hillsborough-zoning",
+    "title": "Hillsborough unincorporated zoning",
+    "description": "Adopted zoning polygons for unincorporated Hillsborough County with district and status attributes.",
+    "jurisdiction": "hillsborough",
+    "publisher": "Hillsborough County",
+    "source_url": "https://hillsborough.maps.arcgis.com/home/item.html?id=1b99b0e8d38d4a85916fb9018b8f74c1",
+    "service_url": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Zoning/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "Zoning",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "created_date",
+      "last_edited_date"
+    ],
+    "category": "Planning",
+    "tags": [
+      "zoning",
+      "land use",
+      "unincorporated"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official County item states Creative Commons Attribution 4.0 International. Check the item for required attribution and current zoning caveats. Source: https://hillsborough.maps.arcgis.com/sharing/rest/content/items/1b99b0e8d38d4a85916fb9018b8f74c1?f=pjson",
+    "terms_url": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/1b99b0e8d38d4a85916fb9018b8f74c1?f=pjson",
+    "license_info": "CC BY 4.0",
+    "license_source": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/1b99b0e8d38d4a85916fb9018b8f74c1?f=pjson",
+    "item_id": "1b99b0e8d38d4a85916fb9018b8f74c1",
+    "publisher_evidence": [
+      "https://hillsborough.maps.arcgis.com/home/item.html?id=1b99b0e8d38d4a85916fb9018b8f74c1",
+      "https://hillsborough.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Zoning/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-10-03T03:51:34+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Unincorporated county coverage only; municipal zoning is separate. GIS may lag approved zoning-atlas changes, and cross-government zoning labels have different meanings."
+  },
+  {
+    "id": "hillsborough-water-quality",
+    "title": "Hillsborough EPC water-quality observations",
+    "description": "Latest staff-reviewed monitoring samples with station, time, nutrients, bacteria, salinity, and oxygen attributes.",
+    "jurisdiction": "hillsborough",
+    "publisher": "Hillsborough County",
+    "source_url": "https://hillsborough.maps.arcgis.com/home/item.html?id=04f8f5d7491b4d7aa2aacc6df7ea7f13",
+    "service_url": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/EPC_WQM_DATA/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "EPC WQM DATA",
+    "geometry_type": "esriGeometryPoint",
+    "date_fields": [
+      "SampleTime"
+    ],
+    "category": "Environment",
+    "tags": [
+      "water quality",
+      "monitoring",
+      "environment"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The County and Environmental Protection Commission item disclaims accuracy, completeness, and suitability; no explicit unrestricted reuse license is identified. Source: https://hillsborough.maps.arcgis.com/sharing/rest/content/items/04f8f5d7491b4d7aa2aacc6df7ea7f13?f=pjson",
+    "terms_url": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/04f8f5d7491b4d7aa2aacc6df7ea7f13?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/04f8f5d7491b4d7aa2aacc6df7ea7f13?f=pjson",
+    "item_id": "04f8f5d7491b4d7aa2aacc6df7ea7f13",
+    "publisher_evidence": [
+      "https://hillsborough.maps.arcgis.com/home/item.html?id=04f8f5d7491b4d7aa2aacc6df7ea7f13",
+      "https://hillsborough.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/EPC_WQM_DATA/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 103023,
+      "latestWkid": 6443
+    },
+    "object_id_field": "ID",
+    "max_record_count": 1000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2026-10-05T14:39:18+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "The Environmental Protection Commission's item describes the latest staff-reviewed samples at monitoring stations, not the complete sample history. Methods, units, detection limits, and site coverage require source review."
+  },
+  {
+    "id": "hillsborough-land-cover-2023",
+    "title": "Hillsborough 2023 land use and land cover",
+    "description": "County-hosted SWFWMD 2023 land-cover polygons with Florida land-use-code descriptions.",
+    "jurisdiction": "hillsborough",
+    "publisher": "Hillsborough County",
+    "source_url": "https://hillsborough.maps.arcgis.com/home/item.html?id=b2c5c247ca6f482cbf92ea989d90d585",
+    "service_url": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/LandUseLandCover_SWFWMD2023/FeatureServer",
+    "layer_id": 64,
+    "layer_name": "LandUseLandCover_SWFWMD2023",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [
+      "DATESTAMP"
+    ],
+    "category": "Environment",
+    "tags": [
+      "land cover",
+      "land use",
+      "environment"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The official Hillsborough County item disclaims accuracy, completeness, and suitability; no explicit unrestricted reuse license is identified. Source: https://hillsborough.maps.arcgis.com/sharing/rest/content/items/b2c5c247ca6f482cbf92ea989d90d585?f=pjson",
+    "terms_url": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/b2c5c247ca6f482cbf92ea989d90d585?f=pjson",
+    "license_info": "Publisher-specific disclaimer; no unrestricted reuse license verified",
+    "license_source": "https://hillsborough.maps.arcgis.com/sharing/rest/content/items/b2c5c247ca6f482cbf92ea989d90d585?f=pjson",
+    "item_id": "b2c5c247ca6f482cbf92ea989d90d585",
+    "publisher_evidence": [
+      "https://hillsborough.maps.arcgis.com/home/item.html?id=b2c5c247ca6f482cbf92ea989d90d585",
+      "https://hillsborough.maps.arcgis.com/sharing/rest/portals/self?f=pjson",
+      "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/LandUseLandCover_SWFWMD2023/FeatureServer/64?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2025-09-09T14:38:27+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "A 2023 SWFWMD classification snapshot downloaded by the County in 2025. It is observed land cover, not adopted future land use, zoning, or a current-condition guarantee."
+  },
+  {
+    "id": "tbrpc-regional-boundary",
+    "title": "TBRPC six-county regional boundary",
+    "description": "Dissolved boundary of the Tampa Bay Regional Planning Council's six-county service area.",
+    "jurisdiction": "tampa-bay",
+    "publisher": "Tampa Bay Regional Planning Council",
+    "source_url": "https://www.arcgis.com/home/item.html?id=ab27e5f7ccd743709ce886988691c6b8",
+    "service_url": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/tbrpc_regional_boundary/FeatureServer",
+    "layer_id": 0,
+    "layer_name": "tbrpc_regional_boundary",
+    "geometry_type": "esriGeometryPolygon",
+    "date_fields": [],
+    "category": "Boundaries",
+    "tags": [
+      "regional boundary",
+      "counties",
+      "reference geography"
+    ],
+    "verified": "2026-10-05",
+    "terms": "The service-linked TBRPC item states 'no limitations on use'; no standardized license is named on that item. Source: https://www.arcgis.com/sharing/rest/content/items/ab27e5f7ccd743709ce886988691c6b8?f=pjson",
+    "terms_url": "https://www.arcgis.com/sharing/rest/content/items/ab27e5f7ccd743709ce886988691c6b8?f=pjson",
+    "license_info": "No limitations on use",
+    "license_source": "https://www.arcgis.com/sharing/rest/content/items/ab27e5f7ccd743709ce886988691c6b8?f=pjson",
+    "item_id": "ab27e5f7ccd743709ce886988691c6b8",
+    "publisher_evidence": [
+      "https://www.arcgis.com/home/item.html?id=ab27e5f7ccd743709ce886988691c6b8",
+      "https://www.arcgis.com/sharing/rest/portals/RgIBbQIF0Y6T3AX6?f=pjson",
+      "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/tbrpc_regional_boundary/FeatureServer/0?f=pjson"
+    ],
+    "spatial_reference": {
+      "wkt": "PROJCS[\"NAD_1983_HARN_StatePlane_Florida_West_FIPS_0902_Feet\",GEOGCS[\"GCS_North_American_1983_HARN\",DATUM[\"D_North_American_1983_HARN\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",656166.667],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-82.0],PARAMETER[\"Scale_Factor\",0.999941177],PARAMETER[\"Latitude_Of_Origin\",24.3333333333333],UNIT[\"US survey foot\",0.3048006096012192]]",
+      "wkt2": "PROJCS[\"NAD_1983_HARN_StatePlane_Florida_West_FIPS_0902_Feet\",GEOGCS[\"GCS_North_American_1983_HARN\",DATUM[\"D_North_American_1983_HARN\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",656166.667],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-82.0],PARAMETER[\"Scale_Factor\",0.999941177],PARAMETER[\"Latitude_Of_Origin\",24.3333333333333],UNIT[\"US survey foot\",0.3048006096012192]]"
+    },
+    "object_id_field": "OBJECTID",
+    "max_record_count": 2000,
+    "supports_pagination": true,
+    "supports_order_by": true,
+    "upstream_modified": "2024-01-02T19:05:21+00:00",
+    "date_time_reference": {
+      "timeZone": "UTC",
+      "timeZoneIANA": "Etc/UTC",
+      "respectsDaylightSaving": false
+    },
+    "scope_note": "Derived from 2022 Census boundaries and suitable as a regional analysis frame. It is not a legal boundary survey or current parcel boundary."
   }
 ]

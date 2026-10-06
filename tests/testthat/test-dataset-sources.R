@@ -40,7 +40,7 @@ expect_source_routing <- function(result, transport, id, fields) {
   query_url <- paste0(metadata_url, "/query")
   expect_identical(unique(vapply(transport$state$requests, function(x) x$url,
                                 character(1))), c(metadata_url, query_url))
-  provenance <- dataset_provenance(result)
+  provenance <- tbod_provenance(result)
   expect_identical(provenance$dataset_id, id)
   expect_identical(provenance$endpoint, query_url)
   expect_identical(provenance$layer_id,
@@ -93,7 +93,7 @@ test_that("the distinct FeatureServer record schemas preserve literal date strin
     transport <- source_fixture_transport(case$id, list(source_fixture_feature(attributes)))
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
     fields <- names(case$attributes)
-    result <- get_dataset(case$id, fields = fields)
+    result <- tbod_get_dataset(case$id, fields = fields)
     expect_identical(names(result), fields)
     expect_identical(result[[case$record_field]], case$attributes[[case$record_field]])
     expect_identical(result$CREATED, "01/02/2024")
@@ -107,7 +107,7 @@ test_that("the distinct FeatureServer record schemas preserve literal date strin
     } else {
       expect_identical(result$NEWCONSTRUCTIONSF, 2400L)
     }
-    expect_identical(dataset_provenance(result)$date_fields_time_reference$timeZoneIANA,
+    expect_identical(tbod_provenance(result)$date_fields_time_reference$timeZoneIANA,
                      "America/New_York")
     expect_identical(fixture_queries(transport, "features")[[1L]]$params$outFields,
                      paste(c(fields, "OBJECTID"), collapse = ","))
@@ -120,7 +120,7 @@ test_that("capital project dates and numeric attributes work without optional sp
   fields <- fixture$fields
   transport <- source_fixture_transport("capital-projects", fixture$features)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("capital-projects", fields = fields, page_size = 1)
+  result <- tbod_get_dataset("capital-projects", fields = fields, page_size = 1)
   expect_identical(names(result), fields)
   expect_identical(result$projname, c("synthetic-earlier-project", "synthetic-future-project"))
   expect_identical(result$planstart,
@@ -148,14 +148,14 @@ test_that("capital project geometry uses the advertised native feet-based CRS", 
   fixture <- source_capital_fixture()
   transport <- source_fixture_transport("capital-projects", fixture$features)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("capital-projects", fields = fixture$fields,
+  result <- tbod_get_dataset("capital-projects", fields = fixture$fields,
                          spatial = TRUE, page_size = 1)
   expect_identical(names(sf::st_drop_geometry(result)), fixture$fields)
   expect_equal(sf::st_crs(result)$epsg, 6443)
   expect_match(sf::st_crs(result)$units_gdal, "foot|feet", ignore.case = TRUE)
   expect_equal(unname(sf::st_coordinates(result)),
                matrix(c(900003, 900008, 1300003, 1300008), ncol = 2L))
-  expect_identical(dataset_provenance(result)$spatial_reference,
+  expect_identical(tbod_provenance(result)$spatial_reference,
                    list(wkid = 103023L, latestWkid = 6443L))
   expect_source_routing(result, transport, "capital-projects", fixture$fields)
 })
@@ -180,7 +180,7 @@ test_that("the shared Boundary MapServer preserves layer-specific fields and rou
     transport <- source_fixture_transport(case$id, list(source_fixture_feature(
       c(list(OBJECTID = 21L), case$attributes))))
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-    result <- get_dataset(case$id)
+    result <- tbod_get_dataset(case$id)
     attribute_schema <- Filter(function(x) x$type != "esriFieldTypeGeometry", metadata$fields)
     fields <- vapply(attribute_schema, function(x) x$name, character(1))
     expect_identical(names(result), fields)
@@ -220,7 +220,7 @@ test_that("Riverwalk and parks preserve expression field names and source codes"
     transport <- source_fixture_transport(case$id, list(source_fixture_feature(
       c(list(OBJECTID = 29L), case$attributes))))
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-    result <- get_dataset(case$id, fields = fields)
+    result <- tbod_get_dataset(case$id, fields = fields)
     expect_identical(names(result), fields)
     for (field in setdiff(fields, "LASTUPDATE")) {
       expect_identical(result[[field]], case$attributes[[field]])
@@ -245,7 +245,7 @@ test_that("fire stations use the unjoined Fire source and support ordering", {
   )
   transport <- source_fixture_transport("fire-stations", features)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("fire-stations", fields = fields, page_size = 1)
+  result <- tbod_get_dataset("fire-stations", fields = fields, page_size = 1)
   expect_identical(names(result), fields)
   expect_identical(result[[fields[[1L]]]], c("synthetic-south", "synthetic-north"))
   expect_identical(result[[fields[[2L]]]], c(NA_integer_, 3L))
@@ -259,19 +259,19 @@ test_that("fire stations use the unjoined Fire source and support ordering", {
   expect_true(all(vapply(queries, function(x)
     is.null(x$params$resultOffset) && is.null(x$params$orderByFields), logical(1))))
   expect_identical(queries[[1L]]$params$outFields, paste(c(fields, oid), collapse = ","))
-  expect_identical(dataset_provenance(result)$pagination, "object-id batches")
+  expect_identical(tbod_provenance(result)$pagination, "object-id batches")
   expect_source_routing(result, transport, "fire-stations", fields)
 
-  ordered <- get_dataset("fire-stations", fields = fields,
+  ordered <- tbod_get_dataset("fire-stations", fields = fields,
                          order_by = "NAME DESC", page_size = 1)
   expect_identical(ordered$NAME, c("synthetic-south", "synthetic-north"))
-  expect_identical(dataset_provenance(ordered)$pagination, "ordered offsets")
+  expect_identical(tbod_provenance(ordered)$pagination, "ordered offsets")
   ordered_queries <- tail(fixture_queries(transport, "features"), 2L)
   expect_identical(vapply(ordered_queries, function(x) as.character(x$params$resultOffset),
                           character(1)), c("0", "1"))
   expect_true(all(vapply(ordered_queries, function(x)
     identical(x$params$orderByFields, "NAME DESC,OBJECTID ASC"), logical(1))))
-  expect_error(get_dataset("fire-stations", fields = "GIS.GovServiceInfo.OPERDAYS"),
+  expect_error(tbod_get_dataset("fire-stations", fields = "GIS.GovServiceInfo.OPERDAYS"),
                "Unknown source field")
 })
 
@@ -288,7 +288,7 @@ test_that("bike lanes preserve measured lengths, dates, and source strings", {
   )
   transport <- source_fixture_transport("bike-lanes", features)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("bike-lanes", fields = fields, page_size = 1,
+  result <- tbod_get_dataset("bike-lanes", fields = fields, page_size = 1,
                         order_by = "ROADWAY ASC")
   expect_identical(names(result), fields)
   expect_identical(result$ROADWAY, c("synthetic-a", "synthetic-z"))
@@ -303,7 +303,7 @@ test_that("bike lanes preserve measured lengths, dates, and source strings", {
                           character(1)), rep("ROADWAY ASC,OBJECTID ASC", 2L))
   expect_identical(vapply(queries, function(x) x$params$resultOffset,
                           numeric(1)), c(0, 1))
-  expect_identical(dataset_provenance(result)$pagination, "ordered offsets")
+  expect_identical(tbod_provenance(result)$pagination, "ordered offsets")
   expect_source_routing(result, transport, "bike-lanes", fields)
 })
 
@@ -315,7 +315,7 @@ test_that("recycling pickup keeps collection labels and typed area", {
                   1704153600000, 1500.25), fields)))
   transport <- source_fixture_transport("recycling-pickup", list(feature))
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("recycling-pickup", fields = fields)
+  result <- tbod_get_dataset("recycling-pickup", fields = fields)
   expect_identical(names(result), fields)
   expect_identical(result$SCHEDULE, "synthetic-cycle")
   expect_identical(result$COLLECTIONDAYS, "Tuesday")
@@ -382,7 +382,7 @@ test_that("nine additional City schemas preserve their distinct field types", {
     transport <- source_fixture_transport(case$id, list(feature))
     local_mocked_bindings(arcgis_http = transport$http,
                           .package = "tampaBayOpenData")
-    result <- get_dataset(case$id, fields = fields, page_size = 1)
+    result <- tbod_get_dataset(case$id, fields = fields, page_size = 1)
     expect_identical(names(result), fields, info = case$id)
     expect_identical(nrow(result), 1L, info = case$id)
     for (field in fields) {
@@ -422,7 +422,7 @@ test_that("new point, line, and polygon layers use their advertised native CRS",
     transport <- source_fixture_transport(case$id, features)
     local_mocked_bindings(arcgis_http = transport$http,
                           .package = "tampaBayOpenData")
-    result <- get_dataset(case$id, fields = case$field, spatial = TRUE,
+    result <- tbod_get_dataset(case$id, fields = case$field, spatial = TRUE,
                           page_size = 1)
     expect_s3_class(result, "sf")
     expect_identical(result[[case$field]], c("missing", "present"), info = case$id)
@@ -430,7 +430,7 @@ test_that("new point, line, and polygon layers use their advertised native CRS",
     expect_identical(as.character(sf::st_geometry_type(result)[2L]), case$type,
                      info = case$id)
     expect_equal(sf::st_crs(result)$epsg, case$epsg, info = case$id)
-    expect_identical(dataset_provenance(result)$returned_rows, 2L)
+    expect_identical(tbod_provenance(result)$returned_rows, 2L)
     expect_source_routing(result, transport, case$id, case$field)
   }
 })
@@ -460,8 +460,8 @@ test_that("water service polygons accept a server-confirmed WGS 84 projection", 
   local_mocked_bindings(arcgis_http = transport$http,
                         .package = "tampaBayOpenData")
 
-  native <- get_dataset("water-service-area", fields = "SERVICEBY", spatial = TRUE)
-  projected <- get_dataset("water-service-area", fields = "SERVICEBY",
+  native <- tbod_get_dataset("water-service-area", fields = "SERVICEBY", spatial = TRUE)
+  projected <- tbod_get_dataset("water-service-area", fields = "SERVICEBY",
                            spatial = TRUE, out_sr = 4326)
   expect_equal(sf::st_crs(native)$epsg, 2237)
   expect_equal(sf::st_crs(projected)$epsg, 4326)
@@ -471,5 +471,5 @@ test_that("water service polygons accept a server-confirmed WGS 84 projection", 
   queries <- fixture_queries(transport, "features")
   expect_null(queries[[1L]]$params$outSR)
   expect_identical(queries[[2L]]$params$outSR, "4326")
-  expect_identical(dataset_provenance(projected)$query$out_sr, 4326)
+  expect_identical(tbod_provenance(projected)$query$out_sr, 4326)
 })
