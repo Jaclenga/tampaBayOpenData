@@ -82,8 +82,9 @@ exposes this registry without a network request. To add one:
 
 Scheduled monitoring reads
 [`tbod_list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_portals.md),
-so a new configured publisher is included automatically. Ordinary tests
-continue to block live network access.
+so a new configured publisher is included in its portal loop. Update the
+monitor’s expected jurisdiction set and any publisher-specific cases
+when adding one. Ordinary tests continue to block live network access.
 
 ``` r
 

@@ -84,9 +84,11 @@ found <- tbod_search_datasets("housing", source = "live", portals = "city")
 found[, c("id", "title", "publisher", "validation_status", "modified")]
 
 # A one-row result carries the source needed for inspection or retrieval.
-selected <- found[1, ]
-selected[, c("item_id", "service_url", "layer_id", "portal")]
-tbod_dataset_info(selected)
+if (nrow(found)) {
+  selected <- found[1, ]
+  selected[, c("item_id", "service_url", "layer_id", "portal")]
+  tbod_dataset_info(selected)
+}
 ```
 
 By default,
@@ -108,15 +110,16 @@ council, or `"stpete"`, `"clearwater"`, `"hillsborough"`, or
 shows their publisher names and source locations offline. `jurisdiction`
 defaults to `"all"` for catalog functions and can be a code or a vector
 of codes. A jurisdiction or publisher filter narrows the organizations
-scanned. Retrieval and download functions default to
-`jurisdiction = NULL`: a checked ID resolves across the bundled catalog
-when it is unique. If two jurisdictions use the same ID, supply
-`jurisdiction` to select one.
+scanned and filters checked entries. `portals` only selects live
+organizations; it does not filter checked entries when `source = "all"`.
+Retrieval and download functions default to `jurisdiction = NULL`: a
+checked ID resolves across the bundled catalog when it is unique. If two
+jurisdictions use the same ID, supply `jurisdiction` to select one.
 
 When a live endpoint matches a checked entry, the result keeps its
-package ID, scope, and terms and uses current portal tags, categories,
-and item modification time. New IDs have the form
-`arcgis:<item-id>:<layer-id>` and can be passed to
+package ID, scope, and terms, combines checked and portal tags and
+categories, and uses the portal item’s modification time. New IDs have
+the form `arcgis:<item-id>:<layer-id>` and can be passed to
 [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
 later. The item or service can still change or disappear. Retrieval
 checks query responses and requires `Query` when the layer advertises a
@@ -129,8 +132,9 @@ accepts a public ArcGIS sharing REST root, FeatureServer or MapServer
 service root, or a layer URL. Portal queries search public service
 items; service queries filter layer names. Both return rows accepted by
 [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md).
-Portal results get stable `arcgis:` IDs; service results use the layer
-URL as their ID. Queryable MapServer layers are supported.
+Portal results have `discovered` status and stable `arcgis:` IDs;
+service results have `not_checked` status and use the layer URL as their
+ID. Queryable MapServer layers are supported.
 
 ``` r
 

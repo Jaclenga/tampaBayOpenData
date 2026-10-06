@@ -131,11 +131,14 @@ portals:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
 <span><span class="va">found</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>Catalog searches scan all six publishers by default. Set
-<code>portals</code> or <code>jurisdiction</code> to narrow the search.
-A <code>discovered</code> result has not received the catalog’s source
-checks; inspect its metadata and reuse terms before analysis. The <a href="discovery.html">discovery article</a> covers filters, scan limits,
-and ArcGIS sources outside the bundled region.</p>
+<p>The default catalog search scans all six live publishers and includes
+checked entries. Set <code>portals</code> to narrow the live scan;
+matching checked entries still appear. Set <code>jurisdiction</code> to
+filter both live and checked results. A <code>discovered</code> result
+has not received the catalog’s source checks; inspect its metadata and
+reuse terms before analysis. The <a href="discovery.html">discovery
+article</a> covers filters, scan limits, and ArcGIS sources outside the
+bundled region.</p>
 </div>
 <div class="section level2">
 <h2 id="retrieve-records">Retrieve records<a class="anchor" aria-label="anchor" href="#retrieve-records"></a>
@@ -156,8 +159,10 @@ jurisdictions, supply <code>jurisdiction</code> as well.</p>
 retrieve all matching rows. Passing a discovery row keeps its source
 information:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">housing</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"validation_status"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">found</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">housing</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"validation_status"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>Before retrieving a checked layer, the package compares its current
 fields, geometry, and CRS with the bundled schema. Added fields warn;
 incompatible changes stop retrieval. See

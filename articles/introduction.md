@@ -60,10 +60,12 @@ found <- tbod_search_datasets("housing", source = "live", portals = "city")
 found[, c("id", "title", "publisher", "validation_status")]
 ```
 
-Catalog searches scan all six publishers by default. Set `portals` or
-`jurisdiction` to narrow the search. A `discovered` result has not
-received the catalog’s source checks; inspect its metadata and reuse
-terms before analysis. The [discovery
+The default catalog search scans all six live publishers and includes
+checked entries. Set `portals` to narrow the live scan; matching checked
+entries still appear. Set `jurisdiction` to filter both live and checked
+results. A `discovered` result has not received the catalog’s source
+checks; inspect its metadata and reuse terms before analysis. The
+[discovery
 article](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.md)
 covers filters, scan limits, and ArcGIS sources outside the bundled
 region.
@@ -92,8 +94,10 @@ matching rows. Passing a discovery row keeps its source information:
 
 ``` r
 
-housing <- tbod_get_dataset(found[1, ], limit = 100)
-tbod_provenance(housing)[c("publisher", "validation_status", "complete")]
+if (nrow(found)) {
+  housing <- tbod_get_dataset(found[1, ], limit = 100)
+  tbod_provenance(housing)[c("publisher", "validation_status", "complete")]
+}
 ```
 
 Before retrieving a checked layer, the package compares its current

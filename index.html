@@ -12,9 +12,9 @@
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Tampa Bay open data from R">
-<meta name="description" content="Search six Tampa Bay ArcGIS publishers, retrieve a checked layer, or use another public ArcGIS portal or layer URL.
+<meta name="description" content="Browse 52 checked layers offline, search six Tampa Bay ArcGIS publishers live, or retrieve a public ArcGIS layer by ID or URL.
 ">
-<meta property="og:description" content="Search six Tampa Bay ArcGIS publishers, retrieve a checked layer, or use another public ArcGIS portal or layer URL.
+<meta property="og:description" content="Browse 52 checked layers offline, search six Tampa Bay ArcGIS publishers live, or retrieve a public ArcGIS layer by ID or URL.
 ">
 </head>
 <body>
@@ -111,7 +111,7 @@ Public ArcGIS data around Tampa Bay, from R.
 <span><span class="va">other</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_discover.html">tbod_discover</a></span><span class="op">(</span><span class="st">"https://example.maps.arcgis.com/sharing/rest"</span>,</span>
 <span>                       query <span class="op">=</span> <span class="st">"parks"</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">other</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="va">other</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
-<p>Discovered rows work with <code><a href="reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> but have not been checked by the package. Live searches can miss items when the scan is bounded or a publisher service fails. A direct public <code>FeatureServer/&lt;id&gt;</code> or <code>MapServer/&lt;id&gt;</code> URL also works with <code><a href="reference/tbod_get_dataset.html">tbod_get_dataset()</a></code>. The <a href="https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html">discovery</a> and <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html">retrieval</a> articles cover filters, scan limits, direct URLs, and downloads.</p>
+<p>Portal results have <code>discovered</code> status; rows from a service or layer URL have <code>not_checked</code> status. Both work with <code><a href="reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> and have no saved checked schema. Live searches can miss items when the scan is bounded or a publisher service fails; inspect <code>attr(other, "discovery_complete")</code> before treating a result as a complete listing. A direct public <code>FeatureServer/&lt;id&gt;</code> or <code>MapServer/&lt;id&gt;</code> URL also works with <code><a href="reference/tbod_get_dataset.html">tbod_get_dataset()</a></code>. The <a href="https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html">discovery</a> and <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html">retrieval</a> articles cover filters, scan limits, direct URLs, and downloads.</p>
 </div>
 <div class="section level2">
 <h2 id="see-spatial-data">See spatial data<a class="anchor" aria-label="anchor" href="#see-spatial-data"></a>
@@ -149,6 +149,8 @@ Public ArcGIS data around Tampa Bay, from R.
 <li>
 <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/architecture.md" class="external-link">Architecture</a>, <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/api-migration.md" class="external-link">API migration</a>, <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md" class="external-link">validation</a>, and <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/CONTRIBUTING.md" class="external-link">contributing</a>
 </li>
+<li><a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/notebooks/tampa-bicycle-network-eda.ipynb" class="external-link">Full-data bicycle network exploration notebook</a></li>
+<li><a href="https://github.com/Jaclenga/tampaBayOpenData/tree/main/notebooks/stories" class="external-link">Short R data exploration stories across six publishers</a></li>
 </ul>
 </div>
 </div>

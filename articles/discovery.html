@@ -160,9 +160,11 @@ policy</a> explains which layers enter the catalog.</p>
 <span><span class="va">found</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"validation_status"</span>, <span class="st">"modified"</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># A one-row result carries the source needed for inspection or retrieval.</span></span>
-<span><span class="va">selected</span> <span class="op">&lt;-</span> <span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span></span>
-<span><span class="va">selected</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item_id"</span>, <span class="st">"service_url"</span>, <span class="st">"layer_id"</span>, <span class="st">"portal"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">found</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">selected</span> <span class="op">&lt;-</span> <span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span></span>
+<span>  <span class="va">selected</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item_id"</span>, <span class="st">"service_url"</span>, <span class="st">"layer_id"</span>, <span class="st">"portal"</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>By default, <code><a href="../reference/tbod_list_datasets.html">tbod_list_datasets()</a></code> and
 <code><a href="../reference/tbod_search_datasets.html">tbod_search_datasets()</a></code> use <code>source = "all"</code>:
 they search all six portals and include the checked catalog.
@@ -179,16 +181,18 @@ several. <code><a href="../reference/tbod_list_portals.html">tbod_list_portals()
 and source locations offline. <code>jurisdiction</code> defaults to
 <code>"all"</code> for catalog functions and can be a code or a vector
 of codes. A jurisdiction or publisher filter narrows the organizations
-scanned. Retrieval and download functions default to
+scanned and filters checked entries. <code>portals</code> only selects
+live organizations; it does not filter checked entries when
+<code>source = "all"</code>. Retrieval and download functions default to
 <code>jurisdiction = NULL</code>: a checked ID resolves across the
 bundled catalog when it is unique. If two jurisdictions use the same ID,
 supply <code>jurisdiction</code> to select one.</p>
 <p>When a live endpoint matches a checked entry, the result keeps its
-package ID, scope, and terms and uses current portal tags, categories,
-and item modification time. New IDs have the form
-<code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code> and can be passed
-to <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> later. The item or service can still
-change or disappear. Retrieval checks query responses and requires
+package ID, scope, and terms, combines checked and portal tags and
+categories, and uses the portal item’s modification time. New IDs have
+the form <code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code> and can be
+passed to <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> later. The item or service can
+still change or disappear. Retrieval checks query responses and requires
 <code>Query</code> when the layer advertises a capabilities list.</p>
 </div>
 <div class="section level2">
@@ -198,8 +202,10 @@ change or disappear. Retrieval checks query responses and requires
 root, FeatureServer or MapServer service root, or a layer URL. Portal
 queries search public service items; service queries filter layer names.
 Both return rows accepted by <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code>. Portal
-results get stable <code>arcgis:</code> IDs; service results use the
-layer URL as their ID. Queryable MapServer layers are supported.</p>
+results have <code>discovered</code> status and stable
+<code>arcgis:</code> IDs; service results have <code>not_checked</code>
+status and use the layer URL as their ID. Queryable MapServer layers are
+supported.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replace this example address with your portal's public sharing REST root.</span></span>
 <span><span class="va">portal</span> <span class="op">&lt;-</span> <span class="st">"https://example.maps.arcgis.com/sharing/rest"</span></span>

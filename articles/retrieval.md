@@ -52,8 +52,10 @@ Pass a discovery row to carry its source and publisher into retrieval:
 ``` r
 
 found <- tbod_search_datasets("housing", source = "live", portals = "city")
-housing <- tbod_get_dataset(found[1, ], limit = 100)
-tbod_provenance(housing)[c("publisher", "item_id", "validation_status")]
+if (nrow(found)) {
+  housing <- tbod_get_dataset(found[1, ], limit = 100)
+  tbod_provenance(housing)[c("publisher", "item_id", "validation_status")]
+}
 ```
 
 For a compatible direct layer, pass a URL ending in
