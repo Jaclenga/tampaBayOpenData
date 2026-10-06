@@ -56,3 +56,19 @@ tbod_schema(
 
 A list with endpoint, a tibble of field names, types and aliases,
 geometry type, spatial reference, object-ID field, and dataset ID.
+
+## Examples
+
+``` r
+schema <- tbod_schema("construction-permits")
+head(schema$fields[, c("name", "type")])
+#> # A tibble: 6 × 2
+#>   name               type               
+#>   <chr>              <chr>              
+#> 1 OBJECTID           esriFieldTypeOID   
+#> 2 RECORD_ID          esriFieldTypeString
+#> 3 PROJECTNAME1       esriFieldTypeString
+#> 4 PROJECTNAME2       esriFieldTypeString
+#> 5 PROJECTDESCRIPTION esriFieldTypeString
+#> 6 ADDRESS            esriFieldTypeString
+```

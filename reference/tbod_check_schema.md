@@ -65,3 +65,13 @@ A `tbod_schema_check` list with `status` (`unchanged`, `compatible`,
 `incompatible`, or `untracked`), a tibble of issues with `category`,
 `severity`, `field`, `expected`, and `actual` columns, and expected and
 current schemas. An incompatible missing endpoint has no current schema.
+
+## Examples
+
+``` r
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  report <- tbod_check_schema("construction-permits")
+  report$status
+  report$issues
+}
+```

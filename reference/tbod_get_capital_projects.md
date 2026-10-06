@@ -22,3 +22,11 @@ tbod_get_capital_projects(...)
 ## Value
 
 A tibble or sf object with retrieval provenance attached.
+
+## Examples
+
+``` r
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  tbod_get_capital_projects(limit = 10)
+}
+```

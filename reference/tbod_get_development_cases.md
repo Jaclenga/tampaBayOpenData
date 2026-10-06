@@ -22,3 +22,11 @@ tbod_get_development_cases(...)
 ## Value
 
 A tibble or sf object with retrieval provenance attached.
+
+## Examples
+
+``` r
+if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
+  tbod_get_development_cases(limit = 10)
+}
+```
