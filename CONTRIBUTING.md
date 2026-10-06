@@ -67,7 +67,9 @@ Discovery publishers are configured in `inst/extdata/portals.json`.
    have been checked. Registering a portal does not mark its layers `checked`.
 
 Scheduled monitoring reads `tbod_list_portals()`, so a new configured publisher is
-included automatically. Ordinary tests continue to block live network access.
+included in its portal loop. Update the monitor's expected jurisdiction set and
+any publisher-specific cases when adding one. Ordinary tests continue to block
+live network access.
 
 ```r
 tbod_list_portals()

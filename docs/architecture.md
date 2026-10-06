@@ -36,6 +36,8 @@ returns rows that `tbod_get_dataset()` can retrieve.
 `tbod_get_dataset()` also accepts a compatible HTTPS FeatureServer or MapServer
 layer URL directly. Checked IDs, portal rows, and direct URLs use the same
 metadata, pagination, parsing, spatial, and provenance code.
+Portal results have `discovered` status; rows found from a service or layer URL
+have `not_checked` status because they have no portal item identity.
 
 Checked dataset records include expected field names and types, geometry, CRS,
 object ID field, and endpoint from a dated metadata snapshot. The schema

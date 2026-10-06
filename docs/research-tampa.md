@@ -115,11 +115,11 @@ while direct API calls from the local environment succeeded. Availability can
 vary by network. The client treats non-JSON responses, including an HTML page
 with HTTP 200, as upstream errors rather than empty data.
 
-The local [harvest script](../.research/tampa-harvest.py),
-[candidate record](../.research/tampa-candidates.json), and
+The local `.research/tampa-harvest.py`, `.research/tampa-candidates.json`, and
 `.research/tampa/raw/` retain full schemas, query URLs, statuses, and source
-metadata for the September audit. They are development evidence excluded from
-package builds; no bulk government dataset is shipped.
+metadata for the September audit. These ignored development files are not
+published in the repository or package builds; no bulk government dataset is
+shipped.
 
 ## 2026-10-02 additions
 

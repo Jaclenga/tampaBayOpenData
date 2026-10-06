@@ -65,10 +65,12 @@ other <- tbod_discover("https://example.maps.arcgis.com/sharing/rest",
 if (nrow(other)) tbod_get_dataset(other[1, ], limit = 100)
 ```
 
-Discovered rows work with `tbod_get_dataset()` but have not been checked by the
-package. Live searches can miss items when the scan is bounded or a publisher
-service fails. A direct public `FeatureServer/<id>` or `MapServer/<id>` URL
-also works with `tbod_get_dataset()`. The [discovery](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html)
+Portal results have `discovered` status; rows from a service or layer URL have
+`not_checked` status. Both work with `tbod_get_dataset()` and have no saved
+checked schema. Live searches can miss items when the scan is bounded or a
+publisher service fails; inspect `attr(other, "discovery_complete")` before
+treating a result as a complete listing. A direct public `FeatureServer/<id>`
+or `MapServer/<id>` URL also works with `tbod_get_dataset()`. The [discovery](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html)
 and [retrieval](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html)
 articles cover filters, scan limits, direct URLs, and downloads.
 
@@ -122,3 +124,5 @@ toBibtex(citation("tampaBayOpenData"))
   [API migration](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/api-migration.md),
   [validation](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md),
   and [contributing](https://github.com/Jaclenga/tampaBayOpenData/blob/main/CONTRIBUTING.md)
+- [Full-data bicycle network exploration notebook](https://github.com/Jaclenga/tampaBayOpenData/blob/main/notebooks/tampa-bicycle-network-eda.ipynb)
+- [Short R data exploration stories across six publishers](https://github.com/Jaclenga/tampaBayOpenData/tree/main/notebooks/stories)

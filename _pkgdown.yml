@@ -3,8 +3,8 @@ url: https://jaclenga.github.io/tampaBayOpenData/
 home:
   title: Tampa Bay open data from R
   description: >
-    Search six Tampa Bay ArcGIS publishers, retrieve a checked layer, or use
-    another public ArcGIS portal or layer URL.
+    Browse 52 checked layers offline, search six Tampa Bay ArcGIS publishers
+    live, or retrieve a public ArcGIS layer by ID or URL.
 
 template:
   bootstrap: 5

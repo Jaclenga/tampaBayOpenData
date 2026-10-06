@@ -222,8 +222,13 @@ they do not justify adding weak checked layers merely to fill cells.
 
 ## Maintenance workflow
 
-1. Search the configured publishers with `tbod_discover()` and the relevant
-   portal. Check the publisher's item page, REST metadata, source URL, reuse
+1. Search a configured publisher with `tbod_search_datasets("parks",
+   source = "live", portals = "city")`, substituting the query and an ID from
+   `tbod_list_portals()`. This scopes the search to its registered organization.
+   Check the result's `discovery_complete` attribute; the default scan covers at most
+   25 service items, and a failed item also makes the result incomplete. Use
+   `max_items = Inf` with an appropriate `total_timeout` for a full item scan.
+   Check the publisher's item page, REST metadata, source URL, reuse
    statement, scope, and update claims. For a candidate layer, run
    `Rscript tools/prepare-checked-candidate.R <layer-url> <jurisdiction> <slug>`
    from the package root after installing the current source. This live-only

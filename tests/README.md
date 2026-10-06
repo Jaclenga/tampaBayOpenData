@@ -124,7 +124,7 @@ manifest requests still run, with a 45-second overall deadline per operation.
 The manual [live-check workflow](../.github/workflows/live-check.yaml) runs
 opt-in checks against current Tampa, regional, St. Petersburg, Clearwater, and
 county ArcGIS services. It covers all 52 checked layers, live portal discovery,
-and a complete multi-page permit download. The
+and a complete multi-page permit retrieval. The
 [other-city live tests](testthat/test-live-other-cities.R) retrieve at most two
 features per call, check a complete filter using IDs from the current run, and
 compare native geometry with server projection to EPSG:4326. The client still
@@ -135,7 +135,7 @@ The same workflow schedules the bounded `live-monitoring` and
 workflow is on the repository's default branch,
 as described in the [GitHub schedule documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
 Manual runs retain the full `live` suite, including
-the complete permit download. Runs have a 20-minute job timeout, and a newer
+the complete permit retrieval. Runs have a 20-minute job timeout, and a newer
 run cancels an older run on the same branch. Scheduled results provide dated
 availability and schema evidence as runs complete; they do not guarantee
 future uptime, source freshness, or support for every public layer.
