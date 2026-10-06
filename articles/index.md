@@ -2,7 +2,7 @@
 
 ### Start here
 
-The basic path from discovery to a reproducible analysis.
+Find a layer and retrieve its records.
 
 - [Get started with Tampa Bay open
   data](https://jaclenga.github.io/tampaBayOpenData/articles/introduction.md):
@@ -12,7 +12,7 @@ The basic path from discovery to a reproducible analysis.
 
 ### In depth
 
-Search, retrieval, source coverage, and limitations.
+Discovery, retrieval, and source limits.
 
 - [Discovering Tampa Bay
   data](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.md):

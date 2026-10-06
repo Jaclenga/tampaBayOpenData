@@ -1,12 +1,9 @@
 # Discovering Tampa Bay data
 
-`tampaBayOpenData` can search two related sources: a bundled catalog of
-35 maintainer-checked layers, and public ArcGIS portal indexes operated
-by six regional publishers. A checked layer has been configured and
-validated by the package maintainers. A discovered layer is a candidate
-found in a live portal index; its contents and reuse terms have not
-received the same validation. The package does not host or mirror either
-source’s records.
+`tampaBayOpenData` searches a bundled catalog of 52 checked layers or
+the live ArcGIS portals of six Tampa Bay publishers. Maintainers have
+validated the configured endpoints for checked layers. A `discovered`
+layer comes from a portal index and has not received those checks.
 
 Live examples below are displayed but not run while the site is built.
 The checked-catalog example runs offline.
@@ -29,7 +26,7 @@ tampaBayOpenData::tbod_list_portals()[, c("id", "publisher", "jurisdiction")]
 #> 6 pinellas     Pinellas County                     pinellas
 tampaBayOpenData::tbod_list_datasets(source = "checked")[,
   c("id", "title", "jurisdiction", "validation_status")]
-#> # A tibble: 35 × 4
+#> # A tibble: 52 × 4
 #>    id                   title                     jurisdiction validation_status
 #>    <chr>                <chr>                     <chr>        <chr>            
 #>  1 construction-permits Permits (active GIS view) tampa        checked          
@@ -42,7 +39,7 @@ tampaBayOpenData::tbod_list_datasets(source = "checked")[,
 #>  8 parks                Park polygons             tampa        checked          
 #>  9 fire-stations        City of Tampa fire stati… tampa        checked          
 #> 10 bike-lanes           Bicycle network segments  tampa        checked          
-#> # ℹ 25 more rows
+#> # ℹ 42 more rows
 tampaBayOpenData::tbod_search_datasets(
   "park", source = "checked", spatial = TRUE,
   jurisdiction = c("stpete", "clearwater")
@@ -69,14 +66,15 @@ tampaBayOpenData::tbod_dataset_info("construction-permits")[
 #> [1] "2026-09-29"
 ```
 
-`source = "checked"` reads the bundled registry without HTTP. Its IDs,
-such as `construction-permits` and `stpete-parks`, are stable package
-names rather than ArcGIS item IDs. `tbod_dataset_info(id)` reports each
-checked entry’s scope, terms, source URL, and endpoint-verification
-date. The latter is not a record-freshness date. There are 20 Tampa
-checked layers and three each from St. Petersburg, Clearwater,
-Hillsborough County, Pinellas County, and the Tampa Bay Regional
-Planning Council. All six publishers also support live discovery.
+`source = "checked"` reads the registry without HTTP. IDs such as
+`construction-permits` and `stpete-parks` are package names, not ArcGIS
+item IDs. `tbod_dataset_info(id)` gives the scope, terms, source URL,
+and endpoint verification date; that date says nothing about record
+freshness. The [coverage
+article](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.md)
+has counts by publisher, and the [selection
+policy](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md)
+explains which layers enter the catalog.
 
 ## Discover live portal layers
 
@@ -94,13 +92,13 @@ tbod_dataset_info(selected)
 By default,
 [`tbod_list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_datasets.md)
 and
-[`tbod_search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_datasets.md)
-use `source = "all"` and search all six configured organizations, then
-overlay the checked registry. `source = "live"` returns only layers
-found through portal indexes, including checked layers when a live
-endpoint matches a checked entry. If a source is not indexed or an index
-lags, it may not appear in live results; a compatible public ArcGIS
-layer can still be retrieved by URL with
+[`tbod_search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_search_datasets.md)
+use `source = "all"`: they search all six portals and include the
+checked catalog. `source = "live"` returns only layers found through
+portal indexes, including checked layers when a live endpoint matches a
+checked entry. If a source is not indexed or an index lags, it may not
+appear in live results; a compatible public ArcGIS layer can still be
+retrieved by URL with
 [`tbod_get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_arcgis_layer.md).
 
 Use `portals = "city"` for Tampa, `"tbrpc"` for the regional planning
@@ -115,29 +113,24 @@ scanned. Retrieval and download functions default to
 when it is unique. If two jurisdictions use the same ID, supply
 `jurisdiction` to select one.
 
-`validation_status = "checked"` means maintainers validated the
-configured layer. `"discovered"` means the item was found in a public
-portal index, not that its contents or reuse terms were checked.
-Discovery keeps checked IDs, scope, and terms when the live endpoint
-matches the registry, while using current live tags, categories, and
-item modification time. Newly discovered IDs have the form
+When a live endpoint matches a checked entry, the result keeps its
+package ID, scope, and terms and uses current portal tags, categories,
+and item modification time. New IDs have the form
 `arcgis:<item-id>:<layer-id>` and can be passed to
 [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
-in a later online session. The item or its service can still change or
-disappear. Retrieval validates query responses and requires `Query` when
-a layer advertises a capabilities list.
+later. The item or service can still change or disappear. Retrieval
+checks query responses and requires `Query` when the layer advertises a
+capabilities list.
 
 ## Search beyond the bundled publishers
 
 [`tbod_discover()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_discover.md)
 accepts a public ArcGIS sharing REST root, FeatureServer or MapServer
-service root, or a layer URL. It uses the same discovery rows and
-retrieval API without adding the source to the Tampa Bay catalog. For a
-portal, `query` searches public service items; for a service URL, it
-filters layer names. A queryable MapServer layer can be retrieved in the
-same way as a FeatureServer layer. Portal search rows receive stable
-`arcgis:` IDs; rows enumerated directly from a service use the layer URL
-as their ID.
+service root, or a layer URL. Portal queries search public service
+items; service queries filter layer names. Both return rows accepted by
+[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md).
+Portal results get stable `arcgis:` IDs; service results use the layer
+URL as their ID. Queryable MapServer layers are supported.
 
 ``` r
 
@@ -218,14 +211,12 @@ attr(results, "discovery_issues")
 attr(results, "discovery_failed_portals")
 ```
 
-Inspect `discovery_complete` before treating a result as a complete
-portal catalog. Truncation and scanned-item attributes describe how far
-each scan went. Skipped items and failed portals are reported in the
-issue and failure attributes. If one portal fails, a combined search can
-still use other publishers or rows collected before a later failure. If
-every selected live portal fails before yielding rows, `source = "live"`
-errors; the default combined search warns and returns checked rows. The
-checked catalog remains available offline with `source = "checked"`.
+Check `discovery_complete` before treating results as a complete portal
+catalog. The other attributes show scan progress, skipped items, and
+failed portals. A combined search retains rows from working publishers
+or from earlier pages of a failed scan. If all selected portals fail
+before returning rows, `source = "live"` errors; `source = "all"` warns
+and returns checked rows.
 
 Continue with [retrieval and
 downloads](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.md)

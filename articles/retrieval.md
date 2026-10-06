@@ -1,14 +1,12 @@
 # Retrieving and downloading data
 
-Use
 [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
-for a checked package ID, a one-row discovery result, or a stable
-discovered ID. Use
-[`tbod_get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_arcgis_layer.md)
-when you already have a compatible public HTTPS ArcGIS layer URL. Both
-paths use the same retrieval, type conversion, integrity checks, and
-provenance. These examples contact live publishers when run in an R
-session; none run during the site build.
+accepts a checked package ID, a discovery row, or a stable discovered
+ID. For a public HTTPS ArcGIS layer URL, use
+[`tbod_get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_arcgis_layer.md).
+Both use the same type conversion, integrity checks, and provenance. The
+examples contact live publishers when run in R; none run during the site
+build.
 
 ## Retrieve and filter records
 
@@ -26,8 +24,8 @@ head(permits)
 tbod_provenance(permits)[c("matched_rows", "returned_rows", "complete", "integrity")]
 ```
 
-`where` uses ArcGIS SQL, not Socrata SoQL, and `fields` requires exact
-source field names. Inspect current fields with
+`where` uses ArcGIS SQL; `fields` requires exact source field names.
+Inspect current fields with
 `tbod_dataset_info("construction-permits", refresh = TRUE)$fields`; its
 metadata also reports query capabilities. `query` accepts supported
 advanced ArcGIS spatial, time, and version filters. It does not allow
@@ -36,24 +34,20 @@ aggregation, geometry simplification, or pagination; see
 [`?tbod_get_dataset`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
 for the accepted names.
 
-The default `limit = Inf` retrieves all matches. A finite limit
-deliberately returns a subset and
+The default `limit = Inf` retrieves all matches. A finite limit returns
+a subset;
 [`tbod_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_provenance.md)
-records `complete = FALSE` when additional records match. Use `order_by`
-for a reproducible ordered subset only when the service supports
-ordering and offset pagination; an object-ID tie breaker is added.
-`limit = 0` returns a typed empty result after obtaining the matching
-count.
-[`tbod_get_permits()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_convenience.md),
-[`tbod_get_development_cases()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_convenience.md),
+sets `complete = FALSE` if more records match. For a reproducible
+subset, use `order_by` when the service supports ordering and offset
+pagination. The client adds an object-ID tie breaker. `limit = 0`
+returns a typed empty result after counting matches.
+[`tbod_get_permits()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_permits.md),
+[`tbod_get_development_cases()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_development_cases.md),
 and
-[`tbod_get_capital_projects()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_convenience.md)
-are short calls to
-[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
-for three checked Tampa layers.
+[`tbod_get_capital_projects()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_capital_projects.md)
+name three checked Tampa layers.
 
-For a one-row discovery result, pass the row itself so its source and
-publisher travel with the request:
+Pass a discovery row to carry its source and publisher into retrieval:
 
 ``` r
 
@@ -74,16 +68,16 @@ yard_waste <- tbod_get_arcgis_layer(
 tbod_provenance(yard_waste)$validation_status # "not_checked"
 ```
 
-Direct URL access does not infer a publisher or ArcGIS portal item and
-has `not_checked` validation status. It cannot take a `jurisdiction`
-override. Inspect the service’s source and reuse terms yourself.
+Direct URL access has `not_checked` validation status and does not infer
+a publisher or ArcGIS portal item. It does not accept a `jurisdiction`
+override. Check the service’s source and reuse terms.
 
 ## Check the live schema
 
-Checked layers have a bundled field, geometry, CRS, object-ID, and
-endpoint snapshot. `tbod_schema(id)` reads that snapshot offline;
-`tbod_schema(id, refresh = TRUE)` reads the current layer metadata.
-`tbod_check_schema(id)` compares them and returns a report:
+Checked layers have bundled field, geometry, CRS, object-ID, and
+endpoint metadata. `tbod_schema(id)` reads it offline;
+`tbod_schema(id, refresh = TRUE)` reads the current service.
+`tbod_check_schema(id)` compares them:
 
 ``` r
 
@@ -93,18 +87,16 @@ report$status
 report$issues[, c("category", "severity", "field", "expected", "actual")]
 ```
 
-The status is `"unchanged"`, `"compatible"`, or `"incompatible"` for a
-checked layer. Added fields and changed aliases are compatible drift:
-checked retrieval warns and proceeds. Removed or renamed fields, changed
-field types, object-ID fields, geometry, CRS, or endpoint are
-incompatible: checked retrieval stops before querying records. A
-vanished endpoint is reported as `endpoint_disappeared`. Inspect
-`report$issues` to identify the change.
+The status is `"unchanged"`, `"compatible"`, or `"incompatible"`. Added
+fields and changed aliases warn but allow retrieval. Removed or renamed
+fields, type changes, and object-ID, geometry, CRS, or endpoint changes
+stop retrieval before record queries. A vanished endpoint appears as
+`endpoint_disappeared` in `report$issues`.
 
-A direct URL or discovered layer has no bundled expected schema. Save
-its current metadata and supply it on a later check; an untracked check
-without `expected` returns `status = "untracked"`. For a stable ID from
-a custom Enterprise portal, also pass `portal` to
+A direct URL or newly discovered layer has no bundled schema. Save its
+current metadata as `expected` for a later check. Without it, an
+untracked check returns `status = "untracked"`. For a stable ID from a
+custom Enterprise portal, pass `portal` to
 [`tbod_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_schema.md)
 or
 [`tbod_check_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_schema.md).
@@ -132,10 +124,9 @@ complete when more rows match. A full manifest of more than one million
 matching records is rejected; narrow `where` or use an eligible bounded
 preview.
 
-These checks detect record-membership problems during a request, but a
-live service can change record attributes between pages. A successful
-download is not a frozen snapshot. The client does not keep a runtime
-cache of the data.
+These checks detect record-membership problems during a request. A live
+service can still change record attributes between pages. The client
+does not keep a runtime data cache.
 
 `timeout` limits each HTTP attempt. `total_timeout` sets an operation
 budget: 120 seconds for retrieval, 90 for catalog discovery, and 60 for
@@ -143,6 +134,11 @@ metadata inspection by default. Set `total_timeout = Inf` explicitly for
 an operation without an overall deadline. Requests and retry waits use
 the remaining budget. Parsing is checked after it finishes, so
 computation can exceed the budget before a timeout is reported.
+
+Requests use `tampaBayOpenData/0.1.0` as the default user agent.
+Applications can identify themselves with
+`options(tampaBayOpenData.user_agent = "my-project/1.0 (contact: me@example.org)")`;
+set the option to `NULL` to restore the default.
 
 ## Types and spatial results
 
@@ -173,9 +169,8 @@ boundary <- tbod_get_dataset(
 sf::st_crs(projects)$epsg
 ```
 
-Both layers use one CRS so they can share a map. Keep only nonempty case
-geometries for the display; the full `projects` object remains available
-for analysis:
+The layers use one CRS for the map. Exclude empty case geometries from
+the display:
 
 ``` r
 
@@ -208,15 +203,12 @@ before interpreting a map or its record counts.
 ## Resume a large download
 
 [`tbod_download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_download_dataset.md)
-writes bounded RDS chunks to a local directory outside the package
-source. This avoids collecting all feature pages in memory; the full
-matching ID manifest still uses memory and retains the one-million-match
-limit. Each chunk is a tibble or, with `spatial = TRUE`, an `sf` object.
-[`tbod_download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_download_dataset.md)
-offers the same path for a compatible direct layer URL. For a stable ID
-from another ArcGIS Enterprise portal, pass its sharing REST root
-through `portal`, as with
-[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md).
+writes RDS chunks to a local directory without collecting all feature
+pages in memory. The full matching ID manifest still uses memory and has
+the one-million-match limit. Chunks are tibbles or `sf` objects.
+[`tbod_download_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_download_arcgis_layer.md)
+handles direct URLs. For a stable ID from another ArcGIS Enterprise
+portal, pass its sharing REST root as `portal`.
 
 ``` r
 
@@ -232,16 +224,14 @@ first_chunk <- readRDS(saved$files[[1]])
 tbod_provenance(first_chunk)
 ```
 
-Repeat the same call to resume. The client rechecks the live schema and
-complete matching ID manifest, verifies saved chunks against
-checkpoints, and downloads missing chunks. Changed query options,
-schema, CRS, endpoint, or ID membership require a new directory.
-Temporary files from interrupted writes are ignored. The directory must
-be empty on the first call, and `resume = FALSE` does not overwrite an
-existing download. Chunk provenance describes each chunk;
-`saved$complete` describes the whole matching download. Record
-attributes may still change between requests or resumes, so the files
-are not a frozen snapshot.
+Repeat the same call to resume. The client rechecks the schema and full
+ID manifest, verifies saved chunks against checkpoints, and downloads
+missing chunks. Changed query options, schema, CRS, endpoint, or ID
+membership require a new directory. The first call needs an empty
+directory; `resume = FALSE` never overwrites an existing download.
+Interrupted temporary files are ignored. Chunk provenance describes each
+file; `saved$complete` describes the whole download. Records may change
+between sessions, so the files are not a frozen snapshot.
 
 Downloads default to `total_timeout = Inf`; a finite deadline leaves
 completed chunks available for a later resume. An exclusive directory

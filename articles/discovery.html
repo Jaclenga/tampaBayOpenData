@@ -33,8 +33,16 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/introduction.html">Get started</a></li>
-<li class="active nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="active nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/discovery.html">Discovering data</a></li>
+    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading</a></li>
+    <li><a class="dropdown-item" href="../articles/index.html">All articles</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/coverage.html">Data coverage</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -72,13 +80,11 @@
 
     
     
-<p><code>tampaBayOpenData</code> can search two related sources: a
-bundled catalog of 35 maintainer-checked layers, and public ArcGIS
-portal indexes operated by six regional publishers. A checked layer has
-been configured and validated by the package maintainers. A discovered
-layer is a candidate found in a live portal index; its contents and
-reuse terms have not received the same validation. The package does not
-host or mirror either source’s records.</p>
+<p><code>tampaBayOpenData</code> searches a bundled catalog of 52
+checked layers or the live ArcGIS portals of six Tampa Bay publishers.
+Maintainers have validated the configured endpoints for checked layers.
+A <code>discovered</code> layer comes from a portal index and has not
+received those checks.</p>
 <p>Live examples below are displayed but not run while the site is
 built. The checked-catalog example runs offline.</p>
 <div class="section level2">
@@ -99,7 +105,7 @@ built. The checked-catalog example runs offline.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pinellas     Pinellas County                     pinellas</span></span>
 <span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_list_datasets</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span><span class="op">[</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"jurisdiction"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 35 × 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 52 × 4</span></span></span>
 <span><span class="co">#&gt;    id                   title                     jurisdiction validation_status</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> construction-permits Permits (active GIS view) tampa        checked          </span></span>
@@ -112,8 +118,8 @@ built. The checked-catalog example runs offline.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> parks                Park polygons             tampa        checked          </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> fire-stations        City of Tampa fire stati… tampa        checked          </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> bike-lanes           Bicycle network segments  tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 25 more rows</span></span></span>
-<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 42 more rows</span></span></span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
 <span>  <span class="st">"park"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  jurisdiction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stpete"</span>, <span class="st">"clearwater"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -137,21 +143,20 @@ built. The checked-catalog example runs offline.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $verified</span></span>
 <span><span class="co">#&gt; [1] "2026-09-29"</span></span></code></pre></div>
-<p><code>source = "checked"</code> reads the bundled registry without
-HTTP. Its IDs, such as <code>construction-permits</code> and
-<code>stpete-parks</code>, are stable package names rather than ArcGIS
-item IDs. <code>tbod_dataset_info(id)</code> reports each checked
-entry’s scope, terms, source URL, and endpoint-verification date. The
-latter is not a record-freshness date. There are 20 Tampa checked layers
-and three each from St. Petersburg, Clearwater, Hillsborough County,
-Pinellas County, and the Tampa Bay Regional Planning Council. All six
-publishers also support live discovery.</p>
+<p><code>source = "checked"</code> reads the registry without HTTP. IDs
+such as <code>construction-permits</code> and <code>stpete-parks</code>
+are package names, not ArcGIS item IDs.
+<code>tbod_dataset_info(id)</code> gives the scope, terms, source URL,
+and endpoint verification date; that date says nothing about record
+freshness. The <a href="coverage.html">coverage article</a> has counts
+by publisher, and the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md" class="external-link">selection
+policy</a> explains which layers enter the catalog.</p>
 </div>
 <div class="section level2">
 <h2 id="discover-live-portal-layers">Discover live portal layers<a class="anchor" aria-label="anchor" href="#discover-live-portal-layers"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
 <span><span class="va">found</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"validation_status"</span>, <span class="st">"modified"</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># A one-row result carries the source needed for inspection or retrieval.</span></span>
@@ -159,13 +164,13 @@ publishers also support live discovery.</p>
 <span><span class="va">selected</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item_id"</span>, <span class="st">"service_url"</span>, <span class="st">"layer_id"</span>, <span class="st">"portal"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span></code></pre></div>
 <p>By default, <code><a href="../reference/tbod_list_datasets.html">tbod_list_datasets()</a></code> and
-<code><a href="../reference/tbod_list_datasets.html">tbod_search_datasets()</a></code> use <code>source = "all"</code> and
-search all six configured organizations, then overlay the checked
-registry. <code>source = "live"</code> returns only layers found through
-portal indexes, including checked layers when a live endpoint matches a
-checked entry. If a source is not indexed or an index lags, it may not
-appear in live results; a compatible public ArcGIS layer can still be
-retrieved by URL with <code><a href="../reference/tbod_get_arcgis_layer.html">tbod_get_arcgis_layer()</a></code>.</p>
+<code><a href="../reference/tbod_search_datasets.html">tbod_search_datasets()</a></code> use <code>source = "all"</code>:
+they search all six portals and include the checked catalog.
+<code>source = "live"</code> returns only layers found through portal
+indexes, including checked layers when a live endpoint matches a checked
+entry. If a source is not indexed or an index lags, it may not appear in
+live results; a compatible public ArcGIS layer can still be retrieved by
+URL with <code><a href="../reference/tbod_get_arcgis_layer.html">tbod_get_arcgis_layer()</a></code>.</p>
 <p>Use <code>portals = "city"</code> for Tampa, <code>"tbrpc"</code> for
 the regional planning council, or <code>"stpete"</code>,
 <code>"clearwater"</code>, <code>"hillsborough"</code>, or
@@ -178,29 +183,23 @@ scanned. Retrieval and download functions default to
 <code>jurisdiction = NULL</code>: a checked ID resolves across the
 bundled catalog when it is unique. If two jurisdictions use the same ID,
 supply <code>jurisdiction</code> to select one.</p>
-<p><code>validation_status = "checked"</code> means maintainers
-validated the configured layer. <code>"discovered"</code> means the item
-was found in a public portal index, not that its contents or reuse terms
-were checked. Discovery keeps checked IDs, scope, and terms when the
-live endpoint matches the registry, while using current live tags,
-categories, and item modification time. Newly discovered IDs have the
-form <code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code> and can be
-passed to <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> in a later online session. The
-item or its service can still change or disappear. Retrieval validates
-query responses and requires <code>Query</code> when a layer advertises
-a capabilities list.</p>
+<p>When a live endpoint matches a checked entry, the result keeps its
+package ID, scope, and terms and uses current portal tags, categories,
+and item modification time. New IDs have the form
+<code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code> and can be passed
+to <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> later. The item or service can still
+change or disappear. Retrieval checks query responses and requires
+<code>Query</code> when the layer advertises a capabilities list.</p>
 </div>
 <div class="section level2">
 <h2 id="search-beyond-the-bundled-publishers">Search beyond the bundled publishers<a class="anchor" aria-label="anchor" href="#search-beyond-the-bundled-publishers"></a>
 </h2>
 <p><code><a href="../reference/tbod_discover.html">tbod_discover()</a></code> accepts a public ArcGIS sharing REST
-root, FeatureServer or MapServer service root, or a layer URL. It uses
-the same discovery rows and retrieval API without adding the source to
-the Tampa Bay catalog. For a portal, <code>query</code> searches public
-service items; for a service URL, it filters layer names. A queryable
-MapServer layer can be retrieved in the same way as a FeatureServer
-layer. Portal search rows receive stable <code>arcgis:</code> IDs; rows
-enumerated directly from a service use the layer URL as their ID.</p>
+root, FeatureServer or MapServer service root, or a layer URL. Portal
+queries search public service items; service queries filter layer names.
+Both return rows accepted by <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code>. Portal
+results get stable <code>arcgis:</code> IDs; service results use the
+layer URL as their ID. Queryable MapServer layers are supported.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replace this example address with your portal's public sharing REST root.</span></span>
 <span><span class="va">portal</span> <span class="op">&lt;-</span> <span class="st">"https://example.maps.arcgis.com/sharing/rest"</span></span>
@@ -278,7 +277,7 @@ string for a whole UTC day, or a <code>POSIXct</code> value for an exact
 instant. Rows with unknown modification times are excluded only when a
 date bound is supplied.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">county_transport</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">county_transport</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
 <span>  <span class="st">"road"</span>, source <span class="op">=</span> <span class="st">"live"</span>, jurisdiction <span class="op">=</span> <span class="st">"pinellas"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  topic <span class="op">=</span> <span class="st">"transportation"</span>, modified_after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2025-01-01"</span><span class="op">)</span>,</span>
 <span>  max_items <span class="op">=</span> <span class="fl">10</span></span>
@@ -310,15 +309,13 @@ missed by a capped scan.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_scanned_items"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_issues"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_failed_portals"</span><span class="op">)</span></span></code></pre></div>
-<p>Inspect <code>discovery_complete</code> before treating a result as a
-complete portal catalog. Truncation and scanned-item attributes describe
-how far each scan went. Skipped items and failed portals are reported in
-the issue and failure attributes. If one portal fails, a combined search
-can still use other publishers or rows collected before a later failure.
-If every selected live portal fails before yielding rows,
-<code>source = "live"</code> errors; the default combined search warns
-and returns checked rows. The checked catalog remains available offline
-with <code>source = "checked"</code>.</p>
+<p>Check <code>discovery_complete</code> before treating results as a
+complete portal catalog. The other attributes show scan progress,
+skipped items, and failed portals. A combined search retains rows from
+working publishers or from earlier pages of a failed scan. If all
+selected portals fail before returning rows,
+<code>source = "live"</code> errors; <code>source = "all"</code> warns
+and returns checked rows.</p>
 <p>Continue with <a href="retrieval.html">retrieval and downloads</a> or
 read about <a href="coverage.html">coverage and source limits</a>.</p>
 </div>

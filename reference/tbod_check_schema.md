@@ -42,7 +42,7 @@ tbod_check_schema(
 
   Optional schema list with `endpoint`, `fields`, `geometry_type`,
   `spatial_reference`, and `object_id_field`. A saved
-  [`tbod_schema`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_schema.md)
+  [`tbod_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_schema.md)
   result can be passed directly.
 
 - timeout:

@@ -1,16 +1,17 @@
-# List datasets in the bundled catalog
+# Search datasets in the bundled catalog
 
-By default, scans the configured Tampa Bay ArcGIS portals and combines
-their layers with the bundled checked catalog. Use `source = "checked"`
-to list checked entries offline. Live scans may be incomplete; see
-Details for the result attributes. Use
+Searches checked Tampa Bay entries and, when requested, configured live
+ArcGIS portals. Checked entries match literal, case-insensitive words in
+their IDs, titles, descriptions, categories, and tags. Live searches use
+each portal's index, so matching can differ. Use
 [`tbod_discover()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_discover.md)
-to scan another portal.
+to search another ArcGIS portal.
 
 ## Usage
 
 ``` r
-tbod_list_datasets(
+tbod_search_datasets(
+  query,
   jurisdiction = "all",
   source = "all",
   portals = "all",
@@ -28,6 +29,11 @@ tbod_list_datasets(
 ```
 
 ## Arguments
+
+- query:
+
+  A single search string. Checked matching treats punctuation literally;
+  live matching uses the ArcGIS portal index.
 
 - jurisdiction:
 
@@ -98,40 +104,26 @@ tbod_list_datasets(
 
 ## Value
 
-A tibble with stable IDs, service and layer locations, portal and item
-IDs when available, and `validation_status` of `"checked"` or
-`"discovered"`. Live results include scan-completeness and issue
-attributes described in Details.
+A tibble with the same columns and live discovery attributes as
+[`tbod_list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_datasets.md).
+A checked-only search requires no network request.
 
 ## Details
 
-Values within a filter are combined with OR; different filters and a
-search query are combined with AND. Status, geometry, topic, category,
-and date filters apply after the bounded live scan and checked overlay.
-A capped scan can miss older matching items. For an exhaustive scan, use
-`max_items = Inf` with an appropriate time budget and inspect
-`attr(result, "discovery_complete")`. Live results also carry
-`discovery_issues`, `discovery_failed_portals`,
-`discovery_scanned_items`, and `discovery_truncated_portals` attributes.
+Values within a filter are combined with OR; different filters and the
+search query are combined with AND. Filters apply after the bounded
+scan, so a capped scan can miss matching items. See
+[`tbod_list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_datasets.md)
+for the discovery attributes.
 
 ## Examples
 
 ``` r
-tbod_list_datasets(source = "checked")
-#> # A tibble: 52 × 23
-#>    id            title description jurisdiction publisher source_url service_url
-#>    <chr>         <chr> <chr>       <chr>        <chr>     <chr>      <chr>      
-#>  1 construction… Perm… Permit loc… tampa        City of … https://a… https://ar…
-#>  2 development-… Acti… Locations … tampa        City of … https://a… https://ar…
-#>  3 capital-proj… Capi… Locations … tampa        City of … https://t… https://ar…
-#>  4 city-boundary Tamp… A Tampa ci… tampa        City of … https://t… https://ar…
-#>  5 neighborhoods Neig… City of Ta… tampa        City of … https://t… https://ar…
-#>  6 council-dist… City… Tampa City… tampa        City of … https://t… https://ar…
-#>  7 riverwalk     Tamp… Tampa Rive… tampa        City of … https://t… https://ar…
-#>  8 parks         Park… Park polyg… tampa        City of … https://a… https://ar…
-#>  9 fire-stations City… Mapped Cit… tampa        City of … https://a… https://ar…
-#> 10 bike-lanes    Bicy… Mapped Tam… tampa        City of … https://t… https://ar…
-#> # ℹ 42 more rows
+tbod_search_datasets("permit", source = "checked")
+#> # A tibble: 1 × 23
+#>   id             title description jurisdiction publisher source_url service_url
+#>   <chr>          <chr> <chr>       <chr>        <chr>     <chr>      <chr>      
+#> 1 construction-… Perm… Permit loc… tampa        City of … https://a… https://ar…
 #> # ℹ 16 more variables: geometry_type <chr>, category <chr>, verified <date>,
 #> #   terms <chr>, layer_id <int>, date_fields <list>, tags <list>,
 #> #   item_id <chr>, portal <chr>, validation_status <chr>, modified <dttm>,

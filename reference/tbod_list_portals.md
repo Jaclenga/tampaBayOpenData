@@ -1,9 +1,11 @@
 # List bundled ArcGIS publisher configurations
 
-Returns the bundled Tampa Bay publisher configurations without a network
-request. Use
-[`tbod_discover`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_discover.md)
-to scan another portal.
+Returns the package's Tampa Bay publisher configurations without a
+network request. Each entry provides an ArcGIS organization ID and
+sharing REST root. Its `verified` date checks publisher identity, not
+every layer's contents or reuse terms. To scan another portal, pass its
+sharing REST URL to
+[`tbod_discover()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_discover.md).
 
 ## Usage
 
@@ -13,8 +15,13 @@ tbod_list_portals()
 
 ## Value
 
-A tibble with configured publisher names, jurisdiction labels, ArcGIS
-organization IDs, and portal roots.
+A tibble with `id` (the discovery selector), `root`, `org_id`,
+`publisher`, `jurisdiction`, `website`, `verified` (a Date),
+`metadata_url`, and `evidence_url`. Use `id` in the `portals` argument
+of
+[`tbod_list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_datasets.md)
+or
+[`tbod_search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_search_datasets.md).
 
 ## Examples
 
