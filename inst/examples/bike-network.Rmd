@@ -22,10 +22,10 @@ The checked catalog lookup does not contact the City.
 ```{r catalog}
 library(tampaBayOpenData)
 
-bike_catalog <- search_datasets("bike", source = "checked")
+bike_catalog <- tbod_search_datasets("bike", source = "checked")
 bike_catalog[, c("id", "title", "category", "verified")]
 
-bike_info <- dataset_info("bike-lanes")
+bike_info <- tbod_dataset_info("bike-lanes")
 bike_info[c("title", "source_url", "verified", "scope_note")]
 ```
 
@@ -40,7 +40,7 @@ subset is reproducible while the source remains unchanged. The service is live,
 so its records may change later.
 
 ```{r retrieve, eval=params$live}
-bike <- get_dataset(
+bike <- tbod_get_dataset(
   "bike-lanes",
   fields = c("OBJECTID", "ROADWAY", "CONN_TYPE"),
   order_by = "OBJECTID ASC",
@@ -54,7 +54,7 @@ Provenance records the source, retrieval time, and whether the result covers
 all matching records. A 20-record limit normally produces an incomplete subset.
 
 ```{r provenance, eval=params$live}
-bike_source <- dataset_provenance(bike)
+bike_source <- tbod_provenance(bike)
 bike_source[c("source_url", "retrieved_at", "matched_rows", "returned_rows", "complete")]
 ```
 
@@ -80,7 +80,7 @@ coordinates.
 
 ```{r map, eval=params$live}
 if (requireNamespace("sf", quietly = TRUE)) {
-  bike_map <- get_dataset(
+  bike_map <- tbod_get_dataset(
     "bike-lanes",
     fields = c("OBJECTID", "ROADWAY", "CONN_TYPE"),
     order_by = "OBJECTID ASC",

@@ -20,11 +20,15 @@ testthat::test_local(filter = "catalog-filters", stop_on_failure = TRUE)
 testthat::test_local(filter = "generic-retrieval", stop_on_failure = TRUE)
 testthat::test_local(filter = "other-cities", stop_on_failure = TRUE)
 testthat::test_local(filter = "download", stop_on_failure = TRUE)
+testthat::test_local(filter = "namespaced-api", stop_on_failure = TRUE)
+testthat::test_local(filter = "custom-portal", stop_on_failure = TRUE)
+testthat::test_local(filter = "schema-drift", stop_on_failure = TRUE)
 ```
 
 The suite covers the 35 checked source schemas across six publishers, live portal
 paging and searching, checked versus discovered overlays, item/layer resolution, direct
-URL retrieval, HTTP requests and retries, record pagination, parsing, spatial
+URL retrieval, the prefixed `tbod_` API, schema drift, HTTP requests and retries,
+record pagination, parsing, spatial
 conversion, provenance, convenience functions, and error and security
 regressions. Discovery uses synthetic portal items and service metadata, so
 ordinary tests do not depend on the live ArcGIS index. The
@@ -44,6 +48,11 @@ tables, stale items, duplicates, and portal pagination; the
 entries alongside discovered results. The
 [generic retrieval cases](testthat/test-generic-retrieval.R) verify that checked,
 discovered, and direct URL paths use the same query engine.
+[schema drift cases](testthat/test-schema-drift.R) simulate added, removed,
+renamed, and changed-type fields, geometry and CRS changes, disappeared layers,
+and checked retrieval warnings or errors. [Custom portal cases](testthat/test-custom-portal.R)
+cover another ArcGIS organization, and [prefixed API cases](testthat/test-namespaced-api.R)
+check the `tbod_` entry points.
 [test-http.R](testthat/test-http.R) checks real `httr2` request construction
 with `req_perform()` mocked. The retry tests in
 [test-http-integrity.R](testthat/test-http-integrity.R) and
@@ -101,7 +110,7 @@ identity, selected field types, row counts, provenance, and geometry. County
 checks exercise descriptor and stable-ID retrieval and projection to EPSG:4326.
 Each retrieval requests at most two feature rows with a 15-second per-attempt
 timeout; portal discovery
-uses at most one service item per organization returned by `list_portals()`,
+uses at most one service item per organization returned by `tbod_list_portals()`,
 including Hillsborough and Pinellas counties. Count and applicable object-ID
 manifest requests still run, with a 45-second overall deadline per operation.
 

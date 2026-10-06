@@ -23,6 +23,8 @@ test_that("portal discovery pages, expands layers and tables, and deduplicates b
   resources[[paste0(root, "/0")]] <- list(
     id = 0L, name = "Roads", type = "Feature Layer",
     geometryType = "esriGeometryPolyline", capabilities = "Query")
+  resources[[paste0(root, "/1")]] <- list(
+    id = 1L, name = "Inspections", type = "Table", capabilities = "Query")
   transport <- discovery_test_transport(pages, resources)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
 
@@ -36,13 +38,106 @@ test_that("portal discovery pages, expands layers and tables, and deduplicates b
   expect_identical(found$portal, rep(city, 2L))
   expect_true(all(vapply(found$original_metadata, is.list, logical(1))))
   expect_s3_class(found$modified, "POSIXct")
-  expect_length(attr(found, "discovery_issues"), 2L)
+  expect_length(attr(found, "discovery_issues"), 3L)
   expect_false(attr(found, "discovery_complete"))
   expect_identical(attr(found, "discovery_scanned_items"), c(city = 4L))
   searches <- Filter(function(x) grepl("/search$", x$url), transport$state$requests)
   expect_identical(vapply(searches, function(x) x$params$start, numeric(1)), c(1, 3))
   expect_true(all(vapply(searches, function(x)
     grepl('"roads"', x$params$q, fixed = TRUE), logical(1))))
+})
+
+test_that("portal root summaries are expanded from full layer metadata", {
+  city <- "https://tampa.maps.arcgis.com/sharing/rest"
+  root <- "https://example.org/arcgis/rest/services/Summary/FeatureServer"
+  item_id <- strrep("f", 32L)
+  pages <- list()
+  pages[[paste0(city, "/search/1")]] <- list(
+    total = 1L, start = 1L, nextStart = -1L,
+    results = list(discovery_test_item(item_id, root)))
+  resources <- list()
+  resources[[root]] <- list(layers = list(
+    list(id = 0L, name = "Roads"),
+    list(id = 1L, name = "Display only"),
+    list(id = 2L, name = "Stale")),
+    tables = list(list(id = 3L, name = "Inspections")))
+  resources[[paste0(root, "/0")]] <- list(
+    id = 0L, name = "Roads", type = "Feature Layer",
+    geometryType = "esriGeometryPolyline", capabilities = "Query")
+  resources[[paste0(root, "/1")]] <- list(
+    id = 1L, name = "Display only", type = "Feature Layer",
+    geometryType = "esriGeometryPoint", capabilities = "Map")
+  resources[[paste0(root, "/3")]] <- list(
+    id = 3L, name = "Inspections", type = "Table", capabilities = "Query")
+  transport <- discovery_test_transport(pages, resources)
+  local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+
+  found <- .discover_arcgis(portals = "city")
+  expect_setequal(found$layer_id, c(0L, 3L))
+  expect_identical(found$geometry_type[found$layer_id == 0L],
+                   "esriGeometryPolyline")
+  expect_identical(found$geometry_type[found$layer_id == 3L], "none")
+  expect_length(attr(found, "discovery_issues"), 1L)
+  expect_match(attr(found, "discovery_issues"), "Layer 2")
+  expect_false(attr(found, "discovery_complete"))
+  requested <- vapply(transport$state$requests, `[[`, character(1), "url")
+  expect_setequal(requested, c(paste0(city, "/search"), root,
+                               paste0(root, "/", 0:3)))
+})
+
+test_that("malformed service roots are reported instead of looking empty", {
+  city <- "https://tampa.maps.arcgis.com/sharing/rest"
+  root <- "https://example.org/arcgis/rest/services/Broken/FeatureServer"
+  item_id <- strrep("a", 32L)
+  pages <- list()
+  pages[[paste0(city, "/search/1")]] <- list(
+    total = 1L, start = 1L, nextStart = -1L,
+    results = list(discovery_test_item(item_id, root)))
+  resources <- list()
+  resources[[root]] <- list(name = "Broken")
+  transport <- discovery_test_transport(pages, resources)
+  local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+
+  found <- .discover_arcgis(portals = "city")
+  expect_equal(nrow(found), 0L)
+  expect_false(attr(found, "discovery_complete"))
+  expect_match(attr(found, "discovery_issues"), "layer or table arrays")
+  expect_error(.discover_custom_portal(root), "layer or table arrays",
+               class = "tampa_response_error")
+})
+
+test_that("invalid custom portal search text is rejected before a request", {
+  transport <- discovery_test_transport()
+  local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+
+  expect_error(.discover_custom_portal(
+    "https://portal.example.org/sharing/rest", query = NA_character_),
+    class = "tampa_input_error")
+  expect_length(transport$state$requests, 0L)
+})
+
+test_that("portal searches include queryable Map Service items", {
+  city <- "https://tampa.maps.arcgis.com/sharing/rest"
+  endpoint <- "https://example.org/arcgis/rest/services/Map/MapServer/4"
+  item_id <- strrep("e", 32L)
+  pages <- list()
+  pages[[paste0(city, "/search/1")]] <- list(
+    total = 1L, start = 1L, nextStart = -1L,
+    results = list(discovery_test_item(item_id, endpoint,
+                                       type = "Map Service")))
+  resources <- list()
+  resources[[endpoint]] <- list(
+    id = 4L, name = "Map parcels", type = "Feature Layer",
+    geometryType = "esriGeometryPolygon", capabilities = "Query")
+  transport <- discovery_test_transport(pages, resources)
+  local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+
+  found <- .discover_arcgis(portals = "city")
+  expect_identical(found$source_url, endpoint)
+  expect_identical(found$service_type, "MapServer")
+  search <- Filter(function(x) grepl("/search$", x$url), transport$state$requests)
+  expect_match(search[[1L]]$params$q,
+               '(type:"Feature Service" OR type:"Map Service")', fixed = TRUE)
 })
 
 test_that("regional discovery uses its own organization and metadata", {
@@ -125,6 +220,12 @@ test_that("stable item IDs resolve globally without relying on search rank", {
          geometryType = "esriGeometryPoint"),
     list(id = 3L, name = "Three", type = "Feature Layer",
          geometryType = "esriGeometryPolygon")), tables = list())
+  resources[[paste0(root, "/0")]] <- list(
+    id = 0L, name = "One", type = "Feature Layer",
+    geometryType = "esriGeometryPoint", capabilities = "Query")
+  resources[[paste0(root, "/3")]] <- list(
+    id = 3L, name = "Three", type = "Feature Layer",
+    geometryType = "esriGeometryPolygon", capabilities = "Query")
   transport <- discovery_test_transport(resources = resources)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
 
@@ -163,21 +264,24 @@ test_that("empty search and malformed pages have explicit outcomes", {
                                                nextStart = -1L, results = list())
   transport <- discovery_test_transport(pages)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  empty <- .discover_arcgis(query = "  ")
+  empty <- .discover_arcgis(query = "  ", portals = "city")
   expect_equal(nrow(empty), 0L)
   expect_true(attr(empty, "discovery_complete"))
   expect_identical(attr(empty, "discovery_scanned_items"), c(city = 0L))
   expect_true(all(c("id", "item_id", "original_metadata", "validation_status") %in%
                     names(empty)))
   expect_identical(.discovery_query("  "), .discovery_query(NULL))
-  expect_equal(nrow(.discover_arcgis(max_items = 0)), 0L)
+  zero <- .discover_arcgis(portals = "city", max_items = 0)
+  expect_equal(nrow(zero), 0L)
+  expect_true(attr(zero, "discovery_complete"))
+  expect_identical(attr(zero, "discovery_scanned_items"), c(city = 0L))
   expect_length(transport$state$requests, 1L)
 
   pages[[paste0(city, "/search/1")]] <- list(total = 2L, start = 1L, num = 100L,
                                                nextStart = 1L, results = list())
   bad <- discovery_test_transport(pages)
   local_mocked_bindings(arcgis_http = bad$http, .package = "tampaBayOpenData")
-  expect_error(.discover_arcgis(), "malformed search pagination",
+  expect_error(.discover_arcgis(portals = "city"), "malformed search pagination",
                class = "tampa_discovery_error")
 })
 
@@ -202,7 +306,7 @@ test_that("unsafe, unsupported, and non-queryable item URLs are isolated", {
   transport <- discovery_test_transport(pages, resources)
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
 
-  found <- .discover_arcgis()
+  found <- .discover_arcgis(portals = "city")
   expect_identical(found$source_url, good)
   expect_length(attr(found, "discovery_issues"), 6L)
   requested <- vapply(transport$state$requests, function(x) x$url, character(1))
@@ -234,6 +338,29 @@ test_that("one failed portal keeps the other provider and both failures are expl
                         .package = "tampaBayOpenData")
   expect_error(.discover_arcgis(portals = "all"), "All selected ArcGIS portals failed",
                class = "tampa_discovery_error")
+})
+
+test_that("a later page failure retains rows already found from the only portal", {
+  city <- .portal_registry()$city
+  endpoint <- "https://example.org/arcgis/rest/services/Partial/FeatureServer/0"
+  item_id <- strrep("f", 32L)
+  pages <- list()
+  pages[[paste0(city$root, "/search/1")]] <- list(
+    total = 2L, start = 1L, nextStart = 2L,
+    results = list(discovery_test_item(item_id, endpoint, org = city$org_id)))
+  resources <- list()
+  resources[[endpoint]] <- list(id = 0L, name = "Partial",
+    type = "Feature Layer", geometryType = "esriGeometryPoint")
+  transport <- discovery_test_transport(pages, resources)
+  local_mocked_bindings(arcgis_http = transport$http,
+                        .package = "tampaBayOpenData")
+
+  expect_warning(found <- .discover_arcgis(portals = "city"),
+                 "partial results.*city")
+  expect_identical(found$id, paste0("arcgis:", item_id, ":0"))
+  expect_identical(attr(found, "discovery_scanned_items"), c(city = 1L))
+  expect_identical(attr(found, "discovery_failed_portals"), "city")
+  expect_false(attr(found, "discovery_complete"))
 })
 
 test_that("live City discovery returns an item with a stable service layer identity", {

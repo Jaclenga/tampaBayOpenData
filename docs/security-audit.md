@@ -1,8 +1,8 @@
 # Security audit: 2026-09-29
 
 The audit considered hostile ArcGIS responses and untrusted caller-supplied
-query values. Public retrieval uses bundled dataset IDs, not arbitrary endpoint
-URLs. Reproductions used synthetic responses, benign local files, mocked
+query values. Retrieval now also accepts direct public HTTPS ArcGIS layer URLs
+and custom portal roots. Reproductions used synthetic responses, benign local files, mocked
 sockets, and recorded sleeps; no credentials or live attacks were involved.
 
 | Finding | Reproduced effect | Correction |
@@ -19,8 +19,16 @@ in [`jsonlite`'s parser](https://github.com/jeroen/jsonlite/blob/master/R/read_j
 The WKT check prevents path/URL lookup by GDAL's
 [`SetFromUserInput()`](https://gdal.org/en/stable/doxygen/classOGRSpatialReference.html),
 but does not isolate its native parser. Each HTTP transfer has its own timeout
-and at most three attempts; a full multi-request retrieval has no overall
-deadline. See the [`httr2` retry API](https://httr2.r-lib.org/reference/req_retry.html).
+and at most three transport attempts. Retrieval, discovery, and metadata
+inspection also have overall deadlines by default (120, 90, and 60 seconds,
+respectively); downloads default to an unlimited overall deadline. See
+the [`httr2` retry API](https://httr2.r-lib.org/reference/req_retry.html).
+
+Direct URLs and custom portals are checked for HTTPS, ordinary path segments,
+and a public-looking hostname. The hostname check does not verify the IP
+address reached after DNS resolution. A server application that accepts URLs
+from untrusted users must enforce its own network egress policy to prevent
+requests to private addresses, including DNS rebinding cases.
 
 The client also configures a 50 MiB native transfer ceiling and rejects larger
 accepted response text before JSON decoding. This is not full memory isolation:

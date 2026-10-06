@@ -155,7 +155,7 @@ test_that("empty matches and deliberate zero limits retain a typed schema", {
   expect_equal(nrow(result), 0L)
   expect_type(result$OBJECTID, "integer")
   expect_type(result$RECORD_ID, "character")
-  expect_type(result$COST, "double")
+  expect_type(result$NEWCONSTRUCTIONSF, "integer")
   expect_s3_class(result$LASTUPDATE, "POSIXct")
   expect_false("SHAPE" %in% names(result))
   expect_true(dataset_provenance(result)$complete)
@@ -301,8 +301,8 @@ test_that("HTTP, network, ArcGIS, and malformed-body errors expose the source", 
   entry <- dataset_info("construction-permits")
   local_mocked_bindings(arcgis_http = function(...) fixture_response(list(), 404L),
                         .package = "tampaBayOpenData")
-  expect_error(get_dataset("construction-permits"), "HTTP 404.*service may have moved",
-               class = "tampa_http_error")
+  expect_error(get_dataset("construction-permits"), "endpoint_disappeared",
+               class = "tampa_schema_error")
   error <- tryCatch(get_dataset("construction-permits"), error = identity)
   expect_identical(error$dataset_id, entry$id)
   expect_match(conditionMessage(error), entry$source_url, fixed = TRUE)

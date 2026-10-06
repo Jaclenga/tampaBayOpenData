@@ -1,0 +1,3408 @@
+{
+  "tampa/construction-permits": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/Planning/PermitsAll/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "RECORD_ID",
+        "type": "esriFieldTypeString",
+        "alias": "Record ID"
+      },
+      {
+        "name": "PROJECTNAME1",
+        "type": "esriFieldTypeString",
+        "alias": "Project Name 1"
+      },
+      {
+        "name": "PROJECTNAME2",
+        "type": "esriFieldTypeString",
+        "alias": "Project Name 2"
+      },
+      {
+        "name": "PROJECTDESCRIPTION",
+        "type": "esriFieldTypeString",
+        "alias": "Project Description"
+      },
+      {
+        "name": "ADDRESS",
+        "type": "esriFieldTypeString",
+        "alias": "Address"
+      },
+      {
+        "name": "UNIT",
+        "type": "esriFieldTypeString",
+        "alias": "Unit"
+      },
+      {
+        "name": "ZIP",
+        "type": "esriFieldTypeString",
+        "alias": "Zip Code"
+      },
+      {
+        "name": "PROJECTSTATUS",
+        "type": "esriFieldTypeString",
+        "alias": "Project Status"
+      },
+      {
+        "name": "NEWCONSTRUCTIONSF",
+        "type": "esriFieldTypeInteger",
+        "alias": "New Construction SF"
+      },
+      {
+        "name": "OCCUPANCYCATEGORY",
+        "type": "esriFieldTypeString",
+        "alias": "Occupancy Category"
+      },
+      {
+        "name": "OCCUPANCYTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Occupancy Type"
+      },
+      {
+        "name": "NBROFUNITS",
+        "type": "esriFieldTypeInteger",
+        "alias": "Number of Units"
+      },
+      {
+        "name": "PRIVATEPROVIDER",
+        "type": "esriFieldTypeString",
+        "alias": "Private Provider"
+      },
+      {
+        "name": "STOPWORKORDER",
+        "type": "esriFieldTypeString",
+        "alias": "Stop Work Order"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Last Update"
+      },
+      {
+        "name": "LASTEDITOR",
+        "type": "esriFieldTypeString",
+        "alias": "Last Editor"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "CREATED",
+        "type": "esriFieldTypeString",
+        "alias": "Created By"
+      },
+      {
+        "name": "CREATEDDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Created Date"
+      },
+      {
+        "name": "COMBLDGAREA",
+        "type": "esriFieldTypeString",
+        "alias": "Commercial Buliding Inspector Area"
+      },
+      {
+        "name": "RESBLDGAREA",
+        "type": "esriFieldTypeString",
+        "alias": "Residential Building Inspector Area"
+      },
+      {
+        "name": "CRA",
+        "type": "esriFieldTypeString",
+        "alias": "Community Redevelopment Area"
+      },
+      {
+        "name": "COUNCIL",
+        "type": "esriFieldTypeString",
+        "alias": "Council District"
+      },
+      {
+        "name": "NEIGHBORHOOD",
+        "type": "esriFieldTypeString",
+        "alias": "Neighborhood"
+      },
+      {
+        "name": "RECORDTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Record Type"
+      },
+      {
+        "name": "URL",
+        "type": "esriFieldTypeString",
+        "alias": "URL"
+      }
+    ],
+    "geometry_type": "esriGeometryPoint",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/development-cases": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/Planning/ActiveEntitlementLocations/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "RECORDID",
+        "type": "esriFieldTypeString",
+        "alias": "Record ID"
+      },
+      {
+        "name": "ADDRESS",
+        "type": "esriFieldTypeString",
+        "alias": "Address"
+      },
+      {
+        "name": "UNIT",
+        "type": "esriFieldTypeString",
+        "alias": "Unit"
+      },
+      {
+        "name": "APPSTATUS",
+        "type": "esriFieldTypeString",
+        "alias": "Application Status"
+      },
+      {
+        "name": "TENTATIVEHEARING",
+        "type": "esriFieldTypeString",
+        "alias": "Tentantive Hearing"
+      },
+      {
+        "name": "TENTATIVETIME",
+        "type": "esriFieldTypeString",
+        "alias": "Tentantive Time"
+      },
+      {
+        "name": "RECORDALIAS",
+        "type": "esriFieldTypeString",
+        "alias": "Record Alias"
+      },
+      {
+        "name": "MAPDOT",
+        "type": "esriFieldTypeString",
+        "alias": "Map Dot"
+      },
+      {
+        "name": "CRA",
+        "type": "esriFieldTypeString",
+        "alias": "CRA"
+      },
+      {
+        "name": "NEIGHBORHOOD",
+        "type": "esriFieldTypeString",
+        "alias": "Neighborhood"
+      },
+      {
+        "name": "COUNCILDISTRICT",
+        "type": "esriFieldTypeString",
+        "alias": "Council District"
+      },
+      {
+        "name": "CREATED",
+        "type": "esriFieldTypeString",
+        "alias": "Created By"
+      },
+      {
+        "name": "CREATEDDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Created Date"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Last Update"
+      },
+      {
+        "name": "LASTEDITOR",
+        "type": "esriFieldTypeString",
+        "alias": "Last Editor"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "URL",
+        "type": "esriFieldTypeString",
+        "alias": "URL"
+      }
+    ],
+    "geometry_type": "esriGeometryPoint",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/capital-projects": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/CapitalProjects/MapServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "projid",
+        "type": "esriFieldTypeString",
+        "alias": "Project Identifier"
+      },
+      {
+        "name": "projname",
+        "type": "esriFieldTypeString",
+        "alias": "Project Name"
+      },
+      {
+        "name": "projdesc",
+        "type": "esriFieldTypeString",
+        "alias": "Description"
+      },
+      {
+        "name": "rationale",
+        "type": "esriFieldTypeString",
+        "alias": "Rationale"
+      },
+      {
+        "name": "projtype",
+        "type": "esriFieldTypeString",
+        "alias": "Project Type"
+      },
+      {
+        "name": "safety",
+        "type": "esriFieldTypeString",
+        "alias": "Health and Safety"
+      },
+      {
+        "name": "mandate",
+        "type": "esriFieldTypeString",
+        "alias": "Mandate"
+      },
+      {
+        "name": "repair",
+        "type": "esriFieldTypeString",
+        "alias": "Repair or Maintenance"
+      },
+      {
+        "name": "replace",
+        "type": "esriFieldTypeString",
+        "alias": "Replacement"
+      },
+      {
+        "name": "expand",
+        "type": "esriFieldTypeString",
+        "alias": "Expansion"
+      },
+      {
+        "name": "efficient",
+        "type": "esriFieldTypeString",
+        "alias": "Efficiency"
+      },
+      {
+        "name": "fiscalyr",
+        "type": "esriFieldTypeString",
+        "alias": "Fiscal Year"
+      },
+      {
+        "name": "fundsource",
+        "type": "esriFieldTypeString",
+        "alias": "Funding Source"
+      },
+      {
+        "name": "planstart",
+        "type": "esriFieldTypeDate",
+        "alias": "Planned Start Date"
+      },
+      {
+        "name": "planend",
+        "type": "esriFieldTypeDate",
+        "alias": "Planned End Date"
+      },
+      {
+        "name": "estcost",
+        "type": "esriFieldTypeDouble",
+        "alias": "Estimated Cost"
+      },
+      {
+        "name": "pocname",
+        "type": "esriFieldTypeString",
+        "alias": "Contact Name"
+      },
+      {
+        "name": "pocphone",
+        "type": "esriFieldTypeString",
+        "alias": "Contact Phone"
+      },
+      {
+        "name": "pocemail",
+        "type": "esriFieldTypeString",
+        "alias": "Contact Email"
+      },
+      {
+        "name": "funded",
+        "type": "esriFieldTypeString",
+        "alias": "Funded Project"
+      },
+      {
+        "name": "projphase",
+        "type": "esriFieldTypeString",
+        "alias": "Project Phase"
+      },
+      {
+        "name": "actstart",
+        "type": "esriFieldTypeDate",
+        "alias": "Actual Start Date"
+      },
+      {
+        "name": "actend",
+        "type": "esriFieldTypeDate",
+        "alias": "Actual End Date"
+      },
+      {
+        "name": "actcost",
+        "type": "esriFieldTypeDouble",
+        "alias": "Actual Cost"
+      },
+      {
+        "name": "status",
+        "type": "esriFieldTypeString",
+        "alias": "Status"
+      },
+      {
+        "name": "docpath",
+        "type": "esriFieldTypeString",
+        "alias": "Document Path"
+      },
+      {
+        "name": "CreationDate",
+        "type": "esriFieldTypeDate",
+        "alias": "CreationDate"
+      },
+      {
+        "name": "Creator",
+        "type": "esriFieldTypeString",
+        "alias": "Creator"
+      },
+      {
+        "name": "EditDate",
+        "type": "esriFieldTypeDate",
+        "alias": "EditDate"
+      },
+      {
+        "name": "Editor",
+        "type": "esriFieldTypeString",
+        "alias": "Editor"
+      },
+      {
+        "name": "NumVotes",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Number of Votes"
+      },
+      {
+        "name": "MultiYear",
+        "type": "esriFieldTypeString",
+        "alias": "Multi Year Project"
+      },
+      {
+        "name": "ShowPublic",
+        "type": "esriFieldTypeString",
+        "alias": "Show Public"
+      },
+      {
+        "name": "EBO",
+        "type": "esriFieldTypeDouble",
+        "alias": "EBO Goal Set"
+      },
+      {
+        "name": "JobsCreated",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Jobs Created"
+      },
+      {
+        "name": "Neighborhood",
+        "type": "esriFieldTypeString",
+        "alias": "Neighborhood"
+      },
+      {
+        "name": "Council",
+        "type": "esriFieldTypeString",
+        "alias": "Council"
+      },
+      {
+        "name": "EBOAttained",
+        "type": "esriFieldTypeDouble",
+        "alias": "EBO Goal Attained"
+      },
+      {
+        "name": "ContractNumber",
+        "type": "esriFieldTypeString",
+        "alias": "Contract Number"
+      },
+      {
+        "name": "ActivityStatus",
+        "type": "esriFieldTypeString",
+        "alias": "Activity Status"
+      },
+      {
+        "name": "ProjectSiteURL",
+        "type": "esriFieldTypeString",
+        "alias": "Project Site URL"
+      },
+      {
+        "name": "ProjectNumerical",
+        "type": "esriFieldTypeInteger",
+        "alias": "Project Numerical"
+      },
+      {
+        "name": "RelatedProject",
+        "type": "esriFieldTypeString",
+        "alias": "Related Project"
+      },
+      {
+        "name": "MapScale",
+        "type": "esriFieldTypeDouble",
+        "alias": "Map Scale"
+      },
+      {
+        "name": "WMBESLBE",
+        "type": "esriFieldTypeDouble",
+        "alias": "WMBE / SLBE Participation"
+      },
+      {
+        "name": "DepPrjNum",
+        "type": "esriFieldTypeString",
+        "alias": "Department Project Number"
+      },
+      {
+        "name": "BudgetBook",
+        "type": "esriFieldTypeString",
+        "alias": "Budget Book"
+      },
+      {
+        "name": "BudgetYear",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Budget Year"
+      },
+      {
+        "name": "CRA",
+        "type": "esriFieldTypeString",
+        "alias": "Community Redevelopment Area"
+      },
+      {
+        "name": "FundComm",
+        "type": "esriFieldTypeString",
+        "alias": "Funding Comments"
+      },
+      {
+        "name": "created_user",
+        "type": "esriFieldTypeString",
+        "alias": "created_user"
+      },
+      {
+        "name": "created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "created_date"
+      },
+      {
+        "name": "last_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "last_edited_user"
+      },
+      {
+        "name": "last_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "last_edited_date"
+      }
+    ],
+    "geometry_type": "esriGeometryPoint",
+    "spatial_reference": {
+      "wkid": 103023,
+      "latestWkid": 6443
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/city-boundary": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Boundary/MapServer/6",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "ID",
+        "type": "esriFieldTypeInteger",
+        "alias": "ID"
+      },
+      {
+        "name": "Municipality",
+        "type": "esriFieldTypeString",
+        "alias": "Municipality"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "LastUpdate"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "SHAPE.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STArea()"
+      },
+      {
+        "name": "SHAPE.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      },
+      {
+        "name": "created_user",
+        "type": "esriFieldTypeString",
+        "alias": "created_user"
+      },
+      {
+        "name": "created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "created_date"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/neighborhoods": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Boundary/MapServer/5",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "Neighborhood_ID",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Neighborhood_ID"
+      },
+      {
+        "name": "Association",
+        "type": "esriFieldTypeString",
+        "alias": "Association"
+      },
+      {
+        "name": "AssocLabel",
+        "type": "esriFieldTypeString",
+        "alias": "AssocLabel"
+      },
+      {
+        "name": "Code",
+        "type": "esriFieldTypeString",
+        "alias": "Code"
+      },
+      {
+        "name": "Rank",
+        "type": "esriFieldTypeInteger",
+        "alias": "Rank"
+      },
+      {
+        "name": "Sal",
+        "type": "esriFieldTypeString",
+        "alias": "Sal"
+      },
+      {
+        "name": "FirstName",
+        "type": "esriFieldTypeString",
+        "alias": "FirstName"
+      },
+      {
+        "name": "LastName",
+        "type": "esriFieldTypeString",
+        "alias": "LastName"
+      },
+      {
+        "name": "CallName",
+        "type": "esriFieldTypeString",
+        "alias": "CallName"
+      },
+      {
+        "name": "Title",
+        "type": "esriFieldTypeString",
+        "alias": "Title"
+      },
+      {
+        "name": "ContactAdd",
+        "type": "esriFieldTypeString",
+        "alias": "ContactAdd"
+      },
+      {
+        "name": "CityState",
+        "type": "esriFieldTypeString",
+        "alias": "CityState"
+      },
+      {
+        "name": "Zip",
+        "type": "esriFieldTypeString",
+        "alias": "Zip"
+      },
+      {
+        "name": "Home",
+        "type": "esriFieldTypeString",
+        "alias": "Home"
+      },
+      {
+        "name": "Work_",
+        "type": "esriFieldTypeString",
+        "alias": "Work"
+      },
+      {
+        "name": "Cell",
+        "type": "esriFieldTypeString",
+        "alias": "Cell"
+      },
+      {
+        "name": "Fax",
+        "type": "esriFieldTypeString",
+        "alias": "Fax"
+      },
+      {
+        "name": "Email",
+        "type": "esriFieldTypeString",
+        "alias": "Email"
+      },
+      {
+        "name": "Website",
+        "type": "esriFieldTypeString",
+        "alias": "Website"
+      },
+      {
+        "name": "N_Bound",
+        "type": "esriFieldTypeString",
+        "alias": "N_Bound"
+      },
+      {
+        "name": "S_Bound",
+        "type": "esriFieldTypeString",
+        "alias": "S_Bound"
+      },
+      {
+        "name": "E_Bound",
+        "type": "esriFieldTypeString",
+        "alias": "E_Bound"
+      },
+      {
+        "name": "W_Bound",
+        "type": "esriFieldTypeString",
+        "alias": "W_Bound"
+      },
+      {
+        "name": "Type",
+        "type": "esriFieldTypeString",
+        "alias": "Type"
+      },
+      {
+        "name": "Shape",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "Shape.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STArea()"
+      },
+      {
+        "name": "Shape.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      },
+      {
+        "name": "created_user",
+        "type": "esriFieldTypeString",
+        "alias": "created_user"
+      },
+      {
+        "name": "created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "created_date"
+      },
+      {
+        "name": "last_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "last_edited_date"
+      },
+      {
+        "name": "SecSal",
+        "type": "esriFieldTypeString",
+        "alias": "SecSal"
+      },
+      {
+        "name": "SecFirstName",
+        "type": "esriFieldTypeString",
+        "alias": "SecFirstName"
+      },
+      {
+        "name": "SecLastName",
+        "type": "esriFieldTypeString",
+        "alias": "SecLastName"
+      },
+      {
+        "name": "SecCallName",
+        "type": "esriFieldTypeString",
+        "alias": "SecCallName"
+      },
+      {
+        "name": "SecTitle",
+        "type": "esriFieldTypeString",
+        "alias": "SecTitle"
+      },
+      {
+        "name": "SecAddress",
+        "type": "esriFieldTypeString",
+        "alias": "SecAddress"
+      },
+      {
+        "name": "SecCityState",
+        "type": "esriFieldTypeString",
+        "alias": "SecCityState"
+      },
+      {
+        "name": "SecZip",
+        "type": "esriFieldTypeString",
+        "alias": "SecZip"
+      },
+      {
+        "name": "SecHome",
+        "type": "esriFieldTypeString",
+        "alias": "SecHome"
+      },
+      {
+        "name": "SecWork",
+        "type": "esriFieldTypeString",
+        "alias": "SecWork"
+      },
+      {
+        "name": "SecCell",
+        "type": "esriFieldTypeString",
+        "alias": "SecCell"
+      },
+      {
+        "name": "SecFax",
+        "type": "esriFieldTypeString",
+        "alias": "SecFax"
+      },
+      {
+        "name": "SecEmail",
+        "type": "esriFieldTypeString",
+        "alias": "SecEmail"
+      },
+      {
+        "name": "ContactUpdated",
+        "type": "esriFieldTypeDate",
+        "alias": "ContactUpdated"
+      },
+      {
+        "name": "Description",
+        "type": "esriFieldTypeString",
+        "alias": "Description"
+      },
+      {
+        "name": "SEQUENCE",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Sequence"
+      },
+      {
+        "name": "MEETING_INFO",
+        "type": "esriFieldTypeString",
+        "alias": "Meeting Info"
+      },
+      {
+        "name": "NEIGHSTATUS",
+        "type": "esriFieldTypeString",
+        "alias": "Neighborhood Status"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "NEIGHPICNAME",
+        "type": "esriFieldTypeString",
+        "alias": "Neighborhood Picture Name"
+      },
+      {
+        "name": "ZIPCODE",
+        "type": "esriFieldTypeString",
+        "alias": "Zip Code"
+      },
+      {
+        "name": "SECASSOCIATION",
+        "type": "esriFieldTypeString",
+        "alias": "Secondary Association"
+      },
+      {
+        "name": "SECASSCOTLABEL",
+        "type": "esriFieldTypeString",
+        "alias": "Secondary Association Label"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/council-districts": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Boundary/MapServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "DISTRICTID",
+        "type": "esriFieldTypeString",
+        "alias": "DISTRICTID"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "NAME"
+      },
+      {
+        "name": "REPNAME",
+        "type": "esriFieldTypeString",
+        "alias": "REPNAME"
+      },
+      {
+        "name": "DISTRICTURL",
+        "type": "esriFieldTypeString",
+        "alias": "DISTRICTURL"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "LASTUPDATE"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "SHAPE.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STArea()"
+      },
+      {
+        "name": "SHAPE.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      },
+      {
+        "name": "ATLARGEDIST1",
+        "type": "esriFieldTypeString",
+        "alias": "At-Large District 1"
+      },
+      {
+        "name": "ATLARGEDIST2",
+        "type": "esriFieldTypeString",
+        "alias": "At-Large District 2"
+      },
+      {
+        "name": "ATLARGEDIST3",
+        "type": "esriFieldTypeString",
+        "alias": "At-Large District 3"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/riverwalk": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/4",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "STATUS",
+        "type": "esriFieldTypeString",
+        "alias": "STATUS"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "NAME"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "LASTUPDATE"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "SHAPE.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/parks": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "FACILITYID",
+        "type": "esriFieldTypeString",
+        "alias": "Facility Identifier"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Last Update Date"
+      },
+      {
+        "name": "LASTEDITOR",
+        "type": "esriFieldTypeString",
+        "alias": "Last Editor"
+      },
+      {
+        "name": "Shape",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "Shape.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape.STArea()"
+      },
+      {
+        "name": "Shape.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "WEBSITE",
+        "type": "esriFieldTypeString",
+        "alias": "Website"
+      },
+      {
+        "name": "PARKNAME",
+        "type": "esriFieldTypeString",
+        "alias": "Park Name"
+      },
+      {
+        "name": "PARKTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Park Type"
+      },
+      {
+        "name": "SITADDR",
+        "type": "esriFieldTypeString",
+        "alias": "Address"
+      },
+      {
+        "name": "OWNER",
+        "type": "esriFieldTypeString",
+        "alias": "Owner"
+      },
+      {
+        "name": "OWNERTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Owner Type"
+      },
+      {
+        "name": "FEATURECODE",
+        "type": "esriFieldTypeString",
+        "alias": "Feature Code"
+      },
+      {
+        "name": "SUBTYPE",
+        "type": "esriFieldTypeInteger",
+        "alias": "Subtype"
+      },
+      {
+        "name": "DEPTACRES",
+        "type": "esriFieldTypeDouble",
+        "alias": "Department Acres"
+      },
+      {
+        "name": "ACRES",
+        "type": "esriFieldTypeDouble",
+        "alias": "Total Acres"
+      },
+      {
+        "name": "DESCRIPTION",
+        "type": "esriFieldTypeString",
+        "alias": "Description"
+      },
+      {
+        "name": "PUBLIC_",
+        "type": "esriFieldTypeString",
+        "alias": "Public"
+      },
+      {
+        "name": "COMMENTS",
+        "type": "esriFieldTypeString",
+        "alias": "Comments"
+      },
+      {
+        "name": "DEDPARK",
+        "type": "esriFieldTypeString",
+        "alias": "Dedicated Park"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/fire-stations": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Fire/MapServer/10",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "FACILITYID",
+        "type": "esriFieldTypeString",
+        "alias": "Facility Identifier"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "Name of Facility"
+      },
+      {
+        "name": "OWNER",
+        "type": "esriFieldTypeString",
+        "alias": "Owner Name"
+      },
+      {
+        "name": "OWNTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Owner Type"
+      },
+      {
+        "name": "SUBTYPEFIELD",
+        "type": "esriFieldTypeInteger",
+        "alias": "Subtype Field"
+      },
+      {
+        "name": "FEATURECODE",
+        "type": "esriFieldTypeString",
+        "alias": "Feature Code"
+      },
+      {
+        "name": "FULLADDR",
+        "type": "esriFieldTypeString",
+        "alias": "Full Address"
+      },
+      {
+        "name": "MUNICIPALITY",
+        "type": "esriFieldTypeString",
+        "alias": "Municipality Name"
+      },
+      {
+        "name": "STATE",
+        "type": "esriFieldTypeString",
+        "alias": "State Name"
+      },
+      {
+        "name": "ZIPCODE",
+        "type": "esriFieldTypeString",
+        "alias": "Zip Code"
+      },
+      {
+        "name": "DESCRIPTION",
+        "type": "esriFieldTypeString",
+        "alias": "Description"
+      },
+      {
+        "name": "CAPTUREMETH",
+        "type": "esriFieldTypeString",
+        "alias": "Capture Method"
+      },
+      {
+        "name": "LOCATIONTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Location Type"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Last Update"
+      },
+      {
+        "name": "LASTEDITOR",
+        "type": "esriFieldTypeString",
+        "alias": "Last Editor"
+      },
+      {
+        "name": "USNG",
+        "type": "esriFieldTypeString",
+        "alias": "USNG"
+      },
+      {
+        "name": "WEBSITE",
+        "type": "esriFieldTypeString",
+        "alias": "Website"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "ESN",
+        "type": "esriFieldTypeString",
+        "alias": "ESN"
+      },
+      {
+        "name": "TYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Type"
+      },
+      {
+        "name": "MAPID",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Map ID"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      }
+    ],
+    "geometry_type": "esriGeometryPoint",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/bike-lanes": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/0",
+    "fields": [
+      {
+        "name": "FACILITYID",
+        "type": "esriFieldTypeString",
+        "alias": "Facility ID"
+      },
+      {
+        "name": "ROADWAY",
+        "type": "esriFieldTypeString",
+        "alias": "Roadway"
+      },
+      {
+        "name": "COMMENTS",
+        "type": "esriFieldTypeString",
+        "alias": "Comments"
+      },
+      {
+        "name": "WIDTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "Width"
+      },
+      {
+        "name": "INSTALLDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Install Date"
+      },
+      {
+        "name": "OWNEDBY",
+        "type": "esriFieldTypeString",
+        "alias": "Owned By"
+      },
+      {
+        "name": "MAINTBY",
+        "type": "esriFieldTypeString",
+        "alias": "Maintained By"
+      },
+      {
+        "name": "BUFFERDESC",
+        "type": "esriFieldTypeString",
+        "alias": "BUFFERDESC"
+      },
+      {
+        "name": "CYCLETRACK",
+        "type": "esriFieldTypeString",
+        "alias": "Cycle Track"
+      },
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "FROM_ST",
+        "type": "esriFieldTypeString",
+        "alias": "From Street"
+      },
+      {
+        "name": "TO_ST",
+        "type": "esriFieldTypeString",
+        "alias": "To Street"
+      },
+      {
+        "name": "CONN_TYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Connection Type"
+      },
+      {
+        "name": "SHARROWS",
+        "type": "esriFieldTypeString",
+        "alias": "Sharrows"
+      },
+      {
+        "name": "ONEWAY",
+        "type": "esriFieldTypeString",
+        "alias": "Travel Direction"
+      },
+      {
+        "name": "SHAPE.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "Shape"
+      },
+      {
+        "name": "CREATED",
+        "type": "esriFieldTypeString",
+        "alias": "Created By"
+      },
+      {
+        "name": "CREATEDDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Created Date"
+      },
+      {
+        "name": "LASTEDITOR",
+        "type": "esriFieldTypeString",
+        "alias": "Last Editor"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "last Update"
+      },
+      {
+        "name": "MULTIPLIER",
+        "type": "esriFieldTypeDouble",
+        "alias": "Multiplier"
+      },
+      {
+        "name": "MILEAGE",
+        "type": "esriFieldTypeDouble",
+        "alias": "Mileage"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/recycling-pickup": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/3",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "DISTRICTID",
+        "type": "esriFieldTypeString",
+        "alias": "District ID"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "District Name"
+      },
+      {
+        "name": "AGENCY",
+        "type": "esriFieldTypeString",
+        "alias": "Agency"
+      },
+      {
+        "name": "AGENCYURL",
+        "type": "esriFieldTypeString",
+        "alias": "Website"
+      },
+      {
+        "name": "CONTACT",
+        "type": "esriFieldTypeString",
+        "alias": "Contact Name"
+      },
+      {
+        "name": "PHONE",
+        "type": "esriFieldTypeString",
+        "alias": "Phone"
+      },
+      {
+        "name": "EMAIL",
+        "type": "esriFieldTypeString",
+        "alias": "Email"
+      },
+      {
+        "name": "SUBTYPEFIELD",
+        "type": "esriFieldTypeInteger",
+        "alias": "Subtype Field"
+      },
+      {
+        "name": "SCHEDULE",
+        "type": "esriFieldTypeString",
+        "alias": "Schedule"
+      },
+      {
+        "name": "DESCRIPT",
+        "type": "esriFieldTypeString",
+        "alias": "Additional Information"
+      },
+      {
+        "name": "MONDAY",
+        "type": "esriFieldTypeString",
+        "alias": "Monday"
+      },
+      {
+        "name": "TUESDAY",
+        "type": "esriFieldTypeString",
+        "alias": "Tuesday"
+      },
+      {
+        "name": "WEDNESDAY",
+        "type": "esriFieldTypeString",
+        "alias": "Wednesday"
+      },
+      {
+        "name": "THURSDAY",
+        "type": "esriFieldTypeString",
+        "alias": "Thursday"
+      },
+      {
+        "name": "FRIDAY",
+        "type": "esriFieldTypeString",
+        "alias": "Friday"
+      },
+      {
+        "name": "SATURDAY",
+        "type": "esriFieldTypeString",
+        "alias": "Saturday"
+      },
+      {
+        "name": "SUNDAY",
+        "type": "esriFieldTypeString",
+        "alias": "Sunday"
+      },
+      {
+        "name": "WEEKONE",
+        "type": "esriFieldTypeString",
+        "alias": "Week One"
+      },
+      {
+        "name": "WEEKTWO",
+        "type": "esriFieldTypeString",
+        "alias": "Week Two"
+      },
+      {
+        "name": "WEEKTHREE",
+        "type": "esriFieldTypeString",
+        "alias": "Week Three"
+      },
+      {
+        "name": "WEEKFOUR",
+        "type": "esriFieldTypeString",
+        "alias": "Week Four"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Last Update Date"
+      },
+      {
+        "name": "LASTEDITOR",
+        "type": "esriFieldTypeString",
+        "alias": "Last Editor"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "MILES",
+        "type": "esriFieldTypeString",
+        "alias": "Miles"
+      },
+      {
+        "name": "ZONE",
+        "type": "esriFieldTypeString",
+        "alias": "Zone"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "SHAPE.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STArea()"
+      },
+      {
+        "name": "SHAPE.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      },
+      {
+        "name": "DISTRICTID2",
+        "type": "esriFieldTypeString",
+        "alias": "District ID 2"
+      },
+      {
+        "name": "NAME2",
+        "type": "esriFieldTypeString",
+        "alias": "District Name 2"
+      },
+      {
+        "name": "COLLECTIONDAYS",
+        "type": "esriFieldTypeString",
+        "alias": "Collection Days"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/community-redevelopment": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "CRA_Name",
+        "type": "esriFieldTypeString",
+        "alias": "CRA_Name"
+      },
+      {
+        "name": "CRA_Name2",
+        "type": "esriFieldTypeString",
+        "alias": "CRA_Name2"
+      },
+      {
+        "name": "CRA_Name3",
+        "type": "esriFieldTypeString",
+        "alias": "CRA_Name3"
+      },
+      {
+        "name": "Ordinance",
+        "type": "esriFieldTypeString",
+        "alias": "Ordinance"
+      },
+      {
+        "name": "Acres",
+        "type": "esriFieldTypeDouble",
+        "alias": "Acres"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "LASTUPDATE"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "SHAPE.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STArea()"
+      },
+      {
+        "name": "SHAPE.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/high-injury-network": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/10",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "ONST",
+        "type": "esriFieldTypeString",
+        "alias": "On Street"
+      },
+      {
+        "name": "FMST",
+        "type": "esriFieldTypeString",
+        "alias": "From Street"
+      },
+      {
+        "name": "TOST",
+        "type": "esriFieldTypeString",
+        "alias": "To Street"
+      },
+      {
+        "name": "MILES",
+        "type": "esriFieldTypeDouble",
+        "alias": "Miles"
+      },
+      {
+        "name": "FATAL",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Fatal"
+      },
+      {
+        "name": "INCAP",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Incapacitating"
+      },
+      {
+        "name": "PED",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Pedestrian"
+      },
+      {
+        "name": "BICY",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Bicycle"
+      },
+      {
+        "name": "MOTOR",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Motorcycle"
+      },
+      {
+        "name": "VEHICLE",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Vehicle"
+      },
+      {
+        "name": "KSI",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "KSI"
+      },
+      {
+        "name": "MAINTBY",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Maintained By"
+      },
+      {
+        "name": "HINYEAR",
+        "type": "esriFieldTypeString",
+        "alias": "HIN Year"
+      },
+      {
+        "name": "CREATED",
+        "type": "esriFieldTypeString",
+        "alias": "Created By"
+      },
+      {
+        "name": "CREATEDDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Created Date"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Last Update"
+      },
+      {
+        "name": "LASTEDITOR",
+        "type": "esriFieldTypeString",
+        "alias": "Last Editor"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "Shape",
+        "type": "esriFieldTypeGeometry",
+        "alias": "Shape"
+      },
+      {
+        "name": "Shape.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape.STLength()"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/historic-district-local": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/1",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "HISTORIC_BNDY",
+        "type": "esriFieldTypeString",
+        "alias": "HISTORIC_BNDY"
+      },
+      {
+        "name": "TYPE",
+        "type": "esriFieldTypeString",
+        "alias": "TYPE"
+      },
+      {
+        "name": "CODE",
+        "type": "esriFieldTypeString",
+        "alias": "CODE"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "LastUpdate"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "SHAPE.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STArea()"
+      },
+      {
+        "name": "SHAPE.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      },
+      {
+        "name": "LIST_YR",
+        "type": "esriFieldTypeString",
+        "alias": "List Year"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/historic-landmarks-local": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/29",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "NUMBER",
+        "type": "esriFieldTypeDouble",
+        "alias": "NUMBER"
+      },
+      {
+        "name": "FOLIO",
+        "type": "esriFieldTypeString",
+        "alias": "FOLIO"
+      },
+      {
+        "name": "LANDMARK_D",
+        "type": "esriFieldTypeString",
+        "alias": "LANDMARK INFO"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "NAME"
+      },
+      {
+        "name": "ADDRESS",
+        "type": "esriFieldTypeString",
+        "alias": "ADDRESS"
+      },
+      {
+        "name": "ORD_NUMBER",
+        "type": "esriFieldTypeString",
+        "alias": "ORDINANCE NUMBER"
+      },
+      {
+        "name": "ORD_DATE",
+        "type": "esriFieldTypeString",
+        "alias": "ORDINANCE DATE"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "LastUpdate"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "USNG",
+        "type": "esriFieldTypeString",
+        "alias": "USNG"
+      },
+      {
+        "name": "Shape",
+        "type": "esriFieldTypeGeometry",
+        "alias": "Shape"
+      },
+      {
+        "name": "GROUPING",
+        "type": "esriFieldTypeString",
+        "alias": "GROUPING"
+      }
+    ],
+    "geometry_type": "esriGeometryPoint",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/police-districts": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/LawEnforcement/MapServer/1",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "TPD_DISTRI",
+        "type": "esriFieldTypeDouble",
+        "alias": "TPD_DISTRI"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "LASTUPDATE"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "Shape",
+        "type": "esriFieldTypeGeometry",
+        "alias": "Shape"
+      },
+      {
+        "name": "Shape.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape.STArea()"
+      },
+      {
+        "name": "Shape.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape.STLength()"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/street-speed-reductions": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/4",
+    "fields": [
+      {
+        "name": "MAINTBY",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Maintained By"
+      },
+      {
+        "name": "OWNEDBY",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Owned By"
+      },
+      {
+        "name": "REDUCEDSPEED",
+        "type": "esriFieldTypeString",
+        "alias": "Reduced From Speed"
+      },
+      {
+        "name": "FULLNAME",
+        "type": "esriFieldTypeString",
+        "alias": "Street Name"
+      },
+      {
+        "name": "SPEEDLIMIT",
+        "type": "esriFieldTypeString",
+        "alias": "Speed Limit"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Last Update"
+      },
+      {
+        "name": "LASTEDITOR",
+        "type": "esriFieldTypeString",
+        "alias": "Last Editor"
+      },
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "SPEEDLIMITSTATUS",
+        "type": "esriFieldTypeString",
+        "alias": "Status"
+      },
+      {
+        "name": "DATEREDUCED",
+        "type": "esriFieldTypeDate",
+        "alias": "Date Reduced"
+      },
+      {
+        "name": "LENGTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "Length"
+      },
+      {
+        "name": "PROPSPEED",
+        "type": "esriFieldTypeString",
+        "alias": "Proposed Speed"
+      },
+      {
+        "name": "CREATED",
+        "type": "esriFieldTypeString",
+        "alias": "Created By"
+      },
+      {
+        "name": "CREATEDDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Created Date"
+      },
+      {
+        "name": "COMMENTS",
+        "type": "esriFieldTypeString",
+        "alias": "Comments"
+      },
+      {
+        "name": "SHAPE.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/truck-routes": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/5",
+    "fields": [
+      {
+        "name": "STREETNAME",
+        "type": "esriFieldTypeString",
+        "alias": "Street Name"
+      },
+      {
+        "name": "FROMSTREET",
+        "type": "esriFieldTypeString",
+        "alias": "From Street"
+      },
+      {
+        "name": "TOSTREET",
+        "type": "esriFieldTypeString",
+        "alias": "To Street"
+      },
+      {
+        "name": "ROUTETYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Route Type"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Last Update"
+      },
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "SHAPE.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/water-service-area": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/UtilityWater/MapServer/1",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "ID",
+        "type": "esriFieldTypeString",
+        "alias": "ID"
+      },
+      {
+        "name": "SERVICEBY",
+        "type": "esriFieldTypeString",
+        "alias": "Service By"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "CREATED",
+        "type": "esriFieldTypeString",
+        "alias": "Created By"
+      },
+      {
+        "name": "CREATEDDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Created Date"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Last Upate"
+      },
+      {
+        "name": "LASTEDITOR",
+        "type": "esriFieldTypeString",
+        "alias": "Last Editor"
+      },
+      {
+        "name": "SHAPE.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STArea()"
+      },
+      {
+        "name": "SHAPE.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa/zoning-districts": {
+    "endpoint": "https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/28",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "ZONECLASS",
+        "type": "esriFieldTypeString",
+        "alias": "ZONECLASS"
+      },
+      {
+        "name": "ZONEDESC",
+        "type": "esriFieldTypeString",
+        "alias": "ZONEDESC"
+      },
+      {
+        "name": "LASTUPDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "LASTUPDATE"
+      },
+      {
+        "name": "Shape",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "Shape.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STArea()"
+      },
+      {
+        "name": "Shape.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "SHAPE.STLength()"
+      },
+      {
+        "name": "REFERENCE",
+        "type": "esriFieldTypeString",
+        "alias": "Reference"
+      },
+      {
+        "name": "LDFILENUMBER",
+        "type": "esriFieldTypeString",
+        "alias": "LDFileNumber"
+      },
+      {
+        "name": "BASEELEV",
+        "type": "esriFieldTypeDouble",
+        "alias": "Base Elevation"
+      },
+      {
+        "name": "HEIGHT",
+        "type": "esriFieldTypeDouble",
+        "alias": "Height"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "stpete/stpete-parks": {
+    "endpoint": "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Parks_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID"
+      },
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "FULLADDR",
+        "type": "esriFieldTypeString",
+        "alias": "Full Address"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "Park Name"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "stpete/stpete-city-boundary": {
+    "endpoint": "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/CityLimits_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "Municipality Name"
+      },
+      {
+        "name": "MUNITYP",
+        "type": "esriFieldTypeString",
+        "alias": "Municipal Type"
+      },
+      {
+        "name": "LOCALFIPS",
+        "type": "esriFieldTypeString",
+        "alias": "Local FIPS"
+      },
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "stpete/stpete-streets": {
+    "endpoint": "https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Streets_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "Object ID"
+      },
+      {
+        "name": "FULLNAME",
+        "type": "esriFieldTypeString",
+        "alias": "Full Name"
+      },
+      {
+        "name": "FEDROUTE",
+        "type": "esriFieldTypeString",
+        "alias": "Federal Route"
+      },
+      {
+        "name": "STROUTE",
+        "type": "esriFieldTypeString",
+        "alias": "State Route"
+      },
+      {
+        "name": "CTYROUTE",
+        "type": "esriFieldTypeString",
+        "alias": "County Route"
+      },
+      {
+        "name": "RECLENGTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "Street Length"
+      },
+      {
+        "name": "MAINTBY",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Maintained By"
+      },
+      {
+        "name": "EVALMONTH",
+        "type": "esriFieldTypeString",
+        "alias": "Evaluation Month"
+      },
+      {
+        "name": "EVALYEAR",
+        "type": "esriFieldTypeString",
+        "alias": "Evaluation Year"
+      },
+      {
+        "name": "PROJNUM",
+        "type": "esriFieldTypeString",
+        "alias": "Project Number"
+      },
+      {
+        "name": "BASEDEPTH",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Base Depth"
+      },
+      {
+        "name": "BASETYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Base Type"
+      },
+      {
+        "name": "SURFACETYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Top Surface Type"
+      },
+      {
+        "name": "STWIDTH",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Street Width"
+      },
+      {
+        "name": "NUMLANES",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Number of Lanes"
+      },
+      {
+        "name": "SPEEDLIMIT",
+        "type": "esriFieldTypeString",
+        "alias": "Speed Limit"
+      },
+      {
+        "name": "ATLAS",
+        "type": "esriFieldTypeString",
+        "alias": "Plat Sheet"
+      },
+      {
+        "name": "ZONE",
+        "type": "esriFieldTypeString",
+        "alias": "Zone"
+      },
+      {
+        "name": "COUNCILDIST",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Council District"
+      },
+      {
+        "name": "TRAFFICFLOW",
+        "type": "esriFieldTypeString",
+        "alias": "Traffic Flow"
+      },
+      {
+        "name": "ROADTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Road Type"
+      },
+      {
+        "name": "CURB1",
+        "type": "esriFieldTypeString",
+        "alias": "Curb 1"
+      },
+      {
+        "name": "CURB2",
+        "type": "esriFieldTypeString",
+        "alias": "Curb 2"
+      },
+      {
+        "name": "CURB1SIDE",
+        "type": "esriFieldTypeString",
+        "alias": "Curb 1 Side"
+      },
+      {
+        "name": "CURB2SIDE",
+        "type": "esriFieldTypeString",
+        "alias": "Curb 2 Side"
+      },
+      {
+        "name": "EVACROUTE",
+        "type": "esriFieldTypeString",
+        "alias": "Evacuation Route"
+      },
+      {
+        "name": "MAJORRD",
+        "type": "esriFieldTypeString",
+        "alias": "Major Road"
+      },
+      {
+        "name": "INMIDTOWN",
+        "type": "esriFieldTypeString",
+        "alias": "In Midtown"
+      },
+      {
+        "name": "STNAME",
+        "type": "esriFieldTypeString",
+        "alias": "Street Name"
+      },
+      {
+        "name": "STFNAME",
+        "type": "esriFieldTypeString",
+        "alias": "From"
+      },
+      {
+        "name": "STTNAME",
+        "type": "esriFieldTypeString",
+        "alias": "To"
+      },
+      {
+        "name": "NOTES",
+        "type": "esriFieldTypeString",
+        "alias": "Notes"
+      },
+      {
+        "name": "SQYARDS",
+        "type": "esriFieldTypeInteger",
+        "alias": "Sq Yards"
+      },
+      {
+        "name": "LASTYRMAINT",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Last Year Maintained"
+      },
+      {
+        "name": "PREVYEARMAINT",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Previous Year Maintained"
+      },
+      {
+        "name": "YEARMILLED",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Year Milled"
+      },
+      {
+        "name": "YEARRECLIMITED",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Year Reclamited"
+      },
+      {
+        "name": "EXISTINGLANES",
+        "type": "esriFieldTypeString",
+        "alias": "Existing Lane Config"
+      },
+      {
+        "name": "FUTURELANES",
+        "type": "esriFieldTypeString",
+        "alias": "Future Lane Config"
+      },
+      {
+        "name": "MEDIANTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Median Type"
+      },
+      {
+        "name": "FREIGHTROUTE",
+        "type": "esriFieldTypeString",
+        "alias": "Freight Route"
+      },
+      {
+        "name": "SCHOOLZONE",
+        "type": "esriFieldTypeString",
+        "alias": "School Zone"
+      },
+      {
+        "name": "FUTUREMAJSTCAT",
+        "type": "esriFieldTypeString",
+        "alias": "Future Major Street Category"
+      },
+      {
+        "name": "RPM",
+        "type": "esriFieldTypeString",
+        "alias": "RPM"
+      },
+      {
+        "name": "EVALDAY",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "Evaluation Day"
+      },
+      {
+        "name": "BIKEFACILITY",
+        "type": "esriFieldTypeString",
+        "alias": "On-Street Bike Facility"
+      },
+      {
+        "name": "BIKEFACILITYDOORZONE",
+        "type": "esriFieldTypeString",
+        "alias": "Bike Facility Door Zone"
+      },
+      {
+        "name": "BIKEFACILITYWIDTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "Bike Facility Width"
+      },
+      {
+        "name": "GLOBALID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GLOBALID"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "clearwater/clearwater-park-buffers": {
+    "endpoint": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "Shape",
+        "type": "esriFieldTypeGeometry",
+        "alias": "Shape"
+      },
+      {
+        "name": "Site_Name",
+        "type": "esriFieldTypeString",
+        "alias": "Site_Name"
+      },
+      {
+        "name": "Address",
+        "type": "esriFieldTypeString",
+        "alias": "Address"
+      },
+      {
+        "name": "Type",
+        "type": "esriFieldTypeString",
+        "alias": "Type"
+      },
+      {
+        "name": "Acquisition",
+        "type": "esriFieldTypeString",
+        "alias": "Acquisition"
+      },
+      {
+        "name": "Acreage",
+        "type": "esriFieldTypeDouble",
+        "alias": "Acreage"
+      },
+      {
+        "name": "created_user",
+        "type": "esriFieldTypeString",
+        "alias": "created_user"
+      },
+      {
+        "name": "created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "created_date"
+      },
+      {
+        "name": "last_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "last_edited_user"
+      },
+      {
+        "name": "last_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "last_edited_date"
+      },
+      {
+        "name": "Buf_Distance",
+        "type": "esriFieldTypeInteger",
+        "alias": "Buf_Distance"
+      },
+      {
+        "name": "BUFF_DIST",
+        "type": "esriFieldTypeDouble",
+        "alias": "BUFF_DIST"
+      },
+      {
+        "name": "ORIG_FID",
+        "type": "esriFieldTypeInteger",
+        "alias": "ORIG_FID"
+      },
+      {
+        "name": "Shape_Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape_Length"
+      },
+      {
+        "name": "Shape_Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape_Area"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 2882,
+      "latestWkid": 2882,
+      "xyTolerance": 0.003280833333333333,
+      "zTolerance": 0.001,
+      "mTolerance": 0.001,
+      "falseX": -17791300,
+      "falseY": -41645400,
+      "xyUnits": 3048.0060960121928,
+      "falseZ": -100000,
+      "zUnits": 10000,
+      "falseM": -100000,
+      "mUnits": 10000
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "clearwater/clearwater-zoning": {
+    "endpoint": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Zoning_WGS84/MapServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "ZONING",
+        "type": "esriFieldTypeString",
+        "alias": "ZONING"
+      },
+      {
+        "name": "SPECIAL",
+        "type": "esriFieldTypeString",
+        "alias": "SPECIAL"
+      },
+      {
+        "name": "created_user",
+        "type": "esriFieldTypeString",
+        "alias": "created_user"
+      },
+      {
+        "name": "created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "created_date"
+      },
+      {
+        "name": "last_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "last_edited_user"
+      },
+      {
+        "name": "last_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "last_edited_date"
+      },
+      {
+        "name": "Shape",
+        "type": "esriFieldTypeGeometry",
+        "alias": "Shape"
+      },
+      {
+        "name": "Shape.STArea()",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape.STArea()"
+      },
+      {
+        "name": "Shape.STLength()",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape.STLength()"
+      },
+      {
+        "name": "Global_ID",
+        "type": "esriFieldTypeString",
+        "alias": "Global_ID"
+      },
+      {
+        "name": "ZONING_DESC",
+        "type": "esriFieldTypeString",
+        "alias": "ZONING_DESC"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "clearwater/clearwater-libraries": {
+    "endpoint": "https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/1",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "SHAPE",
+        "type": "esriFieldTypeGeometry",
+        "alias": "SHAPE"
+      },
+      {
+        "name": "FACILITYID",
+        "type": "esriFieldTypeString",
+        "alias": "Facility Identifier"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "Name of Facility"
+      },
+      {
+        "name": "OWNER",
+        "type": "esriFieldTypeString",
+        "alias": "Owner Name"
+      },
+      {
+        "name": "OWNTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Owner Type"
+      },
+      {
+        "name": "SUBTYPEFIELD",
+        "type": "esriFieldTypeInteger",
+        "alias": "Subtype Field"
+      },
+      {
+        "name": "FEATURECODE",
+        "type": "esriFieldTypeString",
+        "alias": "Feature Code"
+      },
+      {
+        "name": "FULLADDR",
+        "type": "esriFieldTypeString",
+        "alias": "Full Address"
+      },
+      {
+        "name": "AGENCYURL",
+        "type": "esriFieldTypeString",
+        "alias": "Website"
+      },
+      {
+        "name": "OPERDAYS",
+        "type": "esriFieldTypeString",
+        "alias": "Operational Days"
+      },
+      {
+        "name": "OPERHOURS",
+        "type": "esriFieldTypeString",
+        "alias": "Operational Hours"
+      },
+      {
+        "name": "CONTACT",
+        "type": "esriFieldTypeString",
+        "alias": "Contact Name"
+      },
+      {
+        "name": "PHONE",
+        "type": "esriFieldTypeString",
+        "alias": "Phone"
+      },
+      {
+        "name": "EMAIL",
+        "type": "esriFieldTypeString",
+        "alias": "Email"
+      }
+    ],
+    "geometry_type": "esriGeometryPoint",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "hillsborough/hillsborough-libraries": {
+    "endpoint": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Libraries_hc/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "Address",
+        "type": "esriFieldTypeString",
+        "alias": "ADDRESS"
+      },
+      {
+        "name": "Name_Full",
+        "type": "esriFieldTypeString",
+        "alias": "Name_Full"
+      },
+      {
+        "name": "City",
+        "type": "esriFieldTypeString",
+        "alias": "City"
+      },
+      {
+        "name": "Zip",
+        "type": "esriFieldTypeDouble",
+        "alias": "Zip"
+      },
+      {
+        "name": "Type",
+        "type": "esriFieldTypeString",
+        "alias": "Type"
+      },
+      {
+        "name": "Region",
+        "type": "esriFieldTypeString",
+        "alias": "Region"
+      },
+      {
+        "name": "Name_Label",
+        "type": "esriFieldTypeString",
+        "alias": "Name_Label"
+      },
+      {
+        "name": "Library_Code",
+        "type": "esriFieldTypeString",
+        "alias": "Library_Code"
+      },
+      {
+        "name": "Website",
+        "type": "esriFieldTypeString",
+        "alias": "Website"
+      },
+      {
+        "name": "LocationID",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "LocationID"
+      },
+      {
+        "name": "created_user",
+        "type": "esriFieldTypeString",
+        "alias": "created_user"
+      },
+      {
+        "name": "created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "created_date"
+      },
+      {
+        "name": "last_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "last_edited_user"
+      },
+      {
+        "name": "last_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "last_edited_date"
+      },
+      {
+        "name": "FacilityID",
+        "type": "esriFieldTypeString",
+        "alias": "FacilityID"
+      }
+    ],
+    "geometry_type": "esriGeometryPoint",
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "hillsborough/hillsborough-sidewalks": {
+    "endpoint": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Sidewalks/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "ASSETTYPE",
+        "type": "esriFieldTypeString",
+        "alias": "ASSET TYPE"
+      },
+      {
+        "name": "UNITID",
+        "type": "esriFieldTypeString",
+        "alias": "UNITID"
+      },
+      {
+        "name": "STREET_ID",
+        "type": "esriFieldTypeString",
+        "alias": "STREET ID"
+      },
+      {
+        "name": "WIDTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "WIDTH (FT)"
+      },
+      {
+        "name": "MATERIAL",
+        "type": "esriFieldTypeString",
+        "alias": "MATERIAL"
+      },
+      {
+        "name": "OWNER",
+        "type": "esriFieldTypeString",
+        "alias": "OWNER"
+      },
+      {
+        "name": "MAINTAINER",
+        "type": "esriFieldTypeString",
+        "alias": "MAINTAINER"
+      },
+      {
+        "name": "INSP_DATE",
+        "type": "esriFieldTypeDate",
+        "alias": "LAST INSPECTION DATE"
+      },
+      {
+        "name": "INSP_TIME",
+        "type": "esriFieldTypeString",
+        "alias": "LAST INSPECTION TIME"
+      },
+      {
+        "name": "INSP_BY",
+        "type": "esriFieldTypeString",
+        "alias": "INSPECTION BY"
+      },
+      {
+        "name": "CONDITION",
+        "type": "esriFieldTypeSmallInteger",
+        "alias": "CONDITION"
+      },
+      {
+        "name": "SERV_UNIT",
+        "type": "esriFieldTypeString",
+        "alias": "SERVICE UNIT"
+      },
+      {
+        "name": "INSTALL_DATE",
+        "type": "esriFieldTypeDate",
+        "alias": "INSTALL_DATE"
+      },
+      {
+        "name": "SOURCE",
+        "type": "esriFieldTypeString",
+        "alias": "SOURCE"
+      },
+      {
+        "name": "ADD_DATE",
+        "type": "esriFieldTypeDate",
+        "alias": "ADD DATE"
+      },
+      {
+        "name": "ADD_BY",
+        "type": "esriFieldTypeString",
+        "alias": "ADD BY"
+      },
+      {
+        "name": "MOD_DATE",
+        "type": "esriFieldTypeDate",
+        "alias": "MOD DATE"
+      },
+      {
+        "name": "MOD_BY",
+        "type": "esriFieldTypeString",
+        "alias": "MOD BY"
+      },
+      {
+        "name": "MOD_WHY",
+        "type": "esriFieldTypeString",
+        "alias": "MOD WHY"
+      },
+      {
+        "name": "MEDIAKEY",
+        "type": "esriFieldTypeInteger",
+        "alias": "MEDIAKEY"
+      },
+      {
+        "name": "EXP_DATE",
+        "type": "esriFieldTypeDate",
+        "alias": "EXPIRED DATE"
+      },
+      {
+        "name": "UNITNUM",
+        "type": "esriFieldTypeInteger",
+        "alias": "UNITNUM"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "Created_User",
+        "type": "esriFieldTypeString",
+        "alias": "Created_User"
+      },
+      {
+        "name": "Created_Date",
+        "type": "esriFieldTypeDate",
+        "alias": "Created_Date"
+      },
+      {
+        "name": "Last_Editor_User",
+        "type": "esriFieldTypeString",
+        "alias": "Last_Editor_User"
+      },
+      {
+        "name": "Last_Editor_Date",
+        "type": "esriFieldTypeDate",
+        "alias": "Last_Editor_Date"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "hillsborough/hillsborough-parks": {
+    "endpoint": "https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Parks_and_Recreation/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID_1",
+        "type": "esriFieldTypeOID",
+        "alias": "ID"
+      },
+      {
+        "name": "FOLIONUMB",
+        "type": "esriFieldTypeString",
+        "alias": "Folio Numb"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "Name"
+      },
+      {
+        "name": "ADDR",
+        "type": "esriFieldTypeString",
+        "alias": "Address"
+      },
+      {
+        "name": "TYPE",
+        "type": "esriFieldTypeString",
+        "alias": "Type"
+      },
+      {
+        "name": "USES",
+        "type": "esriFieldTypeString",
+        "alias": "Uses"
+      },
+      {
+        "name": "PROPOWNER",
+        "type": "esriFieldTypeString",
+        "alias": "Owner"
+      },
+      {
+        "name": "PROPMNG",
+        "type": "esriFieldTypeString",
+        "alias": "Managed by"
+      },
+      {
+        "name": "GlobalID",
+        "type": "esriFieldTypeGlobalID",
+        "alias": "GlobalID"
+      },
+      {
+        "name": "created_user",
+        "type": "esriFieldTypeString",
+        "alias": "User"
+      },
+      {
+        "name": "created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Date"
+      },
+      {
+        "name": "last_edited_user",
+        "type": "esriFieldTypeString",
+        "alias": "Edit User"
+      },
+      {
+        "name": "last_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Edit Date"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      },
+      {
+        "name": "Shape__Length",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Length"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102659,
+      "latestWkid": 2237
+    },
+    "object_id_field": "OBJECTID_1"
+  },
+  "pinellas/pinellas-fire-stations": {
+    "endpoint": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PSSFireStation_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "Name"
+      },
+      {
+        "name": "RESTORATIONPRIORITY",
+        "type": "esriFieldTypeDouble",
+        "alias": "Restoration Priority"
+      },
+      {
+        "name": "int_created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Created Date"
+      },
+      {
+        "name": "int_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Edited Date"
+      }
+    ],
+    "geometry_type": "esriGeometryPoint",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "pinellas/pinellas-park-boundaries": {
+    "endpoint": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_ParkBoundaries_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "SITE_NAME",
+        "type": "esriFieldTypeString",
+        "alias": "Site Name"
+      },
+      {
+        "name": "GISACRES",
+        "type": "esriFieldTypeDouble",
+        "alias": "GIS Acres"
+      },
+      {
+        "name": "int_created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Created Date"
+      },
+      {
+        "name": "int_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Edited Date"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "pinellas/pinellas-trail": {
+    "endpoint": "https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PinellasTrail_view/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "NAME",
+        "type": "esriFieldTypeString",
+        "alias": "NAME"
+      },
+      {
+        "name": "LENGTH",
+        "type": "esriFieldTypeDouble",
+        "alias": "Length"
+      },
+      {
+        "name": "INSTALLDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Install Date"
+      },
+      {
+        "name": "CONDITIONDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Condition Date"
+      },
+      {
+        "name": "LASTINSPECTIONDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Last Inspection Date"
+      },
+      {
+        "name": "WARRANTYDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Warranty Date"
+      },
+      {
+        "name": "int_created_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Created Date"
+      },
+      {
+        "name": "int_edited_date",
+        "type": "esriFieldTypeDate",
+        "alias": "Internal Edited Date"
+      },
+      {
+        "name": "ENDOFLIFEDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "End of Life Date"
+      },
+      {
+        "name": "CRITICALITYDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "BRE Date"
+      },
+      {
+        "name": "REPLACEMENTCOSTDATE",
+        "type": "esriFieldTypeDate",
+        "alias": "Replacement Cost Date"
+      }
+    ],
+    "geometry_type": "esriGeometryPolyline",
+    "spatial_reference": {
+      "wkid": 102100,
+      "latestWkid": 3857
+    },
+    "object_id_field": "OBJECTID"
+  },
+  "tampa-bay/tbrpc-developments-of-regional-impact": {
+    "endpoint": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Developments_of_Regional_Impact/FeatureServer/0",
+    "fields": [
+      {
+        "name": "FID",
+        "type": "esriFieldTypeOID",
+        "alias": "FID"
+      },
+      {
+        "name": "COUNTY1",
+        "type": "esriFieldTypeString",
+        "alias": "COUNTY1"
+      },
+      {
+        "name": "DRINAME",
+        "type": "esriFieldTypeString",
+        "alias": "DRINAME"
+      },
+      {
+        "name": "DRINUM",
+        "type": "esriFieldTypeInteger",
+        "alias": "DRINUM"
+      },
+      {
+        "name": "created_da",
+        "type": "esriFieldTypeDate",
+        "alias": "created_da"
+      },
+      {
+        "name": "last_edi_1",
+        "type": "esriFieldTypeDate",
+        "alias": "last_edi_1"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkid": 26917,
+      "latestWkid": 26917,
+      "vcsWkid": 5703,
+      "latestVcsWkid": 5703
+    },
+    "object_id_field": "FID"
+  },
+  "tampa-bay/tbrpc-regional-storm-surge-zones": {
+    "endpoint": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/region_storm_surge_zones/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID_1",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID_1"
+      },
+      {
+        "name": "CAT",
+        "type": "esriFieldTypeString",
+        "alias": "CAT"
+      },
+      {
+        "name": "COUNTY",
+        "type": "esriFieldTypeString",
+        "alias": "COUNTY"
+      },
+      {
+        "name": "Shape__Area",
+        "type": "esriFieldTypeDouble",
+        "alias": "Shape__Area"
+      }
+    ],
+    "geometry_type": "esriGeometryPolygon",
+    "spatial_reference": {
+      "wkt": "PROJCS[\"FDEP_Albers_HARN\",GEOGCS[\"GCS_North_American_1983_HARN\",DATUM[\"D_North_American_1983_HARN\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Albers\"],PARAMETER[\"False_Easting\",400000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-84.0],PARAMETER[\"Standard_Parallel_1\",24.0],PARAMETER[\"Standard_Parallel_2\",31.5],PARAMETER[\"Latitude_Of_Origin\",24.0],UNIT[\"Meter\",1.0]]"
+    },
+    "object_id_field": "OBJECTID_1"
+  },
+  "tampa-bay/tbrpc-regional-data-centers": {
+    "endpoint": "https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Tampa_Bay_Region_Data_Centers/FeatureServer/0",
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "Name",
+        "type": "esriFieldTypeString",
+        "alias": "Name"
+      },
+      {
+        "name": "County",
+        "type": "esriFieldTypeString",
+        "alias": "County"
+      },
+      {
+        "name": "Latitude",
+        "type": "esriFieldTypeDouble",
+        "alias": "Latitude"
+      },
+      {
+        "name": "Status",
+        "type": "esriFieldTypeString",
+        "alias": "Status"
+      }
+    ],
+    "geometry_type": "esriGeometryPoint",
+    "spatial_reference": {
+      "wkid": 4326,
+      "latestWkid": 4326
+    },
+    "object_id_field": "OBJECTID"
+  }
+}

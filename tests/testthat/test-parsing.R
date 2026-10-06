@@ -1,3 +1,5 @@
+parsing_layer_url <- "https://data.example.invalid/arcgis/rest/services/Public/Test/FeatureServer/0"
+
 test_that("declared source types preserve strings and produce typed missing values", {
   features <- fixture_features(1:3)
   features[[1L]]$attributes$RECORD_ID <- ""
@@ -6,9 +8,9 @@ test_that("declared source types preserve strings and produce typed missing valu
   features[[2L]]$attributes["NEWCONSTRUCTIONSF"] <- list(NULL)
   features[[2L]]$attributes$COST <- NULL
   features[[3L]]$attributes$LASTUPDATE <- NULL
-  transport <- fixture_transport(features = features)
+  transport <- fixture_transport(features = features, metadata = fixture_metadata(extra = TRUE))
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-  result <- get_dataset("construction-permits")
+  result <- get_arcgis_layer(parsing_layer_url)
   expect_identical(result$RECORD_ID, c("", NA_character_, "synthetic-3"))
   expect_identical(result$PROJECTSTATUS[1L], " source spelling ")
   expect_identical(result$NEWCONSTRUCTIONSF, c(101L, NA_integer_, 103L))
@@ -37,12 +39,12 @@ test_that("epoch milliseconds become UTC instants without a second local-zone sh
 
 test_that("unknown date zones remain raw with one clear warning", {
   for (metadata in list(
-    within(fixture_metadata(), datesInUnknownTimezone <- TRUE),
-    within(fixture_metadata(), dateFieldsTimeReference <- list(timeZone = "Unknown")),
-    within(fixture_metadata(), dateFieldsTimeReference <- list(timeZone = "unspecified")))) {
+    within(fixture_metadata(extra = TRUE), datesInUnknownTimezone <- TRUE),
+    within(fixture_metadata(extra = TRUE), dateFieldsTimeReference <- list(timeZone = "Unknown")),
+    within(fixture_metadata(extra = TRUE), dateFieldsTimeReference <- list(timeZone = "unspecified")))) {
     transport <- fixture_transport(metadata = metadata)
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
-    expect_warning(result <- get_dataset("construction-permits",
+    expect_warning(result <- get_arcgis_layer(parsing_layer_url,
       fields = c("LASTUPDATE", "CREATEDDATE", "TENTATIVEHEARING")),
       "unknown date time zone.*raw epoch milliseconds")
     expect_type(result$LASTUPDATE, "double")
@@ -127,7 +129,7 @@ test_that("integer overflow is handled without losing exact source values", {
 })
 
 test_that("schema violations fail instead of silently coercing attributes", {
-  metadata <- fixture_metadata()
+  metadata <- fixture_metadata(extra = TRUE)
   for (case in list(
     list(field = "RECORD_ID", value = 10),
     list(field = "COST", value = "10.50"),

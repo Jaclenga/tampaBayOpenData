@@ -4,6 +4,31 @@
   entries <- tryCatch(jsonlite::fromJSON(path, simplifyVector = FALSE),
                       error = function(e) .abort("The bundled dataset registry is invalid JSON."))
   .validate_registry(entries)
+  .attach_expected_schemas(entries, .read_expected_schemas())
+}
+
+.attach_expected_schemas <- function(entries, schemas) {
+  keys <- vapply(entries, function(entry) {
+    paste(entry$jurisdiction, entry$id, sep = "/")
+  }, character(1))
+  if (anyDuplicated(keys) || anyDuplicated(names(schemas)) ||
+      !setequal(names(schemas), keys)) {
+    .abort("The bundled expected schemas must match the checked dataset registry.")
+  }
+  for (i in seq_along(entries)) {
+    schema <- schemas[[keys[[i]]]]
+    .validate_expected_schema(schema)
+    endpoint <- paste0(entries[[i]]$service_url, "/", entries[[i]]$layer_id)
+    if (!identical(schema$endpoint, endpoint) ||
+        !identical(schema$geometry_type, entries[[i]]$geometry_type) ||
+        !identical(schema$object_id_field, entries[[i]]$object_id_field) ||
+        !.same_schema_crs(schema$spatial_reference,
+                          entries[[i]]$spatial_reference)) {
+      .abort(paste0("The bundled expected schema for `", keys[[i]],
+                    "` disagrees with the checked dataset registry."))
+    }
+    entries[[i]]$expected_schema <- schema
+  }
   entries
 }
 
@@ -63,7 +88,7 @@
   Filter(function(x) identical(x$jurisdiction, jurisdiction), entries)
 }
 
-.lookup_dataset <- function(id, jurisdiction = "tampa") {
+.lookup_dataset <- function(id, jurisdiction = "all") {
   .string(id, "id")
   entries <- .jurisdiction_entries(jurisdiction)
   found <- Filter(function(x) identical(x$id, id), entries)

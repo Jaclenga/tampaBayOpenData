@@ -208,17 +208,17 @@ The package's live search uses Esri's public [item search API](https://developer
 for the [City of Tampa organization](https://www.arcgis.com/sharing/rest/portals/IbNXlmt2RVVRCZ6M?f=json)
 (`IbNXlmt2RVVRCZ6M`) and the [Tampa Bay Regional Planning Council
 organization](https://www.arcgis.com/sharing/rest/portals/RgIBbQIF0Y6T3AX6?f=json)
-(`RgIBbQIF0Y6T3AX6`). It searches public `Feature Service` items, follows
-`nextStart` pages, and expands service roots into candidate feature layers and
-tables. Some root listings omit per-layer Query capabilities, which the client
-checks when retrieving a layer. Some items typed `Feature Service` point to a
-MapServer layer. Public
-`Map Service` items found in these two organizations were tile services, so
-they are not part of this queryable-layer search. A direct compatible MapServer
-layer can still be retrieved by URL.
+(`RgIBbQIF0Y6T3AX6`). The October 2 scan searched public `Feature Service`
+items, followed `nextStart` pages, and expanded service roots into candidate
+feature layers and tables. Some items typed `Feature Service` pointed to a
+MapServer layer. `Map Service` items found in those two organizations at the
+time were tile services. The current client searches both item types, then
+inspects each layer's own metadata for type, geometry, and Query capability;
+it skips tile services without queryable layers. A direct compatible MapServer
+layer can also be retrieved by URL.
 
-The dated search found 163 City and 95 regional service items. Expanding them
-produced 323 distinct layer URLs (166 City, 157 regional) in a full scan; one
+That Feature Service scan found 163 City and 95 regional service items. Expanding
+them produced 323 distinct layer URLs (166 City, 157 regional); one
 City item pointed to a service that returned HTTP 403 and was recorded as a
 skipped-item issue. These are live observations, not a fixed catalog size.
 Duplicate portal items can point to the same layer URL, so the package uses

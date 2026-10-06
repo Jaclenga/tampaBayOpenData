@@ -248,7 +248,7 @@ search_datasets <- function(query, jurisdiction = "all", source = "all",
 #'   current <- dataset_info("construction-permits", refresh = TRUE)
 #'   current$fields
 #' }
-dataset_info <- function(id, jurisdiction = "tampa", refresh = FALSE, timeout = 30,
+dataset_info <- function(id, jurisdiction = NULL, refresh = FALSE, timeout = 30,
                          total_timeout = 60) {
   .flag(refresh, "refresh")
   timeout <- .operation_timeout(timeout, total_timeout)

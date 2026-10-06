@@ -6,7 +6,9 @@ Authors@R: person("Jack", "Lenga", role = c("aut", "cre", "cph"),
     comment = c(ORCID = "0009-0003-1153-8105"))
 Description: Discover public 'ArcGIS' layers published by Tampa, St. Petersburg,
     Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional
-    Planning Council. A publisher registry configures discovery; a separate
+    Planning Council. The same client can discover other public 'ArcGIS' portals
+    and retrieve layers by their REST URLs. A publisher registry configures
+    discovery; a separate
     dataset registry identifies layers checked by package maintainers. Filter
     catalogs by source, geometry, topic, category, and modification date.
     Retrieve queryable layers

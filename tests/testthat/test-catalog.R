@@ -117,6 +117,36 @@ test_that("dataset IDs are unique within a jurisdiction", {
                "unique within each jurisdiction", class = "tampa_data_error")
 })
 
+test_that("expected schemas distinguish equal IDs in different jurisdictions", {
+  first <- .read_registry()[[1L]]
+  second <- first
+  second$jurisdiction <- "neighboring-city"
+  second$service_url <- "https://example.org/arcgis/rest/services/Permits/FeatureServer"
+  second$source_url <- paste0(second$service_url, "/1")
+  second$layer_id <- 1L
+  second_schema <- first$expected_schema
+  second_schema$endpoint <- second$source_url
+  schemas <- list()
+  schemas[[paste(second$jurisdiction, second$id, sep = "/")]] <- second_schema
+  schemas[[paste(first$jurisdiction, first$id, sep = "/")]] <- first$expected_schema
+
+  expect_invisible(.validate_registry(list(first, second)))
+  attached <- .attach_expected_schemas(list(first, second), schemas)
+  expect_identical(attached[[1L]]$expected_schema$endpoint,
+                   first$expected_schema$endpoint)
+  expect_identical(attached[[2L]]$expected_schema$endpoint,
+                   second$source_url)
+  expect_error(.attach_expected_schemas(list(first, second), schemas[1L]),
+               "must match", class = "tampa_data_error")
+
+  local_mocked_bindings(.read_registry = function() attached,
+                        .package = "tampaBayOpenData")
+  expect_error(.lookup_dataset(first$id), "more than one jurisdiction",
+               class = "tampa_input_error")
+  expect_identical(.lookup_dataset(first$id, "neighboring-city")$service_url,
+                   second$service_url)
+})
+
 test_that("search matches literal words across metadata fields", {
   expect_identical(search_datasets(" ACTIVE permit ", source = "checked")$id, "construction-permits")
   expect_identical(search_datasets("CAPITAL projects", source = "checked")$id, "capital-projects")
@@ -195,7 +225,8 @@ test_that("live inspection adds the actual schema without changing provenance", 
   expect_s3_class(inspected$fields, "tbl_df")
   expect_identical(inspected$fields$name, .field_names(fixture_metadata()))
   expect_identical(inspected$fields$alias[2L], "Record ID")
-  expect_identical(inspected$fields$type[4L], "esriFieldTypeDate")
+  expect_identical(inspected$fields$type[match("LASTUPDATE", inspected$fields$name)],
+                   "esriFieldTypeDate")
   expect_s3_class(inspected$inspected_at, "POSIXct")
   expect_identical(inspected$source_url, original$source_url)
   expect_identical(inspected$verified, original$verified)

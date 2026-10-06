@@ -35,6 +35,32 @@ list_portals <- function() {
   stats::setNames(entries, vapply(entries, `[[`, character(1), "id"))
 }
 
+# User-supplied portals use the same public-HTTPS boundary as direct layer
+# URLs. Keep this separate from the bundled registry's verification metadata:
+# an arbitrary portal has no package-verified publisher identity.
+.custom_portal_root <- function(portal) {
+  .string(portal, "portal")
+  match <- regmatches(portal, regexec(
+    "^https://([^/?#@]+)(/[^?#]*)$", portal, perl = TRUE))[[1L]]
+  if (length(match) != 3L || !endsWith(portal, "/sharing/rest") ||
+      grepl("[[:space:]\\\\%]", portal)) {
+    .abort("`portal` must be a public HTTPS ArcGIS root ending in /sharing/rest.",
+           subclass = "tampa_input_error")
+  }
+  host <- match[[2L]]
+  if (!grepl("^[A-Za-z0-9][A-Za-z0-9.-]*[A-Za-z0-9]$", host) ||
+      grepl("\\.\\.|^[0-9.]+$|(^|\\.)localhost$|\\.(local|internal|home|lan)$",
+            host, ignore.case = TRUE)) {
+    .abort("`portal` must use a public DNS host.", subclass = "tampa_input_error")
+  }
+  segments <- strsplit(sub("^/", "", match[[3L]]), "/", fixed = TRUE)[[1L]]
+  if (any(!nzchar(segments)) || any(segments %in% c(".", "..")) ||
+      any(!grepl("^[A-Za-z0-9._~-]+$", segments))) {
+    .abort("`portal` must use ordinary path segments.", subclass = "tampa_input_error")
+  }
+  portal
+}
+
 .validate_portals <- function(entries) {
   required <- c("id", "root", "org_id", "publisher", "jurisdiction", "website",
                 "verified", "metadata_url", "evidence_url")

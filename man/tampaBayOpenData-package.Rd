@@ -4,20 +4,27 @@
 \name{tampaBayOpenData-package}
 \alias{tampaBayOpenData}
 \alias{tampaBayOpenData-package}
-\title{Discover and retrieve Tampa Bay public data}
+\title{Discover and retrieve public ArcGIS data}
 \description{
-Search public Tampa, St. Petersburg, Clearwater, Hillsborough County, Pinellas
-County, and Tampa Bay Regional Planning Council ArcGIS services with
-\code{\link[=list_datasets]{list_datasets()}} or \code{\link[=search_datasets]{search_datasets()}}. \code{\link[=list_portals]{list_portals()}} reads the publisher
-configuration. Catalogs can filter jurisdiction, publisher, validation,
-geometry, topics, categories, and modification dates.
-The bundled catalog identifies 35 layers checked by package maintainers;
-catalog browsing defaults to all jurisdictions. Use \code{\link[=get_dataset]{get_dataset()}}
-for a checked ID or discovered layer, or \code{\link[=get_arcgis_layer]{get_arcgis_layer()}} for a direct
-compatible URL. Results are tibbles or optional \code{sf} objects;
-\code{\link[=dataset_provenance]{dataset_provenance()}} exposes the source, validation status, and query.
-\code{\link[=download_dataset]{download_dataset()}} and \code{\link[=download_arcgis_layer]{download_arcgis_layer()}} write validated chunks to
-a caller-selected directory and can resume an interrupted download.
+The bundled Tampa Bay configuration covers Tampa, St. Petersburg, Clearwater,
+Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning
+Council. \code{\link[=tbod_list_datasets]{tbod_list_datasets()}} and \code{\link[=tbod_search_datasets]{tbod_search_datasets()}} browse its
+checked catalog and configured live portals. The catalog identifies 35
+layers checked by package maintainers; \code{source = "checked"} reads them offline.
+\code{\link[=tbod_list_portals]{tbod_list_portals()}} shows the bundled publisher configuration.
+
+\code{\link[=tbod_discover]{tbod_discover()}} searches another public ArcGIS sharing REST portal or
+enumerates a FeatureServer or MapServer service. Pass a discovered row,
+bundled ID, stable ArcGIS item ID, or direct layer URL to \code{\link[=tbod_get_dataset]{tbod_get_dataset()}}.
+Results are tibbles or optional \code{sf} objects. \code{\link[=tbod_provenance]{tbod_provenance()}} exposes
+their source, validation status, and query. \code{\link[=tbod_download_dataset]{tbod_download_dataset()}} saves
+validated chunks and can resume an interrupted download.
+
+The bundled checked layers have expected schema snapshots. \code{\link[=tbod_schema]{tbod_schema()}}
+inspects an expected or current schema, and \code{\link[=tbod_check_schema]{tbod_check_schema()}} reports
+changes. Retrieval warns for compatible drift and stops before querying for
+incompatible drift. Unprefixed function names remain available for existing
+code; new code can use the \code{tbod_} entry points.
 }
 \details{
 This independent package was inspired by rOpenSci's nycOpenData; it is not

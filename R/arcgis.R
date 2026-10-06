@@ -129,10 +129,10 @@ arcgis_request <- function(url, params = list(), dataset = NULL, timeout = 30) {
   }, logical(1)))
 }
 
-arcgis_layer <- function(dataset, timeout = 30) {
+arcgis_layer <- function(dataset, timeout = 30, schema_only = FALSE) {
   url <- paste0(dataset$service_url, "/", dataset$layer_id)
   metadata <- arcgis_request(url, dataset = dataset, timeout = timeout)
-  if (!is.list(metadata$fields) || !length(metadata$fields) ||
+  if (!is.list(metadata$fields) || (!length(metadata$fields) && !schema_only) ||
       !all(vapply(metadata$fields, function(x) is.list(x) &&
         is.character(x$name) && length(x$name) == 1L && !is.na(x$name) && nzchar(x$name) &&
         is.character(x$type) && length(x$type) == 1L && !is.na(x$type) && nzchar(x$type) &&
@@ -146,12 +146,41 @@ arcgis_layer <- function(dataset, timeout = 30) {
            "tampa_response_error")
   }
   for (name in c("advancedQueryCapabilities", "dateFieldsTimeReference", "extent",
-                 "spatialReference", "sourceSpatialReference")) {
+                  "spatialReference", "sourceSpatialReference")) {
     value <- metadata[[name]]
     if (!is.null(value) && (!is.list(value) ||
         (length(value) && is.null(names(value))))) {
       .abort(paste0("Layer metadata contains malformed `", name, "`."), dataset, url,
              "tampa_response_error")
+    }
+  }
+  references <- list(spatialReference = metadata$spatialReference,
+                     sourceSpatialReference = metadata$sourceSpatialReference,
+                     extentSpatialReference = metadata$extent$spatialReference)
+  for (name in names(references)) {
+    reference <- references[[name]]
+    if (is.null(reference)) next
+    if (!is.list(reference) ||
+        (length(reference) && is.null(names(reference)))) {
+      .abort(paste0("Layer metadata contains malformed `", name, "`."),
+             dataset, url, "tampa_response_error")
+    }
+    valid_wkid <- function(value) {
+      is.null(value) ||
+        (length(value) == 1L && !is.na(value) &&
+           ((is.numeric(value) && is.finite(value) && value >= 0 &&
+               value == floor(value)) ||
+             (is.character(value) && grepl("^[0-9]+$", value))))
+    }
+    valid_wkt <- function(value) {
+      is.null(value) ||
+        (is.character(value) && length(value) == 1L &&
+           !is.na(value) && nzchar(trimws(value)))
+    }
+    if (!valid_wkid(reference$wkid) || !valid_wkid(reference$latestWkid) ||
+        !valid_wkt(reference$wkt) || !valid_wkt(reference$wkt2)) {
+      .abort(paste0("Layer metadata contains malformed `", name, "`."),
+             dataset, url, "tampa_response_error")
     }
   }
   if (!is.null(metadata$dateFieldsTimeReference$timeZone) &&
@@ -184,7 +213,9 @@ arcgis_layer <- function(dataset, timeout = 30) {
     oid_fields <- Filter(function(x) identical(x$type, "esriFieldTypeOID"), metadata$fields)
     if (length(oid_fields) == 1L) oid <- oid_fields[[1L]]$name
   }
-  if (!is.character(oid) || length(oid) != 1L || is.na(oid) || !oid %in% .field_names(metadata)) {
+  if (is.null(oid) && schema_only) oid <- ""
+  if (!is.character(oid) || length(oid) != 1L || is.na(oid) ||
+      (!schema_only && (!nzchar(oid) || !oid %in% .field_names(metadata)))) {
     .abort("Layer metadata does not identify a unique object-ID field.", dataset, url)
   }
   metadata$objectIdField <- oid

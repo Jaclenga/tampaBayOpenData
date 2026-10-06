@@ -12,6 +12,8 @@ review_metadata <- function() {
   )
 }
 
+review_layer_url <- "https://data.example.invalid/arcgis/rest/services/Public/Review/FeatureServer/0"
+
 review_response <- function(payload) {
   list(status = 200L,
        body = as.character(jsonlite::toJSON(payload, auto_unbox = TRUE,
@@ -116,7 +118,7 @@ test_that("ordering rejects empty strings and empty comma-separated terms", {
 test_that("a later page cannot confirm an earlier projected page's missing CRS", {
   skip_if_not_installed("sf")
   local_mocked_bindings(arcgis_http = review_transport())
-  expect_error(get_dataset("construction-permits", fields = "VALUE",
+  expect_error(get_arcgis_layer(review_layer_url, fields = "VALUE",
                            spatial = TRUE, out_sr = 4326, page_size = 1),
                "projected spatial page did not identify", class = "tampa_spatial_error")
 })
@@ -124,7 +126,7 @@ test_that("a later page cannot confirm an earlier projected page's missing CRS",
 test_that("native metadata fallback cannot hide a CRS change on a later page", {
   skip_if_not_installed("sf")
   local_mocked_bindings(arcgis_http = review_transport())
-  expect_error(get_dataset("construction-permits", fields = "VALUE",
+  expect_error(get_arcgis_layer(review_layer_url, fields = "VALUE",
                            spatial = TRUE, page_size = 1),
                "CRS changed between pages", class = "tampa_integrity_error")
 })
@@ -132,7 +134,7 @@ test_that("native metadata fallback cannot hide a CRS change on a later page", {
 test_that("empty projected results retain the requested CRS in provenance", {
   skip_if_not_installed("sf")
   local_mocked_bindings(arcgis_http = review_transport())
-  result <- get_dataset("construction-permits", fields = "VALUE", spatial = TRUE,
+  result <- get_arcgis_layer(review_layer_url, fields = "VALUE", spatial = TRUE,
                         out_sr = 4326, limit = 0)
   expect_s3_class(result, "sf")
   expect_identical(nrow(result), 0L)

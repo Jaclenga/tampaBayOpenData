@@ -22,6 +22,9 @@
 #' when the IDs and schema remain unchanged. This is not a frozen snapshot.
 #' Chunk provenance describes that chunk; the returned summary reports whether
 #' the full matching manifest has been downloaded.
+#' Bundled checked layers are compared with their expected schemas before a
+#' download starts or resumes. Compatible drift warns; incompatible drift stops
+#' the download. Inspect differences with [tbod_check_schema()].
 #' @inheritParams get_dataset
 #' @param path Local directory for the manifest, checkpoints, and chunk files.
 #' @param page_size Positive integer batch size, capped at 1,000 and the service
@@ -46,7 +49,7 @@
 #'     dataset_provenance(first)$download$chunk
 #'   }
 #' }
-download_dataset <- function(id, path, jurisdiction = "tampa", where = "1=1",
+download_dataset <- function(id, path, jurisdiction = NULL, where = "1=1",
                              fields = NULL, spatial = FALSE, out_sr = NULL,
                              page_size = 1000, query = list(), timeout = 30,
                              total_timeout = Inf, resume = TRUE) {
@@ -66,7 +69,7 @@ download_dataset <- function(id, path, jurisdiction = "tampa", where = "1=1",
   if (spatial && !arcgis_has_sf()) {
     .abort("Spatial downloads require the optional sf package.", dataset)
   }
-  metadata <- arcgis_layer(dataset, timeout)
+  metadata <- .schema_checked_layer(dataset, timeout)
   selected <- .selected_fields(fields, metadata)
   if (spatial) {
     # Validate even an empty download's declared geometry and requested CRS.

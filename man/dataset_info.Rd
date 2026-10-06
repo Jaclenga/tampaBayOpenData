@@ -6,7 +6,7 @@
 \usage{
 dataset_info(
   id,
-  jurisdiction = "tampa",
+  jurisdiction = NULL,
   refresh = FALSE,
   timeout = 30,
   total_timeout = 60

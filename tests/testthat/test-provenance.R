@@ -2,7 +2,7 @@ test_that("full retrieval records the publisher, query, timing, and integrity ou
   transport <- fixture_transport()
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
   started <- Sys.time()
-  result <- get_dataset("construction-permits", fields = c("RECORD_ID", "COST"),
+  result <- get_dataset("construction-permits", fields = c("RECORD_ID", "NEWCONSTRUCTIONSF"),
                          where = "PROJECTSTATUS = 'Issued'", timeout = 9)
   finished <- Sys.time()
   provenance <- dataset_provenance(result)
@@ -17,7 +17,7 @@ test_that("full retrieval records the publisher, query, timing, and integrity ou
   expect_identical(provenance$terms, entry$terms)
   expect_identical(provenance$endpoint_verified, entry$verified)
   expect_identical(provenance$query$where, "PROJECTSTATUS = 'Issued'")
-  expect_identical(provenance$query$fields, c("RECORD_ID", "COST"))
+  expect_identical(provenance$query$fields, c("RECORD_ID", "NEWCONSTRUCTIONSF"))
   expect_false(provenance$query$spatial)
   expect_identical(provenance$query$limit, Inf)
   expect_equal(provenance$matched_rows, nrow(result))

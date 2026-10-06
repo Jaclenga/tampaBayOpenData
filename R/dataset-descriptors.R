@@ -6,7 +6,7 @@
 
 # Resolve all public retrieval inputs before calling the shared query engine.
 # Only a bundled registry entry can claim the package's `checked` status.
-.resolve_dataset <- function(id, jurisdiction = "tampa", timeout = 30) {
+.resolve_dataset <- function(id, jurisdiction = NULL, timeout = 30) {
   if (!is.null(jurisdiction)) .string(jurisdiction, "jurisdiction")
   if (identical(jurisdiction, "all")) jurisdiction <- NULL
   if (is.character(id)) {
@@ -40,7 +40,7 @@
   dataset
 }
 
-.dataset_descriptor <- function(x, jurisdiction = "tampa") {
+.dataset_descriptor <- function(x, jurisdiction = NULL) {
   if (is.data.frame(x)) {
     if (nrow(x) != 1L) {
       .abort("A dataset descriptor must contain exactly one row.",
@@ -71,7 +71,7 @@
     .abort("`descriptor.validation_status` must be checked, discovered, or not_checked.",
            subclass = "tampa_input_error")
   }
-  if (is.null(jurisdiction)) jurisdiction <- x$jurisdiction %||% "tampa"
+  if (is.null(jurisdiction)) jurisdiction <- x$jurisdiction %||% "unspecified"
   .string(jurisdiction, "jurisdiction")
   if (!is.null(x$jurisdiction) && !is.na(x$jurisdiction)) {
     .string(x$jurisdiction, "descriptor.jurisdiction")

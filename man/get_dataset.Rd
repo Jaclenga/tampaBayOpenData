@@ -6,7 +6,7 @@
 \usage{
 get_dataset(
   id,
-  jurisdiction = "tampa",
+  jurisdiction = NULL,
   where = "1=1",
   fields = NULL,
   spatial = FALSE,
@@ -24,9 +24,10 @@ get_dataset(
 \item{id}{Checked package dataset ID, one-row discovered dataset descriptor,
 or stable \verb{arcgis:<32-hex-item-id>:<nonnegative-layer-id>} identifier.}
 
-\item{jurisdiction}{Checked-registry jurisdiction: \code{"tampa"}, \code{"stpete"},
-\code{"clearwater"}, or \code{"all"}. Omit to resolve a unique checked ID across the
-registry or to use a discovered result's or stable ArcGIS ID's jurisdiction.}
+\item{jurisdiction}{Bundled checked-catalog jurisdiction code, or \code{"all"}.
+Omit to resolve a unique checked ID across the catalog or to use a discovered
+result's or stable ArcGIS ID's jurisdiction. See \code{\link[=list_portals]{list_portals()}}
+for the bundled jurisdiction codes.}
 
 \item{where}{ArcGIS SQL WHERE clause, using actual source field names.
 Defaults to \code{"1=1"} (all records). See \code{\link[=dataset_info]{dataset_info()}} with \code{refresh = TRUE}.}
@@ -86,6 +87,9 @@ result row from \code{\link[=search_datasets]{search_datasets()}}, or a stable \
 identifier. The latter two paths use current ArcGIS portal metadata; they
 have not received the package's curated source validation. For a compatible
 layer URL outside the discovery portal, use \code{\link[=get_arcgis_layer]{get_arcgis_layer()}}.
+Bundled checked layers are compared with expected schema snapshots before
+querying. Compatible changes warn; incompatible changes stop retrieval.
+\code{\link{tbod_check_schema}} returns a categorized report of current differences.
 }
 \details{
 Requests the current ArcGIS layer schema,

@@ -9,7 +9,7 @@ data or provide analysis. The checked TBRPC storm surge layer is a historical
 planning model, not current emergency guidance.
 Tampa source terms and scope limits are recorded in
 [Tampa source research](research-tampa.md). Each checked entry also records its
-scope, terms, and verification date through `dataset_info(id)`.
+scope, terms, and verification date through `tbod_dataset_info(id)`.
 
 ## Design basis
 
@@ -29,19 +29,42 @@ Pinellas GIS pages and their public organization metadata, recorded in the
 portal registry's `evidence_url` and `metadata_url` fields.
 The [regional planning council](https://tbrpc.org/arcgis-geohub/) links its own
 GeoHub. Live discovery
-searches the organizations' public ArcGIS service items and expands each service
+searches the organizations' public Feature Service and Map Service items and expands each service
 into candidate layers and tables. Retrieval validates query responses and the
 schema, and requires `Query` when the selected layer declares its capabilities.
 This is broader than the Hubs' featured dataset collections, but portal indexing
 can lag and some direct City services
-have no matching public item. `get_arcgis_layer()` accepts a compatible direct
+have no matching public item. `tbod_get_arcgis_layer()` accepts a compatible direct
 layer URL for those cases.
 
 ## Client design
 
-`list_datasets()` and `search_datasets()` combine live discovery with the
-checked registry by default. `source = "checked"` reads only
-`inst/extdata/datasets.json` and remains offline and deterministic.
+The `tbod_` entry points separate the reusable ArcGIS client from the bundled
+Tampa Bay configuration. `tbod_discover()` accepts another public ArcGIS sharing
+REST portal root, FeatureServer or MapServer service root, or layer URL and
+returns rows that `tbod_get_dataset()` can retrieve.
+`tbod_get_dataset()` also accepts a compatible HTTPS FeatureServer or MapServer
+layer URL directly. Checked IDs, portal rows, and direct URLs use the same
+metadata, pagination, parsing, spatial, and provenance code.
+
+Checked dataset records include expected field names and types, geometry, CRS,
+object ID field, and endpoint from a dated metadata snapshot. The schema
+snapshot is keyed by jurisdiction and checked dataset ID, so two publishers
+can use the same short ID. A short ID shared by jurisdictions requires an
+explicit `jurisdiction` on lookup. Before checked retrieval or download, the
+client compares the live layer metadata with that snapshot. `tbod_schema()`
+exposes the expected or live metadata, while
+`tbod_check_schema()` reports categorized differences. Additive fields generate
+a warning; removed or changed fields, geometry or CRS changes, and disappeared
+endpoints stop the operation. Discovered rows and direct URLs have no maintainer
+snapshot, so their current metadata is validated without a drift comparison.
+Callers can save `tbod_schema(id, refresh = TRUE)` and pass it as `expected` to
+`tbod_check_schema()` for an external source. A stable Enterprise item ID can
+be inspected with the same `portal` argument used for retrieval.
+
+`tbod_list_datasets()` and `tbod_search_datasets()` combine live discovery with the
+checked registry by default. `source = "checked"` reads only the bundled
+dataset and schema snapshots and remains offline and deterministic.
 Catalog functions default to `jurisdiction = "all"`; codes or vectors filter
 both checked and live results. The live overlay authenticates endpoints
 against all 35 checked layers regardless of which checked entries were selected
@@ -53,7 +76,7 @@ and uses item ID plus layer ID for discovered keys. Titles are display text,
 not identifiers. All six configured organizations are searched by default;
 `portals` narrows them to `"city"`, `"tbrpc"`, `"stpete"`, `"clearwater"`,
 `"hillsborough"`, or `"pinellas"`.
-`list_portals()` reads the portal registry offline, exposing publisher identity
+`tbod_list_portals()` reads the portal registry offline, exposing publisher identity
 and source locations separately from the checked layer catalog. A portal
 configuration enables live discovery; checked county and regional layers are
 curated separately in the dataset registry.
@@ -63,12 +86,13 @@ official evidence URLs, portal metadata URLs, and verification dates.
 The default `max_items = 25` caps service items per organization, while an explicit
 `max_items = Inf` requests a full scan. Catalog attributes record whether discovery
 completed, which portals were truncated, and how many items each portal scanned.
-An inaccessible or malformed item is skipped without
-discarding other results, and its issue is recorded on the result. If one
-portal fails, discovery warns and retains results from the other selected
-organizations. If every
-portal fails, `source = "live"` errors; the default combined search warns and
-returns checked rows.
+An inaccessible or malformed item or layer is skipped without
+discarding other results, and its issue is recorded on the result. Service root
+layer summaries are expanded using each layer's own metadata, including its
+type, geometry, and Query capability. If a portal fails after yielding rows,
+discovery warns and retains those rows along with results from other portals.
+When every selected portal fails before yielding any rows, `source = "live"`
+errors; the default combined search warns and returns checked rows.
 
 Catalog filters use alternatives within a character vector and require matches
 across separate filters. Publisher matching is exact and case-insensitive;
@@ -87,13 +111,13 @@ endpoints. Live item and layer snapshots are retained separately in
 the service scan; other filters run after the catalog merge. A bounded scan can
 therefore miss matching items, and its discovery attributes remain attached.
 
-`dataset_info()` can inspect a checked ID offline or a discovered row or stable
-ArcGIS ID. `get_dataset()` resolves those same inputs, retrieves the current
+`tbod_dataset_info()` can inspect a checked ID offline or a discovered row or stable
+ArcGIS ID. `tbod_get_dataset()` resolves those same inputs, retrieves the current
 layer metadata, and applies one query engine for field and capability checks.
 The three convenience wrappers call this path. Retrieval and download functions
-retain a default `jurisdiction = "tampa"`; omitted jurisdiction also resolves a
-uniquely named checked ID across publishers. Discovered rows carry their own
-publisher and jurisdiction.
+resolve a uniquely named checked ID across publishers by default. Discovered rows carry their own
+publisher and jurisdiction. Direct URLs have `"unspecified"` jurisdiction and
+do not accept a jurisdiction override.
 
 HTTP requests use `httr2`; `jsonlite` decodes responses, and `tibble` supplies
 tabular results. Optional `sf` and GDAL decode spatial results. Source field
@@ -129,7 +153,7 @@ pagination. See the
 
 Both table and spatial results carry publisher, endpoint, ArcGIS item and
 portal when available, validation status, original metadata, query, retrieval
-time, row counts, and completeness through `dataset_provenance()`.
+time, row counts, and completeness through `tbod_provenance()`.
 `timeout` applies to each HTTP attempt; `total_timeout` bounds the operation,
 including metadata, queries, retries, and waits. Defaults are 120 seconds for
 retrieval, 90 for discovery, and 60 for inspection. An explicit `Inf` disables
@@ -138,7 +162,7 @@ is not interrupted. Manifest checks detect changes in record membership during
 retrieval; they cannot freeze attributes on a live service. No automatic runtime
 data cache is maintained.
 
-`download_dataset()` and `download_arcgis_layer()` provide an explicit resumable
+`tbod_download_dataset()` and `tbod_download_arcgis_layer()` provide an explicit resumable
 disk path. They keep a full manifest and fixed query/schema/CRS signature, then
 fetch, parse, and persist bounded feature batches as RDS tibbles or `sf` objects.
 Immutable checksum checkpoints are published before atomic chunk renames, so

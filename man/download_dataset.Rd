@@ -7,7 +7,7 @@
 download_dataset(
   id,
   path,
-  jurisdiction = "tampa",
+  jurisdiction = NULL,
   where = "1=1",
   fields = NULL,
   spatial = FALSE,
@@ -25,9 +25,10 @@ or stable \verb{arcgis:<32-hex-item-id>:<nonnegative-layer-id>} identifier.}
 
 \item{path}{Local directory for the manifest, checkpoints, and chunk files.}
 
-\item{jurisdiction}{Checked-registry jurisdiction: \code{"tampa"}, \code{"stpete"},
-\code{"clearwater"}, or \code{"all"}. Omit to resolve a unique checked ID across the
-registry or to use a discovered result's or stable ArcGIS ID's jurisdiction.}
+\item{jurisdiction}{Bundled checked-catalog jurisdiction code, or \code{"all"}.
+Omit to resolve a unique checked ID across the catalog or to use a discovered
+result's or stable ArcGIS ID's jurisdiction. See \code{\link[=list_portals]{list_portals()}}
+for the bundled jurisdiction codes.}
 
 \item{where}{ArcGIS SQL WHERE clause, using actual source field names.
 Defaults to \code{"1=1"} (all records). See \code{\link[=dataset_info]{dataset_info()}} with \code{refresh = TRUE}.}
@@ -93,6 +94,9 @@ Record attributes can change between chunks and between resumed calls even
 when the IDs and schema remain unchanged. This is not a frozen snapshot.
 Chunk provenance describes that chunk; the returned summary reports whether
 the full matching manifest has been downloaded.
+Bundled checked layers are compared with their expected schemas before a
+download starts or resumes. Compatible drift warns; incompatible drift stops
+the download. Inspect differences with \code{\link{tbod_check_schema}}.
 }
 \examples{
 dataset_info("construction-permits")$object_id_field

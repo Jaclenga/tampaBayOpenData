@@ -108,8 +108,8 @@ test_that("resuming rejects schema, CRS, and membership changes even at equal co
   transport <- fixture_transport(metadata = changed)
   local_mocked_bindings(arcgis_http = transport$http)
   expect_error(download_dataset("construction-permits", path,
-    fields = "RECORD_ID", page_size = 2), "schema, CRS, or ID membership changed",
-    class = "tampa_download_error")
+    fields = "RECORD_ID", page_size = 2), "changed_type.*RECORD_ID",
+    class = "tampa_schema_error")
   changed <- fixture_metadata()
   changed$extent$spatialReference <- list(wkid = 4326)
   transport <- fixture_transport(metadata = changed)

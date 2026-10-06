@@ -5,6 +5,9 @@
 #' identifier. The latter two paths use current ArcGIS portal metadata; they
 #' have not received the package's curated source validation. For a compatible
 #' layer URL outside the discovery portal, use [get_arcgis_layer()].
+#' Bundled checked layers are compared with expected schema snapshots before
+#' querying. Compatible changes warn; incompatible changes stop retrieval.
+#' [tbod_check_schema()] returns a categorized report of current differences.
 #'
 #' Requests the current ArcGIS layer schema,
 #' matching count, and object-ID manifest. Full requests are validated against
@@ -39,9 +42,10 @@
 #' native parsers or bound decompression memory on older curl builds.
 #' @param id Checked package dataset ID, one-row discovered dataset descriptor,
 #'   or stable `arcgis:<32-hex-item-id>:<nonnegative-layer-id>` identifier.
-#' @param jurisdiction Checked-registry jurisdiction: `"tampa"`, `"stpete"`,
-#'   `"clearwater"`, or `"all"`. Omit to resolve a unique checked ID across the
-#'   registry or to use a discovered result's or stable ArcGIS ID's jurisdiction.
+#' @param jurisdiction Bundled checked-catalog jurisdiction code, or `"all"`.
+#'   Omit to resolve a unique checked ID across the catalog or to use a
+#'   discovered result's or stable ArcGIS ID's jurisdiction. See
+#'   [list_portals()] for the bundled jurisdiction codes.
 #' @param where ArcGIS SQL WHERE clause, using actual source field names.
 #'   Defaults to `"1=1"` (all records). See [dataset_info()] with `refresh = TRUE`.
 #' @param fields Character vector of exact source field names, or NULL/`"*"` for
@@ -89,7 +93,7 @@
 #'     fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"))
 #'   dataset_provenance(permits)$returned_rows
 #' }
-get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL,
+get_dataset <- function(id, jurisdiction = NULL, where = "1=1", fields = NULL,
                         spatial = FALSE, out_sr = NULL, order_by = NULL,
                         limit = Inf, page_size = NULL, query = list(), timeout = 30,
                         total_timeout = 120, integrity = "auto") {
@@ -124,7 +128,7 @@ get_dataset <- function(id, jurisdiction = "tampa", where = "1=1", fields = NULL
     if (spatial && !arcgis_has_sf()) {
       .abort("Spatial retrieval requires the sf package. Install it with install.packages('sf').")
     }
-    metadata <- arcgis_layer(dataset, timeout)
+    metadata <- .schema_checked_layer(dataset, timeout)
     geometry_type <- metadata[["geometryType", exact = TRUE]]
     if (spatial && (!is.character(geometry_type) || length(geometry_type) != 1L ||
                     is.na(geometry_type) ||

@@ -18,7 +18,7 @@ generic_descriptor <- function() {
 }
 
 test_that("a discovered row uses the checked query pipeline and preserves provenance", {
-  transport <- fixture_transport()
+  transport <- fixture_transport(metadata = fixture_metadata(extra = TRUE))
   local_mocked_bindings(arcgis_http = transport$http)
   descriptor <- generic_descriptor()
   result <- get_dataset(descriptor, where = "PROJECTSTATUS = 'Issued'",

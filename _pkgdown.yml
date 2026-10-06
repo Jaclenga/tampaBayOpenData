@@ -1,10 +1,11 @@
 url: https://jaclenga.github.io/tampaBayOpenData/
 
 home:
-  title: Discover public ArcGIS data across Tampa Bay
+  title: Discover Tampa Bay and other public ArcGIS data
   description: >
-    An R interface for finding and retrieving public data from six Tampa Bay
-    ArcGIS publishers, with checked dataset IDs, provenance, and spatial results.
+    An R interface for six bundled Tampa Bay ArcGIS publishers and other public
+    ArcGIS portals or layer URLs, with checked dataset IDs, schema checks,
+    provenance, and spatial results.
 
 template:
   bootstrap: 5
@@ -39,23 +40,40 @@ articles:
 reference:
   - title: Discover
     contents:
+      - tbod_list_portals
+      - tbod_list_datasets
+      - tbod_search_datasets
+      - tbod_discover
+  - title: Inspect
+    contents:
+      - tbod_dataset_info
+      - tbod_schema
+      - tbod_check_schema
+      - tbod_provenance
+  - title: Retrieve
+    contents:
+      - tbod_get_dataset
+      - tbod_get_arcgis_layer
+  - title: Download
+    contents:
+      - tbod_download_dataset
+      - tbod_download_arcgis_layer
+  - title: Convenience functions
+    contents:
+      - tbod_get_permits
+      - tbod_get_capital_projects
+      - tbod_get_development_cases
+  - title: Compatibility functions
+    contents:
       - list_portals
       - list_datasets
       - search_datasets
-  - title: Inspect
-    contents:
       - dataset_info
       - dataset_provenance
-  - title: Retrieve
-    contents:
       - get_dataset
       - get_arcgis_layer
-  - title: Download
-    contents:
       - download_dataset
       - download_arcgis_layer
-  - title: Convenience functions
-    contents:
       - get_permits
       - get_capital_projects
       - get_development_cases

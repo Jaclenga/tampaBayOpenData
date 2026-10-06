@@ -1,36 +1,23 @@
-# Synthetic records model Tampa's verified permit schema, with deliberately
-# supplemental COST and TENTATIVEHEARING fields to exercise additional types.
+# Synthetic records model Tampa's verified permit schema. Parsing-only tests
+# can request supplemental fields to exercise types absent from that source.
 # They contain no copied government addresses, names, or contact information.
 fixture_field <- function(name, type, alias = name) {
   list(name = name, type = type, alias = alias)
 }
 
-fixture_metadata <- function(max_records = 2L, pagination = TRUE, ordering = TRUE) {
-  list(
-    name = "Permits", type = "Feature Layer", capabilities = "Query",
-    geometryType = "esriGeometryPoint", objectIdField = "OBJECTID",
-    maxRecordCount = max_records, supportedQueryFormats = "JSON, geoJSON, PBF",
-    fields = list(
-      fixture_field("OBJECTID", "esriFieldTypeOID"),
-      fixture_field("RECORD_ID", "esriFieldTypeString", "Record ID"),
-      fixture_field("PROJECTSTATUS", "esriFieldTypeString", "Project Status"),
-      fixture_field("LASTUPDATE", "esriFieldTypeDate", "Last Update"),
-      fixture_field("CREATEDDATE", "esriFieldTypeDate", "Created Date"),
-      fixture_field("NEWCONSTRUCTIONSF", "esriFieldTypeInteger"),
-      fixture_field("COST", "esriFieldTypeDouble"),
-      fixture_field("TENTATIVEHEARING", "esriFieldTypeString"),
-      fixture_field("GlobalID", "esriFieldTypeGlobalID"),
-      fixture_field("SHAPE", "esriFieldTypeGeometry")
-    ),
-    extent = list(spatialReference = list(wkid = 102100, latestWkid = 3857)),
-    sourceSpatialReference = list(wkid = 102100, latestWkid = 3857),
-    advancedQueryCapabilities = list(supportsPagination = pagination,
-                                     supportsOrderBy = ordering),
-    datesInUnknownTimezone = FALSE,
-    dateFieldsTimeReference = list(timeZone = "Eastern Standard Time",
-                                  timeZoneIANA = "America/New_York",
-                                  respectsDaylightSaving = TRUE)
-  )
+fixture_metadata <- function(max_records = 2L, pagination = TRUE,
+                             ordering = TRUE, extra = FALSE) {
+  metadata <- jsonlite::fromJSON(
+    test_path("fixtures", "tampa-layer-schemas.json"),
+    simplifyVector = FALSE)[["construction-permits"]]$metadata
+  metadata$maxRecordCount <- max_records
+  metadata$advancedQueryCapabilities$supportsPagination <- pagination
+  metadata$advancedQueryCapabilities$supportsOrderBy <- ordering
+  if (extra) metadata$fields <- c(metadata$fields, list(
+    fixture_field("COST", "esriFieldTypeDouble"),
+    fixture_field("TENTATIVEHEARING", "esriFieldTypeString"),
+    fixture_field("SHAPE", "esriFieldTypeGeometry")))
+  metadata
 }
 
 fixture_features <- function(ids = c(3L, 1L, 5L, 2L, 4L)) {
