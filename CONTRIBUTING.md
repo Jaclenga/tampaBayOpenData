@@ -25,6 +25,20 @@ adding a monitored source, use a small row limit, current IDs rather than
 fixed counts, a finite portal item limit, and explicit timeouts. Leave source
 schema and availability failures visible in the opt-in run.
 
+## Documentation site deployment
+
+The pkgdown workflow deploys `_site` to the root of `gh-pages` only from the
+current `main` commit; other refs can build for validation without publishing.
+GitHub Pages publishes that branch. The workflow checks the generated homepage
+against `_pkgdown.yml` and rejects a deployment if `main` has advanced since
+checkout. R dependency caching stays enabled; it does not cache `_site`.
+
+GitHub Pages has no documented repository-level setting for HTTP `Cache-Control`
+response headers ([GitHub staff discussion](https://github.com/orgs/community/discussions/60087)).
+A browser or intermediary cache can therefore continue showing an older page
+after the current HTML has reached `gh-pages`. Compare the branch's
+`index.html` with the generated site when diagnosing an apparent stale deploy.
+
 ## Registry and retrieval changes
 
 Use the [checked catalog policy](docs/checked-catalog-policy.md) when proposing,

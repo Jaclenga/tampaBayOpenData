@@ -28,3 +28,27 @@
     font-size: 1.7rem;
   }
 }
+
+/* Keep the Convenience functions note distinct from its reference entries. */
+.template-reference-index #main #convenience-functions + .section-desc {
+  max-width: 68ch;
+  margin: 0.35rem 0 1.4rem;
+  color: var(--bs-secondary-color);
+}
+
+.template-reference-index #main #convenience-functions + .section-desc p {
+  margin-bottom: 0;
+}
+
+.template-reference-index #main .section:has(> #convenience-functions) + .section > dl > dt {
+  margin-bottom: 0.15rem;
+}
+
+.template-reference-index #main .section:has(> #convenience-functions) + .section > dl > dd {
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.template-reference-index #main .section:has(> #convenience-functions) + .section > dl > dd:last-child {
+  margin-bottom: 0;
+}

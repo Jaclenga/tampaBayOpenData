@@ -85,7 +85,7 @@ reference:
       Convenience functions currently cover selected City of Tampa datasets.
       Use `tbod_search_datasets()` and `tbod_get_dataset()` for other Tampa Bay
       publishers.
-    contents:
+  - contents:
       - tbod_get_permits
       - tbod_get_capital_projects
       - tbod_get_development_cases

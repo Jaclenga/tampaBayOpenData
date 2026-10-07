@@ -17,7 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     concurrency:
-      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       TAMPA_OPEN_DATA_LIVE: "false"
@@ -36,11 +37,34 @@ jobs:
           needs: website
       - name: Build site
         shell: Rscript {0}
-        run: pkgdown::build_site_github_pages(dest_dir = "_site", new_process = FALSE, install = FALSE)
+        run: pkgdown::build_site_github_pages(dest_dir = "_site", clean = TRUE, lazy = FALSE, new_process = FALSE, install = TRUE)
+      - name: Verify generated homepage
+        shell: Rscript {0}
+        run: |
+          expected <- yaml::read_yaml("_pkgdown.yml")$home$description
+          index <- file.path("_site", "index.html")
+          if (!file.exists(index) || !length(expected) || !nzchar(trimws(expected))) {
+            stop("Missing generated homepage or source description")
+          }
+          html <- xml2::read_html(index)
+          actual <- xml2::xml_attr(xml2::xml_find_first(html, ".//meta[@name='description']"), "content")
+          normalize <- function(x) gsub("[[:space:]]+", " ", trimws(x))
+          if (!identical(normalize(expected), normalize(actual))) {
+            stop("Generated homepage description does not match _pkgdown.yml")
+          }
+      - name: Verify main has not advanced
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          main_sha="$(git ls-remote --exit-code origin refs/heads/main | cut -f1)"
+          if [[ "$(git rev-parse HEAD)" != "$main_sha" ]]; then
+            echo "::error::main advanced during this run; refusing to deploy an older site"
+            exit 1
+          fi
       - name: Deploy to GitHub Pages
-        if: github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4.8.0
         with:
-          clean: false
+          clean: true
           branch: gh-pages
           folder: _site
