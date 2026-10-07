@@ -7,20 +7,32 @@ development aliases were removed before the first CRAN release.
 
 ## Test environments
 
-* Windows 11 x64, R 4.5.1 (local, 2026-10-06).
-* The latest completed five-platform GitHub Actions R check, on an earlier
-  source revision, passed on
-  [2026-10-04](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/37223299725).
+* Windows 11 x64, R 4.5.1 (local, 2026-10-07): full `--as-cran` check.
+* Ubuntu 24.04, R 4.3.3 (WSL, 2026-10-07): `--as-cran --no-manual` check.
+* Ubuntu 22.04, R 4.1.2 (WSL, 2026-10-07): `--as-cran --no-manual` check.
+
+The current source has not been checked on macOS or R-devel. An earlier source
+revision passed a [five-platform GitHub Actions R check on
+2026-10-04](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/37223299725);
+that result does not establish the status of this revision.
 
 ## R CMD check results
 
-The 2026-10-06 local `R CMD check --no-manual` ran on a fresh source archive:
-**0 errors, 0 warnings, 0 notes**. It built and checked the vignettes, ran
-examples, and passed 5,541 offline test expectations with 18 expected opt-in
-live-test skips.
+The final 2026-10-07 Windows `R CMD check --as-cran` ran on a clean source
+archive (247,769 bytes): **0 errors, 0 warnings, 1 note**. The sole note is
+`New submission`. Examples, vignettes, and PDF and HTML manuals passed. The
+offline tests recorded 5,541 passes, 18 expected opt-in live-test skips, and
+no failures or warnings.
 
-An earlier source revision passed a local 2026-10-04
-`R CMD check --as-cran` including PDF and HTML manuals: 0 errors, 0 warnings,
-and 1 expected `New submission` note. That result predates the current catalog
-and public API changes. Live integration tests run separately from routine
-package checks; they have not been rerun for this source revision.
+Each Linux check had **0 errors, 0 warnings, 2 notes**: `New submission` and
+inability to verify the clock in WSL. These were native builds of the final
+source, with manual checks omitted. Checking the Windows-built archive with
+these older R versions added one `Author`/`Authors@R` note because R versions
+format the ORCID differently; native builds did not show that note.
+
+All four vignettes and the packaged bicycle example were also rendered with
+network access unavailable. Network-dependent help examples are gated. The
+checked catalog's 52 live endpoints are not contacted during ordinary package
+checks; live integration and monitoring tests require
+`TAMPA_OPEN_DATA_LIVE=true`. Optional `sf` behavior was checked with `sf`
+unavailable.

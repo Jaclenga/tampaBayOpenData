@@ -14,7 +14,7 @@ matches test filenames:
 ```r
 testthat::test_local(filter = "http", stop_on_failure = TRUE)
 testthat::test_local(filter = "dataset-sources", stop_on_failure = TRUE)
-testthat::test_local(filter = "live-discovery", stop_on_failure = TRUE)
+testthat::test_local(filter = "discovery", stop_on_failure = TRUE)
 testthat::test_local(filter = "portal-registry", stop_on_failure = TRUE)
 testthat::test_local(filter = "catalog-filters", stop_on_failure = TRUE)
 testthat::test_local(filter = "catalog-quality", stop_on_failure = TRUE)
@@ -47,8 +47,10 @@ UTC date bounds, live metadata on checked matches, and retained scan attributes.
 transport statuses, and page limits; the
 [new source spatial cases](testthat/test-new-source-spatial.R) exercise point,
 line, and polygon results with missing geometry.
-[live discovery cases](testthat/test-live-discovery.R) exercise multiple layers,
-tables, stale items, duplicates, and portal pagination; the
+[offline discovery cases](testthat/test-discovery.R) exercise multiple layers,
+tables, stale items, duplicates, and portal pagination; the opt-in
+[live discovery case](testthat/test-live-discovery.R) checks a current City portal
+result. The
 [catalog overlay cases](testthat/test-catalog-overlay.R) check selected checked
 entries alongside discovered results. The
 [generic retrieval cases](testthat/test-generic-retrieval.R) verify that checked,

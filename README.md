@@ -120,9 +120,13 @@ toBibtex(citation("tampaBayOpenData"))
 - [Discovery](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html),
   [retrieval and downloads](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html),
   and [coverage and provenance](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html)
-- [Architecture](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/architecture.md),
+- [Developer document index](https://github.com/Jaclenga/tampaBayOpenData/tree/main/docs),
+  [architecture](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/architecture.md),
   [API migration](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/api-migration.md),
   [validation](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md),
   and [contributing](https://github.com/Jaclenga/tampaBayOpenData/blob/main/CONTRIBUTING.md)
-- [Full-data bicycle network exploration (R Markdown)](https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/tampa-bicycle-network-eda.Rmd)
+- [Packaged bicycle network example (R Markdown)](https://github.com/Jaclenga/tampaBayOpenData/blob/main/inst/examples/bike-network.Rmd)
+  (offline by default; optional small live subset), and the
+  [full-data bicycle network exploration](https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/tampa-bicycle-network-eda.Rmd)
+  (live analysis)
 - [Short R data exploration stories across six publishers](https://github.com/Jaclenga/tampaBayOpenData/tree/main/explorations/stories)
