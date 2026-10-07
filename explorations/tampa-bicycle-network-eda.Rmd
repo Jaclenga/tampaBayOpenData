@@ -1,0 +1,226 @@
+---
+title: "What makes up Tampa's mapped bicycle network?"
+output: html_document
+---
+
+The City of Tampa calls this layer **Bike Lanes**, but its connection types also
+include shared roadways, paths, trails, and other links. How does the mix change
+when we count mapped segments versus sum the source's reported mileage?
+
+This report retrieves the complete, current `bike-lanes` layer through
+`tampaBayOpenData`. It requires an internet connection and the installed R
+packages `tampaBayOpenData`, `knitr`, and `rmarkdown`. The source can change
+between runs; the tables and charts below reflect the retrieval time printed
+in the provenance table. No raw data file is bundled.
+
+**Source:** [City of Tampa Bike Lanes layer and field definitions](https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/0)
+and its [ArcGIS item and reuse information](https://tampa.maps.arcgis.com/home/item.html?id=d54aac9d4559488fa439e454df5f09ce).
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.width = 8, fig.height = 4.5)
+library(tampaBayOpenData)
+```
+
+## Retrieve and verify the complete layer
+
+`tbod_get_dataset()` checks the checked catalog schema and retrieves all
+matching object IDs. Full retrieval compares the result with the service's
+object-ID manifest. We stop if provenance reports an incomplete result or an
+unexpected record count or duplicate ID.
+
+```{r retrieve}
+segments <- tbod_get_dataset(
+  "bike-lanes",
+  fields = c("OBJECTID", "CONN_TYPE", "MILEAGE", "ROADWAY"),
+  page_size = 500,
+  total_timeout = 120
+)
+source <- tbod_provenance(segments)
+stopifnot(
+  isTRUE(source$complete),
+  identical(source$integrity, "full-manifest"),
+  identical(source$validation_status, "checked"),
+  nrow(segments) == source$matched_rows,
+  nrow(segments) == source$returned_rows,
+  !anyDuplicated(segments$OBJECTID)
+)
+
+knitr::kable(data.frame(
+  publisher = source$publisher,
+  retrieved_at_utc = format(source$retrieved_at, tz = "UTC", usetz = TRUE),
+  matched_rows = source$matched_rows,
+  returned_rows = source$returned_rows,
+  complete = source$complete,
+  integrity = source$integrity
+))
+knitr::kable(utils::head(segments, 5))
+```
+
+One record is one mapped line segment, not necessarily a whole route. The
+publisher's `CONN_TYPE` coded-value domain supplies the labels below; this
+report reads those labels from live layer metadata attached to the result.
+
+```{r field-definitions}
+connection_fields <- Filter(
+  function(field) identical(field$name, "CONN_TYPE"), source$field_schema
+)
+stopifnot(length(connection_fields) == 1L)
+codes <- connection_fields[[1]]$domain$codedValues
+stopifnot(length(codes) > 0L)
+code_names <- stats::setNames(
+  vapply(codes, function(value) as.character(value$name), character(1)),
+  vapply(codes, function(value) as.character(value$code), character(1))
+)
+knitr::kable(data.frame(
+  code = names(code_names), publisher_label = unname(code_names)
+))
+```
+
+## Check the measurements before adding them
+
+`MILEAGE` is a publisher-supplied attribute; we do not remeasure geometry.
+A zero may represent a short, rounded, or unmeasured connection, and its exact
+meaning is not specified by the layer. Missing mileage remains in the segment
+count but cannot contribute to a mileage sum. We also count missing class codes
+and roadway labels so they cannot disappear from the story.
+
+```{r quality}
+connection_code <- as.character(segments$CONN_TYPE)
+connection_code[is.na(connection_code) | !nzchar(trimws(connection_code))] <-
+  "(missing)"
+unknown_codes <- setdiff(unique(connection_code),
+                         c(names(code_names), "(missing)"))
+roadway <- trimws(as.character(segments$ROADWAY))
+roadway[is.na(roadway)] <- ""
+
+quality <- data.frame(
+  check = c("Returned segments", "Missing connection code",
+            "Codes absent from current metadata", "Missing reported mileage",
+            "Zero reported mileage", "Negative reported mileage",
+            "Blank or N/A roadway label"),
+  value = c(nrow(segments), sum(connection_code == "(missing)"),
+            length(unknown_codes), sum(is.na(segments$MILEAGE)),
+            sum(segments$MILEAGE == 0, na.rm = TRUE),
+            sum(segments$MILEAGE < 0, na.rm = TRUE),
+            sum(toupper(roadway) %in% c("", "NA", "N/A")))
+)
+knitr::kable(quality)
+if (length(unknown_codes)) print(unknown_codes)
+if (any(segments$MILEAGE < 0, na.rm = TRUE)) {
+  stop("Negative MILEAGE values need review before aggregation")
+}
+
+class_summary <- do.call(rbind, lapply(
+  split(seq_len(nrow(segments)), connection_code),
+  function(rows) {
+    code <- connection_code[rows[1]]
+    label <- unname(code_names[code])
+    if (is.na(label)) label <- code
+    data.frame(
+      code = code, publisher_label = label,
+      segments = length(rows),
+      reported_miles = sum(segments$MILEAGE[rows], na.rm = TRUE),
+      missing_mileage = sum(is.na(segments$MILEAGE[rows])),
+      zero_mile_segments = sum(segments$MILEAGE[rows] == 0, na.rm = TRUE)
+    )
+  }
+))
+class_summary <- class_summary[order(-class_summary$reported_miles), ]
+rownames(class_summary) <- NULL
+knitr::kable(class_summary, digits = 2)
+```
+
+## Segment share versus reported-mile share
+
+For a compact comparison, we group the City's codes into four families. These
+family names are this report's analytical grouping; the preceding table keeps
+the publisher's classes intact. Any new code remains in *Other or new code*.
+
+```{r family-comparison, fig.height=5}
+family_by_code <- c(
+  SR_LT_LS = "Shared roadway", SR_MHT_LS = "Shared roadway",
+  SR_LT_HS = "Shared roadway",
+  BL_HT_HS = "Bike-lane categories", SBL_LT_LS = "Bike-lane categories",
+  MUP = "Paths and trails", TR = "Paths and trails",
+  DC = "Other connections", NG = "Other connections",
+  SC = "Other connections"
+)
+family_name <- unname(family_by_code[connection_code])
+family_name[is.na(family_name)] <- "Other or new code"
+family <- do.call(rbind, lapply(split(seq_len(nrow(segments)), family_name),
+  function(rows) data.frame(
+    family = family_name[rows[1]], segments = length(rows),
+    reported_miles = sum(segments$MILEAGE[rows], na.rm = TRUE)
+  )
+))
+rownames(family) <- NULL
+total_miles <- sum(segments$MILEAGE, na.rm = TRUE)
+stopifnot(total_miles > 0)
+family$segment_share_pct <- 100 * family$segments / nrow(segments)
+family$mileage_share_pct <- 100 * family$reported_miles / total_miles
+family_order <- c("Shared roadway", "Bike-lane categories",
+                  "Paths and trails", "Other connections", "Other or new code")
+family <- family[order(match(family$family, family_order)), ]
+rownames(family) <- NULL
+knitr::kable(family, digits = 2)
+
+shares <- rbind("Segments" = family$segment_share_pct,
+                "Reported miles" = family$mileage_share_pct)
+old_par <- par(mar = c(4, 14, 3, 1))
+barplot(shares, beside = TRUE, horiz = TRUE, names.arg = family$family,
+        las = 1, col = c("#276fa6", "#e59a40"),
+        xlim = c(0, max(shares) * 1.25),
+        xlab = "Share of complete public layer (%)",
+        main = "Mapped connection mix", legend.text = rownames(shares),
+        args.legend = list(x = "topright", bty = "n"))
+par(old_par)
+largest_shift <- family[which.max(abs(family$segment_share_pct -
+                                      family$mileage_share_pct)), ]
+```
+
+Counting segments gives each line one vote. Summing `MILEAGE` weights longer
+lines more heavily. The two shares can therefore differ without implying a
+data error. The largest gap in this retrieval is **`r largest_shift$family`**:
+`r sprintf("%.1f", largest_shift$segment_share_pct)`% of segments versus
+`r sprintf("%.1f", largest_shift$mileage_share_pct)`% of reported miles.
+
+## Where are the zero-mileage records?
+
+Segments with zero reported miles are still visible in the segment inventory.
+The check below shows which publisher classes contribute these records.
+
+```{r zero-mileage, fig.height=4.5}
+zero_classes <- class_summary[class_summary$zero_mile_segments > 0, ]
+if (nrow(zero_classes)) {
+  zero_classes <- zero_classes[order(zero_classes$zero_mile_segments), ]
+  old_par <- par(mar = c(4, 18, 3, 1))
+  barplot(zero_classes$zero_mile_segments, horiz = TRUE,
+          names.arg = zero_classes$publisher_label, las = 1,
+          col = "#a45760", xlab = "Segments with zero reported MILEAGE",
+          main = "Zero-mileage records by publisher class")
+  par(old_par)
+} else {
+  cat("No zero-mileage segments in this run.\n")
+}
+
+cat(sprintf(
+  "Retrieved %s mapped segments with %.2f summed reported miles at %s.\n",
+  format(nrow(segments), big.mark = ","), total_miles,
+  format(source$retrieved_at, tz = "UTC", usetz = TRUE)
+))
+```
+
+## Interpretation and limits
+
+The layer's name covers more than dedicated bike lanes. Neither a feature
+count nor summed reported mileage establishes usable route length, current
+condition, rider safety, or geographic access. The City's stress labels are
+source classifications, not safety findings from this analysis. Overlapping
+alignments may be counted more than once.
+
+The package's complete-result check guards against missing or duplicate
+record IDs and membership changes detected during retrieval. It cannot freeze
+attribute values while the publisher edits the service. Review
+`tbod_dataset_info("bike-lanes")$terms` and the linked publisher item before
+reusing the data.

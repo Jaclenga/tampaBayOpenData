@@ -1,0 +1,83 @@
+---
+title: "Can two library inventories be combined with one field mapping?"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(error = FALSE)
+```
+
+[Clearwater library locations](https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/1) and [Hillsborough library locations](https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Libraries_hc/FeatureServer/0) describe different service areas with different field names. This report explores the schema and missing values needed to make a small combined directory. It does not compare access, quality, or service levels.
+
+## 1. Retrieve two complete checked layers
+
+Each result carries its own provenance. Save it before combining rows because ordinary data-frame operations may drop attributes.
+
+```{r retrieve_libraries}
+library(tampaBayOpenData)
+
+clearwater <- tbod_get_dataset(
+  "clearwater-libraries",
+  fields = c("OBJECTID", "NAME", "FULLADDR", "OWNER"), total_timeout = 120
+)
+hillsborough <- tbod_get_dataset(
+  "hillsborough-libraries",
+  fields = c("OBJECTID", "Name_Full", "Name_Label", "Address", "City", "Type"),
+  total_timeout = 120
+)
+sources <- lapply(list(clearwater, hillsborough), tbod_provenance)
+stopifnot(all(vapply(sources, function(x) isTRUE(x$complete), logical(1))))
+print(data.frame(source = c("Clearwater", "Hillsborough"),
+                 records = c(nrow(clearwater), nrow(hillsborough)),
+                 retrieved_at = vapply(sources, function(x) as.character(x$retrieved_at), "")))
+```
+
+## 2. Measure which source fields actually carry a name
+
+A field existing in the schema does not mean it is filled in the live records. Hillsborough offers both `Name_Full` and `Name_Label`; we inspect them before choosing a fallback.
+
+```{r inspect_name_fields, fig.width=7, fig.height=4}
+present <- function(x) !is.na(x) & nzchar(trimws(as.character(x)))
+name_fields <- data.frame(
+  field = c("Clearwater NAME", "Hillsborough Name_Full", "Hillsborough Name_Label"),
+  filled = c(sum(present(clearwater$NAME)), sum(present(hillsborough$Name_Full)),
+             sum(present(hillsborough$Name_Label))),
+  records = c(nrow(clearwater), nrow(hillsborough), nrow(hillsborough))
+)
+name_fields$percent_filled <- round(100 * name_fields$filled / name_fields$records, 1)
+print(name_fields)
+
+previous <- par(mar = c(5, 11, 3, 1))
+barplot(name_fields$percent_filled,
+        names.arg = c("Clearwater NAME", "Hillsborough Full", "Hillsborough Label"),
+        horiz = TRUE, las = 1, xlim = c(0, 100), col = "#347c92", border = NA,
+        xlab = "Records with a nonblank value (%)",
+        main = "Available name fields in the two inventories")
+par(previous)
+```
+
+## 3. Make a small, traceable directory
+
+The mapping keeps the publisher and source object ID. Missing Hillsborough full names fall back to the label field. We keep each agency's own address text without geocoding or merging likely duplicate facilities.
+
+```{r make_directory}
+hill_name <- as.character(hillsborough$Name_Full)
+fallback <- !present(hill_name)
+hill_name[fallback] <- as.character(hillsborough$Name_Label[fallback])
+directory <- rbind(
+  data.frame(publisher = "Clearwater", object_id = clearwater$OBJECTID,
+             name = as.character(clearwater$NAME), address = as.character(clearwater$FULLADDR)),
+  data.frame(publisher = "Hillsborough", object_id = hillsborough$OBJECTID,
+             name = hill_name, address = as.character(hillsborough$Address))
+)
+print(data.frame(records = nrow(directory), missing_name = sum(!present(directory$name)),
+                 missing_address = sum(!present(directory$address)),
+                 used_hillsborough_name_fallback = sum(fallback)))
+print(utils::head(directory, 8))
+```
+
+## What this means
+
+The two layers can be placed in a common *directory* shape, but they are separate publisher inventories. Counts cannot be read as a comparison of library access, and this mapping makes no claim that the publisher records represent the same facility type or update schedule.
+
+**Observed on 2026-10-06:** All five Clearwater `NAME` values were filled. All 31 Hillsborough `Name_Full` values were blank, while all 31 `Name_Label` values were filled. The mapped directory therefore had 36 rows and used the Hillsborough fallback 31 times. Rerunning this report will calculate the current figures.

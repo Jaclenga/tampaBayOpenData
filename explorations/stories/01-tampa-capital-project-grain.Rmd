@@ -1,0 +1,76 @@
+---
+title: "How many projects are in Tampa's capital-project map?"
+output: html_document
+---
+
+A map feature, a project ID, and a project budget are different units of analysis. This report asks whether the [City of Tampa capital-project layer](https://arcgis.tampagov.net/arcgis/rest/services/OpenData/CapitalProjects/MapServer/0) has one row per project ID before anyone totals `estcost` or counts projects. It uses the package's checked `capital-projects` entry and retrieves every current feature.
+
+The dated observation below describes one run against a live source. Knit again to refresh the results.
+
+## 1. Retrieve the full layer and retain provenance
+
+A complete return means the package checked the returned features against the source object-ID manifest. It does not claim that the publisher's attributes are a transactionally frozen snapshot.
+
+```{r s01-step-1}
+library(tampaBayOpenData)
+
+info <- tbod_dataset_info("capital-projects")
+projects <- tbod_get_dataset(
+  "capital-projects",
+  fields = c("OBJECTID", "projid", "projname", "projtype", "projphase", "estcost"),
+  total_timeout = 120
+)
+source <- tbod_provenance(projects)
+stopifnot(isTRUE(source$complete), nrow(projects) == source$returned_rows)
+print(data.frame(publisher = source$publisher, retrieved_at = source$retrieved_at,
+                 features = nrow(projects), integrity = source$integrity))
+print(utils::head(projects[c("OBJECTID", "projid", "projname", "projphase")], 5))
+```
+
+## 2. Check project IDs
+
+Blank IDs and the literal values `N/A`, `NA`, and `0000000` are flagged as suspected placeholders. We exclude them from the working ID count, but that rule is an exploratory choice rather than a publisher definition. Repeated usable IDs may represent multiple map features, updates, or another source-specific relationship.
+
+```{r s01-step-2}
+project_id <- trimws(as.character(projects$projid))
+project_id[is.na(project_id) | project_id == ""] <- NA_character_
+suspected_placeholder <- !is.na(project_id) & toupper(project_id) %in%
+  c("N/A", "NA", "0000000")
+working_id <- project_id
+working_id[suspected_placeholder] <- NA_character_
+frequency <- table(working_id[!is.na(working_id)])
+repeated_ids <- names(frequency)[frequency > 1L]
+name_variants <- tapply(as.character(projects$projname), working_id, function(values) {
+  values <- trimws(values[!is.na(values)])
+  length(unique(values[nzchar(values)]))
+})
+print(data.frame(
+  feature_rows = nrow(projects),
+  blank_project_ids = sum(is.na(project_id)),
+  suspected_placeholder_rows = sum(suspected_placeholder),
+  distinct_working_ids = length(frequency),
+  ids_with_multiple_features = length(repeated_ids),
+  ids_with_multiple_names = sum(name_variants > 1L, na.rm = TRUE)
+))
+print(utils::head(sort(table(project_id[!is.na(project_id)]),
+                       decreasing = TRUE), 8))
+```
+
+## 3. See the effect of repeated IDs
+
+Each bar counts working IDs with that many feature rows. The last bar pools IDs with five or more rows.
+
+```{r s01-step-3, fig.width=7, fig.height=4}
+bins <- pmin(as.integer(frequency), 5L)
+features_per_id <- table(factor(bins, levels = 1:5,
+                                labels = c("1", "2", "3", "4", "5+")))
+barplot(features_per_id, col = "#276678", border = NA,
+        xlab = "Feature rows per working project ID", ylab = "Number of IDs",
+        main = "One ID can occur in several map features")
+```
+
+## What this means
+
+The table establishes the feature-to-ID relationship in the current layer. It does **not** establish a canonical project count or project-level cost. Summing `estcost` across feature rows would count repeated IDs more than once; selecting one row per ID requires a publisher-supported rule for conflicting names, phases, and costs. The source represents public-facing mapped projects, not the entire City capital ledger.
+
+**Observed on October 6, 2026:** The complete pull returned 394 feature rows. After excluding blank and suspected placeholder IDs, it had 166 distinct working IDs; 153 occurred on more than one feature. Twelve working IDs had multiple project names. These figures describe that retrieval, not a canonical project count.
