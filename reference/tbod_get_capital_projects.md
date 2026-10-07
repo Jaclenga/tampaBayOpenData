@@ -1,9 +1,10 @@
-# Retrieve bundled Tampa capital projects
+# Retrieve checked City of Tampa capital projects
 
 Calls
 [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
-for the bundled `capital-projects` layer. The City service publishes
-records marked PUBLIC; the package preserves that source scope.
+with the checked City of Tampa `capital-projects` catalog ID to retrieve
+current publisher records. The City service publishes records marked
+PUBLIC; the package preserves that source scope.
 
 ## Usage
 

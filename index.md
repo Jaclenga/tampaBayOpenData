@@ -2,8 +2,6 @@
 
 Public ArcGIS data around Tampa Bay, from R.
 
-52 checked layers across six publishers · live portal discovery
-
 `tampaBayOpenData` searches public ArcGIS data from Tampa,
 St. Petersburg, Clearwater, Hillsborough County, Pinellas County, and
 the Tampa Bay Regional Planning Council. Its bundled catalog has checked

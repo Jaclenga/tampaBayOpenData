@@ -1,8 +1,9 @@
-# Retrieve bundled Tampa development cases
+# Retrieve checked City of Tampa development cases
 
 Calls
 [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
-for the bundled `development-cases` layer. It covers active entitlement
+with the checked City of Tampa `development-cases` catalog ID to
+retrieve current publisher records. It covers active entitlement
 locations, not all historical development cases.
 
 ## Usage

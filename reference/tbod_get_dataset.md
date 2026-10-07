@@ -1,11 +1,11 @@
-# Retrieve a bundled, discovered, or direct ArcGIS dataset
+# Retrieve a checked, discovered, or direct ArcGIS dataset
 
 Accepts a checked catalog ID, a one-row discovery result, a stable
 `arcgis:<item-id>:<layer-id>` identifier, or a public HTTPS ArcGIS layer
 URL ending in `/FeatureServer/<id>` or `/MapServer/<id>`. For a stable
 ArcGIS ID from an Enterprise portal, supply that portal's sharing REST
 URL in `portal`. Direct URLs use the same retrieval engine and carry
-`not_checked` provenance. For a bundled checked layer, retrieval
+`not_checked` provenance. For a layer in the checked catalog, retrieval
 compares current metadata with its expected schema, warns for compatible
 drift, and errors before querying for incompatible drift. Use
 [`tbod_check_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_schema.md)

@@ -8,15 +8,6 @@
   line-height: 1.22;
 }
 
-.template-home #main .tb-kicker {
-  max-width: 68ch;
-  margin: 0 0 1.8rem;
-  padding-left: 0.85rem;
-  border-left: 0.2rem solid var(--bs-primary);
-  color: var(--bs-secondary-color, var(--bs-body-color));
-  font-weight: 600;
-}
-
 .template-home #main h2 {
   margin-top: 2.6rem;
   margin-bottom: 0.9rem;

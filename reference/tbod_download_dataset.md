@@ -2,7 +2,7 @@
 
 Accepts a bundled ID, discovery row, stable ArcGIS ID, or direct ArcGIS
 layer URL. A custom Enterprise portal can be provided with stable IDs.
-Bundled checked layers are compared with expected schemas before
+Layers in the checked catalog are compared with expected schemas before
 downloading; compatible drift warns and incompatible drift stops the
 download.
 

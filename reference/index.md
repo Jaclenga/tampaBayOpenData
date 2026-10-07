@@ -25,7 +25,7 @@
 ## Retrieve
 
 - [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
-  : Retrieve a bundled, discovered, or direct ArcGIS dataset
+  : Retrieve a checked, discovered, or direct ArcGIS dataset
 - [`tbod_get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_arcgis_layer.md)
   : Retrieve a direct ArcGIS layer URL
 
@@ -38,9 +38,16 @@
 
 ## Convenience functions
 
+Convenience functions currently cover selected City of Tampa datasets.
+Use
+[`tbod_search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_search_datasets.md)
+and
+[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
+for other Tampa Bay publishers.
+
 - [`tbod_get_permits()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_permits.md)
-  : Retrieve bundled Tampa permit locations
+  : Retrieve checked City of Tampa permit locations
 - [`tbod_get_capital_projects()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_capital_projects.md)
-  : Retrieve bundled Tampa capital projects
+  : Retrieve checked City of Tampa capital projects
 - [`tbod_get_development_cases()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_development_cases.md)
-  : Retrieve bundled Tampa development cases
+  : Retrieve checked City of Tampa development cases

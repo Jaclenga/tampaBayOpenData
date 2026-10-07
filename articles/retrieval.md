@@ -45,7 +45,8 @@ returns a typed empty result after counting matches.
 [`tbod_get_development_cases()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_development_cases.md),
 and
 [`tbod_get_capital_projects()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_capital_projects.md)
-name three checked Tampa layers.
+are shortcuts for three selected City of Tampa layers in the checked
+catalog.
 
 Pass a discovery row to carry its source and publisher into retrieval:
 

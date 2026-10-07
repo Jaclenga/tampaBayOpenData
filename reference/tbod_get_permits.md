@@ -1,10 +1,10 @@
-# Retrieve bundled Tampa permit locations
+# Retrieve checked City of Tampa permit locations
 
 Calls
 [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
-for the bundled `construction-permits` layer. It reflects the City's
-active permit viewer; the source is not a complete historical archive of
-every permit.
+with the checked City of Tampa `construction-permits` catalog ID to
+retrieve current publisher records. It reflects the City's active permit
+viewer; the source is not a complete historical archive of every permit.
 
 ## Usage
 
