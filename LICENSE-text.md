@@ -1,4 +1,4 @@
 # License
 
     YEAR: 2026
-    COPYRIGHT HOLDER: Jack Lenga and tampaBayOpenData contributors
+    COPYRIGHT HOLDER: Jack Lenga

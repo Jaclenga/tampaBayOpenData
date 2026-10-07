@@ -68,7 +68,7 @@
 </ol><p>Scheduled monitoring reads <code><a href="reference/tbod_list_portals.html">tbod_list_portals()</a></code>, so a new configured publisher is included in its portal loop. Update the monitor’s expected jurisdiction set and any publisher-specific cases when adding one. Ordinary tests continue to block live network access.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/tbod_list_portals.html">tbod_list_portals</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_package.html" class="external-link">test_local</a></span><span class="op">(</span>filter <span class="op">=</span> <span class="st">"portal-registry|live-discovery|regional-discovery"</span>,</span>
+<span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_package.html" class="external-link">test_local</a></span><span class="op">(</span>filter <span class="op">=</span> <span class="st">"portal-registry|test-discovery|regional-discovery"</span>,</span>
 <span>                     stop_on_failure <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">

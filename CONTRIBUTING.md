@@ -89,7 +89,7 @@ when adding one. Ordinary tests continue to block live network access.
 ``` r
 
 tbod_list_portals()
-testthat::test_local(filter = "portal-registry|live-discovery|regional-discovery",
+testthat::test_local(filter = "portal-registry|test-discovery|regional-discovery",
                      stop_on_failure = TRUE)
 ```
 
