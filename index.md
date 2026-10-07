@@ -145,7 +145,7 @@ toBibtex(citation("tampaBayOpenData"))
   [validation](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md),
   and
   [contributing](https://github.com/Jaclenga/tampaBayOpenData/blob/main/CONTRIBUTING.md)
-- [Full-data bicycle network exploration
-  notebook](https://github.com/Jaclenga/tampaBayOpenData/blob/main/notebooks/tampa-bicycle-network-eda.ipynb)
+- [Full-data bicycle network exploration (R
+  Markdown)](https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/tampa-bicycle-network-eda.Rmd)
 - [Short R data exploration stories across six
-  publishers](https://github.com/Jaclenga/tampaBayOpenData/tree/main/notebooks/stories)
+  publishers](https://github.com/Jaclenga/tampaBayOpenData/tree/main/explorations/stories)
