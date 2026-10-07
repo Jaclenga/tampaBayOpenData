@@ -1,7 +1,6 @@
 # tampaBayOpenData
 
 <p class="tb-lede">Public ArcGIS data around Tampa Bay, from R.</p>
-<p class="tb-kicker">52 checked layers across six publishers · live portal discovery</p>
 
 <!-- badges: start -->
 [![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/Jaclenga/tampaBayOpenData/blob/main/DESCRIPTION)

@@ -5,7 +5,7 @@
 #' identifier. The latter two paths use current ArcGIS portal metadata; they
 #' have not received the package's curated source validation. For a compatible
 #' layer URL outside the discovery portal, use [tbod_get_arcgis_layer()].
-#' Bundled checked layers are compared with expected schema snapshots before
+#' Layers in the checked catalog are compared with expected schema snapshots before
 #' querying. Compatible changes warn; incompatible changes stop retrieval.
 #' [tbod_check_schema()] returns a categorized report of current differences.
 #'

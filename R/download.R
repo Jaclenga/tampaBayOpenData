@@ -22,7 +22,7 @@
 #' when the IDs and schema remain unchanged. This is not a frozen snapshot.
 #' Chunk provenance describes that chunk; the returned summary reports whether
 #' the full matching manifest has been downloaded.
-#' Bundled checked layers are compared with their expected schemas before a
+#' Layers in the checked catalog are compared with their expected schemas before a
 #' download starts or resumes. Compatible drift warns; incompatible drift stops
 #' the download. Inspect differences with [tbod_check_schema()].
 #' @inheritParams .get_dataset_impl

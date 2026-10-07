@@ -2,7 +2,7 @@
 #'
 #' Accepts a bundled ID, discovery row, stable ArcGIS ID, or direct ArcGIS
 #' layer URL. A custom Enterprise portal can be provided with stable IDs.
-#' Bundled checked layers are compared with expected schemas before downloading;
+#' Layers in the checked catalog are compared with expected schemas before downloading;
 #' compatible drift warns and incompatible drift stops the download.
 #' @details The client retrieves the full matching object-ID manifest, then
 #'   writes bounded RDS chunks to a caller-selected directory. Each chunk is
@@ -117,4 +117,3 @@ tbod_download_arcgis_layer <- function(url, path, where = "1=1",
                         timeout = timeout, total_timeout = total_timeout,
                         resume = resume)
 }
-

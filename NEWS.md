@@ -1,8 +1,8 @@
 # tampaBayOpenData 0.1.0
 
-- Bundles 52 checked ArcGIS layers from Tampa, St. Petersburg, Clearwater,
-  Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning
-  Council. The [catalog policy](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md)
+- Includes a checked catalog of 52 ArcGIS layers from Tampa, St. Petersburg,
+  Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional
+  Planning Council. The [catalog policy](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md)
   records selection criteria, source limits, candidate decisions, and topic
   coverage. The catalog is selective; it does not mirror publisher data.
 - Exports 15 consistently named `tbod_*` functions for discovery, inspection,

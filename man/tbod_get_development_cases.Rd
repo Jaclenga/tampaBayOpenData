@@ -2,7 +2,7 @@
 % Please edit documentation in R/api-retrieval.R
 \name{tbod_get_development_cases}
 \alias{tbod_get_development_cases}
-\title{Retrieve bundled Tampa development cases}
+\title{Retrieve checked City of Tampa development cases}
 \usage{
 tbod_get_development_cases(...)
 }
@@ -13,7 +13,8 @@ tbod_get_development_cases(...)
 A tibble or sf object with retrieval provenance attached.
 }
 \description{
-Calls \code{\link[=tbod_get_dataset]{tbod_get_dataset()}} for the bundled \code{development-cases} layer.
+Calls \code{\link[=tbod_get_dataset]{tbod_get_dataset()}} with the checked City of Tampa
+\code{development-cases} catalog ID to retrieve current publisher records.
 It covers active entitlement locations, not all
 historical development cases.
 }

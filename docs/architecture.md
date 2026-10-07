@@ -2,7 +2,7 @@
 
 The client searches public ArcGIS services from Tampa, St. Petersburg,
 Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional
-Planning Council. The package bundles 52 checked layer records; it does not
+Planning Council. The package includes 52 checked catalog entries; it does not
 host government data. `tbod_dataset_info(id)` gives each record's scope,
 terms, and verification date. See the [catalog policy](checked-catalog-policy.md)
 for selection decisions and [Tampa source research](research-tampa.md) for

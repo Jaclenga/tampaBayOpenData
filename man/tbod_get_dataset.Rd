@@ -2,7 +2,7 @@
 % Please edit documentation in R/api-retrieval.R
 \name{tbod_get_dataset}
 \alias{tbod_get_dataset}
-\title{Retrieve a bundled, discovered, or direct ArcGIS dataset}
+\title{Retrieve a checked, discovered, or direct ArcGIS dataset}
 \usage{
 tbod_get_dataset(
   id,
@@ -93,7 +93,7 @@ Accepts a checked catalog ID, a one-row discovery result, a stable
 ending in \verb{/FeatureServer/<id>} or \verb{/MapServer/<id>}. For a stable ArcGIS ID
 from an Enterprise portal, supply that portal's sharing REST URL in \code{portal}.
 Direct URLs use the same retrieval engine and carry \code{not_checked} provenance.
-For a bundled checked layer, retrieval compares current metadata with its
+For a layer in the checked catalog, retrieval compares current metadata with its
 expected schema, warns for compatible drift, and errors before querying for
 incompatible drift. Use \code{\link[=tbod_check_schema]{tbod_check_schema()}} to inspect the differences.
 }

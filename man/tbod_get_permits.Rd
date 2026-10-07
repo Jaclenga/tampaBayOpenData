@@ -2,7 +2,7 @@
 % Please edit documentation in R/api-retrieval.R
 \name{tbod_get_permits}
 \alias{tbod_get_permits}
-\title{Retrieve bundled Tampa permit locations}
+\title{Retrieve checked City of Tampa permit locations}
 \usage{
 tbod_get_permits(...)
 }
@@ -13,7 +13,8 @@ tbod_get_permits(...)
 A tibble or sf object with retrieval provenance attached.
 }
 \description{
-Calls \code{\link[=tbod_get_dataset]{tbod_get_dataset()}} for the bundled \code{construction-permits} layer.
+Calls \code{\link[=tbod_get_dataset]{tbod_get_dataset()}} with the checked City of Tampa
+\code{construction-permits} catalog ID to retrieve current publisher records.
 It reflects the City's active permit viewer;
 the source is not a complete historical archive of every permit.
 }

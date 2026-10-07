@@ -3,8 +3,14 @@ url: https://jaclenga.github.io/tampaBayOpenData/
 home:
   title: Tampa Bay open data from R
   description: >
-    Browse 52 checked layers offline, search six Tampa Bay ArcGIS publishers
+    Browse a catalog of 52 checked layers offline, search six Tampa Bay ArcGIS publishers
     live, or retrieve a public ArcGIS layer by ID or URL.
+  sidebar:
+    structure: [links, license, community, citation, developer, dev]
+    components:
+      developer:
+        title: Developers
+        text: Jack Lenga · [ORCID 0009-0003-1153-8105](https://orcid.org/0009-0003-1153-8105)
 
 template:
   bootstrap: 5
@@ -35,6 +41,11 @@ navbar:
     changelog:
       text: Changelog
       href: news/index.html
+
+footer:
+  structure:
+    left: null
+    right: built_with
 
 articles:
   - title: Start here
@@ -70,6 +81,10 @@ reference:
       - tbod_download_dataset
       - tbod_download_arcgis_layer
   - title: Convenience functions
+    desc: >-
+      Convenience functions currently cover selected City of Tampa datasets.
+      Use `tbod_search_datasets()` and `tbod_get_dataset()` for other Tampa Bay
+      publishers.
     contents:
       - tbod_get_permits
       - tbod_get_capital_projects

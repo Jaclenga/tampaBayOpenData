@@ -43,14 +43,14 @@ tbod_dataset_info <- function(id, jurisdiction = NULL, refresh = FALSE,
                timeout = timeout, total_timeout = total_timeout)
 }
 
-#' Retrieve a bundled, discovered, or direct ArcGIS dataset
+#' Retrieve a checked, discovered, or direct ArcGIS dataset
 #'
 #' Accepts a checked catalog ID, a one-row discovery result, a stable
 #' `arcgis:<item-id>:<layer-id>` identifier, or a public HTTPS ArcGIS layer URL
 #' ending in `/FeatureServer/<id>` or `/MapServer/<id>`. For a stable ArcGIS ID
 #' from an Enterprise portal, supply that portal's sharing REST URL in `portal`.
 #' Direct URLs use the same retrieval engine and carry `not_checked` provenance.
-#' For a bundled checked layer, retrieval compares current metadata with its
+#' For a layer in the checked catalog, retrieval compares current metadata with its
 #' expected schema, warns for compatible drift, and errors before querying for
 #' incompatible drift. Use [tbod_check_schema()] to inspect the differences.
 #' @details Retrieval requests the current layer schema and matching count.
@@ -242,9 +242,10 @@ tbod_provenance <- function(x) {
   .dataset_provenance_impl(x)
 }
 
-#' Retrieve bundled Tampa permit locations
+#' Retrieve checked City of Tampa permit locations
 #'
-#' Calls [tbod_get_dataset()] for the bundled `construction-permits` layer.
+#' Calls [tbod_get_dataset()] with the checked City of Tampa
+#' `construction-permits` catalog ID to retrieve current publisher records.
 #' It reflects the City's active permit viewer;
 #' the source is not a complete historical archive of every permit.
 #' @param ... Arguments passed to [tbod_get_dataset()] except `id`.
@@ -256,9 +257,10 @@ tbod_provenance <- function(x) {
 #' }
 tbod_get_permits <- function(...) tbod_get_dataset("construction-permits", ...)
 
-#' Retrieve bundled Tampa development cases
+#' Retrieve checked City of Tampa development cases
 #'
-#' Calls [tbod_get_dataset()] for the bundled `development-cases` layer.
+#' Calls [tbod_get_dataset()] with the checked City of Tampa
+#' `development-cases` catalog ID to retrieve current publisher records.
 #' It covers active entitlement locations, not all
 #' historical development cases.
 #' @inheritParams tbod_get_permits
@@ -270,9 +272,10 @@ tbod_get_permits <- function(...) tbod_get_dataset("construction-permits", ...)
 #' }
 tbod_get_development_cases <- function(...) tbod_get_dataset("development-cases", ...)
 
-#' Retrieve bundled Tampa capital projects
+#' Retrieve checked City of Tampa capital projects
 #'
-#' Calls [tbod_get_dataset()] for the bundled `capital-projects` layer.
+#' Calls [tbod_get_dataset()] with the checked City of Tampa
+#' `capital-projects` catalog ID to retrieve current publisher records.
 #' The City service publishes records marked PUBLIC;
 #' the package preserves that source scope.
 #' @inheritParams tbod_get_permits

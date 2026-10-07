@@ -7,7 +7,7 @@ are on the [package site](https://jaclenga.github.io/tampaBayOpenData/).
 
 - [Architecture](architecture.md): package design and source research basis.
 - [Checked catalog policy](checked-catalog-policy.md): selection and maintenance
-  criteria for bundled layers.
+  criteria for checked catalog layers.
 - [API migration](api-migration.md): earlier function names and current `tbod_*`
   names.
 

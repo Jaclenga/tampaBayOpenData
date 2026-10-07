@@ -1,10 +1,11 @@
 #' Discover and retrieve public ArcGIS data
 #'
-#' The package bundles 52 checked layers from Tampa Bay publishers. Use
-#' [tbod_list_datasets()] or [tbod_search_datasets()] with `source = "checked"`
-#' to browse them offline. The default also searches the public ArcGIS portals
-#' configured for Tampa, St. Petersburg, Clearwater, Hillsborough County,
-#' Pinellas County, and the Tampa Bay Regional Planning Council.
+#' The package includes a catalog of 52 checked layers from Tampa Bay
+#' publishers. Use [tbod_list_datasets()] or [tbod_search_datasets()] with
+#' `source = "checked"` to browse the catalog offline. The default also searches
+#' public ArcGIS portals configured for Tampa, St. Petersburg, Clearwater,
+#' Hillsborough County, Pinellas County, and the Tampa Bay Regional Planning
+#' Council.
 #' [tbod_list_portals()] lists those publishers.
 #'
 #' [tbod_discover()] searches another ArcGIS portal or lists layers in a

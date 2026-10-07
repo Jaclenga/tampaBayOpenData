@@ -46,8 +46,8 @@ subset; `tbod_provenance()` sets `complete = FALSE` if more records match.
 For a reproducible subset, use `order_by` when the service supports ordering
 and offset pagination. The client adds an object-ID tie breaker. `limit = 0`
 returns a typed empty result after counting matches. `tbod_get_permits()`,
-`tbod_get_development_cases()`, and `tbod_get_capital_projects()` name three
-checked Tampa layers.
+`tbod_get_development_cases()`, and `tbod_get_capital_projects()` are shortcuts
+for three selected City of Tampa layers in the checked catalog.
 
 Pass a discovery row to carry its source and publisher into retrieval:
 

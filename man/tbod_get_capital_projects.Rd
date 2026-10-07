@@ -2,7 +2,7 @@
 % Please edit documentation in R/api-retrieval.R
 \name{tbod_get_capital_projects}
 \alias{tbod_get_capital_projects}
-\title{Retrieve bundled Tampa capital projects}
+\title{Retrieve checked City of Tampa capital projects}
 \usage{
 tbod_get_capital_projects(...)
 }
@@ -13,7 +13,8 @@ tbod_get_capital_projects(...)
 A tibble or sf object with retrieval provenance attached.
 }
 \description{
-Calls \code{\link[=tbod_get_dataset]{tbod_get_dataset()}} for the bundled \code{capital-projects} layer.
+Calls \code{\link[=tbod_get_dataset]{tbod_get_dataset()}} with the checked City of Tampa
+\code{capital-projects} catalog ID to retrieve current publisher records.
 The City service publishes records marked PUBLIC;
 the package preserves that source scope.
 }
