@@ -381,16 +381,6 @@ test_that("malformed feature arrays or absent IDs are never silently dropped", {
                class = "tampa_integrity_error")
 })
 
-test_that("service discovery includes feature layers and nonspatial tables", {
-  payload <- list(layers = list(list(id = 0L, name = "Points")),
-                  tables = list(list(id = 1L, name = "Events")))
-  local_mocked_bindings(arcgis_http = function(...) fixture_response(payload),
-                        .package = "tampaBayOpenData")
-  result <- arcgis_layers("https://example.invalid/FeatureServer")
-  expect_identical(result$layer_id, c(0L, 1L))
-  expect_identical(result$name, c("Points", "Events"))
-})
-
 test_that("malformed per-page flags, geometry types, and spatial references fail clearly", {
   transforms <- list(
     function(payload, params, ...) {

@@ -32,25 +32,7 @@
   border-radius: 0.55rem;
 }
 
-.template-home #main blockquote {
-  margin: 1.25rem 0;
-  padding: 0.85rem 1rem;
-  border-left: 0.2rem solid var(--bs-primary);
-  border-radius: 0.3rem;
-  background: var(--bs-tertiary-bg);
-}
-
-.template-home #main blockquote p:last-child {
-  margin-bottom: 0;
-}
-
 @media (max-width: 700px) {
-  .template-home #main table {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-  }
-
   .template-home #main .tb-lede {
     font-size: 1.7rem;
   }

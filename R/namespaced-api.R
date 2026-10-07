@@ -310,12 +310,7 @@ tbod_get_dataset <- function(id, jurisdiction = NULL, where = "1=1",
       .abort("`jurisdiction` does not apply to a direct ArcGIS URL.",
              subclass = "tampa_input_error")
     }
-    return(.get_arcgis_layer_impl(id, where = where, fields = fields,
-                            spatial = spatial, out_sr = out_sr,
-                            order_by = order_by, limit = limit,
-                            page_size = page_size, query = query,
-                            timeout = timeout, total_timeout = total_timeout,
-                            integrity = integrity))
+    id <- .direct_arcgis_descriptor(id)
   }
   .get_dataset_impl(id, jurisdiction = jurisdiction, where = where, fields = fields,
               spatial = spatial, out_sr = out_sr, order_by = order_by,
@@ -462,12 +457,7 @@ tbod_download_dataset <- function(id, path, jurisdiction = NULL,
       .abort("`jurisdiction` does not apply to a direct ArcGIS URL.",
              subclass = "tampa_input_error")
     }
-    return(.download_arcgis_layer_impl(id, path = path, where = where,
-                                 fields = fields, spatial = spatial,
-                                 out_sr = out_sr, page_size = page_size,
-                                 query = query, timeout = timeout,
-                                 total_timeout = total_timeout,
-                                 resume = resume))
+    id <- .direct_arcgis_descriptor(id)
   }
   .download_dataset_impl(id, path = path, jurisdiction = jurisdiction,
                    where = where, fields = fields, spatial = spatial,

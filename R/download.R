@@ -118,34 +118,6 @@
                     params, options, timeout)
 }
 
-#' Download a direct ArcGIS layer into resumable local chunks
-#'
-#' Uses the same resumable, bounded-memory path as [tbod_download_dataset()]. A direct
-#' layer URL retains `not_checked` provenance and no inferred publisher identity.
-#' @param url Public HTTPS ArcGIS FeatureServer or MapServer layer URL.
-#' @inheritParams .download_dataset_impl
-#' @return A named list with `path`, ordered chunk `files`, `matched_rows`,
-#'   `returned_rows`, `complete`, and summary `source` provenance, as described
-#'   in [tbod_download_dataset()]. Direct URLs have `not_checked` provenance.
-#' @noRd
-#' @examples
-#' url <- tbod_dataset_info("construction-permits")$source_url
-#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   saved <- tbod_download_arcgis_layer(url, tempfile("permit-url-download-"),
-#'     where = "OBJECTID <= 10", page_size = 5)
-#'   saved[c("matched_rows", "returned_rows", "complete")]
-#' }
-.download_arcgis_layer_impl <- function(url, path, where = "1=1", fields = NULL,
-                                 spatial = FALSE, out_sr = NULL, page_size = 1000,
-                                 query = list(), timeout = 30,
-                                 total_timeout = Inf, resume = TRUE) {
-  descriptor <- .direct_arcgis_descriptor(url)
-  .download_dataset_impl(descriptor, path, where = where, fields = fields,
-                    spatial = spatial, out_sr = out_sr, page_size = page_size,
-                    query = query, timeout = timeout,
-                    total_timeout = total_timeout, resume = resume)
-}
-
 .download_directory <- function(path, resume) {
   if (file.exists(path) && !dir.exists(path)) {
     .abort("`path` must identify a directory.", subclass = "tampa_download_error")

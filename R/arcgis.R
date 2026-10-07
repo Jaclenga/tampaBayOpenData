@@ -227,16 +227,6 @@ arcgis_layer <- function(dataset, timeout = 30, schema_only = FALSE) {
   metadata
 }
 
-# Internal service discovery is useful when maintaining the registry.
-arcgis_layers <- function(service_url, timeout = 30) {
-  result <- arcgis_request(service_url, timeout = timeout)
-  layers <- c(result$layers %||% list(), result$tables %||% list())
-  if (!is.list(layers)) .abort("Service metadata does not contain a layer list.", url = service_url)
-  tibble::tibble(
-    layer_id = vapply(layers, function(x) as.integer(x$id), integer(1)),
-    name = vapply(layers, function(x) x$name, character(1)))
-}
-
 .query_params <- function(query) {
   allowed <- c("geometry", "geometryType", "inSR", "spatialRel", "relationParam",
                "time", "distance", "units", "gdbVersion", "historicMoment",

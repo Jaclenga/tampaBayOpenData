@@ -70,20 +70,20 @@ test_that("canonical discovery accepts direct service and layer URL inputs", {
   expect_identical(layer, service)
 })
 
-test_that("canonical retrieval sends direct URLs through the ArcGIS layer path", {
+test_that("canonical retrieval resolves direct URLs to ArcGIS descriptors", {
   url <- "https://other.example.org/arcgis/rest/services/Parks/FeatureServer/2"
   seen <- NULL
   expected <- tibble::tibble(record = 1L)
   local_mocked_bindings(
-    .get_arcgis_layer_impl = function(url, ...) {
-      seen <<- list(url = url, options = list(...))
+    .get_dataset_impl = function(id, ...) {
+      seen <<- list(id = id, options = list(...))
       expected
     },
-    .get_dataset_impl = function(...) stop("should not use catalog retrieval"),
     .package = "tampaBayOpenData")
   actual <- tbod_get_dataset(url, fields = "NAME", limit = 5)
   expect_identical(actual, expected)
-  expect_identical(seen$url, url)
+  expect_identical(seen$id$source_url, url)
+  expect_identical(seen$id$validation_status, "not_checked")
   expect_identical(seen$options$fields, "NAME")
   expect_identical(seen$options$limit, 5)
   expect_error(tbod_get_dataset(url, portal = "https://other.example.org/sharing/rest"),
@@ -126,14 +126,14 @@ test_that("canonical information and download accept direct layer URLs", {
   expect_identical(info$validation_status, "not_checked")
   seen <- NULL
   local_mocked_bindings(
-    .download_arcgis_layer_impl = function(url, path, ...) {
-      seen <<- list(url = url, path = path, options = list(...))
+    .download_dataset_impl = function(id, path, ...) {
+      seen <<- list(id = id, path = path, options = list(...))
       list(complete = TRUE)
     },
-    .download_dataset_impl = function(...) stop("should not use catalog download"),
     .package = "tampaBayOpenData")
   expect_identical(tbod_download_dataset(url, "download-here")$complete, TRUE)
-  expect_identical(seen$url, url)
+  expect_identical(seen$id$source_url, url)
+  expect_identical(seen$id$validation_status, "not_checked")
   expect_identical(seen$path, "download-here")
   expect_error(tbod_download_dataset(url, "download-here", jurisdiction = "other"),
                "does not apply to a direct ArcGIS URL", class = "tampa_input_error")

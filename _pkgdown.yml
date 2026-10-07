@@ -14,25 +14,25 @@ template:
 
 navbar:
   structure:
-    left: [intro, articles, reference, coverage, news]
-    right: [search, github, lightswitch]
+    left: [get_started, articles, reference, data_coverage, changelog]
+    right: [search]
   components:
-    intro:
+    get_started:
       text: Get started
       href: articles/introduction.html
     articles:
       text: Articles
       menu:
-        - text: Discovering data
+        - text: Discovering Tampa Bay data
           href: articles/discovery.html
-        - text: Retrieving and downloading
+        - text: Retrieving and downloading data
           href: articles/retrieval.html
         - text: All articles
           href: articles/index.html
-    coverage:
+    data_coverage:
       text: Data coverage
       href: articles/coverage.html
-    news:
+    changelog:
       text: Changelog
       href: news/index.html
 

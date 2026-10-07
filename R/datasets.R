@@ -159,35 +159,3 @@
     stop(e)
   })
 }
-
-#' Retrieve a compatible ArcGIS layer by URL
-#'
-#' Reads a public HTTPS ArcGIS FeatureServer or MapServer layer through the same
-#' checked pagination and parsing engine as [tbod_get_dataset()]. Pass a layer URL
-#' ending in `/FeatureServer/<id>` or `/MapServer/<id>`. This direct path is
-#' marked `not_checked` in [tbod_provenance()]; it has no portal item ID.
-#' A table without geometry can be retrieved with `spatial = FALSE`.
-#'
-#' @param url Public HTTPS ArcGIS layer URL.
-#' @inheritParams .get_dataset_impl
-#' @return A tibble, or an sf object when `spatial = TRUE`, with source,
-#'   retrieval, and completeness details attached as attributes. Use
-#'   [tbod_provenance()] to read the full provenance record; its
-#'   `validation_status` is `not_checked` for a direct URL.
-#' @noRd
-#' @examples
-#' url <- tbod_dataset_info("construction-permits")$source_url
-#' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   data <- tbod_get_arcgis_layer(url, limit = 10)
-#'   tbod_provenance(data)$validation_status
-#' }
-.get_arcgis_layer_impl <- function(url, where = "1=1", fields = NULL,
-                             spatial = FALSE, out_sr = NULL, order_by = NULL,
-                             limit = Inf, page_size = NULL, query = list(),
-                             timeout = 30, total_timeout = 120, integrity = "auto") {
-  descriptor <- .direct_arcgis_descriptor(url)
-  .get_dataset_impl(descriptor, where = where, fields = fields, spatial = spatial,
-              out_sr = out_sr, order_by = order_by, limit = limit,
-              page_size = page_size, query = query, timeout = timeout,
-              total_timeout = total_timeout, integrity = integrity)
-}
