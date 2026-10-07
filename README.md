@@ -1,7 +1,5 @@
 # tampaBayOpenData
 
-<p class="tb-lede">Public ArcGIS data around Tampa Bay, from R.</p>
-
 <!-- badges: start -->
 [![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/Jaclenga/tampaBayOpenData/blob/main/DESCRIPTION)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
@@ -10,11 +8,18 @@
 [![Offline test coverage workflow](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml/badge.svg?branch=main)](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml)
 <!-- badges: end -->
 
-`tampaBayOpenData` searches public ArcGIS data from Tampa, St. Petersburg,
-Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional
-Planning Council. Its bundled catalog has checked dataset IDs you can search
-offline. Live discovery searches publisher portals, and retrieval reads their
-current services. You can also supply another public ArcGIS portal or layer URL.
+tampaBayOpenData provides a lightweight R interface for discovering and retrieving public ArcGIS datasets across the Tampa Bay region. The package lets users search for civic datasets and load them directly into R without manually navigating ArcGIS portals, constructing REST API requests, or handling pagination themselves.
+
+It currently supports public data published by:
+
+- City of Tampa
+- City of St. Petersburg
+- City of Clearwater
+- Hillsborough County
+- Pinellas County
+- Tampa Bay Regional Planning Council
+
+Designed for analysts, researchers, students, journalists, and civic technologists, tampaBayOpenData provides a consistent workflow across ArcGIS publishers that otherwise expose data through separate portals and services.
 
 ## Install
 
