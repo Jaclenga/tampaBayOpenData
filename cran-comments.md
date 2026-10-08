@@ -14,6 +14,11 @@ directories, prior archives, or `cran-comments.md`.
 
 ## Checks on this exact archive
 
+* Windows 11 x64, R-devel (2026-10-06 r90643, R 4.7.0 development snapshot):
+  `R CMD check --as-cran` exited 0 with **0 ERRORs, 0 WARNINGs, 0 NOTEs**.
+  Tests recorded 5,541 passes, 18 intentional opt-in live-test skips, and
+  no failures or test warnings. Examples, vignettes, and PDF and HTML manuals
+  passed.
 * Windows 11 x64, R 4.6.1: `R CMD check --as-cran` exited 0 with **0 ERRORs,
   0 WARNINGs, 1 NOTE**. Tests recorded 5,541 passes, 18 intentional opt-in
   live-test skips, and no failures or test warnings. Examples, vignettes, and
@@ -22,22 +27,32 @@ directories, prior archives, or `cran-comments.md`.
   0 WARNINGs, 1 NOTE**. Tests recorded 5,541 passes, the same 18 intentional
   live-test skips, and no failures or test warnings. Examples, vignettes, and
   PDF and HTML manuals passed.
+* WSL Ubuntu 24.04.3, R 4.3.3: `R CMD check --as-cran --no-manual` exited 0
+  with **0 ERRORs, 1 WARNING, 3 NOTEs**. Tests recorded 5,541 passes, 18
+  intentional live-test skips, and no failures or test warnings. The PDF
+  manual was not checked because this WSL installation lacks `pdflatex`.
 
-The sole NOTE in each check was `Unable to verify current time` under
-`checking for future file timestamps`. The check environment could not verify
-the current time remotely; neither log reports a future-dated package file.
-Both runs set `_R_CHECK_CRAN_INCOMING_REMOTE_=FALSE`, so remote incoming checks
-remain unverified for this archive. The clock check remained enabled.
+The sole NOTE in each Windows release check was `Unable to verify current time`
+under `checking for future file timestamps`. The WSL check reported the same
+clock NOTE; none of these logs reports a future-dated package file. The WSL
+check also reported `New submission` and an `Author` field difference caused
+by R 4.3.3 formatting the ORCID differently from the R version used to build
+the archive. Its WARNING says `qpdf` is needed for PDF size-reduction checks;
+`qpdf` is absent from this WSL installation. The three Windows runs set
+`_R_CHECK_CRAN_INCOMING_REMOTE_=FALSE`, while the WSL run used the default
+incoming setting. The clock check remained enabled in the Windows runs.
 
 ## Remaining evidence
 
 Two earlier concurrent Windows R 4.5.1 checks of an earlier source revision
 stopped in `tests/testthat.R` after about 286 seconds. Their logs show no
 assertion failure, traceback, or timeout report, and the cause remains
-unconfirmed. The two checks of this archive completed the test suite.
+unconfirmed. All four checks of this archive completed the test suite.
 
-The available win-builder R-devel log confirms only an upload of older source
-revision `746ad50`, which had the previous maintainer email; it contains no
-result for this archive. No Linux, macOS, or R-devel check of this exact archive
-is available. Live ArcGIS integration tests require
+An earlier win-builder R-devel log confirms only an upload of older source
+revision `746ad50`, which had the previous maintainer email. The exact archive
+above was uploaded to win-builder R-devel on 2026-10-07, and the upload page
+reported its name and size, but no result log has been received. The local
+Windows R-devel result above is separate from win-builder. No macOS check of
+this exact archive is available. Live ArcGIS integration tests require
 `TAMPA_OPEN_DATA_LIVE=true` and are skipped in ordinary package checks.
