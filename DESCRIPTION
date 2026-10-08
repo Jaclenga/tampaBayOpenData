@@ -2,7 +2,7 @@ Package: tampaBayOpenData
 Title: An R Interface to Tampa Bay Public Open Data
 Version: 0.1.0
 Authors@R: person("Jack", "Lenga", role = c("aut", "cre", "cph"),
-    email = "jack3lenga@gmail.com",
+    email = "jlenga@alumni.cmu.edu",
     comment = c(ORCID = "0009-0003-1153-8105"))
 Description: Discover public 'ArcGIS' layers published by Tampa, St. Petersburg,
     Clearwater, Hillsborough County, Pinellas County, and the Tampa Bay Regional

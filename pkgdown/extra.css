@@ -1,4 +1,8 @@
 /* Keep the landing page readable while leaving reference and article layouts native. */
+.template-home #main .page-header {
+  min-height: 0;
+}
+
 .template-home #main .tb-lede {
   max-width: 28ch;
   margin: 1.1rem 0 0.8rem;

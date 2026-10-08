@@ -55,11 +55,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jack Lenga \email{jack3lenga@gmail.com} (\href{https://orcid.org/0009-0003-1153-8105}{ORCID}) [copyright holder]
+\strong{Maintainer}: Jack Lenga \email{jlenga@alumni.cmu.edu} (\href{https://orcid.org/0009-0003-1153-8105}{ORCID}) [copyright holder]
 
 Authors:
 \itemize{
-  \item Jack Lenga \email{jack3lenga@gmail.com} (\href{https://orcid.org/0009-0003-1153-8105}{ORCID}) [copyright holder]
+  \item Jack Lenga \email{jlenga@alumni.cmu.edu} (\href{https://orcid.org/0009-0003-1153-8105}{ORCID}) [copyright holder]
 }
 
 }
