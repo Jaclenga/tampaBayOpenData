@@ -123,7 +123,7 @@ uses at most one service item per organization returned by `tbod_list_portals()`
 including Hillsborough and Pinellas counties. Count and applicable object-ID
 manifest requests still run, with a 45-second overall deadline per operation.
 
-The manual [live-check workflow](../.github/workflows/live-check.yaml) runs
+The manual [live-check workflow](https://github.com/Jaclenga/tampaBayOpenData/blob/main/.github/workflows/live-check.yaml) runs
 opt-in checks against current Tampa, regional, St. Petersburg, Clearwater, and
 county ArcGIS services. It covers all 52 checked layers, live portal discovery,
 and a complete multi-page permit retrieval. The
@@ -141,7 +141,7 @@ the complete permit retrieval. Runs have a 20-minute job timeout, and a newer
 run cancels an older run on the same branch. Scheduled results provide dated
 availability and schema evidence as runs complete; they do not guarantee
 future uptime, source freshness, or support for every public layer.
-The [R-CMD-check workflow](../.github/workflows/R-CMD-check.yaml) runs offline
+The [R-CMD-check workflow](https://github.com/Jaclenga/tampaBayOpenData/blob/main/.github/workflows/R-CMD-check.yaml) runs offline
 package checks. To build and check a source archive locally:
 
 ```sh
@@ -153,4 +153,4 @@ Before a release, check the final fresh archive with `R CMD check --as-cran`
 and confirm the configured cross-platform jobs on that source revision.
 
 Building the vignette requires `knitr`, `rmarkdown`, and Pandoc. See
-[CONTRIBUTING.md](../CONTRIBUTING.md) for the development workflow.
+[CONTRIBUTING.md](https://github.com/Jaclenga/tampaBayOpenData/blob/main/CONTRIBUTING.md) for the development workflow.
