@@ -62,10 +62,10 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Jack Lenga <jack3lenga@gmail.com>
+**Maintainer**: Jack Lenga <jlenga@alumni.cmu.edu>
 ([ORCID](https://orcid.org/0009-0003-1153-8105)) \[copyright holder\]
 
 Authors:
 
-- Jack Lenga <jack3lenga@gmail.com>
+- Jack Lenga <jlenga@alumni.cmu.edu>
   ([ORCID](https://orcid.org/0009-0003-1153-8105)) \[copyright holder\]
