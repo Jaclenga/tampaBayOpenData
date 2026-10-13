@@ -331,6 +331,9 @@ test_that("empty downloads are complete and unrelated directories are preserved"
   expect_equal(result$matched_rows, 0)
   expect_equal(result$returned_rows, 0)
   expect_identical(result$files, character())
+  expect_identical(result$source$integrity, "count-only")
+  expect_identical(result$source$pagination, "count-only")
+  expect_length(fixture_queries(transport, "ids"), 0L)
   expect_length(fixture_queries(transport, "features"), 0L)
 
   unrelated <- download_test_path()

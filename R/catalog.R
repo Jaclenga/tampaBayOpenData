@@ -54,7 +54,9 @@
 #'   `discovery_scanned_items` records item counts by portal;
 #'   `discovery_truncated_portals` identifies scans stopped at `max_items`.
 #'   `discovery_complete` is FALSE if a scan was truncated or any item or portal
-#'   failed. These attributes describe live discovery, not checked coverage.
+#'   failed. If every selected portal fails, `source = "all"` returns checked
+#'   entries with the failure details in these attributes. These attributes
+#'   describe live discovery, not checked coverage.
 #' @noRd
 #' @examples
 #' checked <- tbod_list_datasets(source = "checked")
@@ -128,10 +130,6 @@
   }
   scan_portals <- if (identical(portals, "all") && identical(keys, names(configs))) "all" else keys
   live <- .catalog_live(query, source, scan_portals, max_items, timeout)
-  if (is.null(live)) {
-    attr(matching_checked, "discovery_complete") <- FALSE
-    return(.filter_catalog(matching_checked, filters))
-  }
   included_checked <- if (identical(source, "all")) matching_checked else checked[0L, , drop = FALSE]
   .filter_catalog(.overlay_catalog(live, checked, included_checked), filters)
 }
@@ -169,7 +167,11 @@
              if (identical(source, "live") || !inherits(e, "tampa_data_error")) stop(e)
              warning(paste0("Live ArcGIS discovery failed; returning checked datasets only: ",
                             conditionMessage(e)), call. = FALSE)
-             NULL
+             keys <- .discovery_portal_keys(portals)
+             metadata <- e$discovery_metadata %||% .discovery_metadata(
+               issues = conditionMessage(e), failed_portals = keys,
+               scanned_items = stats::setNames(rep(NA_integer_, length(keys)), keys))
+             .attach_discovery_metadata(.empty_discovery(), metadata)
            })
 }
 

@@ -3,7 +3,7 @@ url: https://jaclenga.github.io/tampaBayOpenData/
 home:
   title: Tampa Bay open data from R
   description: >
-    Browse a catalog of 52 checked layers offline, search six Tampa Bay ArcGIS publishers
+    Browse a selective checked catalog offline, search Tampa Bay ArcGIS publishers
     live, or retrieve a public ArcGIS layer by ID or URL.
   sidebar:
     structure: [links, license, community, citation, developer, dev]
@@ -33,6 +33,12 @@ navbar:
           href: articles/discovery.html
         - text: Retrieving and downloading data
           href: articles/retrieval.html
+        - text: Housing and development activity
+          href: articles/housing-development.html
+        - text: Water quality around Tampa Bay
+          href: articles/water-quality.html
+        - text: Infrastructure and capital projects
+          href: articles/infrastructure-projects.html
         - text: All articles
           href: articles/index.html
     data_coverage:
@@ -58,6 +64,12 @@ articles:
       - discovery
       - retrieval
       - coverage
+  - title: Applied tutorials
+    desc: Work through checked sources with careful summaries and visualizations.
+    contents:
+      - housing-development
+      - water-quality
+      - infrastructure-projects
 
 reference:
   - title: Discover
@@ -71,6 +83,7 @@ reference:
       - tbod_dataset_info
       - tbod_schema
       - tbod_check_schema
+      - tbod_check_catalog
       - tbod_provenance
   - title: Retrieve
     contents:

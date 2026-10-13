@@ -207,6 +207,28 @@ test_that("a missing endpoint and a missing layer receive explicit drift reports
                "endpoint_disappeared", class = "tampa_schema_error")
 })
 
+test_that("a transient ArcGIS error is not classified as a disappeared endpoint", {
+  previous <- options(tampaBayOpenData.max_retries = 0L)
+  on.exit(options(previous), add = TRUE)
+  local_mocked_bindings(arcgis_http = function(...) {
+    fixture_response(list(error = list(code = 500L,
+      message = "Layer not found", details = list())))
+  })
+
+  expect_error(tbod_check_schema("construction-permits"),
+               "ArcGIS error 500.*Layer not found", class = "tampa_arcgis_error")
+  expect_error(tbod_get_dataset("construction-permits"),
+               "ArcGIS error 500.*Layer not found", class = "tampa_arcgis_error")
+
+  local_mocked_bindings(arcgis_http = function(...) {
+    fixture_response(list(error = list(code = 400L,
+      message = "Layer not found", details = list())))
+  })
+  report <- tbod_check_schema("construction-permits")
+  expect_identical(report$status, "incompatible")
+  expect_identical(report$issues$category, "endpoint_disappeared")
+})
+
 test_that("schema inspection supports direct URLs and explicit expectations", {
   url <- "https://data.example.invalid/arcgis/rest/services/Public/Test/FeatureServer/0"
   transport <- fixture_transport()

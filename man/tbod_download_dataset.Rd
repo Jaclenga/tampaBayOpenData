@@ -50,7 +50,8 @@ service maximum. The effective size must stay fixed when resuming.}
 \code{spatialRel}, and \code{time}. Response format, field selection, aggregation,
 geometry simplification, and pagination parameters are protected.}
 
-\item{timeout}{Per-request timeout in seconds.}
+\item{timeout}{Per-request timeout in seconds. Transient failures may be
+retried according to \code{options(tampaBayOpenData.max_retries = 3L)}.}
 
 \item{total_timeout}{Overall operation deadline in seconds. The default
 \code{Inf} allows a long download; completed chunks remain for a later resume
@@ -65,7 +66,8 @@ if a finite deadline expires.}
 A named list with \code{path}, ordered chunk \code{files}, \code{matched_rows},
 \code{returned_rows}, \code{complete}, and summary \code{source} provenance. Each RDS
 chunk has its own provenance; \code{tbod_provenance(chunk)$download} includes
-its chunk number and object IDs.
+its chunk number and object IDs. With no matches, \code{files} is empty and
+summary integrity is \code{count-only}.
 }
 \description{
 Accepts a bundled ID, discovery row, stable ArcGIS ID, or direct ArcGIS
@@ -74,7 +76,7 @@ Layers in the checked catalog are compared with expected schemas before download
 compatible drift warns and incompatible drift stops the download.
 }
 \details{
-The client retrieves the full matching object-ID manifest, then
+The client retrieves the matching object-ID manifest when records exist, then
 writes bounded RDS chunks to a caller-selected directory. Each chunk is
 a tibble or \code{sf} object with its own provenance; read files one at a time
 with \code{\link[=readRDS]{readRDS()}}. Feature pages are not accumulated in memory, but the
@@ -85,7 +87,12 @@ matching IDs, and batch size. With \code{resume = TRUE}, current metadata and
 IDs are rechecked before saved chunks are used. Changed options, schema,
 CRS, or membership cause an error. Completed chunks must match their
 checkpoint checksums, expected IDs, columns, and provenance. Temporary
-files from interrupted writes are ignored.
+files from interrupted writes are ignored. After all chunks have been
+validated, the client atomically writes \code{complete.rds} in \code{path}. No
+marker is written before a new download finishes or after an interrupted
+call. After confirming the saved manifest matches, a resumed call clears
+the marker before revalidating saved chunks, then writes it again only
+after successful completion.
 
 The directory must be empty on the first call. Unrelated files and
 existing downloads with \code{resume = FALSE} are rejected. An exclusive lock
@@ -94,6 +101,19 @@ confirm no writer remains, remove that empty directory, and resume.
 Record attributes can change between chunks or resumed calls even when
 IDs and schema remain stable; this is not a frozen snapshot. The returned
 summary records whether the complete matching manifest was downloaded.
+Transient connection failures and timeouts, HTTP 429, 500, 502, 503, and
+504 responses, ArcGIS error objects with those codes inside HTTP 200
+responses, and a generic transient ArcGIS query error are retried.
+Set \code{options(tampaBayOpenData.max_retries = 3L)} to control additional
+retries per failure sequence (integer 0 through 10). HTTP failures and
+ArcGIS errors in successful HTTP responses use separate bounded
+sequences; mixed failures can make more than four HTTP attempts overall.
+A valid \code{Retry-After} delay or HTTP date is honored if at most 30 seconds;
+a longer delay stops retrying rather than causing an early retry. Otherwise
+retries use exponential backoff with jitter. Permanent HTTP
+and ArcGIS errors fail without retrying.
+An interrupted call does not return a complete download summary; resume
+with the same \code{path} to validate and continue saved chunks.
 }
 \examples{
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {

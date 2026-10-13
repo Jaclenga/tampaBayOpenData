@@ -82,6 +82,8 @@ scan, use \code{max_items = Inf} with an appropriate time budget and inspect
 \code{attr(result, "discovery_complete")}. Live results also carry
 \code{discovery_issues}, \code{discovery_failed_portals},
 \code{discovery_scanned_items}, and \code{discovery_truncated_portals} attributes.
+If every selected portal fails, \code{source = "all"} returns the checked entries
+with failure details in these attributes; unknown scan counts are \code{NA}.
 }
 \examples{
 tbod_list_datasets(source = "checked")

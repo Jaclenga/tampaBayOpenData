@@ -1,6 +1,6 @@
 #' Download an ArcGIS dataset into resumable local chunks
 #'
-#' Retrieves the full matching object-ID manifest, then writes bounded chunks
+#' Retrieves the matching object-ID manifest when records exist, then writes bounded chunks
 #' of typed data to a caller-selected directory. Each chunk is an RDS tibble or
 #' `sf` object with its own provenance; read one file at a time with [readRDS()].
 #' Downloading does not accumulate all feature pages in memory. The manifest
@@ -11,7 +11,9 @@
 #' current metadata and full manifest before using any saved chunk. Changed
 #' options, schema, CRS, or record membership cause an error. Completed chunks
 #' must match their checkpoint checksum, expected IDs, columns, and provenance.
-#' Temporary files from interrupted writes are ignored. The directory must be
+#' Temporary files from interrupted writes are ignored. An atomic `complete.rds`
+#' marker is written only after every chunk validates; resuming a matching
+#' download clears and recreates the marker after revalidation. The directory must be
 #' empty on the first call; unrelated files and existing downloads with
 #' `resume = FALSE` are rejected. An exclusive directory lock prevents concurrent
 #' writers. A terminated R process can leave a `.lock` directory; after confirming
@@ -35,7 +37,7 @@
 #' @param resume Reuse a matching saved download and skip validated chunks.
 #' @return A named list with `path`, ordered chunk `files`, `matched_rows`,
 #'   `returned_rows`, `complete`, and summary `source` provenance. A query with
-#'   no matches returns no chunk files. Individual chunks retain object IDs in
+#'   no matches returns no chunk files and count-only integrity. Individual chunks retain object IDs in
 #'   `tbod_provenance(chunk)$download$object_ids`, including when the ID
 #'   column was not selected.
 #' @noRd
@@ -114,8 +116,23 @@
     .download_write_rds(saved, manifest_file)
   }
   manifest_hash <- .download_hash(manifest_file)
-  .download_chunks(path, saved, manifest_hash, dataset, metadata, manifest,
-                    params, options, timeout)
+  complete_file <- file.path(path, "complete.rds")
+  if (file.exists(complete_file) && !file.remove(complete_file)) {
+    .abort("The prior completion marker could not be cleared before revalidation.",
+           dataset, complete_file, "tampa_download_error")
+  }
+  summary <- .download_chunks(path, saved, manifest_hash, dataset, metadata,
+                              manifest, params, options, timeout)
+  if (!isTRUE(summary$complete)) {
+    .abort("The download stopped before all manifest records were saved.",
+           dataset, url, "tampa_download_error")
+  }
+  .check_operation_timeout(timeout, dataset, url)
+  .download_write_rds(list(version = 1L, manifest_md5 = manifest_hash,
+                           files = basename(summary$files),
+                           returned_rows = summary$returned_rows,
+                           completed_at = .utc_now()), complete_file)
+  summary
 }
 
 .download_directory <- function(path, resume) {
@@ -129,7 +146,7 @@
   entries <- list.files(path, all.files = TRUE, no.. = TRUE)
   has_manifest <- "manifest.rds" %in% entries
   temporary <- grepl("^\\.tbod-.*\\.tmp$", entries)
-  allowed <- entries %in% c("manifest.rds", ".checkpoints", ".lock") |
+  allowed <- entries %in% c("manifest.rds", "complete.rds", ".checkpoints", ".lock") |
     grepl("^chunk-[0-9]{7}\\.rds$", entries) | temporary
   checkpoint_dir <- file.path(path, ".checkpoints")
   if (dir.exists(checkpoint_dir)) {
@@ -283,9 +300,12 @@
     returned <- returned + length(ids)
   }
   .check_operation_timeout(timeout, dataset, url)
+  empty <- manifest$count == 0
   fetched <- list(matched_rows = manifest$count, returned_rows = returned,
-                   complete = returned == manifest$count, pagination = "object-id chunks",
-                   integrity = "full-manifest", spatial_reference = reference)
+                   complete = returned == manifest$count,
+                   pagination = if (empty) "count-only" else "object-id chunks",
+                   integrity = if (empty) "count-only" else "full-manifest",
+                   spatial_reference = reference)
   source <- .dataset_provenance_impl(.attach_provenance(tibble::tibble(), dataset,
     metadata, fetched, query_options, saved$started_at))
   list(path = path, files = files, matched_rows = manifest$count,

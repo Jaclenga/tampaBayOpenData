@@ -13,6 +13,9 @@ matches test filenames:
 
 ```r
 testthat::test_local(filter = "http", stop_on_failure = TRUE)
+testthat::test_local(filter = "reliability", stop_on_failure = TRUE)
+testthat::test_local(filter = "catalog-health", stop_on_failure = TRUE)
+testthat::test_local(filter = "coverage-dashboard", stop_on_failure = TRUE)
 testthat::test_local(filter = "dataset-sources", stop_on_failure = TRUE)
 testthat::test_local(filter = "discovery", stop_on_failure = TRUE)
 testthat::test_local(filter = "portal-registry", stop_on_failure = TRUE)
@@ -66,7 +69,18 @@ check all `tbod_` entry points and the namespace export surface.
 with `req_perform()` mocked. The retry tests in
 [test-http-integrity.R](testthat/test-http-integrity.R) and
 [test-security.R](testthat/test-security.R) exercise retry handling with network
-calls and waits mocked.
+calls and waits mocked. The [reliability cases](testthat/test-reliability.R)
+cover configurable retry limits, rate limits, repeated timeouts, HTTP-date
+`Retry-After` values, server errors, successful recovery, unsupported
+offset pagination, unexpectedly short feature batches, automatic preview
+fallback, and resumable downloads. Repeated pages are covered by the ordered
+pagination and preview cases.
+The [catalog-health cases](testthat/test-catalog-health.R) mock layer and
+service responses to verify healthy, unavailable, changed-schema, unsupported,
+and unknown report rows without contacting publishers.
+The [dashboard cases](testthat/test-coverage-dashboard.R) derive counts from
+offline checked rows and verify that missing, stale, or mismatched health
+evidence stays unverified.
 
 [Other-city tests](testthat/test-other-cities.R) use verified St. Petersburg
 recreation-center and Clearwater park-buffer schemas with synthetic records.
@@ -95,6 +109,28 @@ ordinary tests independent of service availability.
 Higher-level retrieval and discovery tests mock `arcgis_http()`.
 
 ## Live and package checks
+
+After installing the current package, run a full current catalog check from
+the repository root with:
+
+```sh
+Rscript tools/check-catalog.R [report-directory]
+```
+
+Omit the optional directory to write timestamped RDS, CSV, and Markdown
+reports under ignored `.artifacts/catalog-health/`. The RDS preserves
+structured diagnostics; the CSV stores list-column schema issues as JSON.
+The [catalog-health workflow](https://github.com/Jaclenga/tampaBayOpenData/blob/main/.github/workflows/catalog-health.yaml)
+runs this checker weekly on Monday at 07:23 UTC and on manual dispatch, then
+uploads a report artifact. It reads the public services and does not edit the
+bundled catalog. A status is point-in-time metadata evidence, not a guarantee
+of current feature values or future availability.
+
+To preview the generated coverage dashboard after installing the package,
+run `Rscript -e "pkgdown::build_site_github_pages(dest_dir = '_site', clean = TRUE, lazy = FALSE, new_process = FALSE, install = TRUE)"` and open
+`_site/articles/coverage.html`. The health report is optional; absent or stale
+evidence appears as unverified. See the [dashboard methodology](../docs/coverage-dashboard.md)
+for the source of counts and their limits.
 
 Live tests run only when enabled explicitly:
 

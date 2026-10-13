@@ -8,12 +8,17 @@ name: pkgdown
   release:
     types: [published]
   workflow_dispatch:
+  workflow_run:
+    workflows: [catalog-health]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
 
 jobs:
   pkgdown:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     concurrency:
@@ -22,7 +27,9 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       TAMPA_OPEN_DATA_LIVE: "false"
+      TAMPA_OPEN_DATA_HEALTH_REPORT_DIR: ${{ github.workspace }}/.artifacts/catalog-health
     permissions:
+      actions: read
       contents: write
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -35,6 +42,40 @@ jobs:
         with:
           extra-packages: any::pkgdown, local::.
           needs: website
+      - name: Restore latest catalog health report when available
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          run_ids=()
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_run" ]]; then
+            run_ids+=("${{ github.event.workflow_run.id }}")
+          fi
+          recent="$(timeout 30s gh run list --repo "$GITHUB_REPOSITORY" \
+              --workflow catalog-health.yaml --branch main --status success \
+              --limit 10 --json databaseId --jq '.[].databaseId' 2>/dev/null || true)"
+          while IFS= read -r run_id; do
+            if [[ -n "$run_id" ]]; then
+              run_ids+=("$run_id")
+            fi
+          done <<< "$recent"
+          shopt -s nullglob
+          for run_id in "${run_ids[@]}"; do
+            report_dir="$RUNNER_TEMP/catalog-health-report-$run_id"
+            if ! timeout 90s gh run download "$run_id" --repo "$GITHUB_REPOSITORY" \
+              --name "catalog-health-$run_id" --dir "$report_dir"; then
+              continue
+            fi
+            reports=("$report_dir"/catalog-health-*.rds)
+            if (( ${#reports[@]} > 0 )); then
+              mkdir -p "$TAMPA_OPEN_DATA_HEALTH_REPORT_DIR"
+              cp "$report_dir"/catalog-health-* "$TAMPA_OPEN_DATA_HEALTH_REPORT_DIR/"
+              echo "Using catalog health report from workflow run $run_id."
+              exit 0
+            fi
+          done
+          echo "No catalog health report is available; building with unverified statuses."
       - name: Build site
         shell: Rscript {0}
         run: pkgdown::build_site_github_pages(dest_dir = "_site", clean = TRUE, lazy = FALSE, new_process = FALSE, install = TRUE)

@@ -8,23 +8,18 @@ arcgis_http <- function(url, params, timeout) {
   req <- httr2::req_timeout(req, as.numeric(timeout))
   req <- httr2::req_options(req, followlocation = FALSE,
                            maxfilesize_large = .arcgis_response_limit)
-  if (is.null(attr(timeout, "tampa_deadline", exact = TRUE))) {
-    req <- httr2::req_retry(req, max_tries = 3L, retry_on_failure = TRUE,
-                           is_transient = function(response) {
-                             httr2::resp_status(response) %in% c(429L, 500L, 502L, 503L, 504L)
-                           },
-                           after = .bounded_retry_after)
-  }
   req <- httr2::req_error(req, is_error = function(resp) FALSE)
   if (grepl("/query$", url)) {
     req <- do.call(httr2::req_body_form, c(list(req), params))
   } else {
     req <- do.call(httr2::req_url_query, c(list(req), params))
   }
-  response <- if (is.null(attr(timeout, "tampa_deadline", exact = TRUE))) {
-    httr2::req_perform(req)
-  } else .perform_budgeted_request(req, timeout, url)
-  list(status = httr2::resp_status(response), body = httr2::resp_body_string(response))
+  performed <- .perform_arcgis_http(req, timeout, url)
+  list(status = httr2::resp_status(performed$response),
+       body = httr2::resp_body_string(performed$response),
+       attempts = performed$attempts,
+       retry_after = performed$retry_after %||%
+         .bounded_retry_after(performed$response))
 }
 
 .arcgis_user_agent <- function() {
@@ -38,82 +33,168 @@ arcgis_http <- function(url, params, timeout) {
 }
 
 .bounded_retry_after <- function(response) {
+  header <- httr2::resp_header(response, "Retry-After")
+  if (!is.character(header) || length(header) != 1L || is.na(header)) return(NA_real_)
+  header <- trimws(header)
+  if (!grepl(" ", header, fixed = TRUE)) {
+    if (!grepl("^[0-9]+$", header)) return(NA_real_)
+    return(suppressWarnings(as.numeric(header)))
+  }
   delay <- tryCatch(suppressWarnings(httr2::resp_retry_after(response)),
                     error = function(e) NA_real_)
   if (!is.numeric(delay) || length(delay) != 1L || !is.finite(delay)) return(NA_real_)
-  min(max(delay, 0), 30)
+  max(delay, 0)
 }
 
-# Some ArcGIS backends intermittently send an error JSON body with HTTP 200.
-# Retry only the generic query failure; specific ArcGIS errors remain immediate.
+.arcgis_max_retries <- function() {
+  retries <- getOption("tampaBayOpenData.max_retries", 3L)
+  if (!is.numeric(retries) || length(retries) != 1L || is.na(retries) ||
+      !is.finite(retries) || retries < 0 || retries > 10 ||
+      retries != floor(retries)) {
+    .abort("Option `tampaBayOpenData.max_retries` must be a whole number from 0 to 10.",
+           subclass = "tampa_input_error")
+  }
+  as.integer(retries)
+}
+
+.arcgis_retryable_status <- function(status) {
+  status %in% c(429L, 500L, 502L, 503L, 504L)
+}
+
+.arcgis_backoff <- function(attempt) {
+  stats::runif(1L, min = 0, max = min(30, 2^attempt))
+}
+
+.arcgis_operation <- function(url, params) {
+  if (!grepl("/query$", url)) return("layer or portal metadata request")
+  if (identical(params$returnCountOnly, "true")) return("matching count query")
+  if (identical(params$returnIdsOnly, "true")) return("object ID manifest query")
+  if (!is.null(params$resultOffset)) return("offset feature query")
+  if (!is.null(params$objectIds)) return("object ID feature query")
+  "feature query"
+}
+
+.arcgis_http_failure <- function(status, attempts, retry_after = NULL) {
+  kind <- if (status == 429L) "rate limit" else if (status %in% c(500L, 502L, 503L, 504L))
+    "server failure" else if (status %in% c(401L, 403L))
+    "authentication or authorization failure" else if (status == 404L)
+    "missing service or layer" else if (status %in% c(400L, 422L))
+    "invalid request or query" else if (status %in% c(405L, 501L))
+    "unsupported operation" else "HTTP failure"
+  recovery <- if (!is.null(retry_after)) {
+    paste0(" The service requested a ", format(retry_after, trim = TRUE),
+           "-second Retry-After, longer than the 30-second per-wait limit;",
+           " no early retry was attempted.")
+  } else if (.arcgis_retryable_status(status)) {
+    paste0(" Retried ", attempts - 1L, " time(s); no successful response was received.")
+  } else " This status is not retried."
+  paste0("The upstream ArcGIS service returned HTTP ", status, " (", kind, ").",
+         if (status == 404L) " The service may have moved; check the source page." else "",
+         recovery)
+}
+
+# Some ArcGIS backends send transient errors inside an HTTP 200 JSON body.
+# Retry server/rate-limit codes and the known generic query failure only.
 arcgis_request <- function(url, params = list(), dataset = NULL, timeout = 30) {
-  for (attempt in seq_len(4L)) {
+  max_retries <- .arcgis_max_retries()
+  for (attempt in seq_len(max_retries + 1L)) {
     .check_operation_timeout(timeout, dataset, url)
     result <- tryCatch(.arcgis_request_once(url, params, dataset, timeout),
                        tampa_arcgis_transient_error = identity)
     .check_operation_timeout(timeout, dataset, url)
     if (!inherits(result, "tampa_arcgis_transient_error")) return(result)
-    if (attempt == 4L) stop(result)
-    if (0.25 * attempt >= .operation_remaining(timeout)) {
-      .abort("The remaining operation time budget is too short for another retry.",
-             dataset, url, "tampa_timeout_error")
+    if (attempt > max_retries) {
+      result$message <- paste0(conditionMessage(result), "\nRecovery: retried ",
+                               max_retries, " time(s) without success.")
+      stop(result)
     }
-    .arcgis_retry_pause(attempt)
+    delay <- result$retry_after
+    if (!is.numeric(delay) || length(delay) != 1L || is.na(delay) || delay < 0) {
+      delay <- .arcgis_backoff(attempt)
+    }
+    if (delay > 30) {
+      result$message <- paste0(conditionMessage(result), "\nRecovery: the service requested a ",
+                               format(delay, trim = TRUE),
+                               "-second Retry-After, longer than the 30-second per-wait limit;",
+                               " no early retry was attempted.")
+      stop(result)
+    }
+    .operation_retry_wait(delay, timeout, dataset, url)
   }
 }
 
-.arcgis_retry_pause <- function(attempt) Sys.sleep(0.25 * attempt)
-
 .arcgis_request_once <- function(url, params, dataset, timeout) {
   params$f <- "json"
+  operation <- .arcgis_operation(url, params)
   response <- tryCatch(arcgis_http(url, params, timeout), error = function(e) {
-    if (inherits(e, c("tampa_timeout_error", "tampa_input_error"))) stop(e)
-    .abort(paste0("The upstream ArcGIS service could not be reached: ", conditionMessage(e)),
-           dataset, url, "tampa_http_error")
+    if (inherits(e, "tampa_input_error")) stop(e)
+    if (inherits(e, "tampa_timeout_error")) {
+      summary <- strsplit(conditionMessage(e), "\n", fixed = TRUE)[[1L]][[1L]]
+      .abort(paste0("During ", operation, ": ", summary), dataset,
+             url, "tampa_timeout_error")
+    }
+    summary <- strsplit(conditionMessage(e), "\n", fixed = TRUE)[[1L]][[1L]]
+    .abort(paste0("During ", operation, ", the upstream ArcGIS service could not be reached: ",
+                  summary), dataset, url, "tampa_http_error")
   })
   .check_operation_timeout(timeout, dataset, url)
   if (!is.list(response) || !is.numeric(response$status) || length(response$status) != 1L ||
-      is.na(response$status) || !is.finite(response$status)) {
-    .abort("The HTTP transport returned an invalid response status.", dataset, url, "tampa_response_error")
+      is.na(response$status) || !is.finite(response$status) ||
+      response$status != floor(response$status) || response$status < 100 ||
+      response$status > 599) {
+    .abort(paste0("During ", operation, ", the HTTP transport returned an invalid response status."),
+           dataset, url, "tampa_response_error")
   }
   if (response$status != 200L) {
-    .abort(paste0("The upstream ArcGIS service returned HTTP ",
-                  response$status %||% "(unknown)",
-                  if (identical(as.integer(response$status), 404L))
-                    ". The service may have moved; check the source page." else "."),
+    attempts <- response$attempts %||% 1L
+    .abort(paste0("During ", operation, ": ",
+                  .arcgis_http_failure(as.integer(response$status), attempts,
+                                       response$retry_after)),
            dataset, url, "tampa_http_error")
   }
   if (is.character(response$body) && length(response$body) == 1L &&
       !is.na(response$body) && nchar(response$body, type = "bytes") > .arcgis_response_limit) {
-    .abort("The upstream response exceeds the 50 MiB response-size limit.",
+    .abort(paste0("During ", operation,
+                  ", the upstream response exceeds the 50 MiB response-size limit."),
            dataset, url, "tampa_response_error")
   }
   result <- tryCatch(jsonlite::parse_json(response$body, simplifyVector = FALSE),
-                     error = function(e) .abort("The upstream service returned malformed JSON.",
+                     error = function(e) .abort(paste0("During ", operation,
+                       ", the upstream service returned malformed JSON."),
                                                 dataset, url, "tampa_response_error"))
   if (!is.list(result) || is.null(names(result))) {
-    .abort("The upstream response is not an ArcGIS JSON object.", dataset, url,
+    .abort(paste0("During ", operation,
+                  ", the upstream response is not an ArcGIS JSON object."), dataset, url,
            "tampa_response_error")
   }
   if (.duplicate_json_keys(result, dataset = dataset, url = url)) {
-    .abort("The upstream response contains duplicate JSON object keys.", dataset, url, "tampa_response_error")
+    .abort(paste0("During ", operation,
+                  ", the upstream response contains duplicate JSON object keys."),
+           dataset, url, "tampa_response_error")
   }
   if (!is.null(result$error)) {
     err <- result$error
     if (!is.list(err) || !is.numeric(err$code) || length(err$code) != 1L ||
-        is.na(err$code) || !is.character(err$message) || length(err$message) != 1L ||
+        is.na(err$code) || !is.finite(err$code) ||
+        err$code != floor(err$code) ||
+        !is.character(err$message) || length(err$message) != 1L ||
         is.na(err$message)) {
-      .abort("The upstream service returned a malformed ArcGIS error object.", dataset, url, "tampa_response_error")
+      .abort(paste0("During ", operation,
+                    ", the upstream service returned a malformed ArcGIS error object."),
+             dataset, url, "tampa_response_error")
     }
-    retryable <- grepl("/query$", url) && isTRUE(err$code == 400) &&
-      identical(err$message, "Unable to complete operation.") &&
-      !length(err$details)
-    .abort(paste0("ArcGIS error ", err$code %||% "(unknown)", ": ",
-                  err$message %||% "The query failed.",
-                  if (length(err$details)) paste0(" ", paste(unlist(err$details), collapse = "; "))),
-           dataset, url, if (retryable)
-             c("tampa_arcgis_transient_error", "tampa_arcgis_error") else
-             "tampa_arcgis_error")
+    retryable <- .arcgis_retryable_status(err$code) ||
+      (grepl("/query$", url) && isTRUE(err$code == 400) &&
+       identical(err$message, "Unable to complete operation.") &&
+       !length(err$details))
+    failure <- tryCatch(.abort(paste0(
+      "During ", operation, ", ArcGIS error ", err$code, ": ", err$message,
+      if (length(err$details)) paste0(" ", paste(unlist(err$details), collapse = "; "))),
+      dataset, url, if (retryable)
+        c("tampa_arcgis_transient_error", "tampa_arcgis_error") else
+        "tampa_arcgis_error"), tampa_arcgis_transient_error = identity)
+    failure$retry_after <- response$retry_after
+    stop(failure)
   }
   result
 }
@@ -132,6 +213,13 @@ arcgis_request <- function(url, params = list(), dataset = NULL, timeout = 30) {
 arcgis_layer <- function(dataset, timeout = 30, schema_only = FALSE) {
   url <- paste0(dataset$service_url, "/", dataset$layer_id)
   metadata <- arcgis_request(url, dataset = dataset, timeout = timeout)
+  layer_id <- metadata[["id", exact = TRUE]]
+  if (!is.null(layer_id) && (!is.numeric(layer_id) || length(layer_id) != 1L ||
+      is.na(layer_id) || !is.finite(layer_id) ||
+      layer_id != dataset$layer_id)) {
+    .abort("Layer metadata identifies a different or invalid layer ID.", dataset,
+           url, "tampa_response_error")
+  }
   if (!is.list(metadata$fields) || (!length(metadata$fields) && !schema_only) ||
       !all(vapply(metadata$fields, function(x) is.list(x) &&
         is.character(x$name) && length(x$name) == 1L && !is.na(x$name) && nzchar(x$name) &&
@@ -348,12 +436,13 @@ arcgis_layer <- function(dataset, timeout = 30, schema_only = FALSE) {
 
 .manifest <- function(url, params, metadata, dataset, timeout, count = NULL) {
   if (is.null(count)) count <- .matching_count(url, params, dataset, timeout)
+  if (count == 0) return(list(ids = numeric(), count = count))
   list(ids = .matching_ids(url, params, metadata, dataset, timeout, count),
        count = count)
 }
 
 .page_features <- function(response, metadata, dataset, url) {
-  .transfer_limit(response, dataset, url)
+  truncated <- .transfer_limit(response, dataset, url)
   .check_object_id_field(response, metadata, dataset, url)
   geometry_type <- response[["geometryType", exact = TRUE]]
   if (!is.null(geometry_type) &&
@@ -387,6 +476,6 @@ arcgis_layer <- function(dataset, timeout = 30, schema_only = FALSE) {
     .abort("A feature contains a malformed object ID.", dataset, url, "tampa_response_error")
   }
   ids <- .object_ids(lapply(features, function(x) x[["attributes"]][[oid_field]]), dataset, url)
-  if (length(ids) != length(features)) .abort("A feature contains a null object ID.", dataset, url, "tampa_integrity_error")
-  list(features = features, ids = ids, spatial_reference = spatial_reference)
+  list(features = features, ids = ids, spatial_reference = spatial_reference,
+       truncated = truncated)
 }

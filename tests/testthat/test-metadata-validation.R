@@ -67,6 +67,17 @@ test_that("Query support requires a complete capability token", {
   expect_identical(tbod_get_dataset("construction-permits")$OBJECTID, 1:5)
 })
 
+test_that("layer metadata cannot identify a different requested layer", {
+  metadata <- fixture_metadata()
+  metadata$id <- 999L
+  transport <- fixture_transport(metadata = metadata)
+  local_mocked_bindings(arcgis_http = transport$http,
+                        .package = "tampaBayOpenData")
+  expect_error(tbod_get_dataset("construction-permits"),
+               "different or invalid layer ID", class = "tampa_response_error")
+  expect_length(fixture_queries(transport), 0L)
+})
+
 test_that("response spatial reference requires an exact JSON key", {
   metadata <- fixture_metadata()
   feature <- fixture_features(1L)[[1L]]

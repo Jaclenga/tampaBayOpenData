@@ -40,6 +40,8 @@
 #'   `attr(result, "discovery_complete")`. Live results also carry
 #'   `discovery_issues`, `discovery_failed_portals`,
 #'   `discovery_scanned_items`, and `discovery_truncated_portals` attributes.
+#'   If every selected portal fails, `source = "all"` returns the checked entries
+#'   with failure details in these attributes; unknown scan counts are `NA`.
 #' @return A tibble with stable IDs, service and layer locations, portal and
 #'   item IDs when available, and `validation_status` of `"checked"` or
 #'   `"discovered"`. Live results include scan-completeness and issue attributes

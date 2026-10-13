@@ -1,0 +1,57 @@
+name: catalog-health
+
+"on":
+  workflow_dispatch:
+  schedule:
+    # Weekly on Monday at 07:23 UTC, away from the top-of-hour queue.
+    - cron: '23 7 * * 1'
+
+# Scheduled verification reads public metadata and only uploads a run artifact.
+# It has no repository write token and no step that commits catalog changes.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  catalog:
+    name: Verify checked ArcGIS layers
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      TAMPA_OPEN_DATA_LIVE: "true"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          r-version: release
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          extra-packages: local::.
+          needs: check
+      - name: Protect bundled catalog files
+        run: chmod -R a-w inst/extdata
+      - name: Check catalog and save report
+        run: Rscript tools/check-catalog.R
+      - name: Verify bundled catalog is untouched
+        if: always()
+        shell: bash
+        run: |
+          if [[ -n "$(git status --porcelain --untracked-files=all -- inst/extdata)" ]]; then
+            echo "::error::Catalog files changed during verification"
+            git status --short -- inst/extdata
+            exit 1
+          fi
+      - name: Upload catalog health report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: catalog-health-${{ github.run_id }}
+          path: .artifacts/catalog-health/
+          if-no-files-found: warn
+          retention-days: 90

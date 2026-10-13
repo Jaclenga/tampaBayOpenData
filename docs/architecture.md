@@ -91,6 +91,14 @@ a uniquely named checked ID across publishers by default. Discovered rows
 carry their publisher and jurisdiction. Direct URLs have `"unspecified"`
 jurisdiction and do not accept a jurisdiction override.
 
+`tbod_check_catalog()` checks selected bundled entries against current layer
+metadata and saved schemas. It makes one layer request per entry and probes a
+service root only after a missing-layer response. The report
+records health, schema drift, and diagnostic status without changing the
+catalog. Transient failures remain `unknown` after bounded retries. The
+separate `tools/check-catalog.R` runner writes timestamped RDS, CSV, and
+Markdown reports for maintainers and the scheduled workflow.
+
 HTTP requests use `httr2`; `jsonlite` decodes responses, and `tibble` supplies
 tabular results. Optional `sf` and GDAL decode spatial results. Source field
 names and text fields remain intact. ArcGIS epoch-millisecond date fields become
@@ -105,18 +113,35 @@ geometry.
 Retrieval requests a matching count and the applicable full or subset object-ID
 manifest, then checks each bounded batch for missing, duplicate, or unexpected
 IDs and transfer limits.
-The client retries the specific generic ArcGIS query error observed
-intermittently in HTTP 200 responses, with at most four attempts. It keeps the
-same completeness checks after a retry.
+The shared ArcGIS request path retries rate limits, selected HTTP 5xx
+responses, temporary connection failures, timeouts, matching ArcGIS error
+codes inside HTTP 200 responses, and the specific generic ArcGIS query error
+observed intermittently in HTTP 200 responses. Retries
+have a finite attempt cap, exponential backoff with jitter, and a bounded
+wait for valid `Retry-After` delay or HTTP-date values. The package option
+`tampaBayOpenData.max_retries` sets additional retries per failure sequence
+(default 3, integer 0 through 10). The HTTP transport and ArcGIS
+errors in HTTP 200 responses have separate bounded sequences; mixed failures
+may therefore require more than four HTTP attempts. Both sequences obey the
+overall operation budget. Specific ArcGIS query and permission errors are
+returned immediately. The same completeness checks run after a successful
+retry.
 By default it fetches object-ID batches. Explicit ordering uses supported
-offset pagination with an object-ID tie breaker. A finite `limit` can
-request a subset; provenance records its completeness. Full-manifest queries
+offset pagination with an object-ID tie breaker. Layer metadata is used to
+cap page size and check ordering and result-offset support. Truncated or
+unexpectedly short ID batches are split into smaller requests; a singleton
+that remains truncated or missing fails. Empty or repeated ordered pages,
+duplicate IDs, and unexpected records also fail instead of yielding an
+apparently complete result. A finite `limit`
+can request a subset; provenance records its completeness. Full-manifest queries
 matching more than one million records are rejected. With `integrity = "auto"`,
 a finite preview of at most 1,000 rows on a source with more than 10,000 matches
 uses ordered offsets and a returned-ID subset manifest when ordering and
 pagination are supported and the preview is incomplete. Full retrievals and
 `integrity = "full"` verify a full manifest; `limit = 0` uses only the matching
-count. Provenance records this integrity path.
+count. If an automatic preview finds advertised offsets unusable, it can
+restart using the full manifest and object-ID batches; an explicit `order_by`
+request errors instead. Provenance records this integrity path.
 Advanced `query` options allow selected ArcGIS spatial, time, and version
 filters while protecting pagination and response-shape parameters. See the
 [retrieval guide](../vignettes/retrieval.Rmd) and
@@ -144,7 +169,10 @@ prevents concurrent writers; a lock left by a terminated process requires
 explicit removal after confirming that writer has stopped. No all-page feature
 list is accumulated. The ID manifest still uses memory and retains its
 one-million-record limit. Chunk provenance describes each chunk; the returned
-summary describes whole-download completeness. Attributes can change between
+summary describes whole-download completeness. An atomic `complete.rds` marker
+is written after all chunks validate. Resume removes an existing marker after
+matching the saved manifest and before revalidating chunks, then recreates it
+only after successful completion. Attributes can change between
 requests and across resumes. These downloads default to `total_timeout = Inf`.
 The [test guide](../tests/README.md) describes offline tests and the bounded
 live monitoring suite. [Validation](validation.md) records dated results,

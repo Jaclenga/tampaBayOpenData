@@ -54,9 +54,8 @@ the service maximum.}
 Response format, field selection, aggregation, geometry simplification,
 and pagination parameters are protected.}
 
-\item{timeout}{Per-request timeout in seconds. Transient transport and HTTP
-failures may receive three attempts; a generic ArcGIS query error may
-receive four.}
+\item{timeout}{Per-request timeout in seconds. Transient failures may be
+retried according to \code{options(tampaBayOpenData.max_retries = 3L)}.}
 
 \item{total_timeout}{Overall operation budget in seconds. Defaults to 120;
 \code{Inf} disables it. Requests and retry waits use the remaining budget.}
@@ -64,9 +63,12 @@ receive four.}
 \item{integrity}{\code{"auto"} (default) uses bounded preview validation when a
 finite limit is at most 1,000, more than 10,000 records match, and the
 layer supports ordering and pagination. The returned IDs are checked
-against the original filter. Full retrieval always uses the full object-ID
-manifest; \code{"full"} requires it even for a preview. A zero limit requests
-only the count. Provenance records the method used.}
+against the original filter. If advertised offsets fail or repeat, an
+automatic preview can restart with a full manifest and object-ID batches.
+Explicit \code{order_by} requests do not use this fallback. Full retrieval
+always uses the full object-ID manifest when matches exist; \code{"full"}
+requires it even for a preview. A zero limit or zero matching count
+requests only the count. Provenance records the method used.}
 }
 \value{
 A tibble or sf object with source, completeness, and retrieval

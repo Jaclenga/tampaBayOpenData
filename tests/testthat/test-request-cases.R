@@ -17,27 +17,28 @@ test_that("invalid transport statuses fail with source context before body parsi
 test_that("a rate limit is retried, while nontransient statuses fail immediately", {
   attempts <- 0L
   waits <- numeric()
+  local_mocked_bindings(.operation_sleep = function(seconds) {
+    waits <<- c(waits, seconds)
+  })
   local_mocked_bindings(
-    req_perform = fixture_req_perform,
-    req_perform1 = function(req, ...) {
+    req_perform = function(req, ...) {
       attempts <<- attempts + 1L
       status <- if (attempts == 1L) 429L else 200L
       httr2::response(status_code = status, url = req$url,
                       headers = list(`Retry-After` = "0"),
                       body = charToRaw('{"count":2}'))
     },
-    sys_sleep = function(seconds, ...) waits <<- c(waits, seconds),
     .package = "httr2"
   )
   result <- arcgis_request("https://example.invalid/FeatureServer/0")
   expect_identical(result$count, 2L)
   expect_identical(attempts, 2L)
-  expect_true(length(waits) >= 1L)
+  expect_length(waits, 1L)
   expect_true(all(is.finite(waits) & waits >= 0 & waits <= 30))
 
   for (status in c(400L, 404L, 501L)) {
     attempts <- 0L
-    local_mocked_bindings(req_perform1 = function(req, ...) {
+    local_mocked_bindings(req_perform = function(req, ...) {
       attempts <<- attempts + 1L
       httr2::response(status_code = status, url = req$url,
                       body = charToRaw('{"error":"synthetic"}'))
@@ -53,18 +54,19 @@ test_that("generic ArcGIS query failures retry without hiding specific errors", 
   intermittent <- fixture_response(list(error = list(
     code = 400L, message = "Unable to complete operation.", details = list())))
   attempts <- 0L
-  waits <- integer()
+  waits <- numeric()
   local_mocked_bindings(
     arcgis_http = function(...) {
       attempts <<- attempts + 1L
       if (attempts <= 2L) intermittent else fixture_response(list(count = 2L))
     },
-    .arcgis_retry_pause = function(attempt) waits <<- c(waits, attempt),
+    .operation_sleep = function(seconds) waits <<- c(waits, seconds),
     .package = "tampaBayOpenData"
   )
   expect_identical(arcgis_request(url)$count, 2L)
   expect_identical(attempts, 3L)
-  expect_identical(waits, 1:2)
+  expect_length(waits, 2L)
+  expect_true(all(is.finite(waits) & waits >= 0 & waits <= 30))
 
   attempts <- 0L
   local_mocked_bindings(arcgis_http = function(...) {
@@ -85,7 +87,7 @@ test_that("generic ArcGIS query failures retry without hiding specific errors", 
   expect_identical(attempts, 1L)
 })
 
-test_that("object-ID manifests require JSON arrays, including for zero matches", {
+test_that("object-ID manifests require JSON arrays when records match", {
   cases <- list(
     list(features = fixture_features(), change = function(payload) {
       names(payload$objectIds) <- paste0("id", seq_along(payload$objectIds))
@@ -93,10 +95,6 @@ test_that("object-ID manifests require JSON arrays, including for zero matches",
     }),
     list(features = fixture_features(1L), change = function(payload) {
       payload$objectIds <- 1L
-      payload
-    }),
-    list(features = list(), change = function(payload) {
-      payload["objectIds"] <- list(NULL)
       payload
     })
   )
@@ -118,6 +116,7 @@ test_that("object-ID manifests require JSON arrays, including for zero matches",
   result <- tbod_get_dataset("construction-permits", fields = "OBJECTID")
   expect_identical(result$OBJECTID, integer())
   expect_true(tbod_provenance(result)$complete)
+  expect_length(fixture_queries(empty, "ids"), 0L)
   expect_length(fixture_queries(empty, "features"), 0L)
 })
 

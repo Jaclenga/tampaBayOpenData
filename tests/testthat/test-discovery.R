@@ -257,6 +257,73 @@ test_that("stable item lookup ignores a different returned item ID", {
   expect_identical(requested, paste0(lookup, "/content/items/", requested_id))
 })
 
+test_that("stable item lookup preserves transient layer failures", {
+  previous <- options(tampaBayOpenData.max_retries = 0L)
+  on.exit(options(previous), add = TRUE)
+  item_id <- strrep("a", 32L)
+  lookup <- paste0("https://www.arcgis.com/sharing/rest/content/items/", item_id)
+  service <- "https://example.org/arcgis/rest/services/Unstable/FeatureServer"
+  direct <- paste0(service, "/3")
+  item <- discovery_test_item(item_id, direct)
+  stable <- paste0("arcgis:", item_id, ":3")
+  local_mocked_bindings(arcgis_http = function(url, params, timeout) {
+    if (identical(url, lookup)) return(fixture_response(item))
+    fixture_response(list(), 503L)
+  }, .package = "tampaBayOpenData")
+  expect_error(tbod_get_dataset(stable), "HTTP 503", class = "tampa_http_error")
+
+  item$url <- service
+  requested <- character()
+  local_mocked_bindings(arcgis_http = function(url, params, timeout) {
+    requested <<- c(requested, url)
+    if (identical(url, lookup)) return(fixture_response(item))
+    if (identical(url, service)) return(fixture_response(list(
+      layers = list(list(id = 0L), list(id = 3L)), tables = list())))
+    fixture_response(list(), 503L)
+  }, .package = "tampaBayOpenData")
+  expect_error(tbod_get_dataset(stable), "HTTP 503", class = "tampa_http_error")
+  expect_false(paste0(service, "/0") %in% requested)
+
+  local_mocked_bindings(arcgis_http = function(url, params, timeout) {
+    if (identical(url, lookup)) return(fixture_response(item))
+    fixture_response(list(), 503L)
+  }, .package = "tampaBayOpenData")
+  expect_error(tbod_get_dataset(stable), "HTTP 503", class = "tampa_http_error")
+
+  local_mocked_bindings(arcgis_http = function(url, params, timeout) {
+    if (identical(url, lookup)) return(fixture_response(item))
+    if (identical(url, service)) return(fixture_response(list(
+      layers = list(list(id = 3L)), tables = list())))
+    fixture_response(list(error = list(code = 503L, message = "Temporarily busy")))
+  }, .package = "tampaBayOpenData")
+  expect_error(tbod_get_dataset(stable), "ArcGIS error 503",
+               class = "tampa_arcgis_transient_error")
+})
+
+test_that("stable item lookup still treats confirmed missing and unsupported layers as absent", {
+  previous <- options(tampaBayOpenData.max_retries = 0L)
+  on.exit(options(previous), add = TRUE)
+  item_id <- strrep("b", 32L)
+  lookup <- paste0("https://www.arcgis.com/sharing/rest/content/items/", item_id)
+  endpoint <- "https://example.org/arcgis/rest/services/Absent/FeatureServer/0"
+  item <- discovery_test_item(item_id, endpoint)
+  local_mocked_bindings(arcgis_http = function(url, params, timeout) {
+    if (identical(url, lookup)) return(fixture_response(item))
+    fixture_response(list(), 404L)
+  }, .package = "tampaBayOpenData")
+  expect_equal(nrow(.discover_arcgis_item(item_id, 0L)), 0L)
+  expect_error(tbod_get_dataset(paste0("arcgis:", item_id, ":0")),
+               "unavailable or is not a supported query layer",
+               class = "tampa_input_error")
+
+  local_mocked_bindings(arcgis_http = function(url, params, timeout) {
+    if (identical(url, lookup)) return(fixture_response(item))
+    fixture_response(list(id = 0L, name = "No Query", type = "Feature Layer",
+                          geometryType = "esriGeometryPoint", capabilities = "Editing"))
+  }, .package = "tampaBayOpenData")
+  expect_equal(nrow(.discover_arcgis_item(item_id, 0L)), 0L)
+})
+
 test_that("empty search and malformed pages have explicit outcomes", {
   city <- "https://tampa.maps.arcgis.com/sharing/rest"
   pages <- list()

@@ -90,7 +90,7 @@ test_that("prepared POST bytes retain accented characters in SQL filters", {
   expect_identical(params$f, "json")
 })
 
-test_that("requests carry the package headers, caller timeout, and bounded retry policy", {
+test_that("requests carry the package headers and caller timeout", {
   capture <- http_capture()
   arcgis_http("https://example.invalid/FeatureServer/0", list(f = "json"), 17.5)
   req <- capture()[[1L]]
@@ -98,8 +98,7 @@ test_that("requests carry the package headers, caller timeout, and bounded retry
   expect_identical(req$headers$Accept, "application/json")
   expect_identical(req$options$useragent, "tampaBayOpenData/0.1.0")
   expect_equal(req$options$timeout_ms, 17500)
-  expect_equal(req$policies$retry_max_tries, 3)
-  expect_true(req$policies$retry_on_failure)
+  expect_null(req$policies$retry_max_tries)
   # HTTP statuses must reach arcgis_request() so its source-aware errors run.
   for (status in c(404L, 429L, 503L)) {
     response <- http_fixture_response(req, '{"error":"synthetic"}', status)
@@ -135,6 +134,8 @@ test_that("invalid user agent options fail before HTTP", {
 })
 
 test_that("the HTTP boundary preserves status codes and UTF-8 response bodies", {
+  previous <- options(tampaBayOpenData.max_retries = 0L)
+  on.exit(options(previous), add = TRUE)
   body <- '{"name":"Jos\u00e9 Park","note":"synthetic"}'
   for (status in c(202L, 206L, 429L, 503L)) {
     capture <- http_capture(body, status)
@@ -162,6 +163,8 @@ test_that("incomplete successful HTTP statuses are rejected before JSON parsing"
 })
 
 test_that("HTTP response errors retain dataset and endpoint context after transport", {
+  previous <- options(tampaBayOpenData.max_retries = 0L)
+  on.exit(options(previous), add = TRUE)
   capture <- http_capture('{"error":"maintenance"}', 503L)
   entry <- tbod_dataset_info("construction-permits")
   url <- paste0(entry$service_url, "/", entry$layer_id)
@@ -177,6 +180,8 @@ test_that("HTTP response errors retain dataset and endpoint context after transp
 })
 
 test_that("transport failures are wrapped with their cause and source context", {
+  previous <- options(tampaBayOpenData.max_retries = 0L)
+  on.exit(options(previous), add = TRUE)
   requests <- list()
   local_mocked_bindings(req_perform = function(req, ...) {
     requests[[length(requests) + 1L]] <<- req
@@ -193,7 +198,7 @@ test_that("transport failures are wrapped with their cause and source context", 
   expect_match(conditionMessage(error), "could not be reached.*synthetic connection reset")
   expect_match(conditionMessage(error), entry$source_url, fixed = TRUE)
   expect_length(requests, 1L)
-  expect_equal(requests[[1L]]$policies$retry_max_tries, 3)
+  expect_null(requests[[1L]]$policies$retry_max_tries)
   expect_equal(requests[[1L]]$options$timeout_ms, 9000)
 })
 

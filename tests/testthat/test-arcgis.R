@@ -159,6 +159,9 @@ test_that("empty matches and deliberate zero limits retain a typed schema", {
   expect_s3_class(result$LASTUPDATE, "POSIXct")
   expect_false("SHAPE" %in% names(result))
   expect_true(tbod_provenance(result)$complete)
+  expect_identical(tbod_provenance(result)$integrity, "count-only")
+  expect_identical(tbod_provenance(result)$pagination, "count-only")
+  expect_length(fixture_queries(empty, "ids"), 0L)
   expect_length(fixture_queries(empty, "features"), 0L)
   zero <- fixture_transport()
   local_mocked_bindings(arcgis_http = zero$http, .package = "tampaBayOpenData")
@@ -195,6 +198,59 @@ test_that("an explicit OID ordering is preserved and invalid ordering is refused
                      "OBJECTID;DROP TABLE permits", NA_character_, 1)) {
     expect_error(tbod_get_dataset("construction-permits", order_by = value), "order_by")
   }
+})
+
+test_that("ordered pages reject reversed records within and across offsets", {
+  for (mode in c("within", "across")) {
+    transport <- fixture_transport(transform = function(payload, params, ...) {
+      offset <- params$resultOffset
+      if (!is.null(offset) && offset == 0) {
+        payload$features <- if (mode == "within")
+          fixture_features(c(2L, 1L)) else fixture_features(c(1L, 3L))
+      }
+      if (!is.null(offset) && offset == 2 && mode == "across") {
+        payload$features <- fixture_features(c(2L, 4L))
+      }
+      payload
+    })
+    local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+    expect_error(tbod_get_dataset("construction-permits", order_by = "OBJECTID ASC",
+                                  page_size = 2),
+                 "out of the requested order", class = "tampa_integrity_error")
+  }
+})
+
+test_that("an unselected ordering field is fetched only for order validation", {
+  transport <- fixture_transport()
+  local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+  result <- tbod_get_dataset("construction-permits", fields = "RECORD_ID",
+                             order_by = "PROJECTSTATUS DESC", page_size = 2)
+  expect_identical(names(result), "RECORD_ID")
+  expect_true(all(vapply(fixture_queries(transport, "features"), function(x) {
+    "PROJECTSTATUS" %in% strsplit(x$params$outFields, ",", fixed = TRUE)[[1L]]
+  }, logical(1))))
+
+  ignored <- fixture_transport(transform = function(payload, params, ...) {
+    if (!is.null(params$resultOffset) && params$resultOffset == 0) {
+      payload$features <- fixture_features(c(1L, 2L))
+    }
+    payload
+  })
+  local_mocked_bindings(arcgis_http = ignored$http, .package = "tampaBayOpenData")
+  expect_error(tbod_get_dataset("construction-permits", fields = "RECORD_ID",
+                                order_by = "PROJECTSTATUS DESC", page_size = 2),
+               "out of the requested order", class = "tampa_integrity_error")
+})
+
+test_that("ordered previews reject a service that ignores requested sorting", {
+  transport <- fixture_transport(count = 1000001, transform = function(payload, params, ...) {
+    if (!is.null(params$resultOffset)) payload$features <- fixture_features(c(2L, 1L))
+    payload
+  })
+  local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
+  expect_error(tbod_get_dataset("construction-permits", order_by = "OBJECTID ASC",
+                                limit = 2, page_size = 2),
+               "out of the requested order", class = "tampa_integrity_error")
 })
 
 test_that("stalled, repeated, oversized, and unexpected ordered pages are errors", {

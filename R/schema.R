@@ -288,9 +288,20 @@ tbod_schema <- function(id, jurisdiction = NULL, refresh = FALSE,
 }
 
 .schema_endpoint_missing <- function(error) {
-  inherits(error, c("tampa_http_error", "tampa_arcgis_error")) &&
-    grepl("HTTP (404|410)|ArcGIS error (404|410)|[Ll]ayer (ID )?[0-9]* ?(does not exist|not found)|[Ll]ayer not found",
-          conditionMessage(error))
+  if (!inherits(error, c("tampa_http_error", "tampa_arcgis_error"))) return(FALSE)
+  message <- conditionMessage(error)
+  found <- regmatches(message,
+                      regexec("(?:HTTP|ArcGIS error) ([0-9]+)", message,
+                              perl = TRUE))[[1L]]
+  code <- if (length(found) >= 2L) as.integer(found[[2L]]) else NA_integer_
+  if (!is.na(code) && code %in% c(404L, 410L)) return(TRUE)
+  # Some ArcGIS services use 400 with an explicit missing-layer message.
+  # A transient or access error must not become evidence of disappearance.
+  if (!inherits(error, "tampa_arcgis_error") ||
+      inherits(error, "tampa_arcgis_transient_error") ||
+      (!is.na(code) && code != 400L)) return(FALSE)
+  grepl("\\b[Ll]ayer(?: ID)?(?: [0-9]+)? (?:does not exist|not found)\\b",
+        message, perl = TRUE)
 }
 
 .schema_missing_report <- function(dataset, expected, error) {

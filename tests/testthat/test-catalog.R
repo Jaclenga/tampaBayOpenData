@@ -151,8 +151,13 @@ test_that("expected schemas distinguish equal IDs in different jurisdictions", {
                    first$expected_schema$endpoint)
   expect_identical(attached[[2L]]$expected_schema$endpoint,
                    second$source_url)
-  expect_error(.attach_expected_schemas(list(first, second), schemas[1L]),
-               "must match", class = "tampa_data_error")
+  partial <- .attach_expected_schemas(list(first, second), schemas[1L])
+  expect_null(partial[[1L]]$expected_schema)
+  expect_identical(partial[[2L]]$expected_schema$endpoint, second$source_url)
+  extra <- schemas
+  extra[["neighboring-city/not-curated"]] <- first$expected_schema
+  expect_error(.attach_expected_schemas(list(first, second), extra),
+               "must reference checked", class = "tampa_data_error")
 
   local_mocked_bindings(.read_registry = function() attached,
                         .package = "tampaBayOpenData")

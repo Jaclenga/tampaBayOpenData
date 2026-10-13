@@ -37,6 +37,7 @@ Imports:
     jsonlite (>= 1.6.0),
     tibble (>= 3.0.0)
 Suggests:
+    ggplot2,
     knitr,
     rmarkdown,
     sf (>= 1.0.0),

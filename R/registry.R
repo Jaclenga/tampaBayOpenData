@@ -11,21 +11,24 @@
   keys <- vapply(entries, function(entry) {
     paste(entry$jurisdiction, entry$id, sep = "/")
   }, character(1))
-  if (anyDuplicated(keys) || anyDuplicated(names(schemas)) ||
-      !setequal(names(schemas), keys)) {
-    .abort("The bundled expected schemas must match the checked dataset registry.")
+  if (!is.list(schemas) || (length(schemas) && is.null(names(schemas))) ||
+      anyDuplicated(keys) || anyDuplicated(names(schemas)) ||
+      any(!names(schemas) %in% keys)) {
+    .abort("The bundled expected schemas must reference checked dataset registry entries.")
   }
   for (i in seq_along(entries)) {
     schema <- schemas[[keys[[i]]]]
-    .validate_expected_schema(schema)
-    endpoint <- paste0(entries[[i]]$service_url, "/", entries[[i]]$layer_id)
-    if (!identical(schema$endpoint, endpoint) ||
-        !identical(schema$geometry_type, entries[[i]]$geometry_type) ||
-        !identical(schema$object_id_field, entries[[i]]$object_id_field) ||
-        !.same_schema_crs(schema$spatial_reference,
-                          entries[[i]]$spatial_reference)) {
-      .abort(paste0("The bundled expected schema for `", keys[[i]],
-                    "` disagrees with the checked dataset registry."))
+    if (!is.null(schema)) {
+      .validate_expected_schema(schema)
+      endpoint <- paste0(entries[[i]]$service_url, "/", entries[[i]]$layer_id)
+      if (!identical(schema$endpoint, endpoint) ||
+          !identical(schema$geometry_type, entries[[i]]$geometry_type) ||
+          !identical(schema$object_id_field, entries[[i]]$object_id_field) ||
+          !.same_schema_crs(schema$spatial_reference,
+                            entries[[i]]$spatial_reference)) {
+        .abort(paste0("The bundled expected schema for `", keys[[i]],
+                      "` disagrees with the checked dataset registry."))
+      }
     }
     entries[[i]]$expected_schema <- schema
   }

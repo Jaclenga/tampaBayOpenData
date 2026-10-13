@@ -88,9 +88,30 @@ test_that("checked catalog stays available when live discovery fails", {
   expect_warning(all <- tbod_list_datasets(), "returning checked datasets only")
   expect_identical(nrow(all), 52L)
   expect_true(all(all$validation_status == "checked"))
+  expect_false(attr(all, "discovery_complete"))
+  expect_identical(attr(all, "discovery_failed_portals"), names(.portal_registry()))
+  expect_match(attr(all, "discovery_issues"), "The portal is unavailable", fixed = TRUE)
+  expect_true(all(is.na(attr(all, "discovery_scanned_items"))))
   expect_error(tbod_list_datasets(source = "live"), "portal is unavailable")
   expect_silent(checked <- tbod_list_datasets(source = "checked"))
   expect_identical(nrow(checked), 52L)
+})
+
+test_that("complete portal failure fallback retains per-portal discovery diagnostics", {
+  previous <- options(tampaBayOpenData.max_retries = 0L)
+  on.exit(options(previous), add = TRUE)
+  local_mocked_bindings(arcgis_http = function(...) fixture_response(list(), 503L),
+                        .package = "tampaBayOpenData")
+
+  expect_warning(all <- tbod_list_datasets(source = "all",
+                                            portals = c("city", "tbrpc")),
+                 "returning checked datasets only")
+  expect_identical(nrow(all), 52L)
+  expect_false(attr(all, "discovery_complete"))
+  expect_identical(attr(all, "discovery_failed_portals"), c("city", "tbrpc"))
+  expect_length(attr(all, "discovery_issues"), 2L)
+  expect_true(all(grepl("HTTP 503", attr(all, "discovery_issues"), fixed = TRUE)))
+  expect_identical(attr(all, "discovery_scanned_items"), c(city = 0L, tbrpc = 0L))
 })
 
 test_that("catalog source and portal options reject invalid values", {

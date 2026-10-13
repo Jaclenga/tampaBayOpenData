@@ -55,6 +55,12 @@ compatible changes warn; incompatible changes stop the request. Checked status
 does not verify individual records or guarantee the service will remain
 available. See [schema checks and retrieval](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html#check-the-live-schema).
 
+To inspect current endpoint and schema health across checked entries, run
+`tbod_check_catalog()` or select a few IDs with
+`tbod_check_catalog(ids = "stpete-parks")`. It contacts the publishers and
+returns one diagnostic row per entry. A healthy result is a point-in-time
+metadata check, not a guarantee that every record is current or retrievable.
+
 ## Search beyond the catalog
 
 Live discovery searches the six configured ArcGIS publishers. For example,
@@ -103,6 +109,20 @@ policy](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-cata
 for selection and maintenance decisions. The package's MIT license covers its
 code, not the source data. The package is independent of the publishers and
 rOpenSci.
+
+The [dashboard methodology and build steps](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/coverage-dashboard.md)
+explain how checked-layer counts and optional health reports appear on the
+coverage page. Missing or stale health evidence is marked **unverified**.
+
+## Practical tutorials
+
+- [Housing and development activity](https://jaclenga.github.io/tampaBayOpenData/articles/housing-development.html): discover checked layers, summarize Tampa development cases, and inspect a Pinellas assisted-housing inventory.
+- [Water quality around Tampa Bay](https://jaclenga.github.io/tampaBayOpenData/articles/water-quality.html): assess missing observations and compare reported monitoring measurements.
+- [Infrastructure and capital projects](https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.html): inspect project rows, types, and phases without treating map features as unique projects.
+
+The tutorials use checked source IDs and fields. Their live retrieval and
+plotting code runs when you follow a tutorial locally; pkgdown builds do not
+contact the publishers. Install `ggplot2` to run the plotting examples.
 
 ## Citation
 

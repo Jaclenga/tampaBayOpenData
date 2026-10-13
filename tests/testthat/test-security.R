@@ -77,15 +77,12 @@ test_that("deep JSON is rejected with context before recursive validation exhaus
 
 test_that("HTTP redirects fail without authorizing a second destination", {
   requests <- list()
-  local_mocked_bindings(req_perform1 = function(req, ...) {
+  local_mocked_bindings(req_perform = function(req, ...) {
     requests[[length(requests) + 1L]] <<- req
     httr2::response(status_code = 302L, url = req$url,
                    headers = list(Location = "http://127.0.0.1/internal"),
                    body = charToRaw("{}"))
   }, .package = "httr2")
-  # Override the ordinary test dispatch guard; actual sockets remain mocked.
-  local_mocked_bindings(req_perform = fixture_req_perform,
-                        .package = "httr2")
   entry <- tbod_dataset_info("construction-permits")
   url <- paste0(entry$service_url, "/", entry$layer_id)
   error <- tryCatch(arcgis_request(url, dataset = entry), error = identity)
@@ -96,9 +93,9 @@ test_that("HTTP redirects fail without authorizing a second destination", {
   expect_identical(requests[[1L]]$options$followlocation, FALSE)
 })
 
-test_that("server retry headers cannot request an unbounded sleep", {
+test_that("retry headers are parsed without shortening valid delays", {
   headers <- c("0", "5", "86400", "1e100", "-5", "invalid", "Inf", "-Inf", "NaN")
-  expected <- c(0, 5, 30, 30, 0, NA_real_, NA_real_, NA_real_, NA_real_)
+  expected <- c(0, 5, 86400, NA_real_, NA_real_, NA_real_, NA_real_, NA_real_, NA_real_)
   for (i in seq_along(headers)) {
     response <- httr2::response(status_code = 503L,
                                 headers = list(`Retry-After` = headers[[i]]))
@@ -109,30 +106,29 @@ test_that("server retry headers cannot request an unbounded sleep", {
     response <- httr2::response(status_code = 503L,
                                 headers = list(Date = "Tue, 29 Sep 2026 08:00:00 GMT",
                                                `Retry-After` = date))
-    expect_identical(.bounded_retry_after(response), if (startsWith(date, "Wed")) 30 else 0)
+    expect_identical(.bounded_retry_after(response), if (startsWith(date, "Wed")) 86400 else 0)
   }
 })
 
-test_that("the actual retry loop limits a one-day header without real sleeps", {
+test_that("the actual retry loop declines a one-day header without sleeping", {
+  previous <- options(tampaBayOpenData.max_retries = 2L)
+  on.exit(options(previous), add = TRUE)
   waits <- numeric()
   attempts <- 0L
-  # Restore real retry orchestration while replacing its network and sleep sinks.
-  real_perform <- fixture_req_perform
-  local_mocked_bindings(req_perform = real_perform,
-                        req_perform1 = function(req, ...) {
-                          attempts <<- attempts + 1L
-                          httr2::response(status_code = 503L, url = req$url,
-                                          headers = list(`Retry-After` = "86400"),
-                                          body = charToRaw("{}"))
-                        }, sys_sleep = function(seconds, ...) {
-                          waits <<- c(waits, seconds)
-                        }, .package = "httr2")
+  local_mocked_bindings(.operation_sleep = function(seconds) {
+    waits <<- c(waits, seconds)
+  })
+  local_mocked_bindings(req_perform = function(req, ...) {
+    attempts <<- attempts + 1L
+    httr2::response(status_code = 503L, url = req$url,
+                    headers = list(`Retry-After` = "86400"),
+                    body = charToRaw("{}"))
+  }, .package = "httr2")
   response <- arcgis_http("https://example.invalid/FeatureServer/0", list(f = "json"), 1)
   expect_identical(response$status, 503L)
-  expect_identical(attempts, 3L)
-  expect_true(length(waits) > 0L)
-  expect_true(all(is.finite(waits) & waits >= 0 & waits <= 30))
-  expect_equal(sum(waits), 60)
+  expect_identical(response$retry_after, 86400)
+  expect_identical(attempts, 1L)
+  expect_length(waits, 0L)
 })
 
 test_that("oversized responses fail before JSON parsing with source context", {

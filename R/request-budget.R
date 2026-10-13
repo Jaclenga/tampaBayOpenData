@@ -37,10 +37,11 @@
   .check_operation_timeout(timeout, dataset, url)
 }
 
-# A fresh transfer timeout is calculated for every attempt. Letting httr2 retry
-# one request internally would reuse its original timeout after backoff waits.
-.perform_budgeted_request <- function(req, timeout, url) {
-  for (attempt in seq_len(3L)) {
+# Keep one HTTP retry path for requests with and without an operation deadline.
+# A fresh transfer timeout is calculated after every backoff wait.
+.perform_arcgis_http <- function(req, timeout, url) {
+  max_retries <- .arcgis_max_retries()
+  for (attempt in seq_len(max_retries + 1L)) {
     .check_operation_timeout(timeout, url = url)
     remaining <- .operation_remaining(timeout)
     if (remaining < 0.001) {
@@ -51,15 +52,33 @@
     response <- tryCatch(httr2::req_perform(current), error = identity)
     .check_operation_timeout(timeout, url = url)
     failed <- inherits(response, "error")
-    if (failed && !inherits(response, c("httr2_failure", "curl_error"))) stop(response)
-    transient <- failed || httr2::resp_status(response) %in%
-      c(429L, 500L, 502L, 503L, 504L)
-    if (!transient || attempt == 3L) {
-      if (failed) stop(response)
-      return(response)
+    if (failed && !.arcgis_retryable_transport_error(response)) stop(response)
+    transient <- failed || .arcgis_retryable_status(httr2::resp_status(response))
+    if (!transient || attempt > max_retries) {
+      if (failed) {
+        .abort(paste0("A transient connection failure or timeout persisted after ",
+                      attempt, " HTTP attempt(s) (", attempt - 1L,
+                      " retries): ", conditionMessage(response)),
+               url = url, subclass = "tampa_http_error")
+      }
+      return(list(response = response, attempts = attempt))
     }
     delay <- if (failed) NA_real_ else .bounded_retry_after(response)
-    if (is.na(delay)) delay <- stats::runif(1L, 1, 2^attempt)
+    if (is.na(delay)) delay <- .arcgis_backoff(attempt)
+    if (delay > 30) {
+      return(list(response = response, attempts = attempt,
+                  retry_after = delay))
+    }
     .operation_retry_wait(delay, timeout, url = url)
   }
+}
+
+.arcgis_retryable_transport_error <- function(error) {
+  if (!inherits(error, c("httr2_failure", "curl_error"))) return(FALSE)
+  code <- error$code
+  if (is.numeric(code) && length(code) == 1L && is.finite(code)) {
+    # libcurl codes for temporary DNS/connect/transfer/timeout failures.
+    return(code %in% c(5, 6, 7, 18, 28, 35, 52, 55, 56))
+  }
+  TRUE
 }

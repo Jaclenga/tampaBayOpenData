@@ -162,7 +162,8 @@
   }
 }
 
-.discovery_item_rows <- function(item, timeout, service_cache, config) {
+.discovery_item_rows <- function(item, timeout, service_cache, config,
+                                 target_layer_id = NULL, strict = FALSE) {
   if (!is.list(item) || !is.null(item$error) ||
       !is.character(item$id) || length(item$id) != 1L || is.na(item$id) ||
       !grepl("^[[:xdigit:]]{32}$", item$id) ||
@@ -191,6 +192,7 @@
                                             " has an invalid ID."))
       next
     }
+    if (!is.null(target_layer_id) && candidate$id != target_layer_id) next
     # FeatureServer root entries may contain only an ID and name. Inspect the
     # layer resource for its type, geometry, and Query capability.
     if (is.null(parts$layer_id) && !is.null(candidate$type) &&
@@ -202,6 +204,7 @@
                error = .discovery_error)
     } else candidate
     if (inherits(layer, "error")) {
+      if (strict && !.discovery_unavailable_error(layer)) stop(layer)
       layer_issues <- c(layer_issues, paste0("Layer ", layer_id, ": ",
                                             conditionMessage(layer)))
       next
@@ -308,6 +311,19 @@
   e
 }
 
+# Stable IDs may disappear, but a failed or uncertain metadata request does
+# not prove removal. Only explicit missing/unsupported metadata responses are
+# translated to an empty lookup result.
+.discovery_unavailable_error <- function(e) {
+  if (inherits(e, "tampa_arcgis_transient_error")) return(FALSE)
+  if (!inherits(e, c("tampa_http_error", "tampa_arcgis_error"))) return(FALSE)
+  message <- conditionMessage(e)
+  pattern <- if (inherits(e, "tampa_http_error"))
+    "returned HTTP ([0-9]{3})" else "ArcGIS error ([0-9]+):"
+  found <- regmatches(message, regexec(pattern, message))[[1L]]
+  length(found) >= 2L && as.integer(found[[2L]]) %in% c(400L, 404L, 405L, 501L)
+}
+
 # Return public provider layers represented by portal items. max_items limits
 # portal *items per provider*, not expanded layer rows. A bad item is isolated;
 # an invalid search page remains a visible error.
@@ -339,9 +355,13 @@
     }
   }
   if (length(failed_portals) == length(keys) && !length(rows)) {
-    .abort(paste0("All selected ArcGIS portals failed during discovery. ",
-                  paste(issues, collapse = " | ")),
-           subclass = "tampa_discovery_error")
+    stop(errorCondition(
+      paste0("All selected ArcGIS portals failed during discovery. ",
+             paste(issues, collapse = " | ")),
+      class = c("tampa_discovery_error", "tampa_data_error"),
+      dataset_id = NULL, url = NULL,
+      discovery_metadata = .discovery_metadata(
+        issues, failed_portals, scanned_items, truncated_portals)))
   }
   result <- if (length(rows)) do.call(rbind, rows) else .empty_discovery()
   result <- .dedupe_discovery(result)
@@ -559,10 +579,11 @@
   }
   rows <- tryCatch(.discovery_item_rows(item, timeout,
                                         new.env(parent = emptyenv()),
-                                        config),
+                                        config, target_layer_id = layer_id,
+                                        strict = TRUE),
                     error = function(e) {
-                      if (inherits(e, "tampa_timeout_error")) stop(e)
-                      .empty_discovery()
+                      if (.discovery_unavailable_error(e)) return(.empty_discovery())
+                      stop(e)
                     })
   if (!is.null(layer_id)) rows <- rows[rows$layer_id == layer_id, , drop = FALSE]
   .dedupe_discovery(rows)

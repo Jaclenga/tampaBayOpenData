@@ -10,7 +10,7 @@
 #' [tbod_check_schema()] returns a categorized report of current differences.
 #'
 #' Requests the current ArcGIS layer schema,
-#' matching count, and object-ID manifest. Full requests are validated against
+#' matching count, and an object-ID manifest when records match. Full requests are validated against
 #' that manifest. Small previews of large queryable layers can validate only
 #' the returned IDs against the original filter. A missing or duplicate record,
 #' truncated manifest, unexpected
@@ -37,7 +37,8 @@
 #' Attribute changes during retrieval cannot be detected or frozen by this client.
 #' Requests do not follow redirects. Each accepted response is limited to 50 MiB,
 #' JSON validation allows at most 64 nested containers, and server-requested
-#' retry waits are capped at 30 seconds. Spatial WKT must be an inline definition.
+#' retry waits are bounded to 30 seconds; longer valid Retry-After delays stop
+#' retrying without an early request. Spatial WKT must be an inline definition.
 #' Keep native curl, GDAL, and PROJ libraries patched; these checks do not isolate
 #' native parsers or bound decompression memory on older curl builds.
 #' @param id Checked package dataset ID, one-row discovered dataset descriptor,
@@ -69,9 +70,10 @@
 #'   `units`, `gdbVersion`, `historicMoment`, `sqlFormat`, `datumTransformation`.
 #'   Values can be scalars or JSON-style lists. Response format, field selection,
 #'   aggregation, geometry simplification, and pagination parameters are protected.
-#' @param timeout Timeout in seconds for each HTTP attempt. Transient transport
-#'   and HTTP failures may receive three attempts; one generic ArcGIS query
-#'   error may receive four.
+#' @param timeout Timeout in seconds for each HTTP attempt. Transient failures
+#'   may be retried according to the integer option
+#'   `tampaBayOpenData.max_retries` (default 3 additional retries per failure
+#'   sequence; 0 to 10).
 #' @param total_timeout Overall operation time budget in seconds. Defaults to
 #'   120; use Inf to disable it. Requests and retry waits use the remaining
 #'   budget. Parsing is checked after it finishes rather than interrupted.
@@ -79,8 +81,9 @@
 #'   limit is at most 1,000, more than 10,000 records match, and the layer supports
 #'   ordering and pagination. Returned IDs are verified against the original
 #'   filter, without retrieving all matching IDs. Full retrieval always uses
-#'   the full manifest. `"full"` requires that manifest even for a preview.
-#'   A zero limit requests only the count. Provenance records the verification
+#'   the full manifest. `"full"` requires that manifest even for a preview
+#'   when records match. A zero limit or zero matching count requests only
+#'   the count. Provenance records the verification
 #'   method and never labels a deliberate subset complete.
 #' @return A tibble, or an sf object when spatial retrieval is requested. Source
 #'   metadata are attached as `source`, `dataset_id`, `jurisdiction`, and

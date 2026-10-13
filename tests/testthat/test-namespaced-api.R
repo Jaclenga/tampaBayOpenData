@@ -1,6 +1,6 @@
 test_that("only canonical tbod names are exported", {
   expected <- c(
-    "tbod_check_schema", "tbod_dataset_info", "tbod_discover",
+    "tbod_check_catalog", "tbod_check_schema", "tbod_dataset_info", "tbod_discover",
     "tbod_download_arcgis_layer", "tbod_download_dataset",
     "tbod_get_arcgis_layer", "tbod_get_capital_projects",
     "tbod_get_dataset", "tbod_get_development_cases", "tbod_get_permits",

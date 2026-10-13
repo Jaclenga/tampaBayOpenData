@@ -43,7 +43,8 @@ service maximum. The effective size must stay fixed when resuming.}
 \code{spatialRel}, and \code{time}. Response format, field selection, aggregation,
 geometry simplification, and pagination parameters are protected.}
 
-\item{timeout}{Per-request timeout in seconds.}
+\item{timeout}{Per-request timeout in seconds. Transient failures may be
+retried according to \code{options(tampaBayOpenData.max_retries = 3L)}.}
 
 \item{total_timeout}{Overall operation deadline in seconds. The default
 \code{Inf} allows a long download; completed chunks remain for a later resume
@@ -60,8 +61,9 @@ Uses \code{\link[=tbod_download_dataset]{tbod_download_dataset()}} with a public
 MapServer layer URL. The direct source has \code{not_checked} provenance and no
 inferred publisher identity. A saved manifest fixes the endpoint, query,
 fields, schema, CRS, IDs, and batch size; a resumed call rechecks them before
-reusing validated chunks. See \code{\link[=tbod_download_dataset]{tbod_download_dataset()}} for the directory,
-lock, and record-change rules.
+reusing validated chunks. Successful validation writes \code{complete.rds} in
+the download directory; a resumed call clears and recreates it after
+matching the manifest and revalidating chunks. See \code{\link[=tbod_download_dataset]{tbod_download_dataset()}} for the directory, lock, and record-change rules.
 }
 \examples{
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {

@@ -89,7 +89,7 @@ test_that("budgeted waits cannot exceed the remaining time or hide timeout error
   local_mocked_bindings(req_perform = function(req, ...) {
     attempts <<- attempts + 1L
     httr2::response(status_code = 503L, url = req$url,
-      headers = list(`Retry-After` = "86400"), body = charToRaw('{}'))
+      headers = list(`Retry-After` = "2"), body = charToRaw('{}'))
   }, .package = "httr2")
   expect_error(arcgis_request("https://example.invalid/FeatureServer/0",
                               timeout = .operation_timeout(30, 1)),
@@ -99,13 +99,13 @@ test_that("budgeted waits cannot exceed the remaining time or hide timeout error
   local_mocked_bindings(arcgis_http = function(...) fixture_response(list(
     error = list(code = 400L, message = "Unable to complete operation.",
                   details = list()))),
-    .arcgis_retry_pause = function(...) stop("unexpected sleep"))
+    .arcgis_backoff = function(...) 0.25)
   expect_error(arcgis_request("https://example.invalid/FeatureServer/0/query",
                               timeout = .operation_timeout(30, 0.1)),
                "time budget", class = "tampa_timeout_error")
 })
 
-test_that("expired budgets block dispatch and unlimited operations retain retry policy", {
+test_that("expired budgets block dispatch", {
   local_mocked_bindings(.operation_clock = function() 5,
                         arcgis_http = function(...) stop("unexpected dispatch"))
   timeout <- 30
@@ -124,22 +124,18 @@ test_that("less than one millisecond remaining stops before transport dispatch",
                "time budget", class = "tampa_timeout_error")
 })
 
-test_that("budgeted transport owns retries instead of stacking httr2 retry loops", {
+test_that("budgeted transport retries once for each eligible response", {
   attempts <- 0L
   waits <- numeric()
   local_mocked_bindings(.operation_sleep = function(seconds) {
     waits <<- c(waits, seconds)
   })
   local_mocked_bindings(
-    req_perform = fixture_req_perform,
-    req_perform1 = function(req, ...) {
+    req_perform = function(req, ...) {
       attempts <<- attempts + 1L
       httr2::response(status_code = if (attempts == 1L) 503L else 200L,
         url = req$url, headers = list(`Retry-After` = "1"),
         body = charToRaw('{"count":2}'))
-    },
-    sys_sleep = function(seconds, ...) {
-      if (seconds > 0) stop("unexpected inner retry wait")
     },
     .package = "httr2"
   )

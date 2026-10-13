@@ -4,7 +4,7 @@
 #' layer URL. A custom Enterprise portal can be provided with stable IDs.
 #' Layers in the checked catalog are compared with expected schemas before downloading;
 #' compatible drift warns and incompatible drift stops the download.
-#' @details The client retrieves the full matching object-ID manifest, then
+#' @details The client retrieves the matching object-ID manifest when records exist, then
 #'   writes bounded RDS chunks to a caller-selected directory. Each chunk is
 #'   a tibble or `sf` object with its own provenance; read files one at a time
 #'   with [readRDS()]. Feature pages are not accumulated in memory, but the
@@ -15,7 +15,12 @@
 #'   IDs are rechecked before saved chunks are used. Changed options, schema,
 #'   CRS, or membership cause an error. Completed chunks must match their
 #'   checkpoint checksums, expected IDs, columns, and provenance. Temporary
-#'   files from interrupted writes are ignored.
+#'   files from interrupted writes are ignored. After all chunks have been
+#'   validated, the client atomically writes `complete.rds` in `path`. No
+#'   marker is written before a new download finishes or after an interrupted
+#'   call. After confirming the saved manifest matches, a resumed call clears
+#'   the marker before revalidating saved chunks, then writes it again only
+#'   after successful completion.
 #'
 #'   The directory must be empty on the first call. Unrelated files and
 #'   existing downloads with `resume = FALSE` are rejected. An exclusive lock
@@ -24,6 +29,19 @@
 #'   Record attributes can change between chunks or resumed calls even when
 #'   IDs and schema remain stable; this is not a frozen snapshot. The returned
 #'   summary records whether the complete matching manifest was downloaded.
+#'   Transient connection failures and timeouts, HTTP 429, 500, 502, 503, and
+#'   504 responses, ArcGIS error objects with those codes inside HTTP 200
+#'   responses, and a generic transient ArcGIS query error are retried.
+#'   Set `options(tampaBayOpenData.max_retries = 3L)` to control additional
+#'   retries per failure sequence (integer 0 through 10). HTTP failures and
+#'   ArcGIS errors in successful HTTP responses use separate bounded
+#'   sequences; mixed failures can make more than four HTTP attempts overall.
+#'   A valid `Retry-After` delay or HTTP date is honored if at most 30 seconds;
+#'   a longer delay stops retrying rather than causing an early retry. Otherwise
+#'   retries use exponential backoff with jitter. Permanent HTTP
+#'   and ArcGIS errors fail without retrying.
+#'   An interrupted call does not return a complete download summary; resume
+#'   with the same `path` to validate and continue saved chunks.
 #' @param path Local directory for the manifest, checkpoints, and chunk files.
 #' @param where ArcGIS SQL WHERE clause using source field names; defaults to
 #'   `"1=1"`. Inspect names with `tbod_dataset_info(id, refresh = TRUE)`.
@@ -39,7 +57,8 @@
 #' @param query Named list of advanced ArcGIS filters such as `geometry`,
 #'   `spatialRel`, and `time`. Response format, field selection, aggregation,
 #'   geometry simplification, and pagination parameters are protected.
-#' @param timeout Per-request timeout in seconds.
+#' @param timeout Per-request timeout in seconds. Transient failures may be
+#'   retried according to `options(tampaBayOpenData.max_retries = 3L)`.
 #' @param total_timeout Overall operation deadline in seconds. The default
 #'   `Inf` allows a long download; completed chunks remain for a later resume
 #'   if a finite deadline expires.
@@ -54,7 +73,8 @@
 #' @return A named list with `path`, ordered chunk `files`, `matched_rows`,
 #'   `returned_rows`, `complete`, and summary `source` provenance. Each RDS
 #'   chunk has its own provenance; `tbod_provenance(chunk)$download` includes
-#'   its chunk number and object IDs.
+#'   its chunk number and object IDs. With no matches, `files` is empty and
+#'   summary integrity is `count-only`.
 #' @export
 #' @examples
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
@@ -91,8 +111,10 @@ tbod_download_dataset <- function(id, path, jurisdiction = NULL,
 #' MapServer layer URL. The direct source has `not_checked` provenance and no
 #' inferred publisher identity. A saved manifest fixes the endpoint, query,
 #' fields, schema, CRS, IDs, and batch size; a resumed call rechecks them before
-#' reusing validated chunks. See [tbod_download_dataset()] for the directory,
-#' lock, and record-change rules.
+#' reusing validated chunks. Successful validation writes `complete.rds` in
+#' the download directory; a resumed call clears and recreates it after
+#' matching the manifest and revalidating chunks. See [tbod_download_dataset()]
+#' for the directory, lock, and record-change rules.
 #' @param url Public HTTPS ArcGIS layer URL.
 #' @inheritParams tbod_download_dataset
 #' @param where ArcGIS SQL WHERE clause using source field names; defaults to
