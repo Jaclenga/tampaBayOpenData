@@ -45,9 +45,15 @@ tbod_provenance(data)[c("publisher", "source_url", "retrieved_at", "complete")]
 ```
 
 The search reads the bundled catalog; retrieval contacts the publisher.
-`limit = 100` returns a subset, recorded as incomplete in its provenance when
-more records match. Omit `limit` to request all matching records, subject to
-the service and package limits described in the retrieval guide.
+Checked search ranks exact titles and IDs before partial and metadata matches.
+It can recover a close spelling when no checked entry matches literally.
+Use `limit` to return the first ranked search rows; it is separate from the
+`max_items` cap on live service items scanned.
+
+The retrieval call's `limit = 100` returns a record subset, recorded as
+incomplete in its provenance when more records match. Omit the retrieval
+`limit` to request all matching records, subject to the service and package
+limits described in the retrieval guide.
 
 A **checked** layer has a catalog entry and a saved field, geometry, and CRS
 snapshot. Before retrieval, its live metadata is compared with that snapshot:
@@ -58,8 +64,22 @@ available. See [schema checks and retrieval](https://jaclenga.github.io/tampaBay
 To inspect current endpoint and schema health across checked entries, run
 `tbod_check_catalog()` or select a few IDs with
 `tbod_check_catalog(ids = "stpete-parks")`. It contacts the publishers and
-returns one diagnostic row per entry. A healthy result is a point-in-time
-metadata check, not a guarantee that every record is current or retrievable.
+returns one diagnostic row per entry. Add `probe_query = TRUE` to test a
+zero-match count query without downloading records. Each row records when it
+was checked, elapsed request time, HTTP status when available, and a failure
+reason. `query_status` reports whether the count operation was verified.
+`health_state` groups results as `healthy`, `degraded`, `unavailable`, or
+`unknown`; the existing `status` gives the more specific diagnosis.
+Absent another confirmed problem, transient failures are `unknown` rather than
+proof that a layer is gone.
+
+The [daily catalog-health workflow](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/catalog-health.yaml)
+runs the query probe for every checked entry and uploads timestamped JSON,
+RDS, CSV, and Markdown reports. It never updates the bundled catalog. These
+reports are point-in-time checks of selected layers; they do not measure record
+freshness or establish complete publisher coverage. See the [test and report
+guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md#live-and-package-checks)
+for local commands.
 
 ## Search beyond the catalog
 

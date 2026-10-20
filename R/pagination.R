@@ -135,7 +135,7 @@
       .abort("Ordered pagination stopped before all requested records were returned; the service may not honor offsets.",
              dataset, url, c("tampa_pagination_error", "tampa_integrity_error"))
     }
-    adjacent <- c(tail(result$features, 1L), page$features)
+    adjacent <- c(utils::tail(result$features, 1L), page$features)
     if (length(adjacent) > 1L && any(!vapply(seq.int(2L, length(adjacent)),
       function(i) .ordered_pair_ok(adjacent[[i - 1L]], adjacent[[i]], spec,
                                     dataset, url), logical(1)))) {

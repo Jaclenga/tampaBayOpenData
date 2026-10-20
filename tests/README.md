@@ -76,8 +76,11 @@ offset pagination, unexpectedly short feature batches, automatic preview
 fallback, and resumable downloads. Repeated pages are covered by the ordered
 pagination and preview cases.
 The [catalog-health cases](testthat/test-catalog-health.R) mock layer and
-service responses to verify healthy, unavailable, changed-schema, unsupported,
-and unknown report rows without contacting publishers.
+service responses; the [monitoring cases](testthat/test-catalog-health-monitoring.R)
+mock count-query responses and verify healthy, degraded, unavailable, and
+unknown health states, detailed diagnoses, response times, failure reasons,
+and that monitoring never edits the checked catalog. They do not contact
+publishers.
 The [dashboard cases](testthat/test-coverage-dashboard.R) derive counts from
 offline checked rows and verify that missing, stale, or mismatched health
 evidence stays unverified.
@@ -117,14 +120,27 @@ the repository root with:
 Rscript tools/check-catalog.R [report-directory]
 ```
 
-Omit the optional directory to write timestamped RDS, CSV, and Markdown
-reports under ignored `.artifacts/catalog-health/`. The RDS preserves
-structured diagnostics; the CSV stores list-column schema issues as JSON.
+Omit the optional directory to write timestamped JSON, RDS, CSV, and Markdown
+reports under ignored `.artifacts/catalog-health/`. The JSON is a portable
+machine-readable report; the RDS preserves R types and structured
+diagnostics; the CSV stores list-column schema issues as JSON. The Markdown
+summary gives counts and actionable failure details. Each result records
+`checked_at` in UTC, `response_time_ms`, `health_state`, the detailed legacy
+`status`, `query_status`, and a failure reason where applicable. The runner
+checks that it received exactly one row for every bundled checked entry before
+writing the reports. It probes a zero-match count query, which downloads no
+features.
 The [catalog-health workflow](https://github.com/Jaclenga/tampaBayOpenData/blob/main/.github/workflows/catalog-health.yaml)
-runs this checker weekly on Monday at 07:23 UTC and on manual dispatch, then
-uploads a report artifact. It reads the public services and does not edit the
-bundled catalog. A status is point-in-time metadata evidence, not a guarantee
-of current feature values or future availability.
+runs this checker daily and on manual dispatch, then uploads the reports as a
+run artifact. It checks at most two jurisdictions concurrently on Ubuntu,
+checks each jurisdiction's layers sequentially with a pause, and uses bounded
+retries and timeouts. The workflow has a read-only repository token and
+verifies that the bundled catalog stays unchanged. Transient failures and
+inconclusive missing-layer responses are `unknown` unless another confirmed
+problem already makes the entry degraded; confirmed query failures are degraded,
+and confirmed missing endpoints are unavailable. These are
+point-in-time observations of selected layers, not a guarantee of source
+completeness, current feature values, or future availability.
 
 To preview the generated coverage dashboard after installing the package,
 run `Rscript -e "pkgdown::build_site_github_pages(dest_dir = '_site', clean = TRUE, lazy = FALSE, new_process = FALSE, install = TRUE)"` and open

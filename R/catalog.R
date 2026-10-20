@@ -80,11 +80,15 @@
 #' Search Tampa Bay ArcGIS datasets
 #'
 #' Live searches use the selected public ArcGIS portal indexes. Checked entries are
-#' also matched locally by literal, case-insensitive words in their ID, title,
-#' description, category, and tags. Portal search can include other indexed
-#' fields, so its results need not follow the checked catalog's literal matching.
+#' matched locally by literal, case-insensitive words in their ID, title,
+#' description, publisher, category, and tags. A checked spelling fallback runs
+#' only when no literal checked row matches. Results rank exact title or ID,
+#' partial title or ID, and metadata matches in that order. Portal hits remain
+#' present even when their matching indexed field is unavailable locally.
 #' @param query A single search string. Checked matching treats punctuation
 #'   literally; live matching uses the ArcGIS portal search index.
+#' @param limit Maximum final result rows after filters and ranking; `Inf` is
+#'   unlimited. This is separate from the live `max_items` scan cap.
 #' @inheritParams .list_datasets_impl
 #' @return A tibble with the catalog columns and, for live searches, the
 #'   discovery attributes described in [tbod_list_datasets()]. A checked-only
@@ -100,14 +104,16 @@
                             portals = "all", max_items = 25, timeout = 30,
                             total_timeout = 90, publisher = NULL,
                             validation_status = NULL, spatial = NULL, topic = NULL,
-                            category = NULL, modified_after = NULL, modified_before = NULL) {
+                            category = NULL, modified_after = NULL, modified_before = NULL,
+                            limit = Inf) {
   .string(query, "query", allow_empty = TRUE)
+  .number(limit, "limit", min = 0, integer = TRUE, infinity = TRUE)
   timeout <- .operation_timeout(timeout, total_timeout)
   .check_operation_timeout(timeout)
   result <- .catalog_datasets(query, jurisdiction, source, portals, max_items, timeout,
     publisher, validation_status, spatial, topic, category, modified_after, modified_before)
   .check_operation_timeout(timeout)
-  result
+  .limit_search_results(.rank_search_results(result, query), limit)
 }
 
 .catalog_datasets <- function(query, jurisdiction, source, portals, max_items, timeout,
@@ -146,17 +152,103 @@
 
 .search_checked <- function(catalog, query) {
   if (!nrow(catalog)) return(catalog)
-  words <- strsplit(tolower(trimws(query)), "[[:space:]]+")[[1L]]
-  words <- words[nzchar(words)]
+  words <- .search_words(query)
   if (!length(words)) return(catalog)
-  values <- cbind(catalog$id, catalog$title, catalog$description,
-                  catalog$category,
-                  vapply(catalog$tags, paste, character(1), collapse = " "))
-  values[is.na(values)] <- ""
-  text <- tolower(apply(values, 1L, paste, collapse = " "))
-  keep <- rep(TRUE, nrow(catalog))
-  for (word in words) keep <- keep & grepl(word, text, fixed = TRUE)
+  keep <- vapply(seq_len(nrow(catalog)), function(i) {
+    fields <- .search_fields(catalog, i)
+    text <- paste(unlist(fields, use.names = FALSE), collapse = " ")
+    all(vapply(words, grepl, logical(1), x = text, fixed = TRUE))
+  }, logical(1))
+  if (any(keep)) return(catalog[keep, , drop = FALSE])
+
+  # Only widen a search after every checked literal match has failed. Keeping
+  # punctuation literal avoids treating query syntax as an approximate word.
+  if (!all(grepl("^[[:alnum:]]+$", words))) return(catalog[0L, , drop = FALSE])
+  keep <- vapply(seq_len(nrow(catalog)), function(i) {
+    fields <- .search_fields(catalog, i)
+    tokens <- unique(unlist(strsplit(unlist(fields, use.names = FALSE),
+                                     "[^[:alnum:]]+"), use.names = FALSE))
+    tokens <- tokens[nzchar(tokens)]
+    if (!length(tokens)) return(FALSE)
+    all(vapply(words, function(word) {
+      tolerance <- if (nchar(word) >= 6L) 2L else if (nchar(word) >= 4L) 1L else 0L
+      min(utils::adist(word, tokens)) <= tolerance
+    }, logical(1)))
+  }, logical(1))
   catalog[keep, , drop = FALSE]
+}
+
+.search_words <- function(query) {
+  words <- strsplit(tolower(trimws(query)), "[[:space:]]+")[[1L]]
+  words[nzchar(words)]
+}
+
+.search_fields <- function(catalog, i) {
+  scalar <- function(name) {
+    value <- catalog[[name]][[i]]
+    if (is.na(value)) "" else tolower(value)
+  }
+  multi <- function(name) {
+    values <- catalog[[name]][[i]]
+    tolower(values[!is.na(values)])
+  }
+  list(id = scalar("id"), title = scalar("title"),
+       tags = multi("tags"), categories = multi("categories"),
+       category = scalar("category"), publisher = scalar("publisher"),
+       description = scalar("description"))
+}
+
+.rank_search_results <- function(rows, query) {
+  words <- .search_words(query)
+  if (!length(words) || nrow(rows) < 2L) return(rows)
+  phrase <- paste(words, collapse = " ")
+  tier <- integer(nrow(rows))
+  strength <- integer(nrow(rows))
+  for (i in seq_len(nrow(rows))) {
+    fields <- .search_fields(rows, i)
+    title <- fields$title
+    id <- fields$id
+    headline <- c(title, id)
+    if (any(headline == phrase)) {
+      tier[[i]] <- 6L
+    } else if (any(startsWith(headline, phrase))) {
+      tier[[i]] <- 5L
+    } else if (any(grepl(phrase, headline, fixed = TRUE))) {
+      tier[[i]] <- 4L
+    } else if (all(vapply(words, function(word) {
+      any(grepl(word, headline, fixed = TRUE))
+    }, logical(1)))) {
+      tier[[i]] <- 3L
+    } else if (any(vapply(words, function(word) {
+      any(grepl(word, unlist(fields[c("tags", "categories", "category", "publisher")],
+                             use.names = FALSE), fixed = TRUE))
+    }, logical(1)))) {
+      tier[[i]] <- 2L
+    } else if (any(vapply(words, grepl, logical(1), x = fields$description,
+                           fixed = TRUE))) {
+      tier[[i]] <- 1L
+    }
+    strength[[i]] <- sum(vapply(words, function(word) {
+      if (grepl(word, title, fixed = TRUE)) return(5L)
+      if (grepl(word, id, fixed = TRUE)) return(4L)
+      if (any(grepl(word, c(fields$tags, fields$categories, fields$category),
+                    fixed = TRUE))) return(3L)
+      if (grepl(word, fields$publisher, fixed = TRUE)) return(2L)
+      if (grepl(word, fields$description, fixed = TRUE)) return(1L)
+      0L
+    }, integer(1)))
+  }
+  metadata <- attributes(rows)[names(.discovery_metadata())]
+  rows <- rows[order(-tier, -strength, tolower(rows$title), tolower(rows$id),
+                     tolower(rows$source_url), na.last = TRUE), , drop = FALSE]
+  .attach_discovery_metadata(rows, metadata)
+}
+
+.limit_search_results <- function(rows, limit) {
+  if (is.infinite(limit) || nrow(rows) <= limit) return(rows)
+  metadata <- attributes(rows)[names(.discovery_metadata())]
+  rows <- rows[seq_len(limit), , drop = FALSE]
+  .attach_discovery_metadata(rows, metadata)
 }
 
 .catalog_live <- function(query, source, portals, max_items, timeout) {

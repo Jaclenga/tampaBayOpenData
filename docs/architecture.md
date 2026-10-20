@@ -91,13 +91,34 @@ a uniquely named checked ID across publishers by default. Discovered rows
 carry their publisher and jurisdiction. Direct URLs have `"unspecified"`
 jurisdiction and do not accept a jurisdiction override.
 
-`tbod_check_catalog()` checks selected bundled entries against current layer
-metadata and saved schemas. It makes one layer request per entry and probes a
-service root only after a missing-layer response. The report
-records health, schema drift, and diagnostic status without changing the
-catalog. Transient failures remain `unknown` after bounded retries. The
-separate `tools/check-catalog.R` runner writes timestamped RDS, CSV, and
-Markdown reports for maintainers and the scheduled workflow.
+`tbod_check_catalog()` enumerates selected bundled entries and checks current
+layer metadata against saved schemas. By default it makes one layer request
+per entry and probes a service root only after a missing-layer response.
+`probe_query = TRUE` also sends a zero-match count query to test the advertised
+Query operation without reading features. The report records the UTC check
+time, elapsed request time in milliseconds, HTTP status when available,
+service and layer status, schema drift, and a failure reason. Elapsed request
+time includes retries and a missing-layer root probe, but excludes deliberate
+rate pauses. `query_status` is `not_checked`, `verified`, `failed`, or `unknown`.
+The existing `status` retains detailed diagnoses; `health_state`
+groups them as `healthy` (`healthy`), `degraded` (`schema_changed` or
+`unsupported`), `unavailable` (`unavailable`), and `unknown` (`unknown`). A
+failed query probe is degraded when the failure is confirmed and unknown when
+it is transient, unless confirmed schema drift already makes the result
+degraded. A missing layer is unavailable only when the service-root
+probe confirms it is absent; ambiguous or malformed responses remain unknown.
+
+The shared ArcGIS request path supplies finite retries and per-attempt and
+overall timeouts. The checker also accepts a pause between entries. The
+`tools/check-catalog.R` runner checks all bundled entries, using at most two
+jurisdictions concurrently on Ubuntu and a sequential pause within each
+jurisdiction. It runs the query probe and writes timestamped JSON, RDS, CSV, and
+Markdown reports outside `inst/extdata`. The scheduled workflow runs daily,
+uploads the reports as artifacts, and verifies that the checked registry and
+schema snapshots were not changed. Neither network failures nor report
+generation promote, remove, or edit catalog entries. The reports are
+point-in-time observations of selected endpoints, not an inventory of all
+publisher data or a guarantee of future availability or feature freshness.
 
 HTTP requests use `httr2`; `jsonlite` decodes responses, and `tibble` supplies
 tabular results. Optional `sf` and GDAL decode spatial results. Source field

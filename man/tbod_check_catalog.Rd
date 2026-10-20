@@ -7,7 +7,8 @@ tbod_check_catalog(
   ids = NULL,
   timeout = 10,
   total_timeout = 1800,
-  pause = 0.25
+  pause = 0.25,
+  probe_query = FALSE
 )
 }
 \arguments{
@@ -24,7 +25,12 @@ disables the overall deadline. Entries not reached are reported as
 \code{unknown}.}
 
 \item{pause}{Delay from 0 to 30 seconds between entries to limit request
-rate; defaults to 0.25.}
+rate; defaults to 0.25. With \code{probe_query = TRUE}, also pauses between
+layer metadata and the count probe.}
+
+\item{probe_query}{Run a zero-match count query after usable metadata to
+verify Query capability. Defaults to \code{FALSE} for the existing metadata-only
+behavior. Query probes do not retrieve features.}
 }
 \value{
 A tibble with one row per selected entry and \code{publisher},
@@ -34,7 +40,14 @@ A tibble with one row per selected entry and \code{publisher},
 and \code{layer_status} (\code{available}, \code{unavailable}, or \code{unknown}),
 \code{schema_status} (\code{unchanged}, \code{compatible}, \code{incompatible}, or
 \code{unavailable}), \code{schema_issues} (a list of issue tibbles), and
-\code{details}. \code{http_status} is missing when no HTTP response was received.
+\code{details}. \code{health_state} summarizes status as \code{healthy}, \code{degraded},
+\code{unavailable}, or \code{unknown}. \code{response_time_ms} is elapsed request
+time including retries and a missing-layer service-root probe, excluding
+deliberate pauses; it is missing if no request was made. \code{query_status} is
+\code{not_checked}, \code{verified}, \code{failed}, or \code{unknown};
+\code{query_failure_type}, \code{query_http_status}, and \code{query_details}
+explain a failed or uncertain probe. \code{http_status} is missing when no
+metadata HTTP response was received.
 }
 \description{
 Checks current public ArcGIS endpoints and saved schemas for selected
@@ -61,10 +74,14 @@ capability is unreported. A missing object-ID field is reported as schema
 drift when a baseline exists; the details also identify unsupported record
 retrieval. With no saved baseline, \code{schema_status} is
 \code{unavailable} and \code{status} is \code{unknown}. \code{unsupported} includes layers
-that cannot be queried and access failures. This check does not retrieve
-features or run count and object-ID queries. A layer can advertise Query
-yet fail those operations during retrieval. The result cannot guarantee
-future service availability.
+that cannot be queried and access failures. By default the check does not
+retrieve features or run count and object-ID queries. A layer can advertise Query
+yet fail those operations during retrieval. Set \code{probe_query = TRUE} to
+run a zero-match count request after valid layer metadata; it reads no
+features and records whether the actual Query operation succeeds. A
+confirmed query failure is degraded, while a transient probe failure is
+unknown unless independently confirmed schema drift already makes the
+result degraded. The result cannot guarantee future service availability.
 }
 \examples{
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {

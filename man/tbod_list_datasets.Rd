@@ -77,9 +77,11 @@ result attributes. Use \code{\link[=tbod_discover]{tbod_discover()}} to scan ano
 Values within a filter are combined with OR; different filters
 and a search query are combined with AND. Status, geometry, topic,
 category, and date filters apply after the bounded live scan and checked
-overlay. A capped scan can miss older matching items. For an exhaustive
-scan, use \code{max_items = Inf} with an appropriate time budget and inspect
-\code{attr(result, "discovery_complete")}. Live results also carry
+overlay. A capped scan can miss older matching items. Use
+\code{max_items = Inf} with an appropriate time budget to follow all available
+index pages, and inspect \code{attr(result, "discovery_complete")}. This flag
+describes the selected public portal index scan, not every publisher
+service. Live results also carry
 \code{discovery_issues}, \code{discovery_failed_portals},
 \code{discovery_scanned_items}, and \code{discovery_truncated_portals} attributes.
 If every selected portal fails, \code{source = "all"} returns the checked entries

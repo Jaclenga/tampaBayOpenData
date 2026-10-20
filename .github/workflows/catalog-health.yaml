@@ -3,10 +3,12 @@ name: catalog-health
 "on":
   workflow_dispatch:
   schedule:
-    # Weekly on Monday at 07:23 UTC, away from the top-of-hour queue.
-    - cron: '23 7 * * 1'
+    # Daily at 07:23 UTC, away from the top-of-hour queue.
+    - cron: '23 7 * * *'
 
-# Scheduled verification reads public metadata and only uploads a run artifact.
+# Scheduled verification reads public metadata and bounded query probes, then
+# only uploads a run artifact. The runner checks at most two jurisdictions at
+# once and pauses between requests within each jurisdiction.
 # It has no repository write token and no step that commits catalog changes.
 permissions:
   contents: read

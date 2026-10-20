@@ -35,9 +35,11 @@
 #' @details Values within a filter are combined with OR; different filters
 #'   and a search query are combined with AND. Status, geometry, topic,
 #'   category, and date filters apply after the bounded live scan and checked
-#'   overlay. A capped scan can miss older matching items. For an exhaustive
-#'   scan, use `max_items = Inf` with an appropriate time budget and inspect
-#'   `attr(result, "discovery_complete")`. Live results also carry
+#'   overlay. A capped scan can miss older matching items. Use
+#'   `max_items = Inf` with an appropriate time budget to follow all available
+#'   index pages, and inspect `attr(result, "discovery_complete")`. This flag
+#'   describes the selected public portal index scan, not every publisher
+#'   service. Live results also carry
 #'   `discovery_issues`, `discovery_failed_portals`,
 #'   `discovery_scanned_items`, and `discovery_truncated_portals` attributes.
 #'   If every selected portal fails, `source = "all"` returns the checked entries
@@ -64,20 +66,54 @@ tbod_list_datasets <- function(jurisdiction = "all", source = "all",
                 modified_before = modified_before)
 }
 
-#' Search datasets in the bundled catalog
+#' Search checked and live ArcGIS datasets
 #'
 #' Searches checked Tampa Bay entries and, when requested, configured live
-#' ArcGIS portals. Checked entries match literal, case-insensitive words in
-#' their IDs, titles, descriptions, categories, and tags. Live searches use
-#' each portal's index, so matching can differ. Use [tbod_discover()] to search
-#' another ArcGIS portal.
+#' ArcGIS portals. The checked catalog is a selected, offline registry; live
+#' discovery searches each publisher's public portal index. Use [tbod_discover()]
+#' to search another ArcGIS portal or a service URL.
 #' @param query A single search string. Checked matching treats punctuation
-#'   literally; live matching uses the ArcGIS portal index.
+#'   literally and ignores case; its separate words must all match. Live
+#'   matching uses the ArcGIS portal index. An empty or whitespace-only query
+#'   lists datasets.
 #' @inheritParams tbod_list_datasets
+#' @param limit Maximum result rows returned after filtering and ranking.
+#'   Defaults to `Inf`; use a nonnegative whole number, including `0`, or `Inf`.
+#'   This does not cap the number of live service items scanned; see
+#'   `max_items`.
 #' @details Values within a filter are combined with OR; different filters
-#'   and the search query are combined with AND. Filters apply after the
-#'   bounded scan, so a capped scan can miss matching items. See
-#'   [tbod_list_datasets()] for the discovery attributes.
+#'   and the search query are combined with AND. Publisher names are exact,
+#'   case-insensitive filters; use [tbod_list_portals()] to inspect them. A
+#'   publisher with no match returns no rows.
+#'
+#'   Checked entries search ID, title, description, publisher, category, and
+#'   tags. Exact title or ID matches rank first, then title or ID prefixes,
+#'   substrings, and matches across title or ID words. Tags, categories, and
+#'   publisher matches follow; description-only matches rank after those.
+#'   Within a rank, each word scores title, ID, tags or categories, publisher,
+#'   and description in that order; title, ID, and source URL then break ties
+#'   consistently. If no checked entry matches the literal query, a
+#'   spelling fallback may return close checked entries. Query words must be
+#'   alphanumeric, and words shorter than four characters have no typo
+#'   tolerance. The fallback does not change live portal search terms.
+#'
+#'   Live items come from the portal index, which can search fields not exposed
+#'   in returned rows. Available row metadata helps rank them, but an indexed
+#'   hit is retained even without a local text match. Layers found both live
+#'   and in the checked catalog appear once with `"checked"` status. With
+#'   `source = "all"`, checked matches remain available even when a portal
+#'   does not return them. `limit` applies after discovery, overlay, filtering,
+#'   and ranking. Even `limit = 0` still performs the selected live scan and
+#'   preserves its diagnostics.
+#'
+#'   Portal searches include public Feature Service and Map Service items and
+#'   expand supported, queryable layers. A private, unindexed, stale, or
+#'   unavailable item may be absent. `max_items` caps service items per portal;
+#'   item errors and capped scans can leave returned results incomplete, and
+#'   a timeout can stop the operation. Check `attr(result, "discovery_complete")`
+#'   and the issue, failed-portal, scanned-item, and truncated-portal attributes
+#'   described in [tbod_list_datasets()]. Even a complete scan covers the
+#'   public portal index, not every publisher service.
 #' @return A tibble with the same columns and live discovery attributes as
 #'   [tbod_list_datasets()]. A checked-only search requires no network request.
 #' @export
@@ -88,14 +124,15 @@ tbod_search_datasets <- function(query, jurisdiction = "all", source = "all",
                                  total_timeout = 90, publisher = NULL,
                                  validation_status = NULL, spatial = NULL,
                                  topic = NULL, category = NULL,
-                                 modified_after = NULL, modified_before = NULL) {
+                                 modified_after = NULL, modified_before = NULL,
+                                 limit = Inf) {
   .search_datasets_impl(query = query, jurisdiction = jurisdiction, source = source,
                   portals = portals, max_items = max_items, timeout = timeout,
                   total_timeout = total_timeout, publisher = publisher,
                   validation_status = validation_status, spatial = spatial,
                   topic = topic, category = category,
                   modified_after = modified_after,
-                  modified_before = modified_before)
+                  modified_before = modified_before, limit = limit)
 }
 
 #' Discover datasets from an ArcGIS portal

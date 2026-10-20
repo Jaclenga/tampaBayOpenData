@@ -1,6 +1,14 @@
 # Catalog checks inspect the bundled, checked entries. They never update the
 # registry or its dated schema snapshots.
 
+.catalog_health_state <- function(status) {
+  states <- c(healthy = "healthy", schema_changed = "degraded",
+              unsupported = "degraded", unavailable = "unavailable",
+              unknown = "unknown")
+  state <- unname(states[status])
+  if (length(state) != 1L || is.na(state)) "unknown" else state
+}
+
 .catalog_health_row <- function(entry, status = "unknown", failure_type = NA_character_,
                                 http_status = NA_integer_, service_status = "unknown",
                                 layer_status = "unknown", schema_status = "unavailable",
@@ -18,7 +26,13 @@
     layer_status = layer_status,
     schema_status = schema_status,
     schema_issues = list(schema_issues),
-    details = details
+    details = details,
+    health_state = .catalog_health_state(status),
+    response_time_ms = NA_real_,
+    query_status = "not_checked",
+    query_failure_type = NA_character_,
+    query_http_status = NA_integer_,
+    query_details = ""
   )
 }
 
@@ -57,6 +71,7 @@
         code$code %in% c(429L, 500L, 502L, 503L, 504L)) "transient_http" else
     if (identical(code$kind, "arcgis") && !is.na(code$code) &&
         code$code %in% c(429L, 500L, 502L, 503L, 504L)) "transient_arcgis" else
+    if (identical(code$kind, "http") && !is.na(code$code)) "unexpected_http" else
     if (inherits(error, "tampa_http_error")) "connection_failure" else
     "metadata_error"
 
@@ -75,6 +90,8 @@
   } else if (!is.na(code$code) && code$code %in% c(400L, 405L, 422L, 501L)) {
     status <- "unsupported"
     failure <- "invalid_or_unsupported_request"
+  } else if (identical(failure, "unexpected_http")) {
+    status <- "unsupported"
   } else if (inherits(error, "tampa_data_error") &&
              grepl("Layer metadata", conditionMessage(error), fixed = TRUE)) {
     failure <- "malformed_metadata"
@@ -151,7 +168,7 @@
                                        "no longer lists layer ", entry$layer_id, "."))
 }
 
-.catalog_check_entry <- function(entry, timeout) {
+.catalog_check_metadata <- function(entry, timeout) {
   if (.operation_remaining(timeout) <= 0) {
     return(.catalog_health_row(entry, failure_type = "budget_exhausted",
       details = "Catalog check reached `total_timeout` before this layer was requested."))
@@ -236,10 +253,64 @@
                       details = "Layer metadata is valid, Query is advertised, and the schema matches the bundled snapshot.")
 }
 
-.check_catalog_entries <- function(entries, timeout, pause) {
+.catalog_query_probe <- function(entry, timeout) {
+  url <- paste0(entry$service_url, "/", entry$layer_id, "/query")
+  count <- .matching_count(url, list(where = "1=0"), entry, timeout)
+  if (count != 0) {
+    .abort("The zero-match query probe returned a nonzero count.", entry, url,
+           "tampa_response_error")
+  }
+  invisible(TRUE)
+}
+
+.catalog_check_entry <- function(entry, timeout, probe_query = FALSE, pause = 0) {
+  started <- .operation_clock()
+  row <- .catalog_check_metadata(entry, timeout)
+  requested <- !identical(row$failure_type[[1L]], "budget_exhausted")
+  elapsed <- if (requested) max(0, .operation_clock() - started) else NA_real_
+
+  # A count against a false predicate verifies the actual Query operation
+  # without reading features. Unusable metadata responses are not probed.
+  probeable <- identical(row$layer_status[[1L]], "available") &&
+    row$status[[1L]] %in% c("healthy", "schema_changed", "unknown") &&
+    !row$failure_type[[1L]] %in% c("malformed_metadata", "baseline_invalid")
+  if (probe_query && probeable) {
+    if (pause > 0 && .operation_remaining(timeout) > 0) {
+      .operation_sleep(min(pause, .operation_remaining(timeout)))
+    }
+    probe_started <- .operation_clock()
+    probe <- tryCatch(.catalog_query_probe(entry, timeout), error = identity)
+    elapsed <- elapsed + max(0, .operation_clock() - probe_started)
+    if (inherits(probe, "error")) {
+      classified <- .catalog_error_result(entry, probe)
+      transient <- classified$failure_type[[1L]] %in%
+        c("timeout", "transient_http", "transient_arcgis", "connection_failure")
+      row$query_status <- if (transient) "unknown" else "failed"
+      row$query_failure_type <- classified$failure_type
+      row$query_http_status <- classified$http_status
+      row$query_details <- conditionMessage(probe)
+      # Confirmed schema drift remains visible even if a later query probe
+      # fails or times out. The query columns retain that separate diagnosis.
+      if (!identical(row$status[[1L]], "schema_changed")) {
+        row$status <- if (transient) "unknown" else "unsupported"
+        row$failure_type <- paste0("query_", classified$failure_type)
+      }
+      row$details <- paste0(row$details, "\nQuery probe: ", conditionMessage(probe))
+    } else {
+      row$query_status <- "verified"
+      row$query_http_status <- 200L
+    }
+  }
+  row$response_time_ms <- if (is.na(elapsed)) NA_real_ else elapsed * 1000
+  row$health_state <- .catalog_health_state(row$status[[1L]])
+  row$checked_at <- as.POSIXct(Sys.time(), tz = "UTC")
+  row
+}
+
+.check_catalog_entries <- function(entries, timeout, pause, probe_query = FALSE) {
   rows <- vector("list", length(entries))
   for (i in seq_along(entries)) {
-    rows[[i]] <- .catalog_check_entry(entries[[i]], timeout)
+    rows[[i]] <- .catalog_check_entry(entries[[i]], timeout, probe_query, pause)
     if (i < length(entries) && pause > 0 && .operation_remaining(timeout) > 0) {
       .operation_sleep(min(pause, .operation_remaining(timeout)))
     }
@@ -271,10 +342,14 @@
 #'   and `status` is `unknown`. A missing object-ID field is reported as schema
 #'   drift when a baseline exists; the details also identify unsupported record
 #'   retrieval. `unsupported` includes layers
-#'   that cannot be queried and access failures. This check does not retrieve
-#'   features or run count and object-ID queries. A layer can advertise Query
-#'   yet fail those operations during retrieval. The result cannot guarantee
-#'   future service availability.
+#'   that cannot be queried and access failures. By default the check does not
+#'   retrieve features or run count and object-ID queries. A layer can advertise Query
+#'   yet fail those operations during retrieval. Set `probe_query = TRUE` to
+#'   run a zero-match count request after valid layer metadata; it reads no
+#'   features and records whether the actual Query operation succeeds. A
+#'   confirmed query failure is degraded, while a transient probe failure is
+#'   unknown unless independently confirmed schema drift already makes the
+#'   result degraded. The result cannot guarantee future service availability.
 #' @param jurisdiction One checked-catalog jurisdiction code or `"all"`.
 #' @param ids Optional nonempty vector of unique checked dataset IDs within
 #'   `jurisdiction`; `NULL` checks all selected entries.
@@ -284,7 +359,11 @@
 #'   disables the overall deadline. Entries not reached are reported as
 #'   `unknown`.
 #' @param pause Delay from 0 to 30 seconds between entries to limit request
-#'   rate; defaults to 0.25.
+#'   rate; defaults to 0.25. With `probe_query = TRUE`, also pauses between
+#'   layer metadata and the count probe.
+#' @param probe_query Run a zero-match count query after usable metadata to
+#'   verify Query capability. Defaults to `FALSE` for the existing metadata-only
+#'   behavior. Query probes do not retrieve features.
 #' @return A tibble with one row per selected entry and `publisher`,
 #'   `jurisdiction`, `dataset_id`, `endpoint`, `checked_at` (UTC POSIXct),
 #'   `status` (`healthy`, `unavailable`, `schema_changed`, `unsupported`, or
@@ -292,7 +371,13 @@
 #'   `layer_status` (`available`, `unavailable`, or `unknown`),
 #'   `schema_status` (`unchanged`, `compatible`, `incompatible`, or
 #'   `unavailable`), `schema_issues` (a list of issue tibbles), and `details`.
-#'   `http_status` is missing when no HTTP response was received.
+#'   `health_state` summarizes status as `healthy`, `degraded`, `unavailable`,
+#'   or `unknown`. `response_time_ms` is elapsed request time including retries
+#'   and a missing-layer service-root probe, excluding deliberate pauses; it is
+#'   missing if no request was made. `query_status` is `not_checked`, `verified`,
+#'   `failed`, or `unknown`; `query_failure_type`, `query_http_status`, and
+#'   `query_details` explain a failed or uncertain probe. `http_status` is
+#'   missing when no metadata HTTP response was received.
 #' @export
 #' @examples
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
@@ -300,9 +385,11 @@
 #'   report[, c("dataset_id", "status", "schema_status", "details")]
 #' }
 tbod_check_catalog <- function(jurisdiction = "all", ids = NULL, timeout = 10,
-                               total_timeout = 1800, pause = 0.25) {
+                               total_timeout = 1800, pause = 0.25,
+                               probe_query = FALSE) {
   timeout <- .operation_timeout(timeout, total_timeout)
   .number(pause, "pause", min = 0)
+  .flag(probe_query, "probe_query")
   if (pause > 30) {
     .abort("`pause` must be no more than 30 seconds.",
            subclass = "tampa_input_error")
@@ -327,5 +414,5 @@ tbod_check_catalog <- function(jurisdiction = "all", ids = NULL, timeout = 10,
     .abort(paste0("No checked catalog entries are available for `", jurisdiction, "`."),
            subclass = "tampa_input_error")
   }
-  .check_catalog_entries(entries, timeout, pause)
+  .check_catalog_entries(entries, timeout, pause, probe_query)
 }

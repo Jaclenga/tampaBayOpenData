@@ -6,6 +6,8 @@ are on the [package site](https://jaclenga.github.io/tampaBayOpenData/).
 ## Design and maintenance
 
 - [Architecture](architecture.md): package design and source research basis.
+- [Dataset search audit](search-discovery-audit.md): baseline checked searches,
+  ranking contract, and live source limits.
 - [Checked catalog policy](checked-catalog-policy.md): selection and maintenance
   criteria for checked catalog layers.
 - [Coverage dashboard](coverage-dashboard.md): generated counts, optional

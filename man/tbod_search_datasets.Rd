@@ -2,7 +2,7 @@
 % Please edit documentation in R/api-discovery.R
 \name{tbod_search_datasets}
 \alias{tbod_search_datasets}
-\title{Search datasets in the bundled catalog}
+\title{Search checked and live ArcGIS datasets}
 \usage{
 tbod_search_datasets(
   query,
@@ -18,12 +18,14 @@ tbod_search_datasets(
   topic = NULL,
   category = NULL,
   modified_after = NULL,
-  modified_before = NULL
+  modified_before = NULL,
+  limit = Inf
 )
 }
 \arguments{
 \item{query}{A single search string. Checked matching treats punctuation
-literally; live matching uses the ArcGIS portal index.}
+literally and ignores case. Separate words must all match. An empty or
+whitespace-only query lists datasets.}
 
 \item{jurisdiction}{Jurisdiction code or vector of codes from
 \code{\link[=tbod_list_portals]{tbod_list_portals()}}, or \code{"all"} (default). Filters checked and live
@@ -64,6 +66,11 @@ source paths or their final labels.}
 Date or YYYY-MM-DD string includes its full UTC day; POSIXct specifies an
 instant. Unknown modification times are excluded when a bound is set.
 This is an item or checked snapshot time, not record freshness.}
+
+\item{limit}{Maximum result rows returned after filtering and ranking.
+Defaults to \code{Inf}; use a nonnegative whole number, including \code{0}, or \code{Inf}.
+This does not cap the number of live service items scanned; see
+\code{max_items}.}
 }
 \value{
 A tibble with the same columns and live discovery attributes as
@@ -71,16 +78,44 @@ A tibble with the same columns and live discovery attributes as
 }
 \description{
 Searches checked Tampa Bay entries and, when requested, configured live
-ArcGIS portals. Checked entries match literal, case-insensitive words in
-their IDs, titles, descriptions, categories, and tags. Live searches use
-each portal's index, so matching can differ. Use \code{\link[=tbod_discover]{tbod_discover()}} to search
-another ArcGIS portal.
+ArcGIS portals. The checked catalog is a selected, offline registry; live
+discovery searches each publisher's public portal index. Use \code{\link[=tbod_discover]{tbod_discover()}}
+to search another ArcGIS portal or a service URL.
 }
 \details{
 Values within a filter are combined with OR; different filters
-and the search query are combined with AND. Filters apply after the
-bounded scan, so a capped scan can miss matching items. See
-\code{\link[=tbod_list_datasets]{tbod_list_datasets()}} for the discovery attributes.
+and the search query are combined with AND. Publisher names are exact,
+case-insensitive filters; use \code{\link[=tbod_list_portals]{tbod_list_portals()}} to inspect them. A
+publisher with no match returns no rows.
+
+Checked entries search ID, title, description, publisher, category, and
+tags. Exact title or ID matches rank first, then title or ID prefixes,
+substrings, and matches across title or ID words. Tags, categories, and
+publisher matches follow; description-only matches rank after those.
+Within a rank, each word scores title, ID, tags or categories, publisher,
+and description in that order; title, ID, and source URL then break ties
+consistently. If no checked entry matches the literal query, a
+spelling fallback may return close checked entries. Query words must be
+alphanumeric, and words shorter than four characters have no typo
+tolerance. The fallback does not change live portal search terms.
+
+Live items come from the portal index, which can search fields not exposed
+in returned rows. Available row metadata helps rank them, but an indexed
+hit is retained even without a local text match. Layers found both live
+and in the checked catalog appear once with \code{"checked"} status. With
+\code{source = "all"}, checked matches remain available even when a portal
+does not return them. \code{limit} applies after discovery, overlay, filtering,
+and ranking. Even \code{limit = 0} still performs the selected live scan and
+preserves its diagnostics.
+
+Portal searches include public Feature Service and Map Service items and
+expand supported, queryable layers. A private, unindexed, stale, or
+unavailable item may be absent. \code{max_items} caps service items per portal;
+item errors and capped scans can leave returned results incomplete, and
+a timeout can stop the operation. Check \code{attr(result, "discovery_complete")}
+and the issue, failed-portal, scanned-item, and truncated-portal attributes
+described in \code{\link[=tbod_list_datasets]{tbod_list_datasets()}}. Even a complete scan covers the
+public portal index, not every publisher service.
 }
 \examples{
 tbod_search_datasets("permit", source = "checked")
