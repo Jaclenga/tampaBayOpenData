@@ -37,6 +37,8 @@ navbar:
           href: articles/housing-development.html
         - text: Water quality around Tampa Bay
           href: articles/water-quality.html
+        - text: Mapping Tampa capital improvements
+          href: articles/mapping-capital-improvements.html
         - text: Infrastructure and capital projects
           href: articles/infrastructure-projects.html
         - text: All articles
@@ -69,6 +71,7 @@ articles:
     contents:
       - housing-development
       - water-quality
+      - mapping-capital-improvements
       - infrastructure-projects
 
 reference:
