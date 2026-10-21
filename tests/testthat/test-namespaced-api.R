@@ -119,6 +119,58 @@ test_that("canonical retrieval resolves stable IDs in custom portals", {
   expect_identical(seen$retrieval$options$limit, 3)
 })
 
+test_that("information and downloads resolve stable IDs with the same portal budget", {
+  item_id <- "abcdef0123456789abcdef0123456789"
+  id <- paste0("arcgis:", item_id, ":2")
+  portal <- "https://other.example.org/sharing/rest"
+  descriptor <- tibble::tibble(id = id, jurisdiction = "other")
+  lookups <- list()
+  seen <- list()
+  local_mocked_bindings(
+    .discover_arcgis_item = function(item_id, layer_id, portal, timeout) {
+      lookups[[length(lookups) + 1L]] <<- list(
+        item_id = item_id, layer_id = layer_id, portal = portal,
+        timeout = timeout)
+      descriptor
+    },
+    .dataset_info_impl = function(id, jurisdiction, refresh, timeout,
+                                  total_timeout) {
+      seen$info <<- list(id = id, jurisdiction = jurisdiction,
+                        timeout = timeout, total_timeout = total_timeout)
+      list(id = "resolved")
+    },
+    .download_dataset_impl = function(id, path, jurisdiction, timeout,
+                                      total_timeout, ...) {
+      seen$download <<- list(id = id, path = path,
+                            jurisdiction = jurisdiction, timeout = timeout,
+                            total_timeout = total_timeout)
+      list(complete = TRUE)
+    }, .package = "tampaBayOpenData")
+
+  expect_identical(tbod_dataset_info(id, portal = portal, timeout = 4,
+                                     total_timeout = 15), list(id = "resolved"))
+  expect_identical(tbod_download_dataset(id, "download-here", portal = portal,
+                                         timeout = 4, total_timeout = 15),
+                   list(complete = TRUE))
+  expect_length(lookups, 2L)
+  for (lookup in lookups) {
+    expect_identical(lookup$item_id, item_id)
+    expect_identical(lookup$layer_id, 2L)
+    expect_identical(lookup$portal, portal)
+    expect_identical(as.numeric(lookup$timeout), 4)
+    expect_true(is.finite(attr(lookup$timeout, "tampa_deadline")))
+  }
+  expect_identical(seen$info$id, descriptor)
+  expect_identical(seen$download$id, descriptor)
+  expect_null(seen$info$jurisdiction)
+  expect_null(seen$download$jurisdiction)
+  expect_identical(seen$info$timeout, lookups[[1L]]$timeout)
+  expect_identical(seen$download$timeout, lookups[[2L]]$timeout)
+  expect_identical(seen$info$total_timeout, 15)
+  expect_identical(seen$download$total_timeout, 15)
+  expect_identical(seen$download$path, "download-here")
+})
+
 test_that("canonical information and download accept direct layer URLs", {
   url <- "https://other.example.org/arcgis/rest/services/Parks/FeatureServer/2"
   info <- tbod_dataset_info(url)
@@ -139,4 +191,9 @@ test_that("canonical information and download accept direct layer URLs", {
                "does not apply to a direct ArcGIS URL", class = "tampa_input_error")
   expect_error(tbod_dataset_info(url, jurisdiction = "other"),
                "does not apply to a direct ArcGIS URL", class = "tampa_input_error")
+  expect_error(tbod_dataset_info(url, portal = "https://other.example.org/sharing/rest"),
+               "applies only to a stable", class = "tampa_input_error")
+  expect_error(tbod_download_dataset(url, "download-here",
+                                     portal = "https://other.example.org/sharing/rest"),
+               "applies only to a stable", class = "tampa_input_error")
 })

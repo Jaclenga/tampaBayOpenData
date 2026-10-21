@@ -88,16 +88,10 @@ tbod_download_dataset <- function(id, path, jurisdiction = NULL,
                                   page_size = 1000, query = list(),
                                   timeout = 30, total_timeout = Inf,
                                   resume = TRUE, portal = NULL) {
-  resolved <- .tbod_resolve_portal_id(id, portal, timeout, total_timeout)
+  resolved <- .tbod_resolve_dataset_input(id, jurisdiction, portal,
+                                          timeout, total_timeout)
   id <- resolved$id
   timeout <- resolved$timeout
-  if (.tbod_is_url(id)) {
-    if (!is.null(jurisdiction)) {
-      .abort("`jurisdiction` does not apply to a direct ArcGIS URL.",
-             subclass = "tampa_input_error")
-    }
-    id <- .direct_arcgis_descriptor(id)
-  }
   .download_dataset_impl(id, path = path, jurisdiction = jurisdiction,
                    where = where, fields = fields, spatial = spatial,
                    out_sr = out_sr, page_size = page_size, query = query,
