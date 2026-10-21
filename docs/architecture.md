@@ -29,6 +29,33 @@ compatible direct layer URL.
 
 ## Client design
 
+### Module ownership and data flow
+
+```text
+User-facing tbod_* API
+  -> discovery / checked catalog resolution
+  -> ArcGIS transport -> metadata and schema validation
+  -> pagination and retrieval -> typed results and provenance
+```
+
+Downloads share resolution, transport, schema checks, and the object-ID
+manifest, then persist and validate bounded chunks. Catalog health is a
+separate inspection workflow that uses transport and schema comparison but
+does not retrieve features. The coverage dashboard transforms checked catalog
+rows and optional health reports without making network requests.
+
+| Module | Owns and important interface | Uses | Extension boundary |
+| --- | --- | --- | --- |
+| `api-discovery.R`, `catalog.R`, `live-discovery.R` | Public listing/search and stable discovery rows; checked/live overlay and portal scanning | Registry, ArcGIS transport | Add source discovery and catalog matching here; leave HTTP retries and feature paging to their owners. |
+| `api-retrieval.R`, `api-download.R` | Public input normalization and calls into retrieval or download implementations; `.tbod_resolve_dataset_input()` shares stable-ID and direct-URL handling | Discovery, catalog resolution, operation budgets | Add entry-point options here; keep schema comparison and request execution in lower modules. |
+| `arcgis.R` | `arcgis_request()` and `arcgis_http()` construct requests, validate responses, classify ArcGIS/HTTP failures, and apply bounded retries and response limits | `request-budget.R` deadlines and waits | Add transport behavior here; keep page completeness checks in `pagination.R`. |
+| `request-budget.R` | `.operation_timeout()` and related deadline and wait helpers | Monotonic clock | Add operation-budget rules here; keep HTTP execution in `arcgis.R`. |
+| `schema.R` | Metadata schema description, checked-schema comparison, and drift reports through `.compare_schema()` | ArcGIS layer metadata and checked snapshots | Add shared schema rules here; do not infer confirmed drift from transient failures. |
+| `pagination.R` | `arcgis_fetch()` selects offset or object-ID batches and verifies ordering, membership, and completeness | ArcGIS query requests, parsing, schema-validated metadata | Add page integrity rules here; leave generic HTTP retries and schema drift checks elsewhere. |
+| `download.R` | Resumable manifests, chunk persistence, checksums, locks, and completion markers | ArcGIS requests, schema checks, bounded feature parsing | Add disk recovery rules here; do not accumulate all feature pages in memory. |
+| `catalog-health.R` | `tbod_check_catalog()` coordinates layer/service checks, schema comparison, optional query probes, and health classifications | ArcGIS transport, schema comparison, checked registry | Add diagnostic checks here; never edit checked catalog entries in response to a live result. |
+| `coverage-dashboard.R` | Match optional health evidence to checked rows and prepare coverage summaries and HTML | Checked catalog and saved health reports | Add presentation transforms here; do not perform network checks or claim publisher-wide coverage. |
+
 The `tbod_` entry points separate the reusable ArcGIS client from the bundled
 Tampa Bay configuration. `tbod_discover()` accepts another public ArcGIS sharing
 REST portal root, FeatureServer or MapServer service root, or layer URL and
