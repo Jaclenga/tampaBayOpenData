@@ -22,6 +22,52 @@ arcgis_http <- function(url, params, timeout) {
          .bounded_retry_after(performed$response))
 }
 
+# Keep one HTTP retry path for requests with and without an operation deadline.
+# A fresh transfer timeout is calculated after every backoff wait.
+.perform_arcgis_http <- function(req, timeout, url) {
+  max_retries <- .arcgis_max_retries()
+  for (attempt in seq_len(max_retries + 1L)) {
+    .check_operation_timeout(timeout, url = url)
+    remaining <- .operation_remaining(timeout)
+    if (remaining < 0.001) {
+      .abort("The remaining operation time budget is too short for another HTTP attempt.",
+             url = url, subclass = "tampa_timeout_error")
+    }
+    current <- httr2::req_timeout(req, min(as.numeric(timeout), remaining))
+    response <- tryCatch(httr2::req_perform(current), error = identity)
+    .check_operation_timeout(timeout, url = url)
+    failed <- inherits(response, "error")
+    if (failed && !.arcgis_retryable_transport_error(response)) stop(response)
+    transient <- failed || .arcgis_retryable_status(httr2::resp_status(response))
+    if (!transient || attempt > max_retries) {
+      if (failed) {
+        .abort(paste0("A transient connection failure or timeout persisted after ",
+                      attempt, " HTTP attempt(s) (", attempt - 1L,
+                      " retries): ", conditionMessage(response)),
+               url = url, subclass = "tampa_http_error")
+      }
+      return(list(response = response, attempts = attempt))
+    }
+    delay <- if (failed) NA_real_ else .bounded_retry_after(response)
+    if (is.na(delay)) delay <- .arcgis_backoff(attempt)
+    if (delay > 30) {
+      return(list(response = response, attempts = attempt,
+                  retry_after = delay))
+    }
+    .operation_retry_wait(delay, timeout, url = url)
+  }
+}
+
+.arcgis_retryable_transport_error <- function(error) {
+  if (!inherits(error, c("httr2_failure", "curl_error"))) return(FALSE)
+  code <- error$code
+  if (is.numeric(code) && length(code) == 1L && is.finite(code)) {
+    # libcurl codes for temporary DNS/connect/transfer/timeout failures.
+    return(code %in% c(5, 6, 7, 18, 28, 35, 52, 55, 56))
+  }
+  TRUE
+}
+
 .arcgis_user_agent <- function() {
   agent <- getOption("tampaBayOpenData.user_agent", "tampaBayOpenData/0.1.0")
   if (!is.character(agent) || length(agent) != 1L || is.na(agent) ||
