@@ -27,6 +27,30 @@
   max(dates, na.rm = TRUE)
 }
 
+.coverage_latest_health <- function(key, health, now) {
+  n <- length(key)
+  checked_at <- as.POSIXct(rep(NA_real_, n), origin = "1970-01-01", tz = "UTC")
+  status <- rep(NA_character_, n)
+  details <- rep("", n)
+  if (.coverage_health_valid(health)) {
+    valid <- .coverage_usable_health_rows(health) & health$checked_at <= now
+    current <- health[valid, , drop = FALSE]
+    if (nrow(current)) {
+      health_key <- paste(current$jurisdiction, current$dataset_id,
+                          current$endpoint, current$publisher, sep = "\r")
+      newest <- order(current$checked_at, decreasing = TRUE)
+      matched <- match(key, health_key[newest])
+      has_match <- !is.na(matched)
+      index <- newest[matched[has_match]]
+      checked_at[has_match] <- current$checked_at[index]
+      status[has_match] <- current$status[index]
+      details[has_match] <- current$details[index]
+    }
+  }
+  details[is.na(details)] <- ""
+  list(checked_at = checked_at, status = status, details = details)
+}
+
 .coverage_dashboard_data <- function(catalog, health = NULL, recent_days = 30,
                                      now = Sys.time()) {
   required <- c("id", "title", "publisher", "jurisdiction", "category",
@@ -59,25 +83,10 @@
     }, logical(1))
   } else rep(FALSE, n)
 
-  health_at <- as.POSIXct(rep(NA_real_, n), origin = "1970-01-01", tz = "UTC")
-  health_status <- rep(NA_character_, n)
-  health_details <- rep("", n)
-  if (.coverage_health_valid(health)) {
-    valid <- .coverage_usable_health_rows(health) & health$checked_at <= now
-    current <- health[valid, , drop = FALSE]
-    if (nrow(current)) {
-      health_key <- paste(current$jurisdiction, current$dataset_id,
-                          current$endpoint, current$publisher, sep = "\r")
-      newest <- order(current$checked_at, decreasing = TRUE)
-      matched <- match(key, health_key[newest])
-      has_match <- !is.na(matched)
-      index <- newest[matched[has_match]]
-      health_at[has_match] <- current$checked_at[index]
-      health_status[has_match] <- current$status[index]
-      health_details[has_match] <- current$details[index]
-    }
-  }
-  health_details[is.na(health_details)] <- ""
+  matched_health <- .coverage_latest_health(key, health, now)
+  health_at <- matched_health$checked_at
+  health_status <- matched_health$status
+  health_details <- matched_health$details
 
   catalog_at <- as.POSIXct(catalog$verified, tz = "UTC")
   recent <- !is.na(health_at) &

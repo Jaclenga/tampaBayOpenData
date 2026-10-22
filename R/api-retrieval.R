@@ -29,16 +29,10 @@
 tbod_dataset_info <- function(id, jurisdiction = NULL, refresh = FALSE,
                               timeout = 30, total_timeout = 60,
                               portal = NULL) {
-  resolved <- .tbod_resolve_portal_id(id, portal, timeout, total_timeout)
+  resolved <- .tbod_resolve_dataset_input(id, jurisdiction, portal,
+                                          timeout, total_timeout)
   id <- resolved$id
   timeout <- resolved$timeout
-  if (.tbod_is_url(id)) {
-    if (!is.null(jurisdiction)) {
-      .abort("`jurisdiction` does not apply to a direct ArcGIS URL.",
-             subclass = "tampa_input_error")
-    }
-    id <- .direct_arcgis_descriptor(id)
-  }
   .dataset_info_impl(id, jurisdiction = jurisdiction, refresh = refresh,
                timeout = timeout, total_timeout = total_timeout)
 }
@@ -154,16 +148,10 @@ tbod_get_dataset <- function(id, jurisdiction = NULL, where = "1=1",
                              order_by = NULL, limit = Inf, page_size = NULL,
                              query = list(), timeout = 30, total_timeout = 120,
                              integrity = "auto", portal = NULL) {
-  resolved <- .tbod_resolve_portal_id(id, portal, timeout, total_timeout)
+  resolved <- .tbod_resolve_dataset_input(id, jurisdiction, portal,
+                                          timeout, total_timeout)
   id <- resolved$id
   timeout <- resolved$timeout
-  if (.tbod_is_url(id)) {
-    if (!is.null(jurisdiction)) {
-      .abort("`jurisdiction` does not apply to a direct ArcGIS URL.",
-             subclass = "tampa_input_error")
-    }
-    id <- .direct_arcgis_descriptor(id)
-  }
   .get_dataset_impl(id, jurisdiction = jurisdiction, where = where, fields = fields,
               spatial = spatial, out_sr = out_sr, order_by = order_by,
               limit = limit, page_size = page_size, query = query,
@@ -200,6 +188,19 @@ tbod_get_dataset <- function(id, jurisdiction = NULL, where = "1=1",
            subclass = "tampa_input_error")
   }
   list(id = rows, timeout = timeout)
+}
+
+.tbod_resolve_dataset_input <- function(id, jurisdiction, portal, timeout,
+                                        total_timeout) {
+  resolved <- .tbod_resolve_portal_id(id, portal, timeout, total_timeout)
+  if (.tbod_is_url(resolved$id)) {
+    if (!is.null(jurisdiction)) {
+      .abort("`jurisdiction` does not apply to a direct ArcGIS URL.",
+             subclass = "tampa_input_error")
+    }
+    resolved$id <- .direct_arcgis_descriptor(resolved$id)
+  }
+  resolved
 }
 
 #' Retrieve a direct ArcGIS layer URL

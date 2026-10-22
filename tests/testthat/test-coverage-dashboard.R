@@ -165,6 +165,28 @@ test_that("dashboard ignores unusable and future health rows", {
   expect_equal(result$summary$recent_healthy, 1L)
 })
 
+test_that("dashboard uses the newest matching health report for each layer", {
+  catalog <- dashboard_catalog_fixture(per_publisher = 1L, publishers = 1L)
+  health <- do.call(rbind, list(
+    dashboard_health_fixture(catalog, 1L, "healthy",
+                             "2026-10-09 12:00:00", "Earlier result."),
+    dashboard_health_fixture(catalog, 1L, "schema_changed",
+                             "2026-10-10 12:00:00", "First latest result."),
+    dashboard_health_fixture(catalog, 1L, "unknown",
+                             "2026-10-10 12:00:00", "Second latest result.")
+  ))
+
+  result <- .coverage_dashboard_data(
+    catalog, health, now = as.POSIXct("2026-10-12 12:00:00", tz = "UTC"))
+  expect_identical(result$datasets$health_status, "schema_changed")
+  expect_identical(result$datasets$verification_status, "problematic")
+  expect_equal(result$datasets$health_checked_at,
+               as.POSIXct("2026-10-10 12:00:00", tz = "UTC"))
+  expect_match(result$datasets$known_issues, "First latest result.", fixed = TRUE)
+  expect_false(grepl("Second latest result.", result$datasets$known_issues,
+                     fixed = TRUE))
+})
+
 test_that("coverage dashboard ignores absent and corrupt health artifacts", {
   local_mocked_bindings(arcgis_http = function(...) stop("unexpected network"))
   directory <- tempfile("tbod-dashboard-", tmpdir = tempdir())
