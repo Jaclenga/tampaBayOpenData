@@ -69,6 +69,8 @@ snapshot: compatible changes warn; incompatible changes stop the
 request. Checked status does not verify individual records or guarantee
 the service will remain available. See [schema checks and
 retrieval](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html#check-the-live-schema).
+For common failures and recovery steps, see [Troubleshooting common
+errors](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html#troubleshooting-common-errors).
 
 To inspect current endpoint and schema health across checked entries,
 run

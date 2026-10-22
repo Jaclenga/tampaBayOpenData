@@ -9,6 +9,15 @@ The offline catalog examples below run during the vignette build. Live
 discovery and retrieval examples are displayed but not run; try them in
 an internet-connected R session.
 
+## Install
+
+Install the released package from CRAN:
+
+``` r
+
+install.packages("tampaBayOpenData")
+```
+
 ## Find data
 
 The checked catalog has stable package IDs and works offline:

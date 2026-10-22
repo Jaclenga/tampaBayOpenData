@@ -287,6 +287,28 @@ lock prevents concurrent writers. If an R process is terminated, confirm
 it has stopped, then remove its empty `.lock` directory before resuming.
 Normal completion and handled errors release the lock.
 
+## Troubleshooting common errors
+
+- **Dataset ID not found:** Search the checked catalog with
+  `tbod_search_datasets("parks", source = "checked")` and use an ID from
+  its results. A close suggestion in an error message is only a search
+  aid.
+- **Connection timeout or rate limit:** The publisher may be slow or
+  busy. Try again later. If requests consistently time out while the
+  service responds, consider increasing `timeout` or `total_timeout` for
+  that call.
+- **Unknown field or changed schema:** Check current field names with
+  `tbod_dataset_info("construction-permits", refresh = TRUE)$fields`.
+  For a checked ID, `tbod_check_schema("construction-permits")` shows
+  changes that stopped retrieval.
+- **Missing or repeated records:** The package stops rather than
+  returning a result that may be incomplete. Try again later or narrow
+  the `where` filter.
+- **Download cannot resume:** Saved settings or records may differ from
+  the current request, or a saved file may be damaged. Keep the existing
+  files and start a new download in a different empty directory if they
+  cannot be restored.
+
 For source attribution and limitations, continue to [coverage and
 provenance](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.md).
 For the catalog’s scan behavior, see [discovering

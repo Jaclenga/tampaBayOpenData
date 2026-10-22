@@ -319,6 +319,37 @@ exclusive directory lock prevents concurrent writers. If an R process is
 terminated, confirm it has stopped, then remove its empty
 <code>.lock</code> directory before resuming. Normal completion and
 handled errors release the lock.</p>
+</div>
+<div class="section level2">
+<h2 id="troubleshooting-common-errors">Troubleshooting common errors<a class="anchor" aria-label="anchor" href="#troubleshooting-common-errors"></a>
+</h2>
+<ul>
+<li>
+<strong>Dataset ID not found:</strong> Search the checked catalog
+with <code>tbod_search_datasets("parks", source = "checked")</code> and
+use an ID from its results. A close suggestion in an error message is
+only a search aid.</li>
+<li>
+<strong>Connection timeout or rate limit:</strong> The publisher may
+be slow or busy. Try again later. If requests consistently time out
+while the service responds, consider increasing <code>timeout</code> or
+<code>total_timeout</code> for that call.</li>
+<li>
+<strong>Unknown field or changed schema:</strong> Check current
+field names with
+<code>tbod_dataset_info("construction-permits", refresh = TRUE)$fields</code>.
+For a checked ID, <code>tbod_check_schema("construction-permits")</code>
+shows changes that stopped retrieval.</li>
+<li>
+<strong>Missing or repeated records:</strong> The package stops
+rather than returning a result that may be incomplete. Try again later
+or narrow the <code>where</code> filter.</li>
+<li>
+<strong>Download cannot resume:</strong> Saved settings or records
+may differ from the current request, or a saved file may be damaged.
+Keep the existing files and start a new download in a different empty
+directory if they cannot be restored.</li>
+</ul>
 <p>For source attribution and limitations, continue to <a href="coverage.html">coverage and provenance</a>. For the catalog’s scan
 behavior, see <a href="discovery.html">discovering data</a>.</p>
 </div>
