@@ -22,6 +22,20 @@ test_that("single-label internal hosts cannot be used as ArcGIS endpoints", {
   expect_true(.public_arcgis_authority("services.example.org"))
 })
 
+test_that("ArcGIS layer URLs reject encoded dot and empty path segments", {
+  paths <- c("a/%2e", "a/%2E%2e", "a/.%2e", "a/%2e.",
+             "a//b", "/a", "a/")
+  for (path in paths) {
+    url <- paste0("https://example.org/", path, "/FeatureServer/0")
+    expect_error(tbod_dataset_info(url), "ordinary path segments",
+                 class = "tampa_input_error", info = url)
+    expect_error(tbod_discover(url, max_items = 0),
+                 class = "tampa_input_error", info = url)
+  }
+  ordinary <- "https://example.org/Layer%2eData/FeatureServer/0"
+  expect_identical(tbod_dataset_info(ordinary)$source_url, ordinary)
+})
+
 test_that("CRS locators are rejected before the native resolver is called", {
   calls <- 0L
   local_mocked_bindings(.resolve_arcgis_crs = function(...) {

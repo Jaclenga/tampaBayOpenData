@@ -4,6 +4,17 @@
   jurisdiction
 }
 
+# Call after checking the stable ArcGIS ID format.
+.stable_arcgis_id_parts <- function(id) {
+  parts <- strsplit(id, ":", fixed = TRUE)[[1L]]
+  layer_id <- suppressWarnings(as.numeric(parts[[3L]]))
+  if (!is.finite(layer_id) || layer_id > .Machine$integer.max) {
+    .abort("The ArcGIS identifier has an invalid layer ID.",
+           subclass = "tampa_input_error")
+  }
+  list(item_id = parts[[2L]], layer_id = as.integer(layer_id))
+}
+
 # Resolve all public retrieval inputs before calling the shared query engine.
 # Only a bundled registry entry can claim the package's `checked` status.
 .resolve_dataset <- function(id, jurisdiction = NULL, timeout = 30) {
@@ -12,15 +23,11 @@
   if (is.character(id)) {
     .string(id, "id")
     if (grepl("^arcgis:[0-9a-fA-F]{32}:[0-9]+$", id)) {
-      parts <- strsplit(id, ":", fixed = TRUE)[[1L]]
-      layer_id <- suppressWarnings(as.numeric(parts[[3L]]))
-      if (!is.finite(layer_id) || layer_id > .Machine$integer.max) {
-        .abort("The ArcGIS identifier has an invalid layer ID.", subclass = "tampa_input_error")
-      }
-      rows <- .discover_arcgis_item(parts[[2L]], as.integer(layer_id),
+      parts <- .stable_arcgis_id_parts(id)
+      rows <- .discover_arcgis_item(parts$item_id, parts$layer_id,
                                     timeout = timeout)
       if (!is.data.frame(rows) || nrow(rows) != 1L) {
-        .abort(paste0("ArcGIS item `", parts[[2L]], "` layer ", layer_id,
+        .abort(paste0("ArcGIS item `", parts$item_id, "` layer ", parts$layer_id,
                       " is unavailable or is not a supported query layer. Search again for its current service."),
                subclass = "tampa_input_error")
       }
@@ -203,9 +210,10 @@
 
 .direct_arcgis_descriptor <- function(url) {
   parts <- .arcgis_layer_url(url)
-  list(id = url, title = paste0("ArcGIS layer ", parts$layer_id),
+  layer_url <- paste0(parts$service_url, "/", parts$layer_id)
+  list(id = layer_url, title = paste0("ArcGIS layer ", parts$layer_id),
        publisher = "Unknown ArcGIS publisher", jurisdiction = "unspecified",
-       source_url = url, service_url = parts$service_url,
+       source_url = layer_url, service_url = parts$service_url,
        layer_id = parts$layer_id, item_id = NULL, portal = NULL,
        validation_status = "not_checked")
 }
@@ -222,7 +230,8 @@
            subclass = "tampa_input_error")
   }
   if (!.public_arcgis_authority(pieces[[2L]]) ||
-      grepl("%2[fF]|%5[cC]|(^|/)\\.\\.?(/|$)", pieces[[3L]])) {
+      grepl("^/|//|/$|%2[fF]|%5[cC]|(^|/)(?:\\.|%2[eE]){1,2}(/|$)",
+            pieces[[3L]], perl = TRUE)) {
     .abort("The ArcGIS layer URL must use a public DNS host and ordinary path segments.",
            subclass = "tampa_input_error")
   }

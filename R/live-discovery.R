@@ -132,7 +132,7 @@
   get(url, envir = service_cache, inherits = FALSE)
 }
 
-.discovery_layer_candidates <- function(item, parts, timeout, service_cache) {
+.discovery_layer_candidates <- function(parts, timeout, service_cache) {
   if (is.null(parts$layer_id)) {
     key <- parts$service_url
     service <- .discovery_cached_request(key, timeout, service_cache)
@@ -167,6 +167,11 @@
   }
 }
 
+.discovery_layer_id_valid <- function(id) {
+  is.numeric(id) && length(id) == 1L && !is.na(id) && is.finite(id) &&
+    id >= 0 && id == floor(id) && id <= .Machine$integer.max
+}
+
 .discovery_item_rows <- function(item, timeout, service_cache, config,
                                  target_layer_id = NULL, strict = FALSE) {
   if (!is.list(item) || !is.null(item$error) ||
@@ -183,16 +188,12 @@
   }
   parts <- .discovery_url_parts(item$url)
   if (is.null(parts)) stop("Item has no supported public HTTPS service URL.")
-  candidates <- .discovery_layer_candidates(item, parts, timeout, service_cache)
+  candidates <- .discovery_layer_candidates(parts, timeout, service_cache)
   rows <- list()
   layer_issues <- character()
   for (i in seq_along(candidates)) {
     candidate <- candidates[[i]]
-    if (!is.list(candidate) || !is.numeric(candidate$id) ||
-        length(candidate$id) != 1L || is.na(candidate$id) ||
-        !is.finite(candidate$id) || candidate$id < 0 ||
-        candidate$id != floor(candidate$id) ||
-        candidate$id > .Machine$integer.max) {
+    if (!is.list(candidate) || !.discovery_layer_id_valid(candidate$id)) {
       layer_issues <- c(layer_issues, paste0("Layer entry ", i,
                                             " has an invalid ID."))
       next
@@ -214,9 +215,7 @@
                                             conditionMessage(layer)))
       next
     }
-    if (!is.list(layer) || !is.numeric(layer$id) || length(layer$id) != 1L ||
-        is.na(layer$id) || !is.finite(layer$id) || layer$id < 0 ||
-        layer$id != floor(layer$id) || layer$id > .Machine$integer.max ||
+    if (!is.list(layer) || !.discovery_layer_id_valid(layer$id) ||
         !identical(as.integer(layer$id), layer_id)) {
       layer_issues <- c(layer_issues, paste0("Layer ", layer_id,
                                             " has an invalid or changed ID."))
@@ -286,11 +285,10 @@
     for (item in page$results) {
       item_rows <- tryCatch(.discovery_item_rows(item, timeout, cache, config),
                             error = .discovery_error)
+      item_id <- if (is.list(item)) .discovery_scalar(item$id, "unknown") else "unknown"
       if (inherits(item_rows, "error")) {
-        item_id <- if (is.list(item)) .discovery_scalar(item$id, "unknown") else "unknown"
         issues <- c(issues, paste0(key, "/", item_id, ": ", conditionMessage(item_rows)))
       } else {
-        item_id <- if (is.list(item)) .discovery_scalar(item$id, "unknown") else "unknown"
         layer_issues <- attr(item_rows, "discovery_issues")
         if (length(layer_issues)) {
           issues <- c(issues, paste0(key, "/", item_id, ": ", layer_issues))
@@ -459,7 +457,7 @@
       scanned_items = c(service = 0L))))
   }
   cache <- new.env(parent = emptyenv())
-  candidates <- .discovery_layer_candidates(NULL, parts, timeout, cache)
+  candidates <- .discovery_layer_candidates(parts, timeout, cache)
   count <- as.integer(min(length(candidates), max_items))
   service <- if (is.null(parts$layer_id))
     get(parts$service_url, envir = cache, inherits = FALSE) else NULL
@@ -467,11 +465,7 @@
   issues <- character()
   for (i in seq_len(count)) {
     candidate <- candidates[[i]]
-    if (!is.list(candidate) || !is.numeric(candidate$id) ||
-        length(candidate$id) != 1L || is.na(candidate$id) ||
-        !is.finite(candidate$id) || candidate$id < 0 ||
-        candidate$id != floor(candidate$id) ||
-        candidate$id > .Machine$integer.max) {
+    if (!is.list(candidate) || !.discovery_layer_id_valid(candidate$id)) {
       issues <- c(issues, paste0("Layer entry ", i, " has an invalid ID."))
       next
     }
@@ -489,9 +483,7 @@
       next
     }
     if (!is.null(layer$id) &&
-        (!is.numeric(layer$id) || length(layer$id) != 1L || is.na(layer$id) ||
-         !is.finite(layer$id) || layer$id < 0 ||
-         layer$id > .Machine$integer.max || layer$id != floor(layer$id) ||
+        (!.discovery_layer_id_valid(layer$id) ||
          !identical(as.integer(layer$id), as.integer(id)))) {
       issues <- c(issues, paste0("Layer ", id, " changed its ID."))
       next

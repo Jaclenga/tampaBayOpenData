@@ -98,12 +98,7 @@
   path <- .download_directory(path, resume)
   lock <- file.path(path, ".lock")
   if (!dir.create(lock, showWarnings = FALSE)) {
-    message <- if (dir.exists(lock)) {
-      "This download directory is locked, so another process may be using it. Wait for that process to finish. If it has stopped, remove only the empty `.lock` directory and resume."
-    } else {
-      "Could not lock the download directory. Check that it is writable, or choose another `path`."
-    }
-    .abort(message, dataset, subclass = "tampa_download_error")
+    .download_lock_error(lock, dataset)
   }
   on.exit(.download_release_lock(lock, path), add = TRUE)
   manifest_file <- file.path(path, "manifest.rds")
@@ -139,14 +134,26 @@
   summary
 }
 
-.download_directory <- function(path, resume) {
+.download_directory <- function(path, resume, create = TRUE) {
   if (file.exists(path) && !dir.exists(path)) {
     .abort("The download `path` points to a file, not a directory. Choose an empty directory for the download.",
            subclass = "tampa_download_error")
   }
-  if (!dir.exists(path) && !dir.create(path, recursive = TRUE)) {
-    .abort("Could not create the download directory. Check that its parent folder is writable, or choose another `path`.",
-           subclass = "tampa_download_error")
+  if (!dir.exists(path)) {
+    creation_error <- "Could not create the download directory. Check that its parent folder is writable, or choose another `path`."
+    if (!create) {
+      parent <- dirname(path)
+      while (!file.exists(parent) && !identical(parent, dirname(parent))) {
+        parent <- dirname(parent)
+      }
+      if (file.exists(parent) && !dir.exists(parent)) {
+        .abort(creation_error, subclass = "tampa_download_error")
+      }
+      return(path)
+    }
+    if (!dir.create(path, recursive = TRUE)) {
+      .abort(creation_error, subclass = "tampa_download_error")
+    }
   }
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
   entries <- list.files(path, all.files = TRUE, no.. = TRUE)
@@ -171,9 +178,14 @@
     .abort("A saved download already exists here, but `resume = FALSE` requests a new one. Use `resume = TRUE` to continue it, or choose an empty directory.",
            subclass = "tampa_download_error")
   }
-  if (!dir.exists(checkpoint_dir) && !dir.create(checkpoint_dir) &&
-      !dir.exists(checkpoint_dir)) {
-    .abort("The checkpoint directory could not be created.", subclass = "tampa_download_error")
+  if (!dir.exists(checkpoint_dir)) {
+    if (file.exists(checkpoint_dir)) {
+      .abort("The checkpoint directory could not be created.", subclass = "tampa_download_error")
+    }
+    if (!create) return(path)
+    if (!dir.create(checkpoint_dir) && !dir.exists(checkpoint_dir)) {
+      .abort("The checkpoint directory could not be created.", subclass = "tampa_download_error")
+    }
   }
   checkpoint_dir <- .download_check_checkpoint_directory(path)
   checkpoint_files <- list.files(checkpoint_dir, all.files = TRUE, no.. = TRUE)
@@ -182,6 +194,15 @@
     .abort("The checkpoint directory contains unrelated files.", subclass = "tampa_download_error")
   }
   path
+}
+
+.download_lock_error <- function(lock, dataset = NULL) {
+  message <- if (dir.exists(lock)) {
+    "This download directory is locked, so another process may be using it. Wait for that process to finish. If it has stopped, remove only the empty `.lock` directory and resume."
+  } else {
+    "Could not lock the download directory. Check that it is writable, or choose another `path`."
+  }
+  .abort(message, dataset, subclass = "tampa_download_error")
 }
 
 .download_check_checkpoint_directory <- function(path) {

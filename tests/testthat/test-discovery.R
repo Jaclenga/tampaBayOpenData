@@ -47,6 +47,45 @@ test_that("portal discovery pages, expands layers and tables, and deduplicates b
     grepl('"roads"', x$params$q, fixed = TRUE), logical(1))))
 })
 
+test_that("portal and service scans reject malformed layer IDs without requesting them", {
+  city <- "https://tampa.maps.arcgis.com/sharing/rest"
+  root <- "https://example.org/arcgis/rest/services/LayerIDs/FeatureServer"
+  endpoint <- paste0(root, "/2")
+  pages <- list()
+  pages[[paste0(city, "/search/1")]] <- list(
+    total = 1L, start = 1L, nextStart = -1L,
+    results = list(discovery_test_item(strrep("a", 32L), root)))
+  resources <- list()
+  resources[[root]] <- list(layers = list(
+    list(id = -1, name = "Negative"),
+    list(id = 1.5, name = "Fractional"),
+    list(id = 2147483648, name = "Too large"),
+    list(id = "bad", name = "String"),
+    list(id = 2L, name = "Valid")), tables = list())
+  resources[[endpoint]] <- list(id = 2L, name = "Valid",
+                                type = "Feature Layer",
+                                geometryType = "esriGeometryPoint",
+                                capabilities = "Query")
+  transport <- discovery_test_transport(pages, resources)
+  local_mocked_bindings(arcgis_http = transport$http,
+                        .package = "tampaBayOpenData")
+
+  portal_rows <- .discover_arcgis(portals = "city")
+  service_rows <- tbod_discover(root)
+  expect_identical(portal_rows$source_url, endpoint)
+  expect_identical(service_rows$source_url, endpoint)
+  for (issues in list(attr(portal_rows, "discovery_issues"),
+                      attr(service_rows, "discovery_issues"))) {
+    expect_length(issues, 4L)
+    for (i in seq_len(4L)) {
+      expect_match(issues[[i]], paste0("Layer entry ", i, " has an invalid ID."),
+                   fixed = TRUE)
+    }
+  }
+  requested <- vapply(transport$state$requests, `[[`, character(1), "url")
+  expect_setequal(requested, c(paste0(city, "/search"), root, endpoint))
+})
+
 test_that("portal root summaries are expanded from full layer metadata", {
   city <- "https://tampa.maps.arcgis.com/sharing/rest"
   root <- "https://example.org/arcgis/rest/services/Summary/FeatureServer"

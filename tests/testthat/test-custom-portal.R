@@ -219,3 +219,20 @@ test_that("public Enterprise HTTPS ports work for layers and portals", {
                  class = "tampa_input_error", info = authority)
   }
 })
+
+test_that("direct layer URLs with leading-zero IDs use the canonical endpoint", {
+  url <- "https://example.org/arcgis/rest/services/Leading/FeatureServer/00"
+  endpoint <- "https://example.org/arcgis/rest/services/Leading/FeatureServer/0"
+  transport <- fixture_transport()
+  local_mocked_bindings(arcgis_http = transport$http,
+                        .package = "tampaBayOpenData")
+
+  info <- tbod_dataset_info(url)
+  expect_identical(info$id, endpoint)
+  expect_identical(info$source_url, endpoint)
+  data <- tbod_get_arcgis_layer(url, limit = 1L)
+  expect_identical(nrow(data), 1L)
+  expect_identical(tbod_provenance(data)$source_url, endpoint)
+  requested <- vapply(transport$state$requests, `[[`, character(1), "url")
+  expect_true(all(startsWith(requested, endpoint)))
+})

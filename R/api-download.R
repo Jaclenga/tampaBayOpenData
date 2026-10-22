@@ -88,6 +88,11 @@ tbod_download_dataset <- function(id, path, jurisdiction = NULL,
                                   page_size = 1000, query = list(),
                                   timeout = 30, total_timeout = Inf,
                                   resume = TRUE, portal = NULL) {
+  .string(path, "path")
+  .flag(resume, "resume")
+  .download_directory(path, resume, create = FALSE)
+  lock <- file.path(path, ".lock")
+  if (file.exists(lock)) .download_lock_error(lock)
   resolved <- .tbod_resolve_dataset_input(id, jurisdiction, portal,
                                           timeout, total_timeout)
   id <- resolved$id

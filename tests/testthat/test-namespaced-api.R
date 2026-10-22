@@ -119,6 +119,17 @@ test_that("canonical retrieval resolves stable IDs in custom portals", {
   expect_identical(seen$retrieval$options$limit, 3)
 })
 
+test_that("stable ArcGIS IDs reject out-of-range layer numbers before discovery", {
+  id <- paste0("arcgis:", strrep("a", 32L), ":2147483648")
+  expect_error(tbod_get_dataset(id), "invalid layer ID",
+               class = "tampa_input_error")
+  expect_error(tbod_get_dataset(id, portal = "https://other.example.org/sharing/rest"),
+               "invalid layer ID", class = "tampa_input_error")
+  expect_error(tbod_get_dataset(id, portal = NA_character_),
+               "`portal` must be a single nonmissing string",
+               class = "tampa_input_error")
+})
+
 test_that("information and downloads resolve stable IDs with the same portal budget", {
   item_id <- "abcdef0123456789abcdef0123456789"
   id <- paste0("arcgis:", item_id, ":2")

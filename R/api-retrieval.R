@@ -173,17 +173,12 @@ tbod_get_dataset <- function(id, jurisdiction = NULL, where = "1=1",
            subclass = "tampa_input_error")
   }
   .string(portal, "portal")
-  parts <- strsplit(id, ":", fixed = TRUE)[[1L]]
-  layer_id <- suppressWarnings(as.numeric(parts[[3L]]))
-  if (!is.finite(layer_id) || layer_id > .Machine$integer.max) {
-    .abort("The ArcGIS identifier has an invalid layer ID.",
-           subclass = "tampa_input_error")
-  }
+  parts <- .stable_arcgis_id_parts(id)
   timeout <- .operation_timeout(timeout, total_timeout)
-  rows <- .discover_arcgis_item(parts[[2L]], as.integer(layer_id),
+  rows <- .discover_arcgis_item(parts$item_id, parts$layer_id,
                                 portal = portal, timeout = timeout)
   if (!is.data.frame(rows) || nrow(rows) != 1L) {
-    .abort(paste0("ArcGIS item `", parts[[2L]], "` layer ", layer_id,
+    .abort(paste0("ArcGIS item `", parts$item_id, "` layer ", parts$layer_id,
                   " is unavailable or is not a supported query layer."),
            subclass = "tampa_input_error")
   }
