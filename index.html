@@ -68,112 +68,72 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>tampaBayOpenData provides a lightweight R interface for discovering and retrieving public ArcGIS datasets across the Tampa Bay region. The package lets users search for civic datasets and load them directly into R without manually navigating ArcGIS portals, constructing REST API requests, or handling pagination themselves.</p>
-<p>It currently supports public data published by:</p>
-<ul>
-<li>City of Tampa</li>
-<li>City of St. Petersburg</li>
-<li>City of Clearwater</li>
-<li>Hillsborough County</li>
-<li>Pinellas County</li>
-<li>Tampa Bay Regional Planning Council</li>
-</ul>
-<p>Designed for analysts, researchers, students, journalists, and civic technologists, tampaBayOpenData provides a consistent workflow across ArcGIS publishers that otherwise expose data through separate portals and services.</p>
-<p><strong>New to tampaBayOpenData? <a href="https://jaclenga.github.io/tampaBayOpenData/articles/first-five-minutes.html">Start with the five-minute tutorial.</a></strong></p>
+<p><code>tampaBayOpenData</code> helps R users find and explore public data from Tampa Bay governments. Search local topics such as parks, housing, and transportation, then load records into R for analysis. It brings together data from six regional publishers, so you can start with one familiar workflow instead of visiting several separate data portals.</p>
+<p><strong>New to the package? <a href="https://jaclenga.github.io/tampaBayOpenData/articles/first-five-minutes.html">Start with the five-minute tutorial.</a></strong></p>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
 <p>Install the released package from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span></code></pre></div>
-<p>For the development version from GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span> <span class="co"># if needed</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"Jaclenga/tampaBayOpenData"</span><span class="op">)</span></span></code></pre></div>
-<p>Install <code>sf</code> as well if you need spatial results.</p>
+<p>For the development version, install <code>pak</code> with <code>install.packages("pak")</code> if needed, then run <code>pak::pak("Jaclenga/tampaBayOpenData")</code>.</p>
 </div>
 <div class="section level2">
-<h2 id="find-and-retrieve-a-checked-layer">Find and retrieve a checked layer<a class="anchor" aria-label="anchor" href="#find-and-retrieve-a-checked-layer"></a>
+<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p>Search the built-in catalog, retrieve a small preview of St. Petersburg parks, and inspect the resulting table:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">parks</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"parks"</span>, source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span></span>
-<span><span class="va">parks</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"parks"</span>, source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span></span>
+<span><span class="va">matches</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"stpete-parks"</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"retrieved_at"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>The search reads the bundled catalog; retrieval contacts the publisher. Checked search ranks exact titles and IDs before partial and metadata matches. It can recover a close spelling when no checked entry matches literally. Use <code>limit</code> to return the first ranked search rows; it is separate from the <code>max_items</code> cap on live service items scanned.</p>
-<p>The retrieval call’s <code>limit = 100</code> returns a record subset, recorded as incomplete in its provenance when more records match. Omit the retrieval <code>limit</code> to request all matching records, subject to the service and package limits described in the retrieval guide.</p>
-<p>A <strong>checked</strong> layer has a catalog entry and a saved field, geometry, and CRS snapshot. Before retrieval, its live metadata is compared with that snapshot: compatible changes warn; incompatible changes stop the request. Checked status does not verify individual records or guarantee the service will remain available. See <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html#check-the-live-schema">schema checks and retrieval</a>. For common failures and recovery steps, see <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html#troubleshooting-common-errors">Troubleshooting common errors</a>.</p>
-<p>To inspect current endpoint and schema health across checked entries, run <code><a href="reference/tbod_check_catalog.html">tbod_check_catalog()</a></code> or select a few IDs with <code>tbod_check_catalog(ids = "stpete-parks")</code>. It contacts the publishers and returns one diagnostic row per entry. Add <code>probe_query = TRUE</code> to test a zero-match count query without downloading records. Each row records when it was checked, elapsed request time, HTTP status when available, and a failure reason. <code>query_status</code> reports whether the count operation was verified. <code>health_state</code> groups results as <code>healthy</code>, <code>degraded</code>, <code>unavailable</code>, or <code>unknown</code>; the existing <code>status</code> gives the more specific diagnosis. Absent another confirmed problem, transient failures are <code>unknown</code> rather than proof that a layer is gone.</p>
-<p>The <a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/catalog-health.yaml" class="external-link">daily catalog-health workflow</a> runs the query probe for every checked entry and uploads timestamped JSON, RDS, CSV, and Markdown reports. It never updates the bundled catalog. These reports are point-in-time checks of selected layers; they do not measure record freshness or establish complete publisher coverage. See the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md#live-and-package-checks" class="external-link">test and report guide</a> for local commands.</p>
+<span><span class="va">parks</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"stpete-parks"</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span></code></pre></div>
+<p>The search results include dataset IDs you can use to retrieve records. <code><a href="https://rdrr.io/r/utils/head.html" class="external-link">head()</a></code> shows the first few rows, <code><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow()</a></code> counts the rows you received, and <code><a href="https://rdrr.io/r/base/names.html" class="external-link">names()</a></code> lists their columns. Catalog search works offline; retrieval contacts the publisher. <code>limit = 100</code> returns at most 100 records, so this preview may not contain the whole dataset.</p>
 </div>
 <div class="section level2">
-<h2 id="search-beyond-the-catalog">Search beyond the catalog<a class="anchor" aria-label="anchor" href="#search-beyond-the-catalog"></a>
+<h2 id="what-data-can-i-find">What data can I find?<a class="anchor" aria-label="anchor" href="#what-data-can-i-find"></a>
 </h2>
-<p>Live discovery searches the six configured ArcGIS publishers. For example, <code>tbod_search_datasets("housing", source = "live", portals = "city")</code> searches Tampa’s portal. To search another public ArcGIS portal, supply its sharing REST root:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Replace this address with the public sharing REST root of your portal.</span></span>
-<span><span class="va">other</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_discover.html">tbod_discover</a></span><span class="op">(</span><span class="st">"https://example.maps.arcgis.com/sharing/rest"</span>,</span>
-<span>                       query <span class="op">=</span> <span class="st">"parks"</span><span class="op">)</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">other</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="va">other</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
-<p>Portal results have <code>discovered</code> status; rows from a service or layer URL have <code>not_checked</code> status. Both work with <code><a href="reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> and have no saved checked schema. Live searches can miss items when the scan is bounded or a publisher service fails; inspect <code>attr(other, "discovery_complete")</code> before treating a result as a complete listing. A direct public <code>FeatureServer/&lt;id&gt;</code> or <code>MapServer/&lt;id&gt;</code> URL also works with <code><a href="reference/tbod_get_dataset.html">tbod_get_dataset()</a></code>. The <a href="https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html">discovery</a> and <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html">retrieval</a> articles cover filters, scan limits, direct URLs, and downloads.</p>
+<p>The package covers selected public data from the cities of Tampa, St. Petersburg, and Clearwater; Hillsborough and Pinellas counties; and the Tampa Bay Regional Planning Council.</p>
+<p>A <strong>checked</strong> dataset has had its structure inspected by the package maintainers. The checked catalog is a selection, not a complete inventory of any publisher. Structure checks help detect changes, but do not guarantee that a service is available or that its records are accurate. See the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage guide</a> and <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html#check-the-live-schema">schema checks</a>.</p>
+<p>You can also search a publisher’s current online catalog. For example, search the City of Tampa for housing data:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span></code></pre></div>
+<p>Live results depend on publisher availability and search limits, so they may miss datasets. The <a href="https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html">discovery guide</a> explains more ways to search.</p>
 </div>
 <div class="section level2">
-<h2 id="see-spatial-data">See spatial data<a class="anchor" aria-label="anchor" href="#see-spatial-data"></a>
+<h2 id="example-map">Example map<a class="anchor" aria-label="anchor" href="#example-map"></a>
 </h2>
-<p>The checked City of Tampa <code>city-boundary</code> and <code>capital-projects</code> layers can be retrieved as <code>sf</code> objects with <code>spatial = TRUE</code>.</p>
+<p>With the optional <code>sf</code> package installed, you can retrieve spatial data to make maps. This map combines checked City of Tampa capital-project locations with a city boundary:</p>
 <div class="float">
 <img src="reference/figures/tampa-capital-projects-map.png" alt="Map of 394 City of Tampa capital project locations and the shoreline-adjusted Tampa boundary"><div class="figcaption">Map of 394 City of Tampa capital project locations and the shoreline-adjusted Tampa boundary</div>
 </div>
-<p><em>City of Tampa data retrieved October 3, 2026 (both ArcGIS items marked CC0). The shoreline-adjusted boundary is not a legal survey; the points do not establish current project status or complete coverage. <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tools/render-home-map.R" class="external-link">Reproduce the map</a> or follow the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/introduction.html#work-with-spatial-data">spatial walkthrough</a>.</em></p>
-</div>
-<div class="section level2">
-<h2 id="coverage-and-source-limits">Coverage and source limits<a class="anchor" aria-label="anchor" href="#coverage-and-source-limits"></a>
-</h2>
-<p>The 52 checked layers are selected references, not a complete inventory or uniform coverage of each topic. Publisher services can change, and some layers are active views or approximate boundaries. The TBRPC storm surge layer is a historical planning model, not current emergency guidance. See the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage guide</a> for publisher counts, layer caveats, and reuse terms, and the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md" class="external-link">catalog policy</a> for selection and maintenance decisions. The package’s MIT license covers its code, not the source data. The package is independent of the publishers and rOpenSci.</p>
-<p>The <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/coverage-dashboard.md" class="external-link">dashboard methodology and build steps</a> explain how checked-layer counts and optional health reports appear on the coverage page. Missing or stale health evidence is marked <strong>unverified</strong>.</p>
-</div>
-<div class="section level2">
-<h2 id="practical-tutorials">Practical tutorials<a class="anchor" aria-label="anchor" href="#practical-tutorials"></a>
-</h2>
-<ul>
-<li>
-<a href="https://jaclenga.github.io/tampaBayOpenData/articles/housing-development.html">Housing and development activity</a>: discover checked layers, summarize Tampa development cases, and inspect a Pinellas assisted-housing inventory.</li>
-<li>
-<a href="https://jaclenga.github.io/tampaBayOpenData/articles/water-quality.html">Water quality around Tampa Bay</a>: assess missing observations and compare reported monitoring measurements.</li>
-<li>
-<a href="https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.html">Infrastructure and capital projects</a>: inspect project rows, types, and phases without treating map features as unique projects.</li>
-</ul>
-<p>The tutorials use checked source IDs and fields. Their live retrieval and plotting code runs when you follow a tutorial locally; pkgdown builds do not contact the publishers. Install <code>ggplot2</code> to run the plotting examples.</p>
-</div>
-<div class="section level2">
-<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
-</h2>
-<p>Cite the package and the original data publisher and dataset. For the package citation, run:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/toLatex.html" class="external-link">toBibtex</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><code>tbod_dataset_info(id)</code> gives catalog source details; <code>tbod_provenance(result)</code> records the retrieval source and time.</p>
+<p><em>City of Tampa data retrieved October 3, 2026 (both source items marked CC0). The shoreline-adjusted boundary is not a legal survey; the points do not establish current project status or complete coverage. <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tools/render-home-map.R" class="external-link">Reproduce the map</a> or follow the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/introduction.html#work-with-spatial-data">spatial walkthrough</a>.</em></p>
 </div>
 <div class="section level2">
 <h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
 </h2>
 <ul>
 <li>
-<a href="https://jaclenga.github.io/tampaBayOpenData/articles/introduction.html">Get started</a> and <a href="https://jaclenga.github.io/tampaBayOpenData/reference/index.html">function reference</a>
-</li>
+<a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html">Retrieval and downloads</a> explains filters, larger downloads, and common errors.</li>
 <li>
-<a href="https://jaclenga.github.io/tampaBayOpenData/articles/discovery.html">Discovery</a>, <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html">retrieval and downloads</a>, and <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage and provenance</a>
-</li>
-<li>
-<a href="https://github.com/Jaclenga/tampaBayOpenData/tree/main/docs" class="external-link">Developer document index</a>, <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/architecture.md" class="external-link">architecture</a>, <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/api-migration.md" class="external-link">API migration</a>, <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md" class="external-link">validation</a>, and <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/CONTRIBUTING.md" class="external-link">contributing</a>
-</li>
-<li>
-<a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/inst/examples/bike-network.Rmd" class="external-link">Packaged bicycle network example (R Markdown)</a> (offline by default; optional small live subset), and the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/tampa-bicycle-network-eda.Rmd" class="external-link">full-data bicycle network exploration</a> (live analysis)</li>
-<li><a href="https://github.com/Jaclenga/tampaBayOpenData/tree/main/explorations/stories" class="external-link">Short R data exploration stories across six publishers</a></li>
+<a href="https://jaclenga.github.io/tampaBayOpenData/reference/index.html">Function reference</a> lists package functions.</li>
+<li>Practical tutorials: <a href="https://jaclenga.github.io/tampaBayOpenData/articles/housing-development.html">housing and development</a>, <a href="https://jaclenga.github.io/tampaBayOpenData/articles/water-quality.html">water quality</a>, and <a href="https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.html">infrastructure projects</a>.</li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="data-sources-and-limitations">Data sources and limitations<a class="anchor" aria-label="anchor" href="#data-sources-and-limitations"></a>
+</h2>
+<p>The publishers maintain the underlying datasets; the package does not control their availability, completeness, or accuracy. <code>tbod_dataset_info("stpete-parks")</code> shows catalog source details, and <code>tbod_provenance(parks)</code> records where and when a result was retrieved. These details help trace a result, but do not verify individual records.</p>
+<p>The package’s MIT license covers its code; source data may have different reuse terms. Check the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage and source notes</a> before using a dataset.</p>
+</div>
+<div class="section level2">
+<h2 id="citation-and-contributing">Citation and contributing<a class="anchor" aria-label="anchor" href="#citation-and-contributing"></a>
+</h2>
+<p>Cite both the package and the original data publisher and dataset. Run <code>citation("tampaBayOpenData")</code> for the package citation. Contributions are welcome; see the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/CONTRIBUTING.md" class="external-link">contributing guide</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -218,10 +178,8 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=tampaBayOpenData" class="external-link"><img src="https://img.shields.io/cran/v/tampaBayOpenData" alt="CRAN version"></a></li>
-<li><a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/LICENSE.md" class="external-link"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a></li>
 <li><a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main" alt="R CMD check"></a></li>
-<li><a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgcheck.yaml" class="external-link"><img src="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgcheck.yaml/badge.svg?branch=main" alt="pkgcheck"></a></li>
-<li><a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml" class="external-link"><img src="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml/badge.svg?branch=main" alt="Offline test coverage workflow"></a></li>
+<li><a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/LICENSE.md" class="external-link"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a></li>
 </ul>
 </div>
 
