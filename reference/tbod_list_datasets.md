@@ -108,11 +108,15 @@ attributes described in Details.
 Values within a filter are combined with OR; different filters and a
 search query are combined with AND. Status, geometry, topic, category,
 and date filters apply after the bounded live scan and checked overlay.
-A capped scan can miss older matching items. For an exhaustive scan, use
-`max_items = Inf` with an appropriate time budget and inspect
-`attr(result, "discovery_complete")`. Live results also carry
-`discovery_issues`, `discovery_failed_portals`,
+A capped scan can miss older matching items. Use `max_items = Inf` with
+an appropriate time budget to follow all available index pages, and
+inspect `attr(result, "discovery_complete")`. This flag describes the
+selected public portal index scan, not every publisher service. Live
+results also carry `discovery_issues`, `discovery_failed_portals`,
 `discovery_scanned_items`, and `discovery_truncated_portals` attributes.
+If every selected portal fails, `source = "all"` returns the checked
+entries with failure details in these attributes; unknown scan counts
+are `NA`.
 
 ## Examples
 

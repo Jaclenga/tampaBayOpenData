@@ -47,8 +47,8 @@ tampaBayOpenData::tbod_search_datasets(
 #> # A tibble: 2 × 23
 #>   id             title description jurisdiction publisher source_url service_url
 #>   <chr>          <chr> <chr>       <chr>        <chr>     <chr>      <chr>      
-#> 1 stpete-parks   St. … Public par… stpete       City of … https://c… https://se…
-#> 2 clearwater-pa… Clea… City of Cl… clearwater   City of … https://g… https://gi…
+#> 1 clearwater-pa… Clea… City of Cl… clearwater   City of … https://g… https://gi…
+#> 2 stpete-parks   St. … Public par… stpete       City of … https://c… https://se…
 #> # ℹ 16 more variables: geometry_type <chr>, category <chr>, verified <date>,
 #> #   terms <chr>, layer_id <int>, date_fields <list>, tags <list>,
 #> #   item_id <chr>, portal <chr>, validation_status <chr>, modified <dttm>,
@@ -76,6 +76,44 @@ has counts by publisher, and the [selection
 policy](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md)
 explains which layers enter the catalog.
 
+## Match and rank search results
+
+[`tbod_search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_search_datasets.md)
+searches checked IDs, titles, descriptions, publisher names, categories,
+and tags. It ignores case, but treats punctuation literally. All words
+in the query must occur somewhere in a checked row; they can occur in
+different fields. If no checked row matches literally, the search tries
+a limited spelling fallback for alphanumeric query words; words shorter
+than four characters have no typo tolerance. The fallback searches only
+the checked catalog; it does not alter a live portal query. An empty or
+whitespace-only query lists datasets.
+
+Exact title or ID matches come first. Title or ID prefixes follow, then
+substrings, then rows whose title or ID contains the query words
+separately. Matches in tags, categories, or publisher come next;
+description-only matches follow those. Within each group, each word
+scores title, ID, tags or categories, publisher, and description in that
+order; title, ID, and source URL then break ties consistently. These are
+ordering rules, not measures of dataset quality or relevance to a
+specific analysis.
+
+``` r
+
+tbod_search_datasets("permit", source = "checked", limit = 5)[,
+  c("id", "title", "publisher")]
+tbod_search_datasets("permti", source = "checked", limit = 5)[,
+  c("id", "title", "publisher")]
+tbod_search_datasets("", source = "checked", limit = 5)[,
+  c("id", "title", "publisher")]
+```
+
+`limit` is a nonnegative whole number or `Inf` (the default). It selects
+the first rows **after** source discovery, checked overlay, filtering,
+and ranking. Even `limit = 0` still performs a selected live scan and
+retains its scan diagnostics. `max_items` separately caps the number of
+service items inspected per live portal. A result limit does not make an
+incomplete scan complete.
+
 ## Discover live portal layers
 
 ``` r
@@ -102,6 +140,13 @@ checked entry. If a source is not indexed or an index lags, it may not
 appear in live results; a compatible public ArcGIS layer can still be
 retrieved by URL with
 [`tbod_get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_arcgis_layer.md).
+Portal indexes can match fields that are not returned in discovery rows.
+[`tbod_search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_search_datasets.md)
+ranks indexed hits using available title, ID, and metadata, but keeps
+all portal hits even when a returned row has no local text match. A
+layer found both live and in the checked catalog appears once with
+`checked` status. With `source = "all"`, a checked match can still
+appear when its portal index does not return it.
 
 Use `portals = "city"` for Tampa, `"tbrpc"` for the regional planning
 council, or `"stpete"`, `"clearwater"`, `"hillsborough"`, or
@@ -198,12 +243,16 @@ not feature freshness.
 
 `max_items` caps **portal service items per organization**, not the
 number of expanded layers. The default scans at most 25 items per
-organization. Use `max_items = Inf` explicitly for a full live listing,
-with a suitable `total_timeout`. A capped listing can miss matching
-items beyond the scan limit. `jurisdiction` and `publisher` narrow
-organizations before scanning; other filters apply after discovery and
-the checked overlay. Consequently, an item matching `topic` or
-`modified_after` may be missed by a capped scan.
+organization. Use `max_items = Inf` explicitly to follow all available
+search pages, with a suitable `total_timeout`. A capped listing can miss
+matching items beyond the scan limit. `jurisdiction` and `publisher`
+narrow organizations before scanning; other filters apply after
+discovery and the checked overlay. Consequently, an item matching
+`topic` or `modified_after` may be missed by a capped scan. `publisher`
+matches a configured name exactly, without regard to case; a name with
+no match returns no rows. Use
+[`tbod_list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_portals.md)
+to inspect names.
 
 ``` r
 
@@ -215,12 +264,18 @@ attr(results, "discovery_issues")
 attr(results, "discovery_failed_portals")
 ```
 
-Check `discovery_complete` before treating results as a complete portal
-catalog. The other attributes show scan progress, skipped items, and
-failed portals. A combined search retains rows from working publishers
-or from earlier pages of a failed scan. If all selected portals fail
-before returning rows, `source = "live"` errors; `source = "all"` warns
-and returns checked rows.
+Check `discovery_complete` before treating results as a complete scan of
+the selected public portal indexes. It does not establish a complete
+inventory of publisher services. Portal indexes can lag or omit items,
+private services are outside the search, and the package includes only
+public Feature Service and Map Service items with supported, queryable
+layers. The other attributes show scan progress, skipped items, and
+failed portals. A time budget can stop an operation; capped scans or
+item failures can leave returned results incomplete. A combined search
+retains rows from working publishers or from earlier pages of a failed
+scan. If all selected portals fail before returning rows,
+`source = "live"` errors; `source = "all"` warns and returns checked
+rows.
 
 Continue with [retrieval and
 downloads](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.md)

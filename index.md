@@ -46,10 +46,15 @@ tbod_provenance(data)[c("publisher", "source_url", "retrieved_at", "complete")]
 ```
 
 The search reads the bundled catalog; retrieval contacts the publisher.
-`limit = 100` returns a subset, recorded as incomplete in its provenance
-when more records match. Omit `limit` to request all matching records,
-subject to the service and package limits described in the retrieval
-guide.
+Checked search ranks exact titles and IDs before partial and metadata
+matches. It can recover a close spelling when no checked entry matches
+literally. Use `limit` to return the first ranked search rows; it is
+separate from the `max_items` cap on live service items scanned.
+
+The retrieval call’s `limit = 100` returns a record subset, recorded as
+incomplete in its provenance when more records match. Omit the retrieval
+`limit` to request all matching records, subject to the service and
+package limits described in the retrieval guide.
 
 A **checked** layer has a catalog entry and a saved field, geometry, and
 CRS snapshot. Before retrieval, its live metadata is compared with that
@@ -57,6 +62,30 @@ snapshot: compatible changes warn; incompatible changes stop the
 request. Checked status does not verify individual records or guarantee
 the service will remain available. See [schema checks and
 retrieval](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html#check-the-live-schema).
+
+To inspect current endpoint and schema health across checked entries,
+run
+[`tbod_check_catalog()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_catalog.md)
+or select a few IDs with `tbod_check_catalog(ids = "stpete-parks")`. It
+contacts the publishers and returns one diagnostic row per entry. Add
+`probe_query = TRUE` to test a zero-match count query without
+downloading records. Each row records when it was checked, elapsed
+request time, HTTP status when available, and a failure reason.
+`query_status` reports whether the count operation was verified.
+`health_state` groups results as `healthy`, `degraded`, `unavailable`,
+or `unknown`; the existing `status` gives the more specific diagnosis.
+Absent another confirmed problem, transient failures are `unknown`
+rather than proof that a layer is gone.
+
+The [daily catalog-health
+workflow](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/catalog-health.yaml)
+runs the query probe for every checked entry and uploads timestamped
+JSON, RDS, CSV, and Markdown reports. It never updates the bundled
+catalog. These reports are point-in-time checks of selected layers; they
+do not measure record freshness or establish complete publisher
+coverage. See the [test and report
+guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md#live-and-package-checks)
+for local commands.
 
 ## Search beyond the catalog
 
@@ -122,6 +151,32 @@ policy](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-cata
 for selection and maintenance decisions. The package’s MIT license
 covers its code, not the source data. The package is independent of the
 publishers and rOpenSci.
+
+The [dashboard methodology and build
+steps](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/coverage-dashboard.md)
+explain how checked-layer counts and optional health reports appear on
+the coverage page. Missing or stale health evidence is marked
+**unverified**.
+
+## Practical tutorials
+
+- [Housing and development
+  activity](https://jaclenga.github.io/tampaBayOpenData/articles/housing-development.html):
+  discover checked layers, summarize Tampa development cases, and
+  inspect a Pinellas assisted-housing inventory.
+- [Water quality around Tampa
+  Bay](https://jaclenga.github.io/tampaBayOpenData/articles/water-quality.html):
+  assess missing observations and compare reported monitoring
+  measurements.
+- [Infrastructure and capital
+  projects](https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.html):
+  inspect project rows, types, and phases without treating map features
+  as unique projects.
+
+The tutorials use checked source IDs and fields. Their live retrieval
+and plotting code runs when you follow a tutorial locally; pkgdown
+builds do not contact the publishers. Install `ggplot2` to run the
+plotting examples.
 
 ## Citation
 

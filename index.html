@@ -12,9 +12,9 @@
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Tampa Bay open data from R">
-<meta name="description" content="Browse a catalog of 52 checked layers offline, search six Tampa Bay ArcGIS publishers live, or retrieve a public ArcGIS layer by ID or URL.
+<meta name="description" content="Browse a selective checked catalog offline, search Tampa Bay ArcGIS publishers live, or retrieve a public ArcGIS layer by ID or URL.
 ">
-<meta property="og:description" content="Browse a catalog of 52 checked layers offline, search six Tampa Bay ArcGIS publishers live, or retrieve a public ArcGIS layer by ID or URL.
+<meta property="og:description" content="Browse a selective checked catalog offline, search Tampa Bay ArcGIS publishers live, or retrieve a public ArcGIS layer by ID or URL.
 ">
 </head>
 <body>
@@ -40,6 +40,10 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/discovery.html">Discovering Tampa Bay data</a></li>
     <li><a class="dropdown-item" href="articles/retrieval.html">Retrieving and downloading data</a></li>
+    <li><a class="dropdown-item" href="articles/housing-development.html">Housing and development activity</a></li>
+    <li><a class="dropdown-item" href="articles/water-quality.html">Water quality around Tampa Bay</a></li>
+    <li><a class="dropdown-item" href="articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
     <li><a class="dropdown-item" href="articles/index.html">All articles</a></li>
   </ul>
 </li>
@@ -94,8 +98,11 @@
 <span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"stpete-parks"</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"retrieved_at"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>The search reads the bundled catalog; retrieval contacts the publisher. <code>limit = 100</code> returns a subset, recorded as incomplete in its provenance when more records match. Omit <code>limit</code> to request all matching records, subject to the service and package limits described in the retrieval guide.</p>
+<p>The search reads the bundled catalog; retrieval contacts the publisher. Checked search ranks exact titles and IDs before partial and metadata matches. It can recover a close spelling when no checked entry matches literally. Use <code>limit</code> to return the first ranked search rows; it is separate from the <code>max_items</code> cap on live service items scanned.</p>
+<p>The retrieval call’s <code>limit = 100</code> returns a record subset, recorded as incomplete in its provenance when more records match. Omit the retrieval <code>limit</code> to request all matching records, subject to the service and package limits described in the retrieval guide.</p>
 <p>A <strong>checked</strong> layer has a catalog entry and a saved field, geometry, and CRS snapshot. Before retrieval, its live metadata is compared with that snapshot: compatible changes warn; incompatible changes stop the request. Checked status does not verify individual records or guarantee the service will remain available. See <a href="https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.html#check-the-live-schema">schema checks and retrieval</a>.</p>
+<p>To inspect current endpoint and schema health across checked entries, run <code><a href="reference/tbod_check_catalog.html">tbod_check_catalog()</a></code> or select a few IDs with <code>tbod_check_catalog(ids = "stpete-parks")</code>. It contacts the publishers and returns one diagnostic row per entry. Add <code>probe_query = TRUE</code> to test a zero-match count query without downloading records. Each row records when it was checked, elapsed request time, HTTP status when available, and a failure reason. <code>query_status</code> reports whether the count operation was verified. <code>health_state</code> groups results as <code>healthy</code>, <code>degraded</code>, <code>unavailable</code>, or <code>unknown</code>; the existing <code>status</code> gives the more specific diagnosis. Absent another confirmed problem, transient failures are <code>unknown</code> rather than proof that a layer is gone.</p>
+<p>The <a href="https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/catalog-health.yaml" class="external-link">daily catalog-health workflow</a> runs the query probe for every checked entry and uploads timestamped JSON, RDS, CSV, and Markdown reports. It never updates the bundled catalog. These reports are point-in-time checks of selected layers; they do not measure record freshness or establish complete publisher coverage. See the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md#live-and-package-checks" class="external-link">test and report guide</a> for local commands.</p>
 </div>
 <div class="section level2">
 <h2 id="search-beyond-the-catalog">Search beyond the catalog<a class="anchor" aria-label="anchor" href="#search-beyond-the-catalog"></a>
@@ -121,6 +128,20 @@
 <h2 id="coverage-and-source-limits">Coverage and source limits<a class="anchor" aria-label="anchor" href="#coverage-and-source-limits"></a>
 </h2>
 <p>The 52 checked layers are selected references, not a complete inventory or uniform coverage of each topic. Publisher services can change, and some layers are active views or approximate boundaries. The TBRPC storm surge layer is a historical planning model, not current emergency guidance. See the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage guide</a> for publisher counts, layer caveats, and reuse terms, and the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md" class="external-link">catalog policy</a> for selection and maintenance decisions. The package’s MIT license covers its code, not the source data. The package is independent of the publishers and rOpenSci.</p>
+<p>The <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/coverage-dashboard.md" class="external-link">dashboard methodology and build steps</a> explain how checked-layer counts and optional health reports appear on the coverage page. Missing or stale health evidence is marked <strong>unverified</strong>.</p>
+</div>
+<div class="section level2">
+<h2 id="practical-tutorials">Practical tutorials<a class="anchor" aria-label="anchor" href="#practical-tutorials"></a>
+</h2>
+<ul>
+<li>
+<a href="https://jaclenga.github.io/tampaBayOpenData/articles/housing-development.html">Housing and development activity</a>: discover checked layers, summarize Tampa development cases, and inspect a Pinellas assisted-housing inventory.</li>
+<li>
+<a href="https://jaclenga.github.io/tampaBayOpenData/articles/water-quality.html">Water quality around Tampa Bay</a>: assess missing observations and compare reported monitoring measurements.</li>
+<li>
+<a href="https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.html">Infrastructure and capital projects</a>: inspect project rows, types, and phases without treating map features as unique projects.</li>
+</ul>
+<p>The tutorials use checked source IDs and fields. Their live retrieval and plotting code runs when you follow a tutorial locally; pkgdown builds do not contact the publishers. Install <code>ggplot2</code> to run the plotting examples.</p>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
@@ -153,6 +174,7 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=tampaBayOpenData" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/Jaclenga/tampaBayOpenData/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/Jaclenga/tampaBayOpenData/issues" class="external-link">Report a bug</a></li>
 </ul>

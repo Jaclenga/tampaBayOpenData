@@ -33,10 +33,10 @@ tampaBayOpenData::tbod_search_datasets("park", source = "checked")[,
 #>   id                       title                  jurisdiction validation_status
 #>   <chr>                    <chr>                  <chr>        <chr>            
 #> 1 parks                    Park polygons          tampa        checked          
-#> 2 stpete-parks             St. Petersburg parks   stpete       checked          
-#> 3 clearwater-park-buffers  Clearwater park buffe… clearwater   checked          
-#> 4 hillsborough-parks       Hillsborough County p… hillsborough checked          
-#> 5 pinellas-park-boundaries Pinellas County park … pinellas     checked          
+#> 2 clearwater-park-buffers  Clearwater park buffe… clearwater   checked          
+#> 3 hillsborough-parks       Hillsborough County p… hillsborough checked          
+#> 4 pinellas-park-boundaries Pinellas County park … pinellas     checked          
+#> 5 stpete-parks             St. Petersburg parks   stpete       checked          
 #> 6 pinellas-trail           Pinellas Trail segmen… pinellas     checked
 tampaBayOpenData::tbod_dataset_info("construction-permits")[
   c("title", "scope_note", "verified")]

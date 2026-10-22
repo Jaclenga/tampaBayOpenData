@@ -3,13 +3,15 @@
 MapServer layer URL. The direct source has not_checked provenance and no
 inferred publisher identity. A saved manifest fixes the endpoint, query,
 fields, schema, CRS, IDs, and batch size; a resumed call rechecks them before
-reusing validated chunks. See tbod_download_dataset() for the directory,
-lock, and record-change rules."><meta property="og:description" content="Uses tbod_download_dataset() with a public HTTPS ArcGIS FeatureServer or
+reusing validated chunks. Successful validation writes complete.rds in
+the download directory; a resumed call clears and recreates it after
+matching the manifest and revalidating chunks. See tbod_download_dataset() for the directory, lock, and record-change rules."><meta property="og:description" content="Uses tbod_download_dataset() with a public HTTPS ArcGIS FeatureServer or
 MapServer layer URL. The direct source has not_checked provenance and no
 inferred publisher identity. A saved manifest fixes the endpoint, query,
 fields, schema, CRS, IDs, and batch size; a resumed call rechecks them before
-reusing validated chunks. See tbod_download_dataset() for the directory,
-lock, and record-change rules."></head><body>
+reusing validated chunks. Successful validation writes complete.rds in
+the download directory; a resumed call clears and recreates it after
+matching the manifest and revalidating chunks. See tbod_download_dataset() for the directory, lock, and record-change rules."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -30,6 +32,10 @@ lock, and record-change rules."></head><body>
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
     <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+    <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/index.html">All articles</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -55,8 +61,9 @@ lock, and record-change rules."></head><body>
 MapServer layer URL. The direct source has <code>not_checked</code> provenance and no
 inferred publisher identity. A saved manifest fixes the endpoint, query,
 fields, schema, CRS, IDs, and batch size; a resumed call rechecks them before
-reusing validated chunks. See <code><a href="tbod_download_dataset.html">tbod_download_dataset()</a></code> for the directory,
-lock, and record-change rules.</p>
+reusing validated chunks. Successful validation writes <code>complete.rds</code> in
+the download directory; a resumed call clears and recreates it after
+matching the manifest and revalidating chunks. See <code><a href="tbod_download_dataset.html">tbod_download_dataset()</a></code> for the directory, lock, and record-change rules.</p>
     </div>
 
     <div class="section level2">
@@ -121,7 +128,8 @@ geometry simplification, and pagination parameters are protected.</p></dd>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
-<dd><p>Per-request timeout in seconds.</p></dd>
+<dd><p>Per-request timeout in seconds. Transient failures may be
+retried according to <code>options(tampaBayOpenData.max_retries = 3L)</code>.</p></dd>
 
 
 <dt id="arg-total-timeout">total_timeout<a class="anchor" aria-label="anchor" href="#arg-total-timeout"></a></dt>

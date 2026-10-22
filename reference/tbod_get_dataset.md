@@ -99,9 +99,8 @@ tbod_get_dataset(
 
 - timeout:
 
-  Per-request timeout in seconds. Transient transport and HTTP failures
-  may receive three attempts; a generic ArcGIS query error may receive
-  four.
+  Per-request timeout in seconds. Transient failures may be retried
+  according to `options(tampaBayOpenData.max_retries = 3L)`.
 
 - total_timeout:
 
@@ -113,9 +112,12 @@ tbod_get_dataset(
   `"auto"` (default) uses bounded preview validation when a finite limit
   is at most 1,000, more than 10,000 records match, and the layer
   supports ordering and pagination. The returned IDs are checked against
-  the original filter. Full retrieval always uses the full object-ID
-  manifest; `"full"` requires it even for a preview. A zero limit
-  requests only the count. Provenance records the method used.
+  the original filter. If advertised offsets fail or repeat, an
+  automatic preview can restart with a full manifest and object-ID
+  batches. Explicit `order_by` requests do not use this fallback. Full
+  retrieval always uses the full object-ID manifest when matches exist;
+  `"full"` requires it even for a preview. A zero limit or zero matching
+  count requests only the count. Provenance records the method used.
 
 - portal:
 
@@ -133,12 +135,14 @@ retrieval. Read the complete record with
 ## Details
 
 Retrieval requests the current layer schema and matching count. Full
-requests also retrieve and validate an object-ID manifest. A small
-preview of a large queryable layer can validate only its returned IDs
-against the original filter. Missing or duplicate records, truncated
-manifests, unexpected responses, and upstream errors fail explicitly.
-Full retrieval requires a complete manifest and must be narrowed by
-filters if more than one million records match. Use
+requests with matches also retrieve and validate an object-ID manifest.
+A small preview of a large queryable layer can validate only its
+returned IDs against the original filter. Truncated or short object-ID
+batches are split into smaller requests. Persistently missing or
+duplicate records, truncated manifests, unexpected responses, and
+upstream errors fail explicitly. Full retrieval requires a complete
+manifest and must be narrowed by filters if more than one million
+records match. Use
 [`tbod_download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_download_dataset.md)
 to save validated chunks to disk.
 
@@ -157,6 +161,20 @@ during retrieval cause an error, but attribute changes cannot be frozen.
 Accepted responses are limited to 50 MiB and 64 nested JSON containers;
 requests do not follow redirects. Native curl, GDAL, and PROJ parsing
 remains subject to the installed libraries' behavior.
+
+Transient connection failures and timeouts, HTTP 429, 500, 502, 503, and
+504 responses, ArcGIS error objects with those codes inside HTTP 200
+responses, and a generic transient ArcGIS query error are retried. The
+default is three additional retries per failure sequence; set the
+integer option `tampaBayOpenData.max_retries` from 0 to 10 to change it.
+HTTP failures and ArcGIS errors in successful HTTP responses have
+separate bounded sequences, so mixed failures may use more than four
+HTTP attempts overall. Retries use exponential backoff with jitter or a
+valid `Retry-After` delay or HTTP date. A requested delay longer than 30
+seconds stops retrying instead of retrying before the service permits
+it. Invalid queries, authentication failures, unavailable layers, and
+unsupported operations fail without retries. `total_timeout` may stop
+attempts earlier.
 
 ## Examples
 

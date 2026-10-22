@@ -38,6 +38,10 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
     <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+    <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/index.html">All articles</a></li>
   </ul>
 </li>
@@ -72,59 +76,1938 @@
     
     
 <p>The package retrieves public ArcGIS data; it does not host or archive
-the records. This article describes the checked catalog’s coverage and
-source limits that matter when using the data.</p>
-<div class="section level2">
-<h2 id="bundled-publishers">Bundled publishers<a class="anchor" aria-label="anchor" href="#bundled-publishers"></a>
+the records. This dashboard describes the <strong>selective checked
+catalog</strong> bundled with this package. It never represents a
+complete inventory of any publisher’s datasets.</p>
+<p>The checked catalog lists layers curated for direct use by ID. A
+successful health check means one layer’s endpoint and metadata passed a
+recent check; it does not establish that its records are fresh or that a
+full download will succeed. <strong>Live discovery</strong> searches
+publisher portals for additional items when you call it. Portal
+indexing, service availability, and search limits affect those results,
+so neither this dashboard nor live discovery measures complete publisher
+coverage.</p>
+<section class="tb-coverage-dashboard" aria-label="Checked catalog dashboard"><div class="tb-coverage-metrics" aria-label="Catalog and health summary">
+<div class="tb-coverage-metric">
+<div class="tb-coverage-metric-label">
+Checked entries
+</div>
+<div class="tb-coverage-metric-value">
+52
+</div>
+<div class="tb-coverage-metric-note">
+Selected layers in the bundled catalog
+</div>
+</div>
+<div class="tb-coverage-metric">
+<div class="tb-coverage-metric-label">
+Publishers represented
+</div>
+<div class="tb-coverage-metric-value">
+6
+</div>
+<div class="tb-coverage-metric-note">
+Organizations in the checked catalog
+</div>
+</div>
+<div class="tb-coverage-metric">
+<div class="tb-coverage-metric-label">
+Recently healthy
+</div>
+<div class="tb-coverage-metric-value">
+No report
+</div>
+<div class="tb-coverage-metric-note">
+Successful checks within 30 days
+</div>
+</div>
+<div class="tb-coverage-metric">
+<div class="tb-coverage-metric-label">
+Detected problems
+</div>
+<div class="tb-coverage-metric-value">
+No report
+</div>
+<div class="tb-coverage-metric-note">
+Recent unavailable, changed, or unsupported layers
+</div>
+</div>
+<div class="tb-coverage-metric">
+<div class="tb-coverage-metric-label">
+Missing schema baselines
+</div>
+<div class="tb-coverage-metric-value">
+0
+</div>
+<div class="tb-coverage-metric-note">
+Layers without a saved field and geometry comparison
+</div>
+</div>
+<div class="tb-coverage-metric">
+<div class="tb-coverage-metric-label">
+Latest verification
+</div>
+<div class="tb-coverage-metric-value">
+2026-10-05
+</div>
+<div class="tb-coverage-metric-note">
+Bundled catalog check; time unavailable
+</div>
+</div>
+</div>
+<p class="tb-coverage-notice" role="status">
+No matching health report was available for this build. All current
+health statuses are unverified; dated catalog checks remain visible
+below.
+</p>
+<h2 id="coverage-by-publisher">
+By publisher
 </h2>
-<p>The package checks the following layers and searches each publisher’s
-public ArcGIS organization. Counts come from the bundled
-<code>datasets.json</code> and <code>portals.json</code> registries.</p>
-<table class="table">
-<thead><tr class="header">
-<th>Publisher or jurisdiction</th>
-<th align="right">Checked layers</th>
-<th align="center">Live discovery</th>
+<div class="tb-coverage-table-wrap">
+<table class="table tb-coverage-table">
+<caption>
+Checked catalog entries and current verification by publisher
+</caption>
+<thead><tr>
+<th scope="col">
+Publisher
+</th>
+<th scope="col">
+Checked entries
+</th>
+<th scope="col">
+Last verification
+</th>
+<th scope="col">
+Healthy
+</th>
+<th scope="col">
+Problematic
+</th>
+<th scope="col">
+Unverified
+</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td>Tampa</td>
-<td align="right">20</td>
-<td align="center">Yes</td>
+<tr>
+<th scope="row">
+City of Clearwater
+</th>
+<td>
+6
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+6
+</td>
 </tr>
-<tr class="even">
-<td>St. Petersburg</td>
-<td align="right">7</td>
-<td align="center">Yes</td>
+<tr>
+<th scope="row">
+City of St. Petersburg
+</th>
+<td>
+7
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+7
+</td>
 </tr>
-<tr class="odd">
-<td>Clearwater</td>
-<td align="right">6</td>
-<td align="center">Yes</td>
+<tr>
+<th scope="row">
+City of Tampa
+</th>
+<td>
+20
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+20
+</td>
 </tr>
-<tr class="even">
-<td>Hillsborough County</td>
-<td align="right">8</td>
-<td align="center">Yes</td>
+<tr>
+<th scope="row">
+Hillsborough County
+</th>
+<td>
+8
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+8
+</td>
 </tr>
-<tr class="odd">
-<td>Pinellas County</td>
-<td align="right">7</td>
-<td align="center">Yes</td>
+<tr>
+<th scope="row">
+Pinellas County
+</th>
+<td>
+7
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+7
+</td>
 </tr>
-<tr class="even">
-<td>Tampa Bay Regional Planning Council</td>
-<td align="right">4</td>
-<td align="center">Yes</td>
+<tr>
+<th scope="row">
+Tampa Bay Regional Planning Council
+</th>
+<td>
+4
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+4
+</td>
 </tr>
 </tbody>
 </table>
-<p>The 52 checked layers are a selection, not a publisher inventory.
-Live discovery can find others, subject to portal indexing,
-availability, and scan limits. The <a href="discovery.html">discovery
-article</a> explains scan completeness; the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md" class="external-link">catalog
-policy</a> records selection criteria, topic coverage, and
-layer-specific limits.</p>
+</div>
+<h2 id="coverage-by-dataset">
+By dataset
+</h2>
+<div id="tb-coverage-filters" class="tb-coverage-filters" hidden="">
+<p><label for="tb-coverage-search">Search datasets</label>
+<input id="tb-coverage-search" type="search" placeholder="Name, topic, endpoint, or issue"><label for="tb-coverage-publisher">Publisher</label>
+<select id="tb-coverage-publisher"><option value="">All
+publishers</option>
+<option value="City of Clearwater">City of
+Clearwater</option>
+<option value="City of St. Petersburg">City of
+St. Petersburg</option>
+<option value="City of Tampa">City of
+Tampa</option>
+<option value="Hillsborough County">Hillsborough
+County</option>
+<option value="Pinellas County">Pinellas County</option>
+<option value="Tampa Bay Regional Planning Council">Tampa Bay Regional
+Planning Council</option></select><label for="tb-coverage-status">Status</label>
+<select id="tb-coverage-status"><option value="">All statuses</option>
+<option value="healthy">Healthy</option>
+<option value="problematic">Problematic</option>
+<option value="unverified">Unverified</option></select></p>
+</div>
+<p id="tb-coverage-count" class="tb-coverage-filter-count" role="status" aria-live="polite" hidden>
+</p>
+<div class="tb-coverage-table-wrap">
+<table class="table tb-coverage-table" id="tb-coverage-datasets">
+<caption>
+Checked datasets, dated evidence, current status, and source limits
+</caption>
+<thead><tr>
+<th scope="col">
+Dataset
+</th>
+<th scope="col">
+Publisher
+</th>
+<th scope="col">
+Category
+</th>
+<th scope="col">
+ArcGIS endpoint
+</th>
+<th scope="col">
+Last verification
+</th>
+<th scope="col">
+Status
+</th>
+<th scope="col">
+Known issues or limits
+</th>
+</tr></thead>
+<tbody>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Permits (active GIS view)
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Development
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/Planning/PermitsAll/FeatureServer/0" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/Planning/PermitsAll/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-09-29">2026-09-29</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The upstream service is described as data for an internal active-permits
+viewer, although its public Query endpoint is accessible without a
+token. The date fields are LASTUPDATE and CREATEDDATE; no permit
+issue-date field is advertised. No explicit dataset license was found on
+this exact FeatureServer service or in the selected public ArcGIS
+organization catalog. Do not infer the license of a separate MapServer
+layer.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Active development coordination cases
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Development
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/Planning/ActiveEntitlementLocations/FeatureServer/0" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/Planning/ActiveEntitlementLocations/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-09-29">2026-09-29</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+This is an active application view, not a historical ledger of all
+development cases. TENTATIVEHEARING and TENTATIVETIME are strings,
+despite their date-like names. No explicit dataset license was found on
+this exact FeatureServer service or in the selected public ArcGIS
+organization catalog. Do not infer the license of a separate MapServer
+layer.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Capital improvement projects
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Infrastructure
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/CapitalProjects/MapServer/0" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/CapitalProjects/MapServer/0</a>
+</td>
+<td>
+<time datetime="2026-09-29">2026-09-29</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The service description says its definition query selects Show to Public
+= Yes, while the layer metadata does not expose that definition
+expression. Coordinates use ArcGIS WKID 103023 / latestWKID 6443, in
+feet, rather than the Web Mercator CRS used by the other selected
+layers.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Tampa boundary (shoreline representation)
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Boundaries
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Boundary/MapServer/6" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Boundary/MapServer/6</a>
+</td>
+<td>
+<time datetime="2026-09-29">2026-09-29</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+This is a shoreline-modified representation; it must not be labeled the
+legal incorporated boundary or used as a survey.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Neighborhood association boundaries
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Boundaries
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Boundary/MapServer/5" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Boundary/MapServer/5</a>
+</td>
+<td>
+<time datetime="2026-09-29">2026-09-29</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Neighborhood association boundaries are not an assertion that every
+Tampa location belongs to a named neighborhood. Public source fields
+include association contact details; values are passed through without
+enrichment.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+City council districts
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Boundaries
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Boundary/MapServer/0" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Boundary/MapServer/0</a>
+</td>
+<td>
+<time datetime="2026-09-29">2026-09-29</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Polygons represent the four geographic City Council districts (4–7).
+Districts 1–3 are elected at large citywide and appear only as
+attributes, not separate district polygons. Representative names may
+change between GIS updates; consult the City for current representation
+and official boundaries.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Tampa Riverwalk segments
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Infrastructure
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/4" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/4</a>
+</td>
+<td>
+<time datetime="2026-09-29">2026-09-29</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Status reflects the current upstream GIS representation; catalog item
+modification time is not a statement of feature freshness.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Park polygons
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Recreation
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer/0" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/Parks/ParksPolygons/MapServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The source includes OWNER, OWNERTYPE, and PUBLIC_ attributes; publisher
+City of Tampa does not imply every mapped park is City-owned.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+City of Tampa fire stations
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Public safety
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Fire/MapServer/10" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Fire/MapServer/10</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The Fire service base layer maps station locations; it does not
+establish current operational status, incidents, or response coverage.
+It has unqualified field names and omits the GovServiceInfo attributes
+previously exposed by the joined Location layer. Existing requests using
+GIS.FacilitySitePoint.* or GIS.GovServiceInfo.* fields must be updated.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Bicycle network segments
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Transportation
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/0" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+CONN_TYPE includes shared roadways, paths, trails, and other
+connections; not every segment is a dedicated bike lane. The item
+modification date does not establish feature freshness.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Recycling pickup service areas
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Solid waste
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/3" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/3</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+These are GIS schedule service areas, not an address-level guarantee of
+a current pickup day. Confirm operational collection information with
+the City.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Community redevelopment areas
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Planning
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/0" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+These are GIS representations of community redevelopment areas. Confirm
+operative boundaries and ordinances with the City; the catalog item
+modification date is not a feature update date.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+High Injury Network road segments
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Transportation
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/10" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/10</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+This is a source-defined safety screening network, not a complete crash
+record or a live prediction of roadway risk. FATAL, INCAP, KSI, and
+HINYEAR are source attributes; consult the City for methodology before
+comparing segments or years.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Local historic districts
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Planning
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/1" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/1</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+This is a local historic district layer, not a national designation
+inventory. Confirm current designation, boundaries, and applicable rules
+with the City.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Local historic landmarks
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Planning
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/29" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/29</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+ORD_DATE is a string in the source schema, despite its date-like name;
+LASTUPDATE is the advertised date field. Points do not establish the
+full extent of designated properties; confirm legal designations with
+the City.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Police districts
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Public safety
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/LawEnforcement/MapServer/1" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/LawEnforcement/MapServer/1</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+These are GIS district boundaries, not station locations, incident data,
+or a guarantee of current response coverage.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Street speed limit reductions
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Transportation
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/4" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/4</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+SPEEDLIMIT, REDUCEDSPEED, PROPSPEED, and SPEEDLIMITSTATUS are source
+strings; DATEREDUCED is a date field. Confirm current legally posted
+limits from City signage or records before operational use.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Truck routes
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Transportation
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/5" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/5</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+This GIS route layer does not establish current signage,
+vehicle-specific restrictions, or permit requirements. Check City rules
+for operational routing.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Tampa water service area
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Utilities
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/UtilityWater/MapServer/1" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/UtilityWater/MapServer/1</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The water service area may extend beyond incorporated City limits; it is
+not a city-boundary layer or address-specific proof of service. The item
+says no data update is planned while its feed is refreshed daily, so
+refresh frequency does not establish geometry freshness. Coordinates use
+ArcGIS WKID 102659 / latestWKID 2237, in feet.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Tampa" data-status="unverified">
+<th scope="row">
+Zoning districts
+</th>
+<td>
+City of Tampa
+</td>
+<td>
+Planning
+</td>
+<td>
+<a href="https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/28" class="external-link">https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Planning/MapServer/28</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+This GIS layer is a planning reference, not an official legal
+determination of parcel zoning or permitted use. Confirm current zoning
+and ordinances with the City; the catalog item modification date does
+not establish feature freshness.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of St. Petersburg" data-status="unverified">
+<th scope="row">
+St. Petersburg parks
+</th>
+<td>
+City of St. Petersburg
+</td>
+<td>
+Recreation
+</td>
+<td>
+<a href="https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Parks_view/FeatureServer/0" class="external-link">https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Parks_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Park polygons are GIS reference data, not a guarantee of facilities,
+opening hours, public access, or legal property boundaries.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of St. Petersburg" data-status="unverified">
+<th scope="row">
+St. Petersburg city boundary
+</th>
+<td>
+City of St. Petersburg
+</td>
+<td>
+Boundaries
+</td>
+<td>
+<a href="https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/CityLimits_view/FeatureServer/0" class="external-link">https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/CityLimits_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+This GIS municipal boundary is a geographic reference rather than an
+official legal determination of jurisdiction for a particular property.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of St. Petersburg" data-status="unverified">
+<th scope="row">
+St. Petersburg streets
+</th>
+<td>
+City of St. Petersburg
+</td>
+<td>
+Transportation
+</td>
+<td>
+<a href="https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Streets_view/FeatureServer/0" class="external-link">https://services2.arcgis.com/9qPLjNtocjo438CJ/arcgis/rest/services/Streets_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Street attributes are source GIS values; they do not establish current
+posted speed limits, closures, vehicle restrictions, or safe routing.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Clearwater" data-status="unverified">
+<th scope="row">
+Clearwater park buffers
+</th>
+<td>
+City of Clearwater
+</td>
+<td>
+Recreation
+</td>
+<td>
+<a href="https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/0" class="external-link">https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+These are park buffers rather than park property boundaries. Source
+buffer distances and acreage require the service metadata for their
+interpretation.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Clearwater" data-status="unverified">
+<th scope="row">
+Clearwater zoning
+</th>
+<td>
+City of Clearwater
+</td>
+<td>
+Planning
+</td>
+<td>
+<a href="https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Zoning_WGS84/MapServer/0" class="external-link">https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Zoning_WGS84/MapServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+This GIS zoning layer is a planning reference. Confirm current zoning
+and permitted uses with the City; the service response uses Web Mercator
+rather than its stored source CRS.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Clearwater" data-status="unverified">
+<th scope="row">
+Clearwater libraries
+</th>
+<td>
+City of Clearwater
+</td>
+<td>
+Public facilities
+</td>
+<td>
+<a href="https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/1" class="external-link">https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/1</a>
+</td>
+<td>
+<time datetime="2026-10-02">2026-10-02</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Library points are facility locations, not a guarantee of opening hours
+or currently available services. The response uses Web Mercator; the
+stored source CRS is different.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Hillsborough County" data-status="unverified">
+<th scope="row">
+Hillsborough County libraries
+</th>
+<td>
+Hillsborough County
+</td>
+<td>
+Public facilities
+</td>
+<td>
+<a href="https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Libraries_hc/FeatureServer/0" class="external-link">https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Libraries_hc/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-04">2026-10-04</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+These are reference locations for cooperative libraries; consult the
+library system for current hours and services. The item includes Plant
+City and Temple Terrace partners.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Hillsborough County" data-status="unverified">
+<th scope="row">
+Hillsborough County sidewalks
+</th>
+<td>
+Hillsborough County
+</td>
+<td>
+Transportation
+</td>
+<td>
+<a href="https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Sidewalks/FeatureServer/0" class="external-link">https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Sidewalks/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-04">2026-10-04</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The source compiled centerlines from aerial photography and multiple
+edits at varying scales and accuracies. These GIS assets do not
+establish current access, accessibility compliance, or safe routing.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Hillsborough County" data-status="unverified">
+<th scope="row">
+Hillsborough County parks and recreation properties
+</th>
+<td>
+Hillsborough County
+</td>
+<td>
+Recreation
+</td>
+<td>
+<a href="https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Parks_and_Recreation/FeatureServer/0" class="external-link">https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Parks_and_Recreation/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-04">2026-10-04</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+These are managed property polygons, not legal boundaries or a guarantee
+of public access or operating hours. The publisher says updates occur as
+property status changes.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Pinellas County" data-status="unverified">
+<th scope="row">
+Pinellas County fire stations
+</th>
+<td>
+Pinellas County
+</td>
+<td>
+Public safety
+</td>
+<td>
+<a href="https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PSSFireStation_view/FeatureServer/0" class="external-link">https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PSSFireStation_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The county describes station locations and attributes. Operational
+status is a source attribute, not a guarantee of current response
+availability. Public fields include contact information, which retrieval
+passes through without enrichment.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Pinellas County" data-status="unverified">
+<th scope="row">
+Pinellas County park boundaries
+</th>
+<td>
+Pinellas County
+</td>
+<td>
+Recreation
+</td>
+<td>
+<a href="https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_ParkBoundaries_view/FeatureServer/0" class="external-link">https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_ParkBoundaries_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The county says these boundaries are primarily parcel based and
+sometimes extend through rights-of-way. They are planning and visual
+reference data, not survey-precision property boundaries or a guarantee
+of public access.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Pinellas County" data-status="unverified">
+<th scope="row">
+Pinellas Trail segments
+</th>
+<td>
+Pinellas County
+</td>
+<td>
+Recreation
+</td>
+<td>
+<a href="https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PinellasTrail_view/FeatureServer/0" class="external-link">https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_PinellasTrail_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+This is a county parks asset layer; its condition and lifecycle fields
+should not be read as current trail openings, safety advice, or
+survey-precision rights-of-way.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Tampa Bay Regional Planning Council" data-status="unverified">
+<th scope="row">
+Developments of regional impact
+</th>
+<td>
+Tampa Bay Regional Planning Council
+</td>
+<td>
+Development
+</td>
+<td>
+<a href="https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Developments_of_Regional_Impact/FeatureServer/0" class="external-link">https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Developments_of_Regional_Impact/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+This is a DRI planning boundary snapshot whose ArcGIS item was last
+modified in March 2023. It is not a current inventory of all development
+applications or a legal parcel boundary. Confirm project status, scale,
+and accuracy with the Council and local reviewing agencies.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Tampa Bay Regional Planning Council" data-status="unverified">
+<th scope="row">
+Regional storm-surge zones (historical model)
+</th>
+<td>
+Tampa Bay Regional Planning Council
+</td>
+<td>
+Hazards
+</td>
+<td>
+<a href="https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/region_storm_surge_zones/FeatureServer/0" class="external-link">https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/region_storm_surge_zones/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Historical SLOSH maximum-of-maximums planning product. The layer
+description says it was clipped against a 2004 shoreline, and its ArcGIS
+item was last modified in November 2021. These polygons are not a
+current forecast, an evacuation order, or current emergency guidance.
+Use current official county and emergency-management sources for
+decisions. The native CRS is FDEP Albers HARN supplied as WKT only;
+request out_sr = 4326 for a standard output CRS.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Tampa Bay Regional Planning Council" data-status="unverified">
+<th scope="row">
+Tampa Bay region data centers
+</th>
+<td>
+Tampa Bay Regional Planning Council
+</td>
+<td>
+Infrastructure
+</td>
+<td>
+<a href="https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Tampa_Bay_Region_Data_Centers/FeatureServer/0" class="external-link">https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/Tampa_Bay_Region_Data_Centers/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Research inventory based on websites, Google Maps, Gemini comparison,
+visual checks, property information, and news reports for planned sites,
+as described by the Council. Locations, operational status, and
+estimated size require independent confirmation; this is not a
+comprehensive or authoritative facility register.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of St. Petersburg" data-status="unverified">
+<th scope="row">
+St. Petersburg zoning districts
+</th>
+<td>
+City of St. Petersburg
+</td>
+<td>
+Planning
+</td>
+<td>
+<a href="https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/ZoningDistricts_view/FeatureServer/0" class="external-link">https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/ZoningDistricts_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Planning reference only: confirm current permitted uses and legal zoning
+with the City. This public view has no record-date field.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of St. Petersburg" data-status="unverified">
+<th scope="row">
+St. Petersburg future land use
+</th>
+<td>
+City of St. Petersburg
+</td>
+<td>
+Planning
+</td>
+<td>
+<a href="https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/FutureLandUse_view/FeatureServer/0" class="external-link">https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/FutureLandUse_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+A plan classification, distinct from current zoning or a parcel-level
+legal determination. The public view has no record-date field.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of St. Petersburg" data-status="unverified">
+<th scope="row">
+St. Petersburg sidewalks
+</th>
+<td>
+City of St. Petersburg
+</td>
+<td>
+Transportation
+</td>
+<td>
+<a href="https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/Sidewalks_view/FeatureServer/0" class="external-link">https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/Sidewalks_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+An inventory of mapped segments, not a guarantee of present condition,
+ADA accessibility, or route safety. Ownership and maintenance codes
+require the source domains.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of St. Petersburg" data-status="unverified">
+<th scope="row">
+St. Petersburg mapped public works projects
+</th>
+<td>
+City of St. Petersburg
+</td>
+<td>
+Infrastructure
+</td>
+<td>
+<a href="https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/PWAProjectTracking/FeatureServer/0" class="external-link">https://services2.arcgis.com/9qPLjNtocjo438CJ/ArcGIS/rest/services/PWAProjectTracking/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Only spatially mapped projects are included. The publisher identifies a
+separate PWACitywideProjectTracking table needed for a complete citywide
+portfolio. Status, scope, budget, and timelines may change; confirm with
+the managing department.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Clearwater" data-status="unverified">
+<th scope="row">
+Clearwater future land use
+</th>
+<td>
+City of Clearwater
+</td>
+<td>
+Planning
+</td>
+<td>
+<a href="https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/FLU_w_PPC_Colors_WGS84/MapServer/0" class="external-link">https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/FLU_w_PPC_Colors_WGS84/MapServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Use as a planning reference, not a legal parcel determination or current
+zoning. The portal item was last modified in 2016, which does not
+establish the feature update date.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Clearwater" data-status="unverified">
+<th scope="row">
+Clearwater vulnerability-assessment critical assets
+</th>
+<td>
+City of Clearwater
+</td>
+<td>
+Hazards
+</td>
+<td>
+<a href="https://services1.arcgis.com/3GsNorcb0Mn5rMt8/arcgis/rest/services/Vulnerability_Assessment/FeatureServer/11" class="external-link">https://services1.arcgis.com/3GsNorcb0Mn5rMt8/arcgis/rest/services/Vulnerability_Assessment/FeatureServer/11</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+This service contains 406 asset polygons and is not the full City
+assessment or a complete infrastructure inventory. Scenario codes
+require the City's methodology. It is not live hazard or emergency
+guidance.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="City of Clearwater" data-status="unverified">
+<th scope="row">
+Clearwater sidewalks
+</th>
+<td>
+City of Clearwater
+</td>
+<td>
+Transportation
+</td>
+<td>
+<a href="https://gis.myclearwater.com/arcgis/rest/services/PublicWorksServices/PW_Sup_Sidewalks_NAD83/MapServer/0" class="external-link">https://gis.myclearwater.com/arcgis/rest/services/PublicWorksServices/PW_Sup_Sidewalks_NAD83/MapServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The layer description reports 2011 field collection and aerial
+verification and says the City maintains the data. Present completeness,
+condition, and ADA accessibility are not guaranteed.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Pinellas County" data-status="unverified">
+<th scope="row">
+Pinellas countywide plan map categories
+</th>
+<td>
+Pinellas County
+</td>
+<td>
+Planning
+</td>
+<td>
+<a href="https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_Countywide_Plan_Map_Categories_view/FeatureServer/0" class="external-link">https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_Countywide_Plan_Map_Categories_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Countywide plan categories support regional analysis but are not parcel
+zoning or a legal survey. The hosted view may change as Forward Pinellas
+updates its plan.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Pinellas County" data-status="unverified">
+<th scope="row">
+Pinellas bicycle facilities
+</th>
+<td>
+Pinellas County
+</td>
+<td>
+Transportation
+</td>
+<td>
+<a href="https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_BicycleFacilities_view/FeatureServer/0" class="external-link">https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_BicycleFacilities_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Facility classes vary and mapped segments do not establish current
+safety or continuity. This inventory complements, rather than
+duplicates, the Pinellas Trail layer.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Pinellas County" data-status="unverified">
+<th scope="row">
+Pinellas sidewalks
+</th>
+<td>
+Pinellas County
+</td>
+<td>
+Transportation
+</td>
+<td>
+<a href="https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_Sidewalk_view/FeatureServer/0" class="external-link">https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_Sidewalk_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Mapped inventory and source attributes are for planning; accessibility
+and condition classifications do not guarantee current on-the-ground
+conditions.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Pinellas County" data-status="unverified">
+<th scope="row">
+Pinellas assisted housing
+</th>
+<td>
+Pinellas County
+</td>
+<td>
+Housing
+</td>
+<td>
+<a href="https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_AssistedHousing_view/FeatureServer/0" class="external-link">https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_AssistedHousing_view/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Program participation, assisted-unit counts, and subsidy expiration may
+change. This layer does not establish current eligibility, availability,
+or a complete affordable-housing inventory.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Hillsborough County" data-status="unverified">
+<th scope="row">
+Hillsborough HART bus routes
+</th>
+<td>
+Hillsborough County
+</td>
+<td>
+Transportation
+</td>
+<td>
+<a href="https://services.arcgis.com/apTfC6SUmnNfnxuF/ArcGIS/rest/services/HART_Bus_Stops_and_Routes/FeatureServer/21" class="external-link">https://services.arcgis.com/apTfC6SUmnNfnxuF/ArcGIS/rest/services/HART_Bus_Stops_and_Routes/FeatureServer/21</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The item identifies a March 2025 HART source even though the hosted
+layer was edited later. Use for route-planning research, not live
+schedules, stops, or navigation.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Hillsborough County" data-status="unverified">
+<th scope="row">
+Hillsborough FEMA flood hazard zones
+</th>
+<td>
+Hillsborough County
+</td>
+<td>
+Hazards
+</td>
+<td>
+<a href="https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/FloodZone_FEMA/FeatureServer/0" class="external-link">https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/FloodZone_FEMA/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The item identifies a latest Letter of Map Revision effective September
+28, 2026. A GIS copy is for planning only; use FEMA and County official
+records for property or legal determinations and current emergency
+guidance.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Hillsborough County" data-status="unverified">
+<th scope="row">
+Hillsborough unincorporated zoning
+</th>
+<td>
+Hillsborough County
+</td>
+<td>
+Planning
+</td>
+<td>
+<a href="https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Zoning/FeatureServer/0" class="external-link">https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Zoning/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Unincorporated county coverage only; municipal zoning is separate. GIS
+may lag approved zoning-atlas changes, and cross-government zoning
+labels have different meanings.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Hillsborough County" data-status="unverified">
+<th scope="row">
+Hillsborough EPC water-quality observations
+</th>
+<td>
+Hillsborough County
+</td>
+<td>
+Environment
+</td>
+<td>
+<a href="https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/EPC_WQM_DATA/FeatureServer/0" class="external-link">https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/EPC_WQM_DATA/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+The Environmental Protection Commission's item describes the latest
+staff-reviewed samples at monitoring stations, not the complete sample
+history. Methods, units, detection limits, and site coverage require
+source review.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Hillsborough County" data-status="unverified">
+<th scope="row">
+Hillsborough 2023 land use and land cover
+</th>
+<td>
+Hillsborough County
+</td>
+<td>
+Environment
+</td>
+<td>
+<a href="https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/LandUseLandCover_SWFWMD2023/FeatureServer/64" class="external-link">https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/LandUseLandCover_SWFWMD2023/FeatureServer/64</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+A 2023 SWFWMD classification snapshot downloaded by the County in 2025.
+It is observed land cover, not adopted future land use, zoning, or a
+current-condition guarantee.
+</p>
+</details>
+</td>
+</tr>
+<tr data-publisher="Tampa Bay Regional Planning Council" data-status="unverified">
+<th scope="row">
+TBRPC six-county regional boundary
+</th>
+<td>
+Tampa Bay Regional Planning Council
+</td>
+<td>
+Boundaries
+</td>
+<td>
+<a href="https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/tbrpc_regional_boundary/FeatureServer/0" class="external-link">https://services3.arcgis.com/RgIBbQIF0Y6T3AX6/arcgis/rest/services/tbrpc_regional_boundary/FeatureServer/0</a>
+</td>
+<td>
+<time datetime="2026-10-05">2026-10-05</time><span class="tb-coverage-source">catalog check</span>
+</td>
+<td>
+<span class="tb-coverage-status tb-coverage-status-unverified">Unverified</span>
+</td>
+<td>
+<details><summary>
+Read notes
+</summary><p>
+Derived from 2022 Census boundaries and suitable as a regional analysis
+frame. It is not a legal boundary survey or current parcel boundary.
+</p>
+</details>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section><script>
+(function () {
+  var root = document.querySelector('.tb-coverage-dashboard');
+  if (!root) return;
+  var controls = root.querySelector('#tb-coverage-filters');
+  var count = root.querySelector('#tb-coverage-count');
+  var rows = Array.prototype.slice.call(root.querySelectorAll('#tb-coverage-datasets tbody tr[data-status]'));
+  var search = root.querySelector('#tb-coverage-search');
+  var publisher = root.querySelector('#tb-coverage-publisher');
+  var status = root.querySelector('#tb-coverage-status');
+  if (!controls || !count || !search || !publisher || !status) return;
+  controls.hidden = false;
+  count.hidden = false;
+  function filterRows() {
+    var term = search.value.trim().toLocaleLowerCase();
+    var shown = 0;
+    rows.forEach(function (row) {
+      var matches = (!term || row.textContent.toLocaleLowerCase().indexOf(term) !== -1) &&
+        (!publisher.value || row.dataset.publisher === publisher.value) &&
+        (!status.value || row.dataset.status === status.value);
+      row.hidden = !matches;
+      if (matches) shown += 1;
+    });
+    count.textContent = shown + ' of ' + rows.length + ' checked datasets shown';
+  }
+  search.addEventListener('input', filterRows);
+  publisher.addEventListener('change', filterRows);
+  status.addEventListener('change', filterRows);
+  filterRows();
+}());
+</script><div class="section level2">
+<h2 id="methodology-and-known-gaps">Methodology and known gaps<a class="anchor" aria-label="anchor" href="#methodology-and-known-gaps"></a>
+</h2>
+<p>Counts and publisher names come directly from the bundled checked
+catalog at site build time. This page uses the latest usable health
+report when one is supplied to the build. A report row must match the
+current catalog publisher, jurisdiction, dataset ID, and ArcGIS
+endpoint. A result is <strong>healthy</strong> or
+<strong>problematic</strong> only when it is no older than 30 days and
+no older than the catalog’s dated check. Recent
+<code>unavailable</code>, <code>schema_changed</code>, and
+<code>unsupported</code> results count as problematic.
+<code>unknown</code>, older, mismatched, and absent results are
+<strong>unverified</strong>. A timeout alone remains inconclusive. The
+last verification column labels catalog checks separately from health
+reports; catalog dates never imply a recent successful health check.</p>
+<p>Some publisher datasets have not been curated into the checked
+catalog. Publisher portals and services may be only partly represented,
+and discovery can miss unindexed or unavailable items. The dashboard
+counts layers without a saved schema baseline; those layers cannot
+receive a field and geometry comparison until a baseline is curated.
+Health checks read layer metadata and do not run record count or
+object-ID queries. Each dataset’s notes include its curated scope limits
+and relevant recent failure diagnostics. The <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md" class="external-link">catalog
+policy</a> records selection criteria; the <a href="discovery.html">discovery article</a> explains live search
+limits.</p>
 </div>
 <div class="section level2">
 <h2 id="interpret-source-scope-before-analysis">Interpret source scope before analysis<a class="anchor" aria-label="anchor" href="#interpret-source-scope-before-analysis"></a>
@@ -181,21 +2064,41 @@ methods.</p>
 <div class="section level2">
 <h2 id="monitoring-and-evidence">Monitoring and evidence<a class="anchor" aria-label="anchor" href="#monitoring-and-evidence"></a>
 </h2>
-<p>Twice weekly monitoring checks the 52 layers across all six
-publishers, bounded live discovery, and county facility retrieval by
+<p>Use <code><a href="../reference/tbod_check_catalog.html">tbod_check_catalog()</a></code> for a current metadata and
+schema check of the bundled catalog, or pass <code>ids</code> to inspect
+selected layers:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">health</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_check_catalog.html">tbod_check_catalog</a></span><span class="op">(</span>ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"construction-permits"</span>, <span class="st">"stpete-parks"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">health</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dataset_id"</span>, <span class="st">"status"</span>, <span class="st">"schema_status"</span>, <span class="st">"details"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>This contacts the publishers and returns one row per checked entry.
+Statuses include <code>healthy</code>, <code>unavailable</code>,
+<code>schema_changed</code>, <code>unsupported</code>, and
+<code>unknown</code>; transient failures remain <code>unknown</code>
+after bounded retries. Inspect <code>schema_issues</code> for field or
+geometry changes and <code>failure_type</code> and the service and layer
+status columns for request failures. The check reads layer metadata and
+does not run count or object-ID queries. A healthy row describes that
+moment’s endpoint and schema; it does not certify record freshness, full
+retrieval support, or future availability.</p>
+<p>Twice weekly monitoring checks the selected layers in the checked
+catalog, bounded live discovery, and county facility retrieval by
 descriptor and stable ID. It also checks server projection to EPSG:4326.
 Retrievals request at most two rows; scans inspect at most one service
 item per publisher. The <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md" class="external-link">test
 guide</a> describes these bounds and the manual live suite. The <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md" class="external-link">validation
 record</a> dates completed checks; they cannot guarantee future
 availability or record freshness.</p>
+<p>A separate weekly <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/.github/workflows/catalog-health.yaml" class="external-link">catalog
+health workflow</a> uses <code><a href="../reference/tbod_check_catalog.html">tbod_check_catalog()</a></code> and uploads
+timestamped RDS, CSV, and Markdown reports. It does not change the
+bundled catalog.</p>
 </div>
 <div class="section level2">
 <h2 id="cite-the-package-and-its-data-sources">Cite the package and its data sources<a class="anchor" aria-label="anchor" href="#cite-the-package-and-its-data-sources"></a>
 </h2>
 <p>For published work, cite the package version you used. R provides
 citation text and BibTeX after installation:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/toLatex.html" class="external-link">toBibtex</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Cite the original data publisher and dataset separately.

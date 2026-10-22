@@ -30,3 +30,32 @@ Discovery, retrieval, and source limits.
 
   Understand publisher coverage, preserve provenance, and assess source
   limits.
+
+### Applied tutorials
+
+Work through checked sources with careful summaries and visualizations.
+
+- [Explore housing and development
+  activity](https://jaclenga.github.io/tampaBayOpenData/articles/housing-development.md):
+
+  Find checked housing and development layers, examine Tampa’s active
+  development cases, and interpret a neighborhood chart.
+
+- [Explore Hillsborough water-quality
+  observations](https://jaclenga.github.io/tampaBayOpenData/articles/water-quality.md):
+
+  Find Hillsborough EPC monitoring samples, audit missing measurements,
+  and compare paired oxygen readings.
+
+- [Where Are Tampa's Public Infrastructure Projects? Mapping Capital
+  Improvements with
+  R](https://jaclenga.github.io/tampaBayOpenData/articles/mapping-capital-improvements.md):
+
+  Find City of Tampa capital-project locations, map source project
+  types, and count source feature rows carefully.
+
+- [Explore infrastructure and capital
+  projects](https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.md):
+
+  Find a checked capital-project layer, summarize mapped activity, and
+  audit project-level claims.

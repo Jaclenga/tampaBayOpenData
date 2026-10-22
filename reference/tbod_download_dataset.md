@@ -78,7 +78,8 @@ tbod_download_dataset(
 
 - timeout:
 
-  Per-request timeout in seconds.
+  Per-request timeout in seconds. Transient failures may be retried
+  according to `options(tampaBayOpenData.max_retries = 3L)`.
 
 - total_timeout:
 
@@ -100,23 +101,29 @@ tbod_download_dataset(
 A named list with `path`, ordered chunk `files`, `matched_rows`,
 `returned_rows`, `complete`, and summary `source` provenance. Each RDS
 chunk has its own provenance; `tbod_provenance(chunk)$download` includes
-its chunk number and object IDs.
+its chunk number and object IDs. With no matches, `files` is empty and
+summary integrity is `count-only`.
 
 ## Details
 
-The client retrieves the full matching object-ID manifest, then writes
-bounded RDS chunks to a caller-selected directory. Each chunk is a
-tibble or `sf` object with its own provenance; read files one at a time
-with [`readRDS()`](https://rdrr.io/r/base/readRDS.html). Feature pages
-are not accumulated in memory, but the manifest itself is subject to the
-one-million-record limit.
+The client retrieves the matching object-ID manifest when records exist,
+then writes bounded RDS chunks to a caller-selected directory. Each
+chunk is a tibble or `sf` object with its own provenance; read files one
+at a time with [`readRDS()`](https://rdrr.io/r/base/readRDS.html).
+Feature pages are not accumulated in memory, but the manifest itself is
+subject to the one-million-record limit.
 
 A saved manifest fixes the endpoint, query, fields, schema, CRS
 metadata, matching IDs, and batch size. With `resume = TRUE`, current
 metadata and IDs are rechecked before saved chunks are used. Changed
 options, schema, CRS, or membership cause an error. Completed chunks
 must match their checkpoint checksums, expected IDs, columns, and
-provenance. Temporary files from interrupted writes are ignored.
+provenance. Temporary files from interrupted writes are ignored. After
+all chunks have been validated, the client atomically writes
+`complete.rds` in `path`. No marker is written before a new download
+finishes or after an interrupted call. After confirming the saved
+manifest matches, a resumed call clears the marker before revalidating
+saved chunks, then writes it again only after successful completion.
 
 The directory must be empty on the first call. Unrelated files and
 existing downloads with `resume = FALSE` are rejected. An exclusive lock
@@ -125,7 +132,19 @@ confirm no writer remains, remove that empty directory, and resume.
 Record attributes can change between chunks or resumed calls even when
 IDs and schema remain stable; this is not a frozen snapshot. The
 returned summary records whether the complete matching manifest was
-downloaded.
+downloaded. Transient connection failures and timeouts, HTTP 429, 500,
+502, 503, and 504 responses, ArcGIS error objects with those codes
+inside HTTP 200 responses, and a generic transient ArcGIS query error
+are retried. Set `options(tampaBayOpenData.max_retries = 3L)` to control
+additional retries per failure sequence (integer 0 through 10). HTTP
+failures and ArcGIS errors in successful HTTP responses use separate
+bounded sequences; mixed failures can make more than four HTTP attempts
+overall. A valid `Retry-After` delay or HTTP date is honored if at most
+30 seconds; a longer delay stops retrying rather than causing an early
+retry. Otherwise retries use exponential backoff with jitter. Permanent
+HTTP and ArcGIS errors fail without retrying. An interrupted call does
+not return a complete download summary; resume with the same `path` to
+validate and continue saved chunks.
 
 ## Examples
 

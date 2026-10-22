@@ -26,6 +26,10 @@ compatible drift warns and incompatible drift stops the download."></head><body>
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
     <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+    <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/index.html">All articles</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -124,7 +128,8 @@ geometry simplification, and pagination parameters are protected.</p></dd>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
-<dd><p>Per-request timeout in seconds.</p></dd>
+<dd><p>Per-request timeout in seconds. Transient failures may be
+retried according to <code>options(tampaBayOpenData.max_retries = 3L)</code>.</p></dd>
 
 
 <dt id="arg-total-timeout">total_timeout<a class="anchor" aria-label="anchor" href="#arg-total-timeout"></a></dt>
@@ -147,11 +152,12 @@ if a finite deadline expires.</p></dd>
     <p>A named list with <code>path</code>, ordered chunk <code>files</code>, <code>matched_rows</code>,
 <code>returned_rows</code>, <code>complete</code>, and summary <code>source</code> provenance. Each RDS
 chunk has its own provenance; <code>tbod_provenance(chunk)$download</code> includes
-its chunk number and object IDs.</p>
+its chunk number and object IDs. With no matches, <code>files</code> is empty and
+summary integrity is <code>count-only</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The client retrieves the full matching object-ID manifest, then
+    <p>The client retrieves the matching object-ID manifest when records exist, then
 writes bounded RDS chunks to a caller-selected directory. Each chunk is
 a tibble or <code>sf</code> object with its own provenance; read files one at a time
 with <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS()</a></code>. Feature pages are not accumulated in memory, but the
@@ -161,14 +167,32 @@ matching IDs, and batch size. With <code>resume = TRUE</code>, current metadata 
 IDs are rechecked before saved chunks are used. Changed options, schema,
 CRS, or membership cause an error. Completed chunks must match their
 checkpoint checksums, expected IDs, columns, and provenance. Temporary
-files from interrupted writes are ignored.</p>
+files from interrupted writes are ignored. After all chunks have been
+validated, the client atomically writes <code>complete.rds</code> in <code>path</code>. No
+marker is written before a new download finishes or after an interrupted
+call. After confirming the saved manifest matches, a resumed call clears
+the marker before revalidating saved chunks, then writes it again only
+after successful completion.</p>
 <p>The directory must be empty on the first call. Unrelated files and
 existing downloads with <code>resume = FALSE</code> are rejected. An exclusive lock
 prevents concurrent writers. If a terminated process leaves <code>.lock</code>,
 confirm no writer remains, remove that empty directory, and resume.
 Record attributes can change between chunks or resumed calls even when
 IDs and schema remain stable; this is not a frozen snapshot. The returned
-summary records whether the complete matching manifest was downloaded.</p>
+summary records whether the complete matching manifest was downloaded.
+Transient connection failures and timeouts, HTTP 429, 500, 502, 503, and
+504 responses, ArcGIS error objects with those codes inside HTTP 200
+responses, and a generic transient ArcGIS query error are retried.
+Set <code>options(tampaBayOpenData.max_retries = 3L)</code> to control additional
+retries per failure sequence (integer 0 through 10). HTTP failures and
+ArcGIS errors in successful HTTP responses use separate bounded
+sequences; mixed failures can make more than four HTTP attempts overall.
+A valid <code>Retry-After</code> delay or HTTP date is honored if at most 30 seconds;
+a longer delay stops retrying rather than causing an early retry. Otherwise
+retries use exponential backoff with jitter. Permanent HTTP
+and ArcGIS errors fail without retrying.
+An interrupted call does not return a complete download summary; resume
+with the same <code>path</code> to validate and continue saved chunks.</p>
     </div>
 
     <div class="section level2">

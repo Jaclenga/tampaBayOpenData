@@ -1,31 +1,110 @@
 # Coverage, provenance, and source limits
 
 The package retrieves public ArcGIS data; it does not host or archive
-the records. This article describes the checked catalog’s coverage and
-source limits that matter when using the data.
+the records. This dashboard describes the **selective checked catalog**
+bundled with this package. It never represents a complete inventory of
+any publisher’s datasets.
 
-## Bundled publishers
+The checked catalog lists layers curated for direct use by ID. A
+successful health check means one layer’s endpoint and metadata passed a
+recent check; it does not establish that its records are fresh or that a
+full download will succeed. **Live discovery** searches publisher
+portals for additional items when you call it. Portal indexing, service
+availability, and search limits affect those results, so neither this
+dashboard nor live discovery measures complete publisher coverage.
 
-The package checks the following layers and searches each publisher’s
-public ArcGIS organization. Counts come from the bundled `datasets.json`
-and `portals.json` registries.
+Checked entries
 
-| Publisher or jurisdiction           | Checked layers | Live discovery |
-|-------------------------------------|---------------:|:--------------:|
-| Tampa                               |             20 |      Yes       |
-| St. Petersburg                      |              7 |      Yes       |
-| Clearwater                          |              6 |      Yes       |
-| Hillsborough County                 |              8 |      Yes       |
-| Pinellas County                     |              7 |      Yes       |
-| Tampa Bay Regional Planning Council |              4 |      Yes       |
+52
 
-The 52 checked layers are a selection, not a publisher inventory. Live
-discovery can find others, subject to portal indexing, availability, and
-scan limits. The [discovery
-article](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.md)
-explains scan completeness; the [catalog
+Selected layers in the bundled catalog
+
+Publishers represented
+
+6
+
+Organizations in the checked catalog
+
+Recently healthy
+
+No report
+
+Successful checks within 30 days
+
+Detected problems
+
+No report
+
+Recent unavailable, changed, or unsupported layers
+
+Missing schema baselines
+
+0
+
+Layers without a saved field and geometry comparison
+
+Latest verification
+
+2026-10-05
+
+Bundled catalog check; time unavailable
+
+No matching health report was available for this build. All current
+health statuses are unverified; dated catalog checks remain visible
+below.
+
+## By publisher
+
+| Publisher | Checked entries | Last verification | Healthy | Problematic | Unverified |
+|----|----|----|----|----|----|
+| City of Clearwater | 6 | 2026-10-05catalog check | 0 | 0 | 6 |
+| City of St. Petersburg | 7 | 2026-10-05catalog check | 0 | 0 | 7 |
+| City of Tampa | 20 | 2026-10-02catalog check | 0 | 0 | 20 |
+| Hillsborough County | 8 | 2026-10-05catalog check | 0 | 0 | 8 |
+| Pinellas County | 7 | 2026-10-05catalog check | 0 | 0 | 7 |
+| Tampa Bay Regional Planning Council | 4 | 2026-10-05catalog check | 0 | 0 | 4 |
+
+Checked catalog entries and current verification by publisher {.table
+.tb-coverage-table}
+
+## By dataset
+
+Search datasets Publisher All publishers City of Clearwater City of
+St. Petersburg City of Tampa Hillsborough County Pinellas County Tampa
+Bay Regional Planning CouncilStatus All statuses Healthy Problematic
+Unverified
+
+[TABLE]
+
+Checked datasets, dated evidence, current status, and source limits
+{#tb-coverage-datasets .table .tb-coverage-table}
+
+## Methodology and known gaps
+
+Counts and publisher names come directly from the bundled checked
+catalog at site build time. This page uses the latest usable health
+report when one is supplied to the build. A report row must match the
+current catalog publisher, jurisdiction, dataset ID, and ArcGIS
+endpoint. A result is **healthy** or **problematic** only when it is no
+older than 30 days and no older than the catalog’s dated check. Recent
+`unavailable`, `schema_changed`, and `unsupported` results count as
+problematic. `unknown`, older, mismatched, and absent results are
+**unverified**. A timeout alone remains inconclusive. The last
+verification column labels catalog checks separately from health
+reports; catalog dates never imply a recent successful health check.
+
+Some publisher datasets have not been curated into the checked catalog.
+Publisher portals and services may be only partly represented, and
+discovery can miss unindexed or unavailable items. The dashboard counts
+layers without a saved schema baseline; those layers cannot receive a
+field and geometry comparison until a baseline is curated. Health checks
+read layer metadata and do not run record count or object-ID queries.
+Each dataset’s notes include its curated scope limits and relevant
+recent failure diagnostics. The [catalog
 policy](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md)
-records selection criteria, topic coverage, and layer-specific limits.
+records selection criteria; the [discovery
+article](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.md)
+explains live search limits.
 
 ## Interpret source scope before analysis
 
@@ -89,16 +168,44 @@ for the integrity methods.
 
 ## Monitoring and evidence
 
-Twice weekly monitoring checks the 52 layers across all six publishers,
-bounded live discovery, and county facility retrieval by descriptor and
-stable ID. It also checks server projection to EPSG:4326. Retrievals
-request at most two rows; scans inspect at most one service item per
-publisher. The [test
+Use
+[`tbod_check_catalog()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_catalog.md)
+for a current metadata and schema check of the bundled catalog, or pass
+`ids` to inspect selected layers:
+
+``` r
+
+health <- tbod_check_catalog(ids = c("construction-permits", "stpete-parks"))
+health[, c("dataset_id", "status", "schema_status", "details")]
+```
+
+This contacts the publishers and returns one row per checked entry.
+Statuses include `healthy`, `unavailable`, `schema_changed`,
+`unsupported`, and `unknown`; transient failures remain `unknown` after
+bounded retries. Inspect `schema_issues` for field or geometry changes
+and `failure_type` and the service and layer status columns for request
+failures. The check reads layer metadata and does not run count or
+object-ID queries. A healthy row describes that moment’s endpoint and
+schema; it does not certify record freshness, full retrieval support, or
+future availability.
+
+Twice weekly monitoring checks the selected layers in the checked
+catalog, bounded live discovery, and county facility retrieval by
+descriptor and stable ID. It also checks server projection to EPSG:4326.
+Retrievals request at most two rows; scans inspect at most one service
+item per publisher. The [test
 guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md)
 describes these bounds and the manual live suite. The [validation
 record](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md)
 dates completed checks; they cannot guarantee future availability or
 record freshness.
+
+A separate weekly [catalog health
+workflow](https://github.com/Jaclenga/tampaBayOpenData/blob/main/.github/workflows/catalog-health.yaml)
+uses
+[`tbod_check_catalog()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_catalog.md)
+and uploads timestamped RDS, CSV, and Markdown reports. It does not
+change the bundled catalog.
 
 ## Cite the package and its data sources
 

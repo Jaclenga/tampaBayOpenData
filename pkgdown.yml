@@ -4,9 +4,13 @@ pkgdown_sha: ~
 articles:
   coverage: coverage.html
   discovery: discovery.html
+  housing-development: housing-development.html
+  infrastructure-projects: infrastructure-projects.html
   introduction: introduction.html
+  mapping-capital-improvements: mapping-capital-improvements.html
   retrieval: retrieval.html
-last_built: 2026-10-08T23:31Z
+  water-quality: water-quality.html
+last_built: 2026-10-22T04:38Z
 urls:
   reference: https://jaclenga.github.io/tampaBayOpenData/reference
   article: https://jaclenga.github.io/tampaBayOpenData/articles

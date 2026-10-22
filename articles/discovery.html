@@ -38,6 +38,10 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
     <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+    <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/index.html">All articles</a></li>
   </ul>
 </li>
@@ -117,8 +121,8 @@ built. The checked-catalog example runs offline.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 23</span></span></span>
 <span><span class="co">#&gt;   id             title description jurisdiction publisher source_url service_url</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> stpete-parks   St. … Public par… stpete       City of … https://c… https://se…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> clearwater-pa… Clea… City of Cl… clearwater   City of … https://g… https://gi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> clearwater-pa… Clea… City of Cl… clearwater   City of … https://g… https://gi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> stpete-parks   St. … Public par… stpete       City of … https://c… https://se…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16 more variables: geometry_type &lt;chr&gt;, category &lt;chr&gt;, verified &lt;date&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   terms &lt;chr&gt;, layer_id &lt;int&gt;, date_fields &lt;list&gt;, tags &lt;list&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   item_id &lt;chr&gt;, portal &lt;chr&gt;, validation_status &lt;chr&gt;, modified &lt;dttm&gt;,</span></span></span>
@@ -144,9 +148,44 @@ by publisher, and the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob
 policy</a> explains which layers enter the catalog.</p>
 </div>
 <div class="section level2">
+<h2 id="match-and-rank-search-results">Match and rank search results<a class="anchor" aria-label="anchor" href="#match-and-rank-search-results"></a>
+</h2>
+<p><code><a href="../reference/tbod_search_datasets.html">tbod_search_datasets()</a></code> searches checked IDs, titles,
+descriptions, publisher names, categories, and tags. It ignores case,
+but treats punctuation literally. All words in the query must occur
+somewhere in a checked row; they can occur in different fields. If no
+checked row matches literally, the search tries a limited spelling
+fallback for alphanumeric query words; words shorter than four
+characters have no typo tolerance. The fallback searches only the
+checked catalog; it does not alter a live portal query. An empty or
+whitespace-only query lists datasets.</p>
+<p>Exact title or ID matches come first. Title or ID prefixes follow,
+then substrings, then rows whose title or ID contains the query words
+separately. Matches in tags, categories, or publisher come next;
+description-only matches follow those. Within each group, each word
+scores title, ID, tags or categories, publisher, and description in that
+order; title, ID, and source URL then break ties consistently. These are
+ordering rules, not measures of dataset quality or relevance to a
+specific analysis.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"permit"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">[</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"permti"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">[</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">""</span>, source <span class="op">=</span> <span class="st">"checked"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">[</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p><code>limit</code> is a nonnegative whole number or <code>Inf</code>
+(the default). It selects the first rows <strong>after</strong> source
+discovery, checked overlay, filtering, and ranking. Even
+<code>limit = 0</code> still performs a selected live scan and retains
+its scan diagnostics. <code>max_items</code> separately caps the number
+of service items inspected per live portal. A result limit does not make
+an incomplete scan complete.</p>
+</div>
+<div class="section level2">
 <h2 id="discover-live-portal-layers">Discover live portal layers<a class="anchor" aria-label="anchor" href="#discover-live-portal-layers"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
 <span><span class="va">found</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"validation_status"</span>, <span class="st">"modified"</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
@@ -163,7 +202,14 @@ they search all six portals and include the checked catalog.
 indexes, including checked layers when a live endpoint matches a checked
 entry. If a source is not indexed or an index lags, it may not appear in
 live results; a compatible public ArcGIS layer can still be retrieved by
-URL with <code><a href="../reference/tbod_get_arcgis_layer.html">tbod_get_arcgis_layer()</a></code>.</p>
+URL with <code><a href="../reference/tbod_get_arcgis_layer.html">tbod_get_arcgis_layer()</a></code>. Portal indexes can match
+fields that are not returned in discovery rows.
+<code><a href="../reference/tbod_search_datasets.html">tbod_search_datasets()</a></code> ranks indexed hits using available
+title, ID, and metadata, but keeps all portal hits even when a returned
+row has no local text match. A layer found both live and in the checked
+catalog appears once with <code>checked</code> status. With
+<code>source = "all"</code>, a checked match can still appear when its
+portal index does not return it.</p>
 <p>Use <code>portals = "city"</code> for Tampa, <code>"tbrpc"</code> for
 the regional planning council, or <code>"stpete"</code>,
 <code>"clearwater"</code>, <code>"hillsborough"</code>, or
@@ -197,7 +243,7 @@ results have <code>discovered</code> status and stable
 <code>arcgis:</code> IDs; service results have <code>not_checked</code>
 status and use the layer URL as their ID. Queryable MapServer layers are
 supported.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replace this example address with your portal's public sharing REST root.</span></span>
 <span><span class="va">portal</span> <span class="op">&lt;-</span> <span class="st">"https://example.maps.arcgis.com/sharing/rest"</span></span>
 <span><span class="va">other</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_discover.html">tbod_discover</a></span><span class="op">(</span><span class="va">portal</span>, query <span class="op">=</span> <span class="st">"parks"</span>, max_items <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
@@ -273,7 +319,7 @@ bounds accept a <code>Date</code> or strict <code>"YYYY-MM-DD"</code>
 string for a whole UTC day, or a <code>POSIXct</code> value for an exact
 instant. Rows with unknown modification times are excluded only when a
 date bound is supplied.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">county_transport</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
 <span>  <span class="st">"road"</span>, source <span class="op">=</span> <span class="st">"live"</span>, jurisdiction <span class="op">=</span> <span class="st">"pinellas"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  topic <span class="op">=</span> <span class="st">"transportation"</span>, modified_after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2025-01-01"</span><span class="op">)</span>,</span>
@@ -292,14 +338,16 @@ records an endpoint check, not feature freshness.</p>
 <p><code>max_items</code> caps <strong>portal service items per
 organization</strong>, not the number of expanded layers. The default
 scans at most 25 items per organization. Use
-<code>max_items = Inf</code> explicitly for a full live listing, with a
-suitable <code>total_timeout</code>. A capped listing can miss matching
-items beyond the scan limit. <code>jurisdiction</code> and
+<code>max_items = Inf</code> explicitly to follow all available search
+pages, with a suitable <code>total_timeout</code>. A capped listing can
+miss matching items beyond the scan limit. <code>jurisdiction</code> and
 <code>publisher</code> narrow organizations before scanning; other
 filters apply after discovery and the checked overlay. Consequently, an
 item matching <code>topic</code> or <code>modified_after</code> may be
-missed by a capped scan.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+missed by a capped scan. <code>publisher</code> matches a configured
+name exactly, without regard to case; a name with no match returns no
+rows. Use <code><a href="../reference/tbod_list_portals.html">tbod_list_portals()</a></code> to inspect names.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_list_datasets</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"stpete"</span>, max_items <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_complete"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_truncated_portals"</span><span class="op">)</span></span>
@@ -307,12 +355,17 @@ missed by a capped scan.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_issues"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_failed_portals"</span><span class="op">)</span></span></code></pre></div>
 <p>Check <code>discovery_complete</code> before treating results as a
-complete portal catalog. The other attributes show scan progress,
-skipped items, and failed portals. A combined search retains rows from
-working publishers or from earlier pages of a failed scan. If all
-selected portals fail before returning rows,
-<code>source = "live"</code> errors; <code>source = "all"</code> warns
-and returns checked rows.</p>
+complete scan of the selected public portal indexes. It does not
+establish a complete inventory of publisher services. Portal indexes can
+lag or omit items, private services are outside the search, and the
+package includes only public Feature Service and Map Service items with
+supported, queryable layers. The other attributes show scan progress,
+skipped items, and failed portals. A time budget can stop an operation;
+capped scans or item failures can leave returned results incomplete. A
+combined search retains rows from working publishers or from earlier
+pages of a failed scan. If all selected portals fail before returning
+rows, <code>source = "live"</code> errors; <code>source = "all"</code>
+warns and returns checked rows.</p>
 <p>Continue with <a href="retrieval.html">retrieval and downloads</a> or
 read about <a href="coverage.html">coverage and source limits</a>.</p>
 </div>

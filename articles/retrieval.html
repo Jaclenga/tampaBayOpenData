@@ -38,6 +38,10 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
     <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+    <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/index.html">All articles</a></li>
   </ul>
 </li>
@@ -174,10 +178,23 @@ explicitly. Provenance reports <code>subset-manifest</code>,
 <code>limit = 0</code> and never marks a deliberate subset complete when
 more rows match. A full manifest of more than one million matching
 records is rejected; narrow <code>where</code> or use an eligible
-bounded preview.</p>
+bounded preview. If an automatic preview finds that the service ignores
+or rejects result offsets despite advertising them, it can restart with
+a full ID manifest and object-ID batches. This fallback is subject to
+the same one-million-record manifest limit. An explicit
+<code>order_by</code> request still fails when offsets cannot be used,
+because object-ID batches cannot preserve that requested order.</p>
 <p>These checks detect record-membership problems during a request. A
 live service can still change record attributes between pages. The
 client does not keep a runtime data cache.</p>
+<p>The client caps each feature request at the layer’s advertised record
+limit and uses object-ID batches when result offsets are unavailable. It
+splits a batch if the service marks it as truncated or returns fewer IDs
+than requested, even without a truncation flag. Explicit
+<code>order_by</code> needs both server ordering and result-offset
+support; otherwise the request fails. Persistently missing singleton
+records, duplicate or unexpected IDs, and empty or repeated ordered
+pages stop retrieval instead of producing a result marked complete.</p>
 <p><code>timeout</code> limits each HTTP attempt.
 <code>total_timeout</code> sets an operation budget: 120 seconds for
 retrieval, 90 for catalog discovery, and 60 for metadata inspection by
@@ -185,6 +202,26 @@ default. Set <code>total_timeout = Inf</code> explicitly for an
 operation without an overall deadline. Requests and retry waits use the
 remaining budget. Parsing is checked after it finishes, so computation
 can exceed the budget before a timeout is reported.</p>
+<p>Temporary connection failures and timeouts, HTTP 429 and selected
+server errors (500, 502, 503, 504), ArcGIS error objects with those
+codes inside HTTP 200 responses, and a generic transient ArcGIS query
+error are retried. Invalid queries, unavailable layers, authentication
+failures, and other permanent errors fail immediately. The default is
+three additional retries per retryable failure sequence. HTTP transport
+failures and ArcGIS errors in successful HTTP responses have separate
+bounded sequences, so a mix of failures can involve more than four HTTP
+attempts overall. To change the limit for this R session, set an integer
+from 0 to 10:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>tampaBayOpenData.max_retries <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
+<span><span class="co"># Restore the default later with:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>tampaBayOpenData.max_retries <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<p>Retry delays use exponential backoff with jitter. A valid
+<code>Retry-After</code> delay or HTTP date takes precedence, with a
+maximum wait of 30 seconds. An invalid header falls back to backoff.
+<code>total_timeout</code> applies across both sequences and can stop
+retries sooner. Once a retry limit is reached, the error reports the
+operation, endpoint, and failed recovery attempts.</p>
 <p>Requests use <code>tampaBayOpenData/0.1.0</code> as the default user
 agent. Applications can identify themselves with
 <code>options(tampaBayOpenData.user_agent = "my-project/1.0 (contact: me@example.org)")</code>;
@@ -207,7 +244,7 @@ retain an exact representation when possible.</p>
 <code>out_sr</code> to keep the source’s native CRS. Point, line, and
 polygon layers are supported, including records with missing geometry. A
 nonspatial table can be retrieved with <code>spatial = FALSE</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
 <span><span class="op">)</span></span>
@@ -217,7 +254,7 @@ nonspatial table can be retrieved with <code>spatial = FALSE</code>.</p>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span></span></code></pre></div>
 <p>The layers use one CRS for the map. Exclude empty case geometries
 from the display:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mapped_projects</span> <span class="op">&lt;-</span> <span class="va">projects</span><span class="op">[</span><span class="op">!</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_query.html" class="external-link">st_is_empty</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
@@ -251,7 +288,7 @@ limit. Chunks are tibbles or <code>sf</code> objects.
 <code><a href="../reference/tbod_download_arcgis_layer.html">tbod_download_arcgis_layer()</a></code> handles direct URLs. For a
 stable ID from another ArcGIS Enterprise portal, pass its sharing REST
 root as <code>portal</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">saved</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_download_dataset.html">tbod_download_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"construction-permits"</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"~/tampaBayOpenData-downloads/permits"</span>,</span>
@@ -267,10 +304,15 @@ full ID manifest, verifies saved chunks against checkpoints, and
 downloads missing chunks. Changed query options, schema, CRS, endpoint,
 or ID membership require a new directory. The first call needs an empty
 directory; <code>resume = FALSE</code> never overwrites an existing
-download. Interrupted temporary files are ignored. Chunk provenance
-describes each file; <code>saved$complete</code> describes the whole
-download. Records may change between sessions, so the files are not a
-frozen snapshot.</p>
+download. Interrupted temporary files are ignored. After all chunks have
+been validated, an atomic <code>complete.rds</code> marker appears in
+<code>path</code>; an interrupted first call leaves no marker. Once a
+resumed call confirms the saved manifest still matches, it removes the
+old marker before revalidating chunks and writes a new one only on
+success. A failure before the manifest check leaves the marker from the
+previous successful call. Chunk provenance describes each file;
+<code>saved$complete</code> describes the whole download. Records may
+change between sessions, so the files are not a frozen snapshot.</p>
 <p>Downloads default to <code>total_timeout = Inf</code>; a finite
 deadline leaves completed chunks available for a later resume. An
 exclusive directory lock prevents concurrent writers. If an R process is

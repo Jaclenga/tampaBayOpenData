@@ -6,7 +6,9 @@ with a public HTTPS ArcGIS FeatureServer or MapServer layer URL. The
 direct source has `not_checked` provenance and no inferred publisher
 identity. A saved manifest fixes the endpoint, query, fields, schema,
 CRS, IDs, and batch size; a resumed call rechecks them before reusing
-validated chunks. See
+validated chunks. Successful validation writes `complete.rds` in the
+download directory; a resumed call clears and recreates it after
+matching the manifest and revalidating chunks. See
 [`tbod_download_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_download_dataset.md)
 for the directory, lock, and record-change rules.
 
@@ -73,7 +75,8 @@ tbod_download_arcgis_layer(
 
 - timeout:
 
-  Per-request timeout in seconds.
+  Per-request timeout in seconds. Transient failures may be retried
+  according to `options(tampaBayOpenData.max_retries = 3L)`.
 
 - total_timeout:
 

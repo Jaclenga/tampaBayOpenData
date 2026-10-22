@@ -125,11 +125,25 @@ explicitly. Provenance reports `subset-manifest`, `full-manifest`, or
 `count-only` for `limit = 0` and never marks a deliberate subset
 complete when more rows match. A full manifest of more than one million
 matching records is rejected; narrow `where` or use an eligible bounded
-preview.
+preview. If an automatic preview finds that the service ignores or
+rejects result offsets despite advertising them, it can restart with a
+full ID manifest and object-ID batches. This fallback is subject to the
+same one-million-record manifest limit. An explicit `order_by` request
+still fails when offsets cannot be used, because object-ID batches
+cannot preserve that requested order.
 
 These checks detect record-membership problems during a request. A live
 service can still change record attributes between pages. The client
 does not keep a runtime data cache.
+
+The client caps each feature request at the layer’s advertised record
+limit and uses object-ID batches when result offsets are unavailable. It
+splits a batch if the service marks it as truncated or returns fewer IDs
+than requested, even without a truncation flag. Explicit `order_by`
+needs both server ordering and result-offset support; otherwise the
+request fails. Persistently missing singleton records, duplicate or
+unexpected IDs, and empty or repeated ordered pages stop retrieval
+instead of producing a result marked complete.
 
 `timeout` limits each HTTP attempt. `total_timeout` sets an operation
 budget: 120 seconds for retrieval, 90 for catalog discovery, and 60 for
@@ -137,6 +151,31 @@ metadata inspection by default. Set `total_timeout = Inf` explicitly for
 an operation without an overall deadline. Requests and retry waits use
 the remaining budget. Parsing is checked after it finishes, so
 computation can exceed the budget before a timeout is reported.
+
+Temporary connection failures and timeouts, HTTP 429 and selected server
+errors (500, 502, 503, 504), ArcGIS error objects with those codes
+inside HTTP 200 responses, and a generic transient ArcGIS query error
+are retried. Invalid queries, unavailable layers, authentication
+failures, and other permanent errors fail immediately. The default is
+three additional retries per retryable failure sequence. HTTP transport
+failures and ArcGIS errors in successful HTTP responses have separate
+bounded sequences, so a mix of failures can involve more than four HTTP
+attempts overall. To change the limit for this R session, set an integer
+from 0 to 10:
+
+``` r
+
+options(tampaBayOpenData.max_retries = 2L)
+# Restore the default later with:
+options(tampaBayOpenData.max_retries = NULL)
+```
+
+Retry delays use exponential backoff with jitter. A valid `Retry-After`
+delay or HTTP date takes precedence, with a maximum wait of 30 seconds.
+An invalid header falls back to backoff. `total_timeout` applies across
+both sequences and can stop retries sooner. Once a retry limit is
+reached, the error reports the operation, endpoint, and failed recovery
+attempts.
 
 Requests use `tampaBayOpenData/0.1.0` as the default user agent.
 Applications can identify themselves with
@@ -232,9 +271,15 @@ ID manifest, verifies saved chunks against checkpoints, and downloads
 missing chunks. Changed query options, schema, CRS, endpoint, or ID
 membership require a new directory. The first call needs an empty
 directory; `resume = FALSE` never overwrites an existing download.
-Interrupted temporary files are ignored. Chunk provenance describes each
-file; `saved$complete` describes the whole download. Records may change
-between sessions, so the files are not a frozen snapshot.
+Interrupted temporary files are ignored. After all chunks have been
+validated, an atomic `complete.rds` marker appears in `path`; an
+interrupted first call leaves no marker. Once a resumed call confirms
+the saved manifest still matches, it removes the old marker before
+revalidating chunks and writes a new one only on success. A failure
+before the manifest check leaves the marker from the previous successful
+call. Chunk provenance describes each file; `saved$complete` describes
+the whole download. Records may change between sessions, so the files
+are not a frozen snapshot.
 
 Downloads default to `total_timeout = Inf`; a finite deadline leaves
 completed chunks available for a later resume. An exclusive directory

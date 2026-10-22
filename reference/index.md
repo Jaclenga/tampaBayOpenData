@@ -7,7 +7,7 @@
 - [`tbod_list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_datasets.md)
   : List datasets in the bundled catalog
 - [`tbod_search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_search_datasets.md)
-  : Search datasets in the bundled catalog
+  : Search checked and live ArcGIS datasets
 - [`tbod_discover()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_discover.md)
   : Discover datasets from an ArcGIS portal
 
@@ -19,6 +19,8 @@
   : Inspect a dataset schema
 - [`tbod_check_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_schema.md)
   : Check a current ArcGIS schema against an expected schema
+- [`tbod_check_catalog()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_catalog.md)
+  : Check the current health of checked catalog layers
 - [`tbod_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_provenance.md)
   : Read retrieval provenance
 

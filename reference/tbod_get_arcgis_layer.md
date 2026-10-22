@@ -82,9 +82,8 @@ tbod_get_arcgis_layer(
 
 - timeout:
 
-  Per-request timeout in seconds. Transient transport and HTTP failures
-  may receive three attempts; a generic ArcGIS query error may receive
-  four.
+  Per-request timeout in seconds. Transient failures may be retried
+  according to `options(tampaBayOpenData.max_retries = 3L)`.
 
 - total_timeout:
 
@@ -96,9 +95,12 @@ tbod_get_arcgis_layer(
   `"auto"` (default) uses bounded preview validation when a finite limit
   is at most 1,000, more than 10,000 records match, and the layer
   supports ordering and pagination. The returned IDs are checked against
-  the original filter. Full retrieval always uses the full object-ID
-  manifest; `"full"` requires it even for a preview. A zero limit
-  requests only the count. Provenance records the method used.
+  the original filter. If advertised offsets fail or repeat, an
+  automatic preview can restart with a full manifest and object-ID
+  batches. Explicit `order_by` requests do not use this fallback. Full
+  retrieval always uses the full object-ID manifest when matches exist;
+  `"full"` requires it even for a preview. A zero limit or zero matching
+  count requests only the count. Provenance records the method used.
 
 ## Value
 
