@@ -22,8 +22,8 @@ Use R 4.1 or later. Install the package and rendering dependencies in the R
 library used for knitting:
 
 ```r
-install.packages(c("pak", "rmarkdown", "knitr", "sf"))
-pak::pak("Jaclenga/tampaBayOpenData")
+install.packages("tampaBayOpenData")
+install.packages(c("rmarkdown", "knitr", "sf"))
 ```
 
 Open an `.Rmd` in RStudio and select **Knit**, or run:

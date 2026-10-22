@@ -1,7 +1,7 @@
 # tampaBayOpenData
 
 <!-- badges: start -->
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/Jaclenga/tampaBayOpenData/blob/main/DESCRIPTION)
+[![CRAN version](https://img.shields.io/cran/v/tampaBayOpenData)](https://CRAN.R-project.org/package=tampaBayOpenData)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Jaclenga/tampaBayOpenData/blob/main/LICENSE.md)
 [![R CMD check](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml)
 [![pkgcheck](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgcheck.yaml/badge.svg?branch=main)](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgcheck.yaml)
@@ -23,7 +23,13 @@ Designed for analysts, researchers, students, journalists, and civic technologis
 
 ## Install
 
-Install from GitHub:
+Install the released package from CRAN:
+
+```r
+install.packages("tampaBayOpenData")
+```
+
+For the development version from GitHub:
 
 ```r
 install.packages("pak") # if needed
