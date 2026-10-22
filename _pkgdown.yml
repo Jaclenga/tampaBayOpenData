@@ -25,10 +25,12 @@ navbar:
   components:
     get_started:
       text: Get started
-      href: articles/introduction.html
+      href: articles/first-five-minutes.html
     articles:
       text: Articles
       menu:
+        - text: More ways to get started
+          href: articles/introduction.html
         - text: Discovering Tampa Bay data
           href: articles/discovery.html
         - text: Retrieving and downloading data
@@ -59,6 +61,7 @@ articles:
   - title: Start here
     desc: Find a layer and retrieve its records.
     contents:
+      - first-five-minutes
       - introduction
   - title: In depth
     desc: Discovery, retrieval, and source limits.

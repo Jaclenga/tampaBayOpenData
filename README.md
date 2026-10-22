@@ -21,6 +21,8 @@ It currently supports public data published by:
 
 Designed for analysts, researchers, students, journalists, and civic technologists, tampaBayOpenData provides a consistent workflow across ArcGIS publishers that otherwise expose data through separate portals and services.
 
+**New to tampaBayOpenData? [Start with the five-minute tutorial.](https://jaclenga.github.io/tampaBayOpenData/articles/first-five-minutes.html)**
+
 ## Install
 
 Install the released package from CRAN:
