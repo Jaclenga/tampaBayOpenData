@@ -92,13 +92,12 @@ a survey of all Tampa Bay waters or monitoring programs.</p>
 <div class="section level2">
 <h2 id="set-up-r">Set up R<a class="anchor" aria-label="anchor" href="#set-up-r"></a>
 </h2>
-<p>Install the package from GitHub and <code>ggplot2</code> for the
+<p>Install the package from CRAN and <code>ggplot2</code> for the
 optional plotting step. The examples use base R for cleaning and
 summaries, so <code>ggplot2</code> is an optional tutorial dependency,
 not a required package import.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span>       <span class="co"># if needed</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"Jaclenga/tampaBayOpenData"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggplot2"</span><span class="op">)</span>   <span class="co"># if needed for the chart</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span></code></pre></div>
 <p>The catalog and saved schema chunks below run without a network

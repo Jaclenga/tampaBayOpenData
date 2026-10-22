@@ -18,14 +18,13 @@ waters or monitoring programs.
 
 ## Set up R
 
-Install the package from GitHub and `ggplot2` for the optional plotting
+Install the package from CRAN and `ggplot2` for the optional plotting
 step. The examples use base R for cleaning and summaries, so `ggplot2`
 is an optional tutorial dependency, not a required package import.
 
 ``` r
 
-install.packages("pak")       # if needed
-pak::pak("Jaclenga/tampaBayOpenData")
+install.packages("tampaBayOpenData")
 install.packages("ggplot2")   # if needed for the chart
 library(tampaBayOpenData)
 ```

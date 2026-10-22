@@ -19,14 +19,13 @@ here.
 
 ## Set up
 
-Install the package from its repository, `knitr` for the catalog table,
-and `ggplot2` for the chart. The installation commands are not run when
-this page is built.
+Install the package from CRAN, `knitr` for the catalog table, and
+`ggplot2` for the chart. The installation commands are not run when this
+page is built.
 
 ``` r
 
-install.packages("pak")                 # skip if already installed
-pak::pak("Jaclenga/tampaBayOpenData")
+install.packages("tampaBayOpenData")
 install.packages("knitr")               # for the catalog table
 install.packages("ggplot2")             # optional tutorial dependency
 ```

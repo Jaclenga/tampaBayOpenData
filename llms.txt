@@ -22,7 +22,14 @@ and services.
 
 ## Install
 
-Install from GitHub:
+Install the released package from CRAN:
+
+``` r
+
+install.packages("tampaBayOpenData")
+```
+
+For the development version from GitHub:
 
 ``` r
 

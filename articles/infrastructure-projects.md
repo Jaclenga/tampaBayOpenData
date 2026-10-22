@@ -16,14 +16,12 @@ counts or project status.
 
 ## Set up and find a source
 
-Install the package from its GitHub repository if needed. `knitr`
-formats the tables and `ggplot2` draws the chart; neither is a required
-package import.
+Install the package from CRAN if needed. `knitr` formats the tables and
+`ggplot2` draws the chart; neither is a required package import.
 
 ``` r
 
-install.packages("pak")          # if needed
-pak::pak("Jaclenga/tampaBayOpenData")
+install.packages("tampaBayOpenData")
 install.packages("knitr")        # for the summary tables
 install.packages("ggplot2")      # optional chart dependency
 ```

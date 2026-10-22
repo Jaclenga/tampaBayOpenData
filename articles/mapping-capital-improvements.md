@@ -33,8 +33,7 @@ them. `knitr` formats tables, and `rmarkdown` renders the article.
 
 ``` r
 
-install.packages("pak")
-pak::pak("Jaclenga/tampaBayOpenData")
+install.packages("tampaBayOpenData")
 install.packages(c("sf", "ggplot2", "knitr", "rmarkdown"))
 ```
 
