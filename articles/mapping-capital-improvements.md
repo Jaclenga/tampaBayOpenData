@@ -1,12 +1,11 @@
-# Where Are Tampa's Public Infrastructure Projects? Mapping Capital Improvements with R
+# Mapping Tampa capital-project locations
 
 ## Introduction
 
 Capital improvement projects are public investments in things such as
-streets, water systems, parks, and public buildings. A map can help us
-see where a city has recorded this work and which kinds of work appear
-in different places. It can also prompt useful questions about places
-that seem to have few mapped projects.
+streets, water systems, parks, and public buildings. A map shows where
+the City has recorded this work and which project types appear in
+different places.
 
 In this tutorial, you will use the `tampaBayOpenData` package to find
 the City of Tampa’s public capital-project layer, download its mapped
@@ -430,6 +429,6 @@ To adapt this workflow, search the checked catalog for another topic or
 publisher, inspect its source note and schema, then change the dataset
 ID and field names. A true line or polygon project layer would need its
 own source review and map symbol. Before combining layers, check whether
-their features share project identifiers. The [advanced infrastructure
+their features share project identifiers. The [infrastructure
 article](https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.md)
 explores ID, status, phase, and cost fields in more detail.

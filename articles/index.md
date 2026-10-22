@@ -39,7 +39,7 @@ Discovery, retrieval, and source limits.
 
 ### Applied tutorials
 
-Work through checked sources with careful summaries and visualizations.
+Examples using checked sources, summaries, and visualizations.
 
 - [Explore housing and development
   activity](https://jaclenga.github.io/tampaBayOpenData/articles/housing-development.md):
@@ -53,9 +53,8 @@ Work through checked sources with careful summaries and visualizations.
   Find Hillsborough EPC monitoring samples, audit missing measurements,
   and compare paired oxygen readings.
 
-- [Where Are Tampa's Public Infrastructure Projects? Mapping Capital
-  Improvements with
-  R](https://jaclenga.github.io/tampaBayOpenData/articles/mapping-capital-improvements.md):
+- [Mapping Tampa capital-project
+  locations](https://jaclenga.github.io/tampaBayOpenData/articles/mapping-capital-improvements.md):
 
   Find City of Tampa capital-project locations, map source project
   types, and count source feature rows carefully.

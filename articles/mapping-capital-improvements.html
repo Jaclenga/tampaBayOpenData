@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Where Are Tampa's Public Infrastructure Projects? Mapping Capital Improvements with R • tampaBayOpenData</title>
+<title>Mapping Tampa capital-project locations • tampaBayOpenData</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Where Are Tampa's Public Infrastructure Projects? Mapping Capital Improvements with R">
+<meta property="og:title" content="Mapping Tampa capital-project locations">
 <meta name="description" content="Find City of Tampa capital-project locations, map source project types, and count source feature rows carefully.">
 <meta property="og:description" content="Find City of Tampa capital-project locations, map source project types, and count source feature rows carefully.">
 </head>
@@ -67,7 +67,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Where Are Tampa's Public Infrastructure Projects? Mapping Capital Improvements with R</h1>
+      <h1>Mapping Tampa capital-project locations</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/vignettes/mapping-capital-improvements.Rmd" class="external-link"><code>vignettes/mapping-capital-improvements.Rmd</code></a></small>
@@ -80,10 +80,9 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>Capital improvement projects are public investments in things such as
-streets, water systems, parks, and public buildings. A map can help us
-see where a city has recorded this work and which kinds of work appear
-in different places. It can also prompt useful questions about places
-that seem to have few mapped projects.</p>
+streets, water systems, parks, and public buildings. A map shows where
+the City has recorded this work and which project types appear in
+different places.</p>
 <p>In this tutorial, you will use the <code>tampaBayOpenData</code>
 package to find the City of Tampa’s public capital-project layer,
 download its mapped locations, and color them by the project’s type as
@@ -495,8 +494,8 @@ too.</p>
 or publisher, inspect its source note and schema, then change the
 dataset ID and field names. A true line or polygon project layer would
 need its own source review and map symbol. Before combining layers,
-check whether their features share project identifiers. The <a href="infrastructure-projects.html">advanced infrastructure article</a>
-explores ID, status, phase, and cost fields in more detail.</p>
+check whether their features share project identifiers. The <a href="infrastructure-projects.html">infrastructure article</a> explores
+ID, status, phase, and cost fields in more detail.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

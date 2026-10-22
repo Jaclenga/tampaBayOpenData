@@ -128,9 +128,9 @@ than interpreting them as UTC instants.
 ## Retrieve a complete feature set
 
 Run this chunk when you want a current analysis. It requests all mapped
-features, checks retrieval provenance, and stops with a useful error if
-the publisher cannot return a complete result. There is no `limit = 100`
-preview because a preview would make category shares misleading.
+features, checks retrieval provenance, and stops if the publisher cannot
+return a complete result. There is no `limit = 100` preview because a
+preview would make category shares misleading.
 
 ``` r
 
@@ -393,7 +393,7 @@ if (length(rows_by_id) == 0L) {
 If you need a canonical project count or total budget, first obtain a
 publisher-supported definition of a project ID, a rule for multiple
 locations and conflicting values, and the relevant financial ledger.
-`projphase`, `status`, `actend`, and `actcost` are useful leads for
+`projphase`, `status`, `actend`, and `actcost` are source attributes for
 follow-up; none alone establishes verified completion, final
 expenditure, or when money was paid. The public-facing selection may
 omit unmapped or unpublished projects.

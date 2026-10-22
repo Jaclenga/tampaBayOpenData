@@ -79,10 +79,10 @@ Protection Commission. Read the item’s terms before reusing results; the
 checked catalog does not identify an unrestricted reuse license for this
 layer.
 
-The package also offers [live
-discovery](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.md).
-It may find other water-related items, but a live search depends on
-portal indexing and is not proof of complete regional coverage.
+Use [live
+discovery](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.md)
+to search for other water-related items. A live search depends on portal
+indexing and does not establish complete regional coverage.
 
 ``` r
 

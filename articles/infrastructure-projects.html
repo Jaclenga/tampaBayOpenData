@@ -261,10 +261,9 @@ them as UTC instants.</p>
 <h2 id="retrieve-a-complete-feature-set">Retrieve a complete feature set<a class="anchor" aria-label="anchor" href="#retrieve-a-complete-feature-set"></a>
 </h2>
 <p>Run this chunk when you want a current analysis. It requests all
-mapped features, checks retrieval provenance, and stops with a useful
-error if the publisher cannot return a complete result. There is no
-<code>limit = 100</code> preview because a preview would make category
-shares misleading.</p>
+mapped features, checks retrieval provenance, and stops if the publisher
+cannot return a complete result. There is no <code>limit = 100</code>
+preview because a preview would make category shares misleading.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
@@ -496,7 +495,7 @@ resolved by arbitrarily taking the first row.</p>
 publisher-supported definition of a project ID, a rule for multiple
 locations and conflicting values, and the relevant financial ledger.
 <code>projphase</code>, <code>status</code>, <code>actend</code>, and
-<code>actcost</code> are useful leads for follow-up; none alone
+<code>actcost</code> are source attributes for follow-up; none alone
 establishes verified completion, final expenditure, or when money was
 paid. The public-facing selection may omit unmapped or unpublished
 projects.</p>

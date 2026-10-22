@@ -1,12 +1,12 @@
 # Your First Five Minutes with tampaBayOpenData
 
-In about five minutes, you can find a public parks dataset, load a small
-preview into R, and make a chart. You only need basic R: no mapping
-software or knowledge of the publisher’s data service is required. Run
-the commands in order. Searching the package’s catalog works offline;
-retrieving records needs an internet connection. The publisher can
-change its data, so your results may differ from another person’s or
-from a later run.
+This tutorial searches for a public parks dataset, retrieves a small
+preview, and charts one of its fields in base R. It assumes basic R
+skills; no mapping software or knowledge of the publisher’s data service
+is required. Run the commands in order. Searching the package’s catalog
+works offline; retrieving records needs an internet connection. The
+publisher can change its data, so your results may differ from another
+person’s or from a later run.
 
 ## 1. Install the package
 
@@ -124,9 +124,8 @@ has more help.
 
 ## What to try next
 
-You found a dataset, retrieved a small table, inspected its columns,
-counted use labels, and made a chart. To explore another topic, change
-the search word, choose an `id` from the results, and inspect
+To work with another dataset, change the search word, choose an `id`
+from the results, and inspect
 [`names()`](https://rdrr.io/r/base/names.html) before counting a column.
 The [discovery
 guide](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.md)

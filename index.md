@@ -1,13 +1,13 @@
 # tampaBayOpenData
 
-`tampaBayOpenData` helps R users find and explore public data from Tampa
-Bay governments. Search local topics such as parks, housing, and
-transportation, then load records into R for analysis. It brings
-together data from six regional publishers, so you can start with one
-familiar workflow instead of visiting several separate data portals.
+`tampaBayOpenData` provides R functions for searching public datasets
+from six Tampa Bay publishers and retrieving their records. It includes
+a selected list of datasets whose structure has been checked and can
+also search publisher catalogs online. Results are returned as tables
+or, with the optional `sf` package, spatial objects.
 
-**New to the package? [Start with the five-minute
-tutorial.](https://jaclenga.github.io/tampaBayOpenData/articles/first-five-minutes.html)**
+[Five-minute beginner
+tutorial](https://jaclenga.github.io/tampaBayOpenData/articles/first-five-minutes.html)
 
 ## Install
 
@@ -128,6 +128,7 @@ before using a dataset.
 ## Citation and contributing
 
 Cite both the package and the original data publisher and dataset. Run
-`citation("tampaBayOpenData")` for the package citation. Contributions
-are welcome; see the [contributing
-guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/CONTRIBUTING.md).
+`citation("tampaBayOpenData")` for the package citation. See the
+[contributing
+guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/CONTRIBUTING.md)
+for contribution instructions.
