@@ -70,7 +70,7 @@ articles:
       - retrieval
       - coverage
   - title: Applied tutorials
-    desc: Work through checked sources with careful summaries and visualizations.
+    desc: Examples using checked sources, summaries, and visualizations.
     contents:
       - housing-development
       - water-quality

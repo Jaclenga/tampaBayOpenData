@@ -45,7 +45,8 @@
 #'   the search query are combined with AND. Status, geometry, topic, category,
 #'   and date filters apply after the bounded scan and checked overlay. A capped
 #'   scan can miss matching older items; inspect `discovery_complete` and use
-#'   `max_items = Inf` with an appropriate time budget for an exhaustive scan.
+#'   `max_items = Inf` with an appropriate time budget to scan all available
+#'   index pages.
 #' @return A tibble with stable IDs, service and layer locations, portal and
 #'   item IDs when available, and `validation_status` of `"checked"` or
 #'   `"discovered"`. The latter means the package has not checked that layer.

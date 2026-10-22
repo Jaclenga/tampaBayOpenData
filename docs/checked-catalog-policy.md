@@ -87,10 +87,10 @@ outweigh its value. The audit does not guarantee future endpoint availability.
 
 | Publisher | Checked ID | Disposition and reason |
 | --- | --- | --- |
-| Tampa | `construction-permits` | Retain: high-value active permit view; no complete history or exact-service license claimed. |
+| Tampa | `construction-permits` | Retain: active permit view; no complete history or exact-service license claimed. |
 | Tampa | `development-cases` | Retain: active entitlement applications; not a historical case ledger. |
 | Tampa | `capital-projects` | Retain: costs, phases, and dates support infrastructure analysis; document the public-view filter and feet-based CRS. |
-| Tampa | `city-boundary` | Retain: useful municipal reference; shoreline-adjusted representation is not a legal survey. |
+| Tampa | `city-boundary` | Retain: municipal boundary reference; shoreline-adjusted representation is not a legal survey. |
 | Tampa | `neighborhoods` | Retain: civic geography distinct from city limits; public contact fields warrant care. |
 | Tampa | `council-districts` | Retain: the [City Council page](https://www.tampa.gov/city-council/about-us) says seats 1–3 are elected at-large citywide, while [layer metadata](https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Boundary/MapServer/0?f=pjson) maps only geographic districts 4–7; representative names need current confirmation. |
 | Tampa | `riverwalk` | Retain: pedestrian corridor and segment status, distinct from the street network. |
@@ -106,8 +106,8 @@ outweigh its value. The audit does not guarantee future endpoint availability.
 | Tampa | `street-speed-reductions` | Retain: source-defined speed policy and dates; not proof of current posted limits. |
 | Tampa | `truck-routes` | Retain: freight-routing reference; current restrictions need City confirmation. |
 | Tampa | `water-service-area` | Retain: cross-boundary utility geography and a distinct feet-based CRS; not proof of service for an address. |
-| Tampa | `zoning-districts` | Retain: core land-use reference; not a legal parcel determination. |
-| St. Petersburg | `stpete-parks` | Retain: comparable municipal park footprints. |
+| Tampa | `zoning-districts` | Retain: land-use reference; not a legal parcel determination. |
+| St. Petersburg | `stpete-parks` | Retain: municipal park footprints. |
 | St. Petersburg | `stpete-city-boundary` | Retain: municipal geographic baseline. |
 | St. Petersburg | `stpete-streets` | Retain: road-network baseline; restrictions may change. |
 | Clearwater | `clearwater-park-buffers` | Retain for park buffer/access analysis, not as park footprints; seek actual footprints separately. [Service item metadata](https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/Clearwater_Park_Buffers/MapServer/info/iteminfo?f=pjson) states no explicit reuse license. |
@@ -120,8 +120,8 @@ outweigh its value. The audit does not guarantee future endpoint availability.
 | Pinellas | `pinellas-park-boundaries` | Retain: county parks and preserves; boundaries are planning representations. |
 | Pinellas | `pinellas-trail` | Retain: major regional trail asset and condition fields. |
 | TBRPC | `tbrpc-developments-of-regional-impact` | Retain as a historical planning snapshot: the [official item](https://www.arcgis.com/home/item.html?id=f0f925147e714beca2ae7b723c5a0e69) was last updated in March 2023 and asks users to confirm source, scale, accuracy, and currentness. |
-| TBRPC | `tbrpc-regional-storm-surge-zones` | Retain only as a historical SLOSH planning layer: the [official item](https://www.arcgis.com/home/item.html?id=78308e23f12c411ebbb8cfccc58f5895) was last updated in November 2021, and the layer description says it uses a 2004 shoreline. It is not current emergency guidance; its WKT-only CRS is a useful validation case. |
-| TBRPC | `tbrpc-regional-data-centers` | Retain as a timely regional *research inventory*, not an authoritative facility register. The [TBRPC StoryMap](https://storymaps.arcgis.com/stories/9c4da244e480433fbe81a3733bcc41d2) explains its policy purpose and invites corrections. Current service fields include `Data_Source` and `Estimated_Size`; these describe the Council's research, not independent confirmation of each facility. Reassess if the publisher stops maintaining it. |
+| TBRPC | `tbrpc-regional-storm-surge-zones` | Retain only as a historical SLOSH planning layer: the [official item](https://www.arcgis.com/home/item.html?id=78308e23f12c411ebbb8cfccc58f5895) was last updated in November 2021, and the layer description says it uses a 2004 shoreline. It is not current emergency guidance; its WKT-only CRS exercises CRS validation. |
+| TBRPC | `tbrpc-regional-data-centers` | Retain as a regional *research inventory*, not an authoritative facility register. The [TBRPC StoryMap](https://storymaps.arcgis.com/stories/9c4da244e480433fbe81a3733bcc41d2) explains its policy purpose and invites corrections. Current service fields include `Data_Source` and `Estimated_Size`; these describe the Council's research, not independent confirmation of each facility. Reassess if the publisher stops maintaining it. |
 
 At the baseline, the registry had no duplicate service/layer combinations. It
 had 35 unique IDs and a schema snapshot for each one. That mechanical
@@ -145,8 +145,8 @@ indicates stronger editorial priority within this reviewed shortlist.
 | --- | --- | ---: | --- |
 | St. Petersburg | [`stpete-zoning-districts`](https://csp.maps.arcgis.com/home/item.html?id=db80bf8cae334213ac59d038482a35ba) | 16 | Adds city zoning to a cross-government comparison; the view has no record-date field and is not a legal determination. |
 | St. Petersburg | [`stpete-future-land-use`](https://csp.maps.arcgis.com/home/item.html?id=96965b6e4ad54b438e355e86b8bd8d7b) | 16 | Adds adopted planning classifications distinct from zoning; the view has no record-date field. |
-| St. Petersburg | [`stpete-sidewalks`](https://csp.maps.arcgis.com/home/item.html?id=f52c48737a9f4fa9b61c12dac8f980fe) | 16 | Makes mapped pedestrian infrastructure comparable across cities and counties; mapped segments do not guarantee current condition or accessibility. |
-| St. Petersburg | [`stpete-public-works-projects`](https://csp.maps.arcgis.com/home/item.html?id=dc7fabd74c6b4d709b9454253c665bfd) | 15 | Adds a mapped capital-project view useful beside Tampa's; the city keeps a separate table for projects without mapped locations. |
+| St. Petersburg | [`stpete-sidewalks`](https://csp.maps.arcgis.com/home/item.html?id=f52c48737a9f4fa9b61c12dac8f980fe) | 16 | Records city sidewalk segments; mapped segments do not guarantee current condition or accessibility. |
+| St. Petersburg | [`stpete-public-works-projects`](https://csp.maps.arcgis.com/home/item.html?id=dc7fabd74c6b4d709b9454253c665bfd) | 15 | Adds mapped capital projects from St. Petersburg; the city keeps a separate table for projects without mapped locations. |
 | Clearwater | [`clearwater-future-land-use`](https://cityofclearwater.maps.arcgis.com/home/item.html?id=4d25938e0ee4484e822f5ab516507b53) | 16 | Extends land-use comparison across the three cities; the portal item's 2016 modification date does not establish feature freshness. |
 | Clearwater | [`clearwater-critical-assets`](https://cityofclearwater.maps.arcgis.com/home/item.html?id=96b0ca177b914f209be21fc99c0ad649) | 14 | Adds a distinct resilience-planning asset view; its 406 modeled polygons are not a complete infrastructure inventory or live emergency guidance. |
 | Clearwater | [`clearwater-sidewalks`](https://cityofclearwater.maps.arcgis.com/home/item.html?id=e3b7e675f2b04ec8939226b801bd4fa3) | 15 | Adds city pedestrian segments to regional comparison; source collection began in 2011 and current condition is not assured. |

@@ -2,8 +2,9 @@
 #'
 #' Accepts a checked package ID from [tbod_list_datasets()], a single discovery
 #' result row from [tbod_search_datasets()], or a stable `arcgis:<item-id>:<layer-id>`
-#' identifier. The latter two paths use current ArcGIS portal metadata; they
-#' have not received the package's curated source validation. For a compatible
+#' identifier. A discovery row marked `checked` uses its matching bundled
+#' catalog entry. Other discovery rows and stable ArcGIS IDs use current portal
+#' metadata without a bundled schema snapshot. For a compatible
 #' layer URL outside the discovery portal, use [tbod_get_arcgis_layer()].
 #' Layers in the checked catalog are compared with expected schema snapshots before
 #' querying. Compatible changes warn; incompatible changes stop retrieval.

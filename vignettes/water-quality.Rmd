@@ -67,9 +67,9 @@ is published through Hillsborough County for its Environmental Protection
 Commission. Read the item's terms before reusing results; the checked catalog
 does not identify an unrestricted reuse license for this layer.
 
-The package also offers [live discovery](discovery.html). It may find other
-water-related items, but a live search depends on portal indexing and is not
-proof of complete regional coverage.
+Use [live discovery](discovery.html) to search for other water-related items.
+A live search depends on portal indexing and does not establish complete
+regional coverage.
 
 ```{r water-live-discovery}
 found <- tbod_search_datasets("water quality", source = "live",
