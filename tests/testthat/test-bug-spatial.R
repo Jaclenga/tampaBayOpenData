@@ -203,6 +203,33 @@ test_that("a WKT2-only spatial reference labels returned geometry", {
                matrix(c(-82.4, 28.1), nrow = 1L))
 })
 
+test_that("a zero WKID uses a valid WKT definition and cannot stand alone", {
+  skip_if_not_installed("sf")
+  wkt <- sf::st_crs(4326)$wkt
+  for (field in c("wkt", "wkt2")) {
+    reference <- list(wkid = 0L)
+    reference[[field]] <- wkt
+    result <- arcgis_as_sf(
+      tibble::tibble(id = 1L), list(list(geometry = list(x = -82.4, y = 28.1))),
+      list(geometryType = "esriGeometryPoint", spatialReference = reference)
+    )
+    expect_equal(sf::st_crs(result)$epsg, 4326L)
+  }
+  for (reference in list(list(wkid = 0L, latestWkid = 4326L),
+                         list(wkid = 4326L, latestWkid = 0L))) {
+    expect_equal(arcgis_spatial_crs(reference)$epsg, 4326L)
+  }
+  expect_error(arcgis_spatial_crs(list(wkid = 0L)), "could not be resolved",
+               class = "tampa_spatial_error")
+  expect_error(arcgis_spatial_crs(list(wkid = 0L,
+                                       wkt = "GEOGCRS[not-a-definition]")),
+               "could not be resolved", class = "tampa_spatial_error")
+  for (code in list(-1L, 1.5, "0")) {
+    expect_error(arcgis_spatial_crs(list(wkt = wkt, wkid = code)),
+                 "malformed WKID", class = "tampa_spatial_error")
+  }
+})
+
 test_that("compound WKT remains usable alongside horizontal WKID identifiers", {
   skip_if_not_installed("sf")
   compound <- sf::st_crs(7405)

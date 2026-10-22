@@ -3,7 +3,8 @@
 - Discovery recognizes `Query` capability tokens with spaces or case changes,
   accepts trailing slashes on service and layer URLs, and reports missing
   stable item IDs as unavailable.
-- Spatial results accept WKT2-only coordinate references. Schema checks detect
+- Spatial results accept WKT2-only coordinate references and use WKT or another
+  identifier when a custom reference reports WKID zero. Schema checks detect
   changed WKT definitions even when reported WKIDs match.
 - Ordered pagination verifies big-integer sort keys without rounding. Public
   ArcGIS URL validation rejects single-label hosts.

@@ -182,10 +182,12 @@ arcgis_spatial_crs <- function(reference) {
     code <- reference[[field]]
     if (is.null(code)) next
     if (!is.numeric(code) || length(code) != 1L || is.na(code) ||
-        !is.finite(code) || code <= 0 || code != floor(code)) {
+        !is.finite(code) || code < 0 || code != floor(code)) {
       .abort("The ArcGIS spatial reference contains a malformed WKID.",
              subclass = "tampa_spatial_error")
     }
+    # Zero denotes an undefined WKID; use a WKT or another positive identifier.
+    if (code == 0) next
     aliases <- c(`102100` = 3857L, `102113` = 3857L, `102659` = 2237L,
                  `103023` = 6443L)
     candidates <- list(paste0("EPSG:", format(code, scientific = FALSE)),
