@@ -171,11 +171,38 @@
 
 .lookup_dataset <- function(id, jurisdiction = "all") {
   .string(id, "id")
-  entries <- .jurisdiction_entries(jurisdiction)
+  all_entries <- .read_registry()
+  entries <- .jurisdiction_entries(jurisdiction, all_entries)
   found <- Filter(function(x) identical(x$id, id), entries)
   if (!length(found)) {
-    .abort(paste0("Unknown dataset `", id, "` for `", jurisdiction,
-                  "`. Use tbod_list_datasets() or tbod_search_datasets() to find supported IDs."),
+    safe_id <- grepl("^[A-Za-z0-9][A-Za-z0-9-]{0,63}$", id)
+    scope <- if (identical(jurisdiction, "all")) "" else {
+      paste0(" for jurisdiction `", jurisdiction, "`")
+    }
+    elsewhere <- if (identical(jurisdiction, "all")) character() else {
+      unique(vapply(Filter(function(x) identical(x$id, id), all_entries),
+                    `[[`, character(1), "jurisdiction"))
+    }
+    suggestions <- character()
+    if (safe_id) {
+      query <- gsub("-", " ", id, fixed = TRUE)
+      matches <- .search_checked(.catalog_table(entries), query)
+      if (nrow(matches)) {
+        suggestions <- utils::head(unique(.rank_search_results(matches, query)$id), 3L)
+      }
+    }
+    .abort(paste0("Unknown dataset", if (safe_id) paste0(" `", id, "`") else " ID",
+                  " in the checked catalog", scope, ".",
+                  if (length(elsewhere) == 1L) {
+                    paste0(" It is checked for `", elsewhere, "`; try jurisdiction = \"",
+                           elsewhere, "\".")
+                  } else "",
+                  " Try tbod_list_datasets(source = \"checked\") to see IDs, or ",
+                  "tbod_search_datasets(\"parks\", source = \"checked\") to search by topic.",
+                  if (length(suggestions)) {
+                    paste0(" Possible matches: ",
+                           paste(sprintf("`%s`", suggestions), collapse = ", "), ".")
+                  } else ""),
            subclass = "tampa_input_error")
   }
   if (length(found) != 1L) {

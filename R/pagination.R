@@ -43,12 +43,18 @@
   page <- request_page(list(objectIds = paste(
     format(ids, scientific = FALSE, trim = TRUE), collapse = ",")))
   if (any(!page$ids %in% ids)) {
-    .abort("A batch returned unexpected object IDs.", dataset, url, "tampa_integrity_error")
+    .abort("The publisher returned unexpected object IDs in a record batch. Retrieval stopped because those records were not requested. Try again later.",
+           dataset, url, "tampa_integrity_error")
   }
   if (page$truncated || !setequal(page$ids, ids)) {
     if (length(ids) <= 1L) {
-      .abort(if (page$truncated) "The service truncated a single-record batch." else
-        "A batch is missing requested records. The service may have changed; retry the query.",
+      .abort(if (page$truncated)
+        paste0("The publisher truncated a single-record batch, so even a smaller ",
+               "request cannot confirm that record. Retrieval stopped to avoid ",
+               "an incomplete result. Try again later.") else
+        paste0("The publisher's response is missing requested records, even when ",
+               "fetched one at a time. Records may have changed during the request. ",
+               "Retrieval stopped to avoid an incomplete result; try again later."),
         dataset, url, "tampa_integrity_error")
     }
     split <- floor(length(ids) / 2)
@@ -126,20 +132,31 @@
     page <- request_page(list(orderByFields = order,
                              resultOffset = length(result$ids),
                              resultRecordCount = requested))
-    if (!length(page$ids) || length(page$ids) > requested ||
-        (!is.null(ids) && any(!page$ids %in% ids)) || any(page$ids %in% result$ids)) {
-      .abort("Ordered pagination returned an empty, repeated, oversized, or unexpected page. Retrieval is incomplete; the service may not honor offsets.",
+    problem <- if (!length(page$ids)) {
+      "an empty page before all records were fetched"
+    } else if (length(page$ids) > requested) {
+      "more records than requested"
+    } else if (!is.null(ids) && any(!page$ids %in% ids)) {
+      "records outside the requested ID list"
+    } else if (any(page$ids %in% result$ids)) {
+      "a record ID seen on an earlier page"
+    } else NULL
+    if (!is.null(problem)) {
+      .abort(paste0("The publisher returned ", problem,
+                    ". Retrieval stopped to avoid missing or duplicate records. ",
+                    "Try again later or omit ",
+                    "`order_by` to retrieve by record ID."),
              dataset, url, c("tampa_pagination_error", "tampa_integrity_error"))
     }
     if (length(page$ids) < requested && !page$truncated) {
-      .abort("Ordered pagination stopped before all requested records were returned; the service may not honor offsets.",
+      .abort("Ordered pagination stopped before all requested records were returned. The publisher sent fewer records than requested without reporting a limit. Retrieval stopped to avoid an incomplete result; try again later or omit `order_by`.",
              dataset, url, c("tampa_pagination_error", "tampa_integrity_error"))
     }
     adjacent <- c(utils::tail(result$features, 1L), page$features)
     if (length(adjacent) > 1L && any(!vapply(seq.int(2L, length(adjacent)),
       function(i) .ordered_pair_ok(adjacent[[i - 1L]], adjacent[[i]], spec,
                                     dataset, url), logical(1)))) {
-      .abort("Ordered pagination returned records out of the requested order. Retrieval is incomplete; the service may ignore orderByFields.",
+      .abort("Ordered pagination returned records out of the requested order. The publisher may have ignored `order_by`. Retrieval stopped to avoid an unreliable result; try again later or omit `order_by` and sort in R.",
              dataset, url, c("tampa_pagination_error", "tampa_integrity_error"))
     }
     result <- add_page(result, page)
@@ -214,13 +231,13 @@ arcgis_fetch <- function(dataset, metadata, where, fields, spatial, out_sr,
       result
     })
     if (!is.null(offset_error)) {
-      offset_summary <- strsplit(conditionMessage(offset_error), "\n",
-                                 fixed = TRUE)[[1L]][[1L]]
       manifest <- tryCatch(.manifest(url, params, metadata, dataset, timeout,
                                      count = count), error = function(e) {
-        reason <- strsplit(conditionMessage(e), "\n", fixed = TRUE)[[1L]][[1L]]
-        .abort(paste0("Automatic offset preview failed (", offset_summary,
-                      "); object-ID manifest fallback also failed: ", reason), dataset, url,
+        .abort(paste0("Automatic offset preview failed, and the object-ID manifest ",
+                      "fallback also failed. Retrieval stopped to avoid an incomplete ",
+                      "preview. Try again later; for large datasets, narrow `where` ",
+                      "or spatial filters."),
+               dataset, url,
                c("tampa_pagination_error", "tampa_integrity_error"))
       })
       result <- list(features = list(), ids = numeric(), spatial_reference = NULL)
@@ -228,9 +245,9 @@ arcgis_fetch <- function(dataset, metadata, where, fields, spatial, out_sr,
                                                    size, handlers$request_page,
                                                    handlers$add_page, result,
                                                    dataset, url), error = function(e) {
-        reason <- strsplit(conditionMessage(e), "\n", fixed = TRUE)[[1L]][[1L]]
-        .abort(paste0("Automatic offset preview failed (", offset_summary,
-                      "); object-ID batch fallback also failed: ", reason),
+        .abort(paste0("Automatic offset preview failed, and the object-ID batch ",
+                      "fallback also failed. Retrieval stopped to avoid an incomplete ",
+                      "preview. Try again later."),
                dataset, url, class(e)[[1L]])
       })
       preview <- FALSE
@@ -244,13 +261,14 @@ arcgis_fetch <- function(dataset, metadata, where, fields, spatial, out_sr,
     verified_ids <- .matching_ids(url, subset_params, metadata, dataset, timeout,
                                   length(result$ids))
     if (!setequal(result$ids, verified_ids)) {
-      .abort("Preview records no longer match the requested filter. Retry the query.",
+      .abort("Preview records no longer match the requested filter. The dataset may have changed during retrieval, so the preview was stopped to avoid unreliable results. Retry the query.",
              dataset, url, "tampa_integrity_error")
     }
   }
   if (length(result$ids) != target || anyDuplicated(result$ids) ||
       (target == manifest$count && !setequal(result$ids, manifest$ids))) {
-    .abort("Retrieval did not cover the requested record manifest.", dataset, url, "tampa_integrity_error")
+    .abort("The records received do not match the requested ID list. Retrieval did not cover the requested record manifest; results may be missing or duplicated. Retrieval stopped. Try again later.",
+           dataset, url, "tampa_integrity_error")
   }
   list(features = result$features, spatial_reference = result$spatial_reference,
        matched_rows = manifest$count, returned_rows = length(result$ids),

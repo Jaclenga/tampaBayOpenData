@@ -393,11 +393,16 @@ tbod_check_schema <- function(id, jurisdiction = NULL, expected = NULL,
                                  paste0(" `", report$issues$field, "`"), "")),
                    collapse = ", ")
   if (identical(report$status, "compatible")) {
-    warning(paste0("Dataset `", dataset$id, "` has compatible ArcGIS schema drift: ",
-                   details, ". Inspect with tbod_check_schema()."), call. = FALSE)
+    warning(paste0("Dataset `", dataset$id,
+                   "` has a compatible structure change (", details,
+                   "). This change does not block retrieval. Run tbod_check_schema() with this dataset ID to inspect it."),
+            call. = FALSE)
   } else {
-    .abort(paste0("Incompatible ArcGIS schema drift: ", details,
-                  ". Inspect with tbod_check_schema()."), dataset,
+    .abort(paste0("The dataset's structure no longer matches the checked version ",
+                  "(incompatible ArcGIS schema drift: ", details,
+                  "). The publisher may have changed it, so retrieval stopped ",
+                  "to avoid incorrect results. Run tbod_check_schema() with this ",
+                  "dataset ID to inspect the change."), dataset,
            report$endpoint, "tampa_schema_error")
   }
   invisible(report)

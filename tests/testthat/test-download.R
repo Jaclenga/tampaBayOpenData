@@ -82,17 +82,17 @@ test_that("resuming rejects changed queries, fields, batch sizes, and endpoints"
   tbod_download_dataset("construction-permits", path, fields = "RECORD_ID", page_size = 2)
   expect_error(tbod_download_dataset("construction-permits", path,
     fields = "RECORD_ID", where = "RECORD_ID IS NOT NULL", page_size = 2),
-    "options, endpoint, schema, CRS, or ID membership changed", class = "tampa_download_error")
+    "cannot be resumed.*saved settings", class = "tampa_download_error")
   expect_error(tbod_download_dataset("construction-permits", path,
     fields = c("RECORD_ID", "LASTUPDATE"), page_size = 2),
-    "options, endpoint, schema, CRS, or ID membership changed", class = "tampa_download_error")
+    "cannot be resumed.*saved settings", class = "tampa_download_error")
   expect_error(tbod_download_dataset("construction-permits", path,
     fields = "RECORD_ID", page_size = 1),
-    "options, endpoint, schema, CRS, or ID membership changed", class = "tampa_download_error")
+    "cannot be resumed.*saved settings", class = "tampa_download_error")
   expect_error(tbod_download_arcgis_layer(
     "https://example.org/arcgis/rest/services/Other/FeatureServer/0", path,
     fields = "RECORD_ID", page_size = 2),
-    "options, endpoint, schema, CRS, or ID membership changed", class = "tampa_download_error")
+    "cannot be resumed.*saved settings", class = "tampa_download_error")
   expect_error(tbod_download_dataset("construction-permits", path,
     fields = "RECORD_ID", page_size = 2, resume = FALSE),
     "resume.*FALSE", class = "tampa_download_error")
@@ -115,14 +115,14 @@ test_that("resuming rejects schema, CRS, and membership changes even at equal co
   transport <- fixture_transport(metadata = changed)
   local_mocked_bindings(arcgis_http = transport$http)
   expect_error(tbod_download_dataset("construction-permits", path,
-    fields = "RECORD_ID", page_size = 2), "schema, CRS, or ID membership changed",
+    fields = "RECORD_ID", page_size = 2), "schema, coordinate system.*record IDs",
     class = "tampa_download_error")
   features <- fixture_features()
   features[[3L]]$attributes$OBJECTID <- 6L
   transport <- fixture_transport(features = features)
   local_mocked_bindings(arcgis_http = transport$http)
   expect_error(tbod_download_dataset("construction-permits", path,
-    fields = "RECORD_ID", page_size = 2), "schema, CRS, or ID membership changed",
+    fields = "RECORD_ID", page_size = 2), "schema, coordinate system.*record IDs",
     class = "tampa_download_error")
 })
 
@@ -138,7 +138,7 @@ test_that("a modified completed chunk is rejected before any new feature request
   resumed <- fixture_transport()
   local_mocked_bindings(arcgis_http = resumed$http)
   expect_error(tbod_download_dataset("construction-permits", path,
-    fields = c("OBJECTID", "RECORD_ID"), page_size = 2), "completed chunk or checkpoint was altered",
+    fields = c("OBJECTID", "RECORD_ID"), page_size = 2), "saved data chunk or its checkpoint.*unreliable data",
     class = "tampa_download_error")
   expect_length(fixture_queries(resumed, "features"), 0L)
 })
@@ -200,7 +200,7 @@ test_that("an active or stale directory lock is preserved and blocks writes", {
   transport <- fixture_transport()
   local_mocked_bindings(arcgis_http = transport$http)
   expect_error(tbod_download_dataset("construction-permits", path,
-    fields = "RECORD_ID", page_size = 2), "directory is busy or has a lock",
+    fields = "RECORD_ID", page_size = 2), "download directory is locked",
     class = "tampa_download_error")
   expect_true(dir.exists(lock))
   expect_false(file.exists(file.path(path, "manifest.rds")))
@@ -260,7 +260,7 @@ test_that("a checksum alone does not validate a chunk with mismatched provenance
   checkpoint$data_md5 <- unname(tools::md5sum(result$files[[1L]]))
   saveRDS(checkpoint, checkpoint_file)
   expect_error(tbod_download_dataset("construction-permits", path,
-    fields = "RECORD_ID", page_size = 2), "completed chunk or checkpoint was altered",
+    fields = "RECORD_ID", page_size = 2), "saved data chunk or its checkpoint.*unreliable data",
     class = "tampa_download_error")
   source$query$where <- "1=1"
   source$returned_rows <- NULL
@@ -269,7 +269,7 @@ test_that("a checksum alone does not validate a chunk with mismatched provenance
   checkpoint$data_md5 <- unname(tools::md5sum(result$files[[1L]]))
   saveRDS(checkpoint, checkpoint_file)
   expect_error(tbod_download_dataset("construction-permits", path,
-    fields = "RECORD_ID", page_size = 2), "completed chunk or checkpoint was altered",
+    fields = "RECORD_ID", page_size = 2), "saved data chunk or its checkpoint.*unreliable data",
     class = "tampa_download_error")
 })
 

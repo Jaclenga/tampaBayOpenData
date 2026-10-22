@@ -215,7 +215,9 @@
     "^https://([^/?#]+)/(.+)/(FeatureServer|MapServer)/([0-9]+)$", url,
     perl = TRUE))[[1L]]
   if (length(pieces) != 5L || grepl("[[:space:]?#\\\\]", url)) {
-    .abort("Use a public HTTPS ArcGIS layer URL ending in `/FeatureServer/<id>` or `/MapServer/<id>`.",
+    .abort(paste0("The dataset URL is not a supported ArcGIS layer URL. ",
+                  "Use a public HTTPS URL ending in `/FeatureServer/<id>` or ",
+                  "`/MapServer/<id>`. For a service URL, use tbod_discover(url) to find its layers."),
            subclass = "tampa_input_error")
   }
   if (!.public_arcgis_authority(pieces[[2L]]) ||

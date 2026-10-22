@@ -274,11 +274,13 @@ test_that("stalled, repeated, oversized, and unexpected ordered pages are errors
       payload
     }
   )
-  for (transform in transforms) {
-    transport <- fixture_transport(transform = transform)
+  problems <- c("an empty page", "a record ID seen on an earlier page",
+                "more records than requested", "records outside the requested ID list")
+  for (i in seq_along(transforms)) {
+    transport <- fixture_transport(transform = transforms[[i]])
     local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")
     expect_error(tbod_get_dataset("construction-permits", order_by = "OBJECTID", page_size = 2),
-                 "empty, repeated, oversized, or unexpected page", class = "tampa_integrity_error")
+                 problems[[i]], class = "tampa_integrity_error")
   }
 })
 

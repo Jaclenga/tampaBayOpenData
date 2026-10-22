@@ -30,7 +30,7 @@ arcgis_http <- function(url, params, timeout) {
     .check_operation_timeout(timeout, url = url)
     remaining <- .operation_remaining(timeout)
     if (remaining < 0.001) {
-      .abort("The remaining operation time budget is too short for another HTTP attempt.",
+      .abort("The remaining operation time budget is too short for another HTTP attempt. Increase `total_timeout` or make a smaller request.",
              url = url, subclass = "tampa_timeout_error")
     }
     current <- httr2::req_timeout(req, min(as.numeric(timeout), remaining))
@@ -41,9 +41,16 @@ arcgis_http <- function(url, params, timeout) {
     transient <- failed || .arcgis_retryable_status(httr2::resp_status(response))
     if (!transient || attempt > max_retries) {
       if (failed) {
-        .abort(paste0("A transient connection failure or timeout persisted after ",
-                      attempt, " HTTP attempt(s) (", attempt - 1L,
-                      " retries): ", conditionMessage(response)),
+        kind <- .arcgis_transport_kind(response)
+        problem <- if (identical(kind, "timeout"))
+          "The request to the data publisher timed out" else
+          "The connection to the data publisher failed"
+        .abort(paste0(problem, " after ", attempt, " HTTP attempt(s) (",
+                      attempt - 1L, " retries). Cause: ",
+                      .arcgis_safe_detail(conditionMessage(response)),
+                      ". Try again later", if (identical(kind, "timeout"))
+                        " or increase `timeout`." else
+                        "; if it continues, check your connection and the dataset's source page."),
                url = url, subclass = "tampa_http_error")
       }
       return(list(response = response, attempts = attempt))
@@ -120,23 +127,86 @@ arcgis_http <- function(url, params, timeout) {
   "feature query"
 }
 
+.arcgis_safe_detail <- function(value) {
+  # Remote servers and HTTP libraries can include a request URL or credentials
+  # in their error text. Keep the useful cause without repeating those values.
+  value <- as.character(value)
+  if (!length(value) || is.na(value[[1L]]) || !nzchar(value[[1L]])) {
+    return("[detail unavailable]")
+  }
+  value <- strsplit(value[[1L]], "\n", fixed = TRUE)[[1L]]
+  if (!length(value) || !nzchar(value[[1L]])) return("[detail unavailable]")
+  value <- value[[1L]]
+  value <- gsub("(?i)\\b(?:https?|ftp)://[^[:space:]<>\"']+", "[URL omitted]",
+                value, perl = TRUE)
+  value <- gsub("(?i)\\bauthorization\\s*[:=]\\s*(?:(?:bearer|basic)\\s+)?[^[:space:],;]+",
+                "Authorization=[redacted]", value, perl = TRUE)
+  value <- gsub("(?i)\\b(token|api[_-]?key|password|secret|access[_-]?token|client[_-]?secret)\\s*[:=]\\s*[^[:space:],;]+",
+                "\\1=[redacted]", value, perl = TRUE)
+  if (nchar(value) > 240L) paste0(substr(value, 1L, 240L), "...") else value
+}
+
+.arcgis_show_names <- function(values) {
+  shown <- vapply(utils::head(values, 3L), function(value) {
+    value <- .arcgis_safe_detail(value)
+    if (nchar(value) > 80L) paste0(substr(value, 1L, 80L), "...") else value
+  }, character(1))
+  paste0("`", paste(shown, collapse = "`, `"), "`",
+         if (length(values) > 3L) paste0(" (and ", length(values) - 3L, " more)") else "")
+}
+
+.arcgis_transport_kind <- function(error) {
+  code <- error$code
+  if (is.numeric(code) && length(code) == 1L && is.finite(code) && code == 28) {
+    return("timeout")
+  }
+  if (grepl("timed? out|timeout|deadline", conditionMessage(error),
+            ignore.case = TRUE)) return("timeout")
+  "connection"
+}
+
 .arcgis_http_failure <- function(status, attempts, retry_after = NULL) {
   kind <- if (status == 429L) "rate limit" else if (status %in% c(500L, 502L, 503L, 504L))
     "server failure" else if (status %in% c(401L, 403L))
-    "authentication or authorization failure" else if (status == 404L)
+    "access denied" else if (status == 404L)
     "missing service or layer" else if (status %in% c(400L, 422L))
-    "invalid request or query" else if (status %in% c(405L, 501L))
-    "unsupported operation" else "HTTP failure"
-  recovery <- if (!is.null(retry_after)) {
+    "rejected request" else if (status %in% c(405L, 501L))
+    "unsupported operation" else if (status >= 300L && status < 400L)
+    "unexpected redirect" else if (status == 202L || status == 206L)
+    "incomplete response" else "HTTP failure"
+  next_step <- if (status == 429L) {
+    "The data publisher is limiting requests. Wait and try again later."
+  } else if (status %in% c(500L, 502L, 503L, 504L)) {
+    "The data publisher could not complete the request. Try again later; if it continues, check the dataset's source page."
+  } else if (status %in% c(401L, 403L)) {
+    "This service may require permission. Check the dataset's access rules or contact the data publisher."
+  } else if (status == 404L) {
+    "The service or layer was not found. Check the dataset's source page for a current link."
+  } else if (status %in% c(400L, 422L)) {
+    "The service rejected the request. Check field names and filters, then try a simpler query."
+  } else if (status %in% c(405L, 501L)) {
+    "The service does not support this operation. Check the dataset's source page."
+  } else if (status >= 300L && status < 400L) {
+    "The service redirected the request. Check the dataset's source page for a current link."
+  } else if (status == 202L || status == 206L) {
+    "The package stopped rather than treating a pending or partial response as complete. Try again later."
+  } else {
+    "Check the dataset's source page or contact the data publisher."
+  }
+  recovery <- if (is.numeric(retry_after) && length(retry_after) == 1L &&
+                  !is.na(retry_after) && retry_after > 30) {
     paste0(" The service requested a ", format(retry_after, trim = TRUE),
            "-second Retry-After, longer than the 30-second per-wait limit;",
            " no early retry was attempted.")
+  } else if (is.numeric(retry_after) && length(retry_after) == 1L &&
+             !is.na(retry_after) && .arcgis_retryable_status(status)) {
+    paste0(" The service requested a ", format(retry_after, trim = TRUE),
+           "-second Retry-After; wait at least that long before trying again.")
   } else if (.arcgis_retryable_status(status)) {
     paste0(" Retried ", attempts - 1L, " time(s); no successful response was received.")
   } else " This status is not retried."
-  paste0("The upstream ArcGIS service returned HTTP ", status, " (", kind, ").",
-         if (status == 404L) " The service may have moved; check the source page." else "",
-         recovery)
+  paste0("The upstream ArcGIS service returned HTTP ", status, " (", kind, "). ",
+         next_step, recovery)
 }
 
 # Some ArcGIS backends send transient errors inside an HTTP 200 JSON body.
@@ -179,9 +249,22 @@ arcgis_request <- function(url, params = list(), dataset = NULL, timeout = 30) {
       .abort(paste0("During ", operation, ": ", summary), dataset,
              url, "tampa_timeout_error")
     }
-    summary <- strsplit(conditionMessage(e), "\n", fixed = TRUE)[[1L]][[1L]]
-    .abort(paste0("During ", operation, ", the upstream ArcGIS service could not be reached: ",
-                  summary), dataset, url, "tampa_http_error")
+    if (inherits(e, "tampa_http_error")) {
+      summary <- strsplit(conditionMessage(e), "\n", fixed = TRUE)[[1L]][[1L]]
+      .abort(paste0("During ", operation, ": ", summary), dataset,
+             url, "tampa_http_error")
+    }
+    summary <- .arcgis_safe_detail(conditionMessage(e))
+    timed_out <- identical(.arcgis_transport_kind(e), "timeout")
+    problem <- if (timed_out)
+      "the request to the data publisher timed out" else
+      "the data publisher could not be reached"
+    guidance <- if (timed_out)
+      "Try again later or increase `timeout`." else
+      "Check your connection and the dataset's source page, then try again."
+    .abort(paste0("During ", operation, ", ", problem, ": ", summary,
+                  ". ", guidance),
+           dataset, url, "tampa_http_error")
   })
   .check_operation_timeout(timeout, dataset, url)
   if (!is.list(response) || !is.numeric(response$status) || length(response$status) != 1L ||
@@ -233,9 +316,28 @@ arcgis_request <- function(url, params = list(), dataset = NULL, timeout = 30) {
       (grepl("/query$", url) && isTRUE(err$code == 400) &&
        identical(err$message, "Unable to complete operation.") &&
        !length(err$details))
+    values <- unlist(err$details, use.names = FALSE)
+    detail <- if (length(values)) {
+      shown <- vapply(utils::head(values, 3L), .arcgis_safe_detail, character(1))
+      paste0(" ", paste(shown, collapse = "; "),
+             if (length(values) > 3L) "; ..." else "")
+    } else ""
+    guidance <- if (err$code == 429) {
+      "The data publisher is limiting requests. Wait and try again later."
+    } else if (retryable) {
+      "The data publisher could not complete the request. Try again later."
+    } else if (err$code %in% c(401, 403, 498, 499)) {
+      "The service rejected access. Check the dataset's access rules or contact the data publisher."
+    } else if (err$code == 404) {
+      "The service or layer was not found. Check the dataset's source page for a current link."
+    } else if (err$code == 400) {
+      "Check the field names, `where`, and `query` arguments, then try a simpler query."
+    } else {
+      "Check the dataset's source page or contact the data publisher."
+    }
     failure <- tryCatch(.abort(paste0(
-      "During ", operation, ", ArcGIS error ", err$code, ": ", err$message,
-      if (length(err$details)) paste0(" ", paste(unlist(err$details), collapse = "; "))),
+      "During ", operation, ", ArcGIS error ", err$code, ": ",
+      .arcgis_safe_detail(err$message), detail, " ", guidance),
       dataset, url, if (retryable)
         c("tampa_arcgis_transient_error", "tampa_arcgis_error") else
         "tampa_arcgis_error"), tampa_arcgis_transient_error = identity)
@@ -367,17 +469,22 @@ arcgis_layer <- function(dataset, timeout = 30, schema_only = FALSE) {
                "sqlFormat", "datumTransformation")
   if (!is.list(query) || (length(query) &&
       (is.null(names(query)) || anyNA(names(query)) || any(!nzchar(names(query))) ||
-       anyDuplicated(names(query))))) .abort("`query` must be a uniquely named list.")
+       anyDuplicated(names(query))))) {
+    .abort("`query` must be a list with a distinct name for each parameter, for example `list(inSR = 4326)`.")
+  }
   bad <- setdiff(names(query), allowed)
   if (length(bad)) {
-    .abort(paste0("Unsupported or protected `query` parameter(s): ", paste(bad, collapse = ", "),
-                  ". Use the documented tbod_get_dataset() arguments for fields, ordering, limits, and CRS."),
+    .abort(paste0("Unsupported or protected `query` parameter(s): ",
+                  .arcgis_show_names(bad), ". For fields, ordering, limits, or CRS,",
+                  " use the `fields`, `order_by`, `limit`, or `out_sr` arguments of tbod_get_dataset()."),
            subclass = "tampa_input_error")
   }
   lapply(query, function(value) {
     if (is.list(value)) return(as.character(jsonlite::toJSON(value, auto_unbox = TRUE, null = "null", digits = NA)))
     if (length(value) != 1L || is.na(value) ||
-        !is.atomic(value) || !is.null(dim(value))) .abort("Each `query` value must be a scalar or a JSON-style list.")
+        !is.atomic(value) || !is.null(dim(value))) {
+      .abort("Each `query` value must be one value or a JSON-style list, for example `list(inSR = 4326)`.")
+    }
     as.character(value)
   })
 }
@@ -387,29 +494,40 @@ arcgis_layer <- function(dataset, timeout = 30, schema_only = FALSE) {
   available <- vapply(attributes, function(x) x$name, character(1))
   if (is.null(fields) || identical(fields, "*")) return(available)
   if (!is.character(fields) || !length(fields) || anyNA(fields) ||
-      any(!nzchar(fields)) || anyDuplicated(fields)) .abort("`fields` must be a nonempty vector of unique source field names.")
+      any(!nzchar(fields)) || anyDuplicated(fields)) {
+    .abort("`fields` must be a nonempty vector of unique source field names. Check the exact names with `tbod_dataset_info(id, refresh = TRUE)$fields`.")
+  }
   bad <- setdiff(fields, available)
-  if (length(bad)) .abort(paste0("Unknown source field(s): ", paste(bad, collapse = ", "),
-                                ". Inspect tbod_dataset_info(id, refresh = TRUE)$fields."))
+  if (length(bad)) {
+    .abort(paste0("Unknown source field(s): ", .arcgis_show_names(bad),
+                  ". Field names must match the data publisher's names exactly.",
+                  " Check `tbod_dataset_info(id, refresh = TRUE)$fields`."))
+  }
   fields
 }
 
 .ordering <- function(order_by, metadata) {
   if (is.null(order_by)) return(NULL)
   if (!is.character(order_by) || !length(order_by) || anyNA(order_by) || any(!nzchar(trimws(order_by)))) {
-    .abort("`order_by` must contain source field names with optional ASC or DESC.")
+    .abort("`order_by` must contain source field names, for example `order_by = \"OBJECTID DESC\"`. Each name may be followed by ASC or DESC.")
   }
   terms <- trimws(unlist(strsplit(order_by, ",", fixed = TRUE), use.names = FALSE))
   if (!length(terms) || any(!nzchar(terms)) || any(grepl(",[[:space:]]*$", order_by))) {
-    .abort("`order_by` must contain nonempty source field names.")
+    .abort("`order_by` contains an empty field name. Remove extra commas and use exact source field names.")
   }
   fields <- sub("[[:space:]]+(ASC|DESC)$", "", terms, ignore.case = TRUE)
-  if (any(!fields %in% .field_names(metadata)) || anyDuplicated(fields)) {
-    .abort("`order_by` must use unique source field names, each optionally followed by ASC or DESC.")
+  bad <- terms[!fields %in% .field_names(metadata)]
+  if (length(bad)) {
+    .abort(paste0("Unknown or invalid `order_by` field(s): ", .arcgis_show_names(bad),
+                  ". Check `tbod_dataset_info(id, refresh = TRUE)$fields`;",
+                  " each field may be followed by ASC or DESC."))
+  }
+  if (anyDuplicated(fields)) {
+    .abort("`order_by` repeats a source field. Use each field only once, with optional ASC or DESC.")
   }
   cap <- metadata$advancedQueryCapabilities
   if (!isTRUE(cap$supportsOrderBy) || !isTRUE(cap$supportsPagination)) {
-    .abort("This service does not support reliable server-side ordering with pagination.")
+    .abort("The data publisher does not support reliable server-side ordering with pagination for this dataset. Omit `order_by` to retrieve records safely.")
   }
   if (!metadata$objectIdField %in% fields) terms <- c(terms, paste(metadata$objectIdField, "ASC"))
   paste(terms, collapse = ",")

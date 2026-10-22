@@ -19,7 +19,7 @@
 
 .check_operation_timeout <- function(timeout, dataset = NULL, url = NULL) {
   if (.operation_remaining(timeout) <= 0) {
-    .abort("The operation exceeded `total_timeout`. Narrow the request, increase the budget, or use a resumable download.",
+    .abort("The request exceeded `total_timeout`, its overall time limit. Try a smaller request or increase `total_timeout`. For large datasets, use `tbod_download_dataset()` to resume work.",
            dataset, url, "tampa_timeout_error")
   }
   invisible(timeout)
@@ -30,7 +30,7 @@
 .operation_retry_wait <- function(delay, timeout, dataset = NULL, url = NULL) {
   .check_operation_timeout(timeout, dataset, url)
   if (delay >= .operation_remaining(timeout)) {
-    .abort("The remaining operation time budget is too short for another retry.",
+    .abort("The remaining operation time budget is too short for another retry. Increase `total_timeout` or try again later.",
            dataset, url, "tampa_timeout_error")
   }
   .operation_sleep(delay)

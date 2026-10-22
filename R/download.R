@@ -98,8 +98,12 @@
   path <- .download_directory(path, resume)
   lock <- file.path(path, ".lock")
   if (!dir.create(lock, showWarnings = FALSE)) {
-    .abort("The download directory is busy or has a lock from a terminated process. After confirming no writer is active, remove its empty `.lock` directory and resume.",
-           dataset, path, "tampa_download_error")
+    message <- if (dir.exists(lock)) {
+      "This download directory is locked, so another process may be using it. Wait for that process to finish. If it has stopped, remove only the empty `.lock` directory and resume."
+    } else {
+      "Could not lock the download directory. Check that it is writable, or choose another `path`."
+    }
+    .abort(message, dataset, subclass = "tampa_download_error")
   }
   on.exit(.download_release_lock(lock, path), add = TRUE)
   manifest_file <- file.path(path, "manifest.rds")
@@ -107,7 +111,7 @@
     saved <- .download_read_rds(manifest_file)
     if (!is.list(saved) || !identical(saved$version, 1L) ||
         !identical(saved$signature, signature)) {
-      .abort("The saved download's options, endpoint, schema, CRS, or ID membership changed. Use a new directory.",
+      .abort("This download cannot be resumed: its saved settings, source endpoint, schema, coordinate system (CRS), or record IDs differ from the current request. Start a new download in a different empty directory.",
              dataset, url, "tampa_download_error")
     }
   } else {
@@ -118,13 +122,13 @@
   manifest_hash <- .download_hash(manifest_file)
   complete_file <- file.path(path, "complete.rds")
   if (file.exists(complete_file) && !file.remove(complete_file)) {
-    .abort("The prior completion marker could not be cleared before revalidation.",
-           dataset, complete_file, "tampa_download_error")
+    .abort("Could not recheck the saved download because its completion file could not be updated. Check directory write access and try again.",
+           dataset, subclass = "tampa_download_error")
   }
   summary <- .download_chunks(path, saved, manifest_hash, dataset, metadata,
                               manifest, params, options, timeout)
   if (!isTRUE(summary$complete)) {
-    .abort("The download stopped before all manifest records were saved.",
+    .abort("The download stopped before every expected record was saved. Try the same call again to resume; validated chunks remain in place.",
            dataset, url, "tampa_download_error")
   }
   .check_operation_timeout(timeout, dataset, url)
@@ -137,10 +141,12 @@
 
 .download_directory <- function(path, resume) {
   if (file.exists(path) && !dir.exists(path)) {
-    .abort("`path` must identify a directory.", subclass = "tampa_download_error")
+    .abort("The download `path` points to a file, not a directory. Choose an empty directory for the download.",
+           subclass = "tampa_download_error")
   }
   if (!dir.exists(path) && !dir.create(path, recursive = TRUE)) {
-    .abort("The download directory could not be created.", subclass = "tampa_download_error")
+    .abort("Could not create the download directory. Check that its parent folder is writable, or choose another `path`.",
+           subclass = "tampa_download_error")
   }
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
   entries <- list.files(path, all.files = TRUE, no.. = TRUE)
@@ -158,11 +164,11 @@
     all(grepl("^\\.tbod-.*\\.tmp$", checkpoint_entries))
   initial_allowed <- temporary | entries == ".lock" | own_empty_checkpoints
   if (any(!allowed) || (!has_manifest && any(!initial_allowed))) {
-    .abort("The download directory contains unrelated files. Use an empty directory.",
+    .abort("The download directory contains unrelated files, so it cannot be used safely. Choose an empty directory; existing files were left unchanged.",
            subclass = "tampa_download_error")
   }
   if (has_manifest && !resume) {
-    .abort("A saved download already exists and `resume` is FALSE. Use a new directory.",
+    .abort("A saved download already exists here, but `resume = FALSE` requests a new one. Use `resume = TRUE` to continue it, or choose an empty directory.",
            subclass = "tampa_download_error")
   }
   if (!dir.exists(checkpoint_dir) && !dir.create(checkpoint_dir) &&
@@ -181,7 +187,7 @@
 .download_check_checkpoint_directory <- function(path) {
   checkpoint_dir <- file.path(path, ".checkpoints")
   if (!dir.exists(checkpoint_dir)) {
-    .abort("The checkpoint directory is missing or inaccessible.",
+    .abort("The saved download's checkpoint directory is missing or inaccessible. Restore it or start again in a new empty directory.",
            subclass = "tampa_download_error")
   }
   resolved <- normalizePath(checkpoint_dir, winslash = "/", mustWork = TRUE)
@@ -210,15 +216,18 @@
 
 .download_read_rds <- function(path) {
   tryCatch(readRDS(path), error = function(e) {
-    .abort("A saved download file cannot be read. Use a new directory or restore the original file.",
-           url = path, subclass = "tampa_download_error")
+    saved_file <- if (identical(basename(path), "manifest.rds"))
+      "saved manifest" else "saved checkpoint"
+    .abort(paste0("Could not read the ", saved_file,
+                  "; it may be damaged or inaccessible. Restore the file or start again in a new empty directory."),
+           subclass = "tampa_download_error")
   })
 }
 
 .download_hash <- function(path) {
   hash <- unname(tools::md5sum(path))
   if (length(hash) != 1L || is.na(hash)) {
-    .abort("A download file checksum could not be read.", url = path,
+    .abort("Could not verify a saved download file because its checksum could not be read. Check file access and try again.",
            subclass = "tampa_download_error")
   }
   hash
@@ -234,7 +243,7 @@
   on.exit(unlink(temp), add = TRUE)
   saveRDS(value, temp)
   if (!file.rename(temp, path)) {
-    .abort("An atomic download file write failed.", url = path,
+    .abort("Could not save a download file. Check directory write access and free space, then try again.",
            subclass = "tampa_download_error")
   }
   invisible(path)
@@ -247,7 +256,7 @@
   existing <- list.files(path, pattern = "^chunk-[0-9]{7}\\.rds$")
   index <- as.integer(sub("^chunk-([0-9]+)\\.rds$", "\\1", existing))
   if (any(index < 1L | index > chunks)) {
-    .abort("A saved chunk is outside the matching manifest.", dataset, url,
+    .abort("A saved chunk does not belong to the current record list, so resuming could mix datasets. Start again in a new empty directory.", dataset, url,
            "tampa_download_error")
   }
   files <- character(chunks)
@@ -345,8 +354,8 @@
   .download_write_rds(checkpoint,
     file.path(checkpoint_dir, sprintf("chunk-%07d-%07d.rds", chunk, attempt)))
   if (file.exists(file) || !file.rename(temp, file)) {
-    .abort("An atomic chunk write failed or another writer used this directory.",
-           url = file, subclass = "tampa_download_error")
+    .abort("Could not save a download chunk, or another writer used this directory. Check write access and that no other process is writing, then resume.",
+           subclass = "tampa_download_error")
   }
   invisible(file)
 }
@@ -357,8 +366,8 @@
   checkpoint_dir <- .download_check_checkpoint_directory(path)
   checkpoints <- list.files(checkpoint_dir,
     pattern = paste0("^", prefix, "[0-9]{7}\\.rds$"), full.names = TRUE)
-  bad <- function() .abort("A completed chunk or checkpoint was altered, is missing, or does not match this download.",
-                           dataset, file, "tampa_download_error")
+  bad <- function() .abort("A saved data chunk or its checkpoint (verification file) is missing, changed, or does not match this download. Resume stopped to avoid using unreliable data. Restore the original files or start over in a new empty directory.",
+                           dataset, subclass = "tampa_download_error")
   if (!length(checkpoints)) bad()
   checkpoint <- .download_read_rds(sort(checkpoints, decreasing = TRUE)[[1L]])
   if (!is.list(checkpoint) || !identical(checkpoint$version, 1L) ||

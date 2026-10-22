@@ -111,7 +111,9 @@
   if (!is.null(page_size)) .number(page_size, "page_size", min = 1, integer = TRUE)
   if (!is.null(out_sr)) {
     .number(out_sr, "out_sr", min = 1, integer = TRUE)
-    if (!spatial) .abort("`out_sr` requires `spatial = TRUE`.")
+    if (!spatial) {
+      .abort("`out_sr` requires `spatial = TRUE`. Set spatial = TRUE or omit out_sr.")
+    }
   }
   query_params <- .query_params(query)
   requested_jurisdiction <- .requested_jurisdiction(
