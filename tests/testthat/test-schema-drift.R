@@ -130,6 +130,20 @@ test_that("equivalent WKT and WKID representations do not imply CRS drift", {
   expect_identical(check$status, "unchanged")
 })
 
+test_that("changed WKT is CRS drift even when the WKID stays the same", {
+  skip_if_not_installed("sf")
+  case <- schema_test_case()
+  expected <- case$entry$expected_schema
+  expected$spatial_reference <- list(
+    wkid = 3857L, wkt = sf::st_crs(4326)$wkt)
+  changed <- case$metadata
+  changed$spatialReference <- list(
+    wkid = 3857L, wkt = sf::st_crs(3857)$wkt)
+  check <- .compare_schema(expected, changed, case$entry)
+  expect_identical(check$status, "incompatible")
+  expect_true("crs_change" %in% check$issues$category)
+})
+
 test_that("malformed CRS scalar values produce classified response errors", {
   case <- schema_test_case()
   metadata <- case$metadata

@@ -7,6 +7,21 @@ test_that("remote WKT cannot name a local CRS file", {
                "inline coordinate-system definition", class = "tampa_spatial_error")
 })
 
+test_that("single-label internal hosts cannot be used as ArcGIS endpoints", {
+  for (host in c("intranet", "printer")) {
+    expect_false(.public_arcgis_authority(host))
+    expect_null(.discovery_url_parts(paste0(
+      "https://", host, "/arcgis/rest/services/Data/FeatureServer/0")))
+    expect_error(.arcgis_layer_url(paste0(
+      "https://", host, "/arcgis/rest/services/Data/FeatureServer/0")),
+      "public DNS host", class = "tampa_input_error")
+    expect_error(.custom_portal_root(paste0(
+      "https://", host, "/sharing/rest")),
+      "public DNS host", class = "tampa_input_error")
+  }
+  expect_true(.public_arcgis_authority("services.example.org"))
+})
+
 test_that("CRS locators are rejected before the native resolver is called", {
   calls <- 0L
   local_mocked_bindings(.resolve_arcgis_crs = function(...) {

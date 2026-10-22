@@ -140,6 +140,60 @@ test_that("portal searches include queryable Map Service items", {
                '(type:"Feature Service" OR type:"Map Service")', fixed = TRUE)
 })
 
+test_that("portal and service discovery recognize Query tokens with spaces and case changes", {
+  city <- .portal_registry()$city
+  endpoint <- "https://example.org/arcgis/rest/services/Capabilities/FeatureServer/0"
+  item_id <- strrep("a", 32L)
+  page <- list(total = 1L, start = 1L, nextStart = -1L,
+               results = list(discovery_test_item(item_id, endpoint, org = city$org_id)))
+  capabilities <- "Query"
+  local_mocked_bindings(arcgis_http = function(url, params, timeout) {
+    if (identical(url, paste0(city$root, "/search"))) return(fixture_response(page))
+    if (identical(url, endpoint)) return(fixture_response(list(
+      id = 0L, name = "Queryable", type = "Feature Layer",
+      geometryType = "esriGeometryPoint", capabilities = capabilities)))
+    stop("Unexpected request")
+  }, .package = "tampaBayOpenData")
+
+  for (capabilities in c("Query", "Map, Query, Data", "map,query,data")) {
+    expect_identical(.discover_arcgis(portals = "city")$source_url, endpoint,
+                     info = capabilities)
+    expect_identical(tbod_discover(endpoint)$source_url, endpoint,
+                     info = capabilities)
+  }
+  capabilities <- "Map,NotQuery,Data"
+  expect_equal(nrow(.discover_arcgis(portals = "city")), 0L)
+  expect_equal(nrow(tbod_discover(endpoint)), 0L)
+})
+
+test_that("service and layer URLs with trailing slashes use service discovery", {
+  root <- "https://example.org/arcgis/rest/services/Trailing/FeatureServer"
+  endpoint <- paste0(root, "/0")
+  resources <- list()
+  resources[[root]] <- list(layers = list(list(id = 0L, name = "Parks")),
+                            tables = list())
+  resources[[endpoint]] <- list(id = 0L, name = "Parks", type = "Feature Layer",
+                                geometryType = "esriGeometryPoint",
+                                capabilities = "Query")
+  transport <- discovery_test_transport(resources = resources)
+  local_mocked_bindings(arcgis_http = transport$http,
+                        .package = "tampaBayOpenData")
+
+  for (url in c(paste0(root, "/"), paste0(endpoint, "/"))) {
+    found <- tbod_discover(url)
+    expect_identical(found$source_url, endpoint, info = url)
+    expect_identical(found$service_url, root, info = url)
+  }
+  requests <- vapply(transport$state$requests, `[[`, character(1), "url")
+  expect_setequal(requests, c(root, endpoint))
+
+  expect_error(tbod_discover(paste0(endpoint, "/extra"), max_items = 0),
+               class = "tampa_input_error")
+  expect_error(tbod_discover(paste0(endpoint, "/?token=secret"), max_items = 0),
+               class = "tampa_input_error")
+  expect_identical(length(transport$state$requests), length(requests))
+})
+
 test_that("regional discovery uses its own organization and metadata", {
   city <- "https://tampa.maps.arcgis.com/sharing/rest"
   regional <- "https://www.arcgis.com/sharing/rest"
@@ -255,6 +309,35 @@ test_that("stable item lookup ignores a different returned item ID", {
   expect_equal(nrow(found), 0L)
   requested <- vapply(transport$state$requests, `[[`, character(1), "url")
   expect_identical(requested, paste0(lookup, "/content/items/", requested_id))
+})
+
+test_that("stable item lookup treats only item 404 responses as absent", {
+  previous <- options(tampaBayOpenData.max_retries = 0L)
+  on.exit(options(previous), add = TRUE)
+  item_id <- strrep("c", 32L)
+  stable <- paste0("arcgis:", item_id, ":0")
+  status <- 404L
+  body <- list()
+  local_mocked_bindings(arcgis_http = function(url, params, timeout) {
+    fixture_response(body, status)
+  }, .package = "tampaBayOpenData")
+
+  expect_equal(nrow(.discover_arcgis_item(item_id, 0L)), 0L)
+  expect_error(tbod_dataset_info(stable),
+               "unavailable or is not a supported query layer",
+               class = "tampa_input_error")
+
+  status <- 200L
+  body <- list(error = list(code = 404L, message = "Item not found"))
+  expect_equal(nrow(.discover_arcgis_item(item_id, 0L)), 0L)
+
+  status <- 400L
+  body <- list()
+  expect_error(.discover_arcgis_item(item_id, 0L), "HTTP 400",
+               class = "tampa_http_error")
+  status <- 503L
+  expect_error(.discover_arcgis_item(item_id, 0L), "HTTP 503",
+               class = "tampa_http_error")
 })
 
 test_that("stable item lookup preserves transient layer failures", {

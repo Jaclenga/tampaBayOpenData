@@ -171,10 +171,11 @@ arcgis_spatial_crs <- function(reference) {
            subclass = "tampa_spatial_error")
   }
   resolved <- list()
-  # Custom definitions may have only WKT. Prefer the explicit definition when
-  # present, and otherwise use latestWkid before the original ArcGIS alias.
-  if (!is.null(reference[["wkt"]])) {
-    wkt <- .inline_arcgis_wkt(reference[["wkt"]])
+  # Custom definitions may have only WKT or WKT2. Prefer an explicit definition
+  # when present, and otherwise use latestWkid before the original ArcGIS alias.
+  definition <- reference[["wkt"]] %||% reference[["wkt2"]]
+  if (!is.null(definition)) {
+    wkt <- .inline_arcgis_wkt(definition)
     resolved$wkt <- .resolve_arcgis_crs(list(wkt))
   }
   for (field in c("latestWkid", "wkid")) {

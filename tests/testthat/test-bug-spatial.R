@@ -191,6 +191,18 @@ test_that("explicit WKT keeps precedence over internally consistent WKID identif
   ) == mercator))
 })
 
+test_that("a WKT2-only spatial reference labels returned geometry", {
+  skip_if_not_installed("sf")
+  reference <- list(wkt2 = sf::st_crs(4326)$wkt)
+  result <- arcgis_as_sf(
+    tibble::tibble(id = 1L), list(list(geometry = list(x = -82.4, y = 28.1))),
+    list(geometryType = "esriGeometryPoint", spatialReference = reference)
+  )
+  expect_equal(sf::st_crs(result)$epsg, 4326L)
+  expect_equal(unname(sf::st_coordinates(result)),
+               matrix(c(-82.4, 28.1), nrow = 1L))
+})
+
 test_that("compound WKT remains usable alongside horizontal WKID identifiers", {
   skip_if_not_installed("sf")
   compound <- sf::st_crs(7405)

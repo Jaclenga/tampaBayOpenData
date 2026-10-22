@@ -189,7 +189,8 @@
   parts <- strsplit(authority, ":", fixed = TRUE)[[1L]]
   if (length(parts) < 1L || length(parts) > 2L) return(FALSE)
   host <- parts[[1L]]
-  if (!grepl("^[A-Za-z0-9][A-Za-z0-9.-]*[A-Za-z0-9]$", host) ||
+  if (!grepl("\\.", host) ||
+      !grepl("^[A-Za-z0-9][A-Za-z0-9.-]*[A-Za-z0-9]$", host) ||
       grepl("\\.\\.|^[0-9.]+$|(^|\\.)localhost$|\\.(local|internal|home|lan)$",
             host, ignore.case = TRUE)) return(FALSE)
   if (length(parts) == 2L) {

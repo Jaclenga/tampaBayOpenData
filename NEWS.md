@@ -1,3 +1,13 @@
+# tampaBayOpenData (development version)
+
+- Discovery recognizes `Query` capability tokens with spaces or case changes,
+  accepts trailing slashes on service and layer URLs, and reports missing
+  stable item IDs as unavailable.
+- Spatial results accept WKT2-only coordinate references. Schema checks detect
+  changed WKT definitions even when reported WKIDs match.
+- Ordered pagination verifies big-integer sort keys without rounding. Public
+  ArcGIS URL validation rejects single-label hosts.
+
 # tampaBayOpenData 0.1.0
 
 - Validates comparable sort keys within and across ordered pages, including

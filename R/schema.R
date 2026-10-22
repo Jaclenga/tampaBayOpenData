@@ -63,14 +63,15 @@
 .schema_crs_key <- function(reference) {
   if (is.null(reference)) return(NULL)
   if (!is.list(reference) || is.null(names(reference))) return(reference)
+  # Spatial conversion gives an explicit WKT definition precedence over WKIDs.
+  wkt <- reference$wkt %||% reference$wkt2
+  if (!is.null(wkt)) return(paste0("wkt:", trimws(wkt)))
   id <- reference$latestWkid %||% reference$wkid
   if (!is.null(id)) {
     # ArcGIS uses these legacy identifiers for Web Mercator (EPSG:3857).
     if (as.character(id) %in% c("102100", "102113", "900913")) id <- 3857L
     return(paste0("wkid:", as.character(id)))
   }
-  wkt <- reference$wkt %||% reference$wkt2
-  if (!is.null(wkt)) return(paste0("wkt:", trimws(wkt)))
   reference
 }
 

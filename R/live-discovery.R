@@ -100,6 +100,11 @@
   as.POSIXct(NA, origin = "1970-01-01", tz = "UTC")
 }
 
+.discovery_has_query_capability <- function(capabilities) {
+  if (is.na(capabilities)) return(FALSE)
+  any(tolower(trimws(strsplit(capabilities, ",", fixed = TRUE)[[1L]])) == "query")
+}
+
 # Portal items can refer either to a service root or directly to one layer.
 # Reuse the retrieval URL validator so discovery never probes a URL the
 # generic client would reject (private hosts, path traversal, bad segments).
@@ -220,7 +225,7 @@
     layer_type <- .discovery_scalar(layer$type)
     if (!layer_type %in% c("Feature Layer", "Table")) next
     if (is.character(layer$capabilities) && length(layer$capabilities) == 1L &&
-        !grepl("(^|,)Query(,|$)", layer$capabilities)) next
+        !.discovery_has_query_capability(layer$capabilities)) next
     # The root lists the geometry type for feature layers; tables have none.
     geometry <- if (identical(layer_type, "Table")) "none" else
       .discovery_scalar(layer$geometryType, NA_character_)
@@ -314,14 +319,14 @@
 # Stable IDs may disappear, but a failed or uncertain metadata request does
 # not prove removal. Only explicit missing/unsupported metadata responses are
 # translated to an empty lookup result.
-.discovery_unavailable_error <- function(e) {
+.discovery_unavailable_error <- function(e, codes = c(400L, 404L, 405L, 501L)) {
   if (inherits(e, "tampa_arcgis_transient_error")) return(FALSE)
   if (!inherits(e, c("tampa_http_error", "tampa_arcgis_error"))) return(FALSE)
   message <- conditionMessage(e)
   pattern <- if (inherits(e, "tampa_http_error"))
     "returned HTTP ([0-9]{3})" else "ArcGIS error ([0-9]+):"
   found <- regmatches(message, regexec(pattern, message))[[1L]]
-  length(found) >= 2L && as.integer(found[[2L]]) %in% c(400L, 404L, 405L, 501L)
+  length(found) >= 2L && as.integer(found[[2L]]) %in% codes
 }
 
 # Return public provider layers represented by portal items. max_items limits
@@ -422,7 +427,7 @@
   if (!is.null(query)) .string(query, "query", allow_empty = TRUE)
   .number(max_items, "max_items", integer = TRUE, infinity = TRUE)
   .number(timeout, "timeout", min = .Machine$double.eps)
-  if (grepl("/(FeatureServer|MapServer)(/[0-9]+)?$", portal)) {
+  if (grepl("/(FeatureServer|MapServer)(/[0-9]+)?/*$", portal)) {
     if (!is.null(org_id)) {
       .abort("`org_id` applies only to ArcGIS portal searches.",
              subclass = "tampa_input_error")
@@ -495,7 +500,7 @@
     if (!layer_type %in% c("Feature Layer", "Table")) next
     capabilities <- .discovery_scalar(layer$capabilities,
                                        .discovery_scalar(candidate$capabilities))
-    if (nzchar(capabilities) && !grepl("(^|,)Query(,|$)", capabilities)) next
+    if (nzchar(capabilities) && !.discovery_has_query_capability(capabilities)) next
     geometry <- if (identical(layer_type, "Table")) "none" else
       .discovery_scalar(layer$geometryType,
                         .discovery_scalar(candidate$geometryType, NA_character_))
@@ -554,7 +559,11 @@
     lookup_root <- .custom_portal_root(portal)
   }
   url <- paste0(lookup_root, "/content/items/", tolower(item_id))
-  item <- arcgis_request(url, timeout = timeout)
+  item <- tryCatch(arcgis_request(url, timeout = timeout), error = function(e) {
+    if (.discovery_unavailable_error(e, codes = 404L)) return(NULL)
+    stop(e)
+  })
+  if (is.null(item)) return(.empty_discovery())
   if (!is.list(item) || !is.character(item$id) || length(item$id) != 1L ||
       is.na(item$id) || !identical(tolower(item$id), tolower(item_id))) {
     return(.empty_discovery())

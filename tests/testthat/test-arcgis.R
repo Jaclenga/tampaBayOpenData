@@ -220,6 +220,43 @@ test_that("ordered pages reject reversed records within and across offsets", {
   }
 })
 
+test_that("BigInteger ordering checks exact values across ordered pages", {
+  metadata <- fixture_metadata()
+  metadata$fields <- c(metadata$fields,
+                       list(fixture_field("ORDERBIG", "esriFieldTypeBigInteger")))
+  values <- paste0("900719925474099", 3:7)
+  features <- fixture_features(1:5)
+  for (i in seq_along(features)) features[[i]]$attributes$ORDERBIG <- values[[i]]
+
+  correct <- fixture_transport(features = features, metadata = metadata)
+  local_mocked_bindings(arcgis_http = correct$http, .package = "tampaBayOpenData")
+  result <- suppressWarnings(tbod_get_dataset("construction-permits",
+                                               order_by = "ORDERBIG ASC",
+                                               page_size = 2))
+  expect_identical(result$ORDERBIG, values)
+  expect_true(tbod_provenance(result)$complete)
+
+  reversed <- fixture_transport(features = features, metadata = metadata,
+    transform = function(payload, params, ...) {
+      if (!is.null(params$orderByFields)) payload$features <- rev(payload$features)
+      payload
+    })
+  local_mocked_bindings(arcgis_http = reversed$http, .package = "tampaBayOpenData")
+  expect_error(suppressWarnings(tbod_get_dataset("construction-permits",
+                                                  order_by = "ORDERBIG ASC",
+                                                  page_size = 2)),
+               "out of the requested order", class = "tampa_integrity_error")
+
+  expect_equal(.ordered_big_integer_compare("-9007199254740994",
+    "-9007199254740993", "ORDERBIG", NULL, NULL), -1)
+  expect_equal(.ordered_big_integer_compare("0001", 1,
+    "ORDERBIG", NULL, NULL), 0)
+  expect_equal(.ordered_big_integer_compare("-0", 0,
+    "ORDERBIG", NULL, NULL), 0)
+  expect_error(.ordered_big_integer_compare(2^53, 1,
+    "ORDERBIG", NULL, NULL), "precision", class = "tampa_response_error")
+})
+
 test_that("an unselected ordering field is fetched only for order validation", {
   transport <- fixture_transport()
   local_mocked_bindings(arcgis_http = transport$http, .package = "tampaBayOpenData")

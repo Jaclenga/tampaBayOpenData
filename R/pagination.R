@@ -77,6 +77,40 @@
        types = vapply(schema, function(field) field$type, character(1)))
 }
 
+# Compare decimal integers without converting values beyond double precision.
+.ordered_big_integer_compare <- function(a, b, field, dataset, url) {
+  valid <- function(value) {
+    length(value) == 1L && (is.numeric(value) || is.character(value)) &&
+      !is.na(value)
+  }
+  if (!valid(a) || !valid(b)) {
+    .abort(paste0("Ordered field `", field, "` contains an invalid big integer."),
+           dataset, url, "tampa_response_error")
+  }
+  values <- tryCatch(.parse_arcgis_big_integer(list(a, b), field),
+    tampa_data_error = function(error) {
+      .abort(conditionMessage(error), dataset, url, "tampa_response_error")
+    })
+  parts <- lapply(values, function(value) {
+    digits <- sub("^0+", "", sub("^-", "", value))
+    if (!nzchar(digits)) digits <- "0"
+    list(negative = startsWith(value, "-") && digits != "0", digits = digits)
+  })
+  left <- parts[[1L]]
+  right <- parts[[2L]]
+  if (left$negative != right$negative) {
+    return(if (left$negative) -1L else 1L)
+  }
+  comparison <- sign(nchar(left$digits) - nchar(right$digits))
+  if (comparison == 0L && !identical(left$digits, right$digits)) {
+    left_digits <- utf8ToInt(left$digits)
+    right_digits <- utf8ToInt(right$digits)
+    first <- which(left_digits != right_digits)[[1L]]
+    comparison <- sign(left_digits[[first]] - right_digits[[first]])
+  }
+  if (left$negative) -comparison else comparison
+}
+
 # Compare adjacent rows, including the boundary between offset pages. NULL
 # placement and locale-dependent string collation cannot be inferred safely.
 .ordered_pair_ok <- function(left, right, spec, dataset, url) {
@@ -98,6 +132,12 @@
         .abort(paste0("Ordered field `", field, "` contains an invalid numeric value."),
                dataset, url, "tampa_response_error")
       }
+    } else if (type == "esriFieldTypeBigInteger") {
+      comparison <- .ordered_big_integer_compare(a, b, field, dataset, url)
+      if (comparison != 0L) {
+        return(if (spec$descending[[i]]) comparison > 0L else comparison < 0L)
+      }
+      next
     } else if (type %in% c("esriFieldTypeString", "esriFieldTypeDateOnly")) {
       if (!is.character(a) || !is.character(b) || length(a) != 1L ||
           length(b) != 1L || is.na(a) || is.na(b)) {
