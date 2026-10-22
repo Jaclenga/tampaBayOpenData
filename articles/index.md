@@ -4,6 +4,12 @@
 
 Find a layer and retrieve its records.
 
+- [Your First Five Minutes with
+  tampaBayOpenData](https://jaclenga.github.io/tampaBayOpenData/articles/first-five-minutes.md):
+
+  Find a Tampa Bay parks dataset, explore a small preview, and make a
+  chart in base R.
+
 - [Get started with Tampa Bay open
   data](https://jaclenga.github.io/tampaBayOpenData/articles/introduction.md):
 
