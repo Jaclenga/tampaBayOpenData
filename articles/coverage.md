@@ -27,13 +27,13 @@ Organizations in the checked catalog
 
 Recently healthy
 
-No report
+52
 
 Successful checks within 30 days
 
 Detected problems
 
-No report
+0
 
 Recent unavailable, changed, or unsupported layers
 
@@ -45,24 +45,22 @@ Layers without a saved field and geometry comparison
 
 Latest verification
 
-2026-10-05
+2026-10-22 13:06 UTC
 
-Bundled catalog check; time unavailable
+Latest matching health report
 
-No matching health report was available for this build. All current
-health statuses are unverified; dated catalog checks remain visible
-below.
+0 checked entries have no conclusive recent health result.
 
 ## By publisher
 
 | Publisher | Checked entries | Last verification | Healthy | Problematic | Unverified |
 |----|----|----|----|----|----|
-| City of Clearwater | 6 | 2026-10-05catalog check | 0 | 0 | 6 |
-| City of St. Petersburg | 7 | 2026-10-05catalog check | 0 | 0 | 7 |
-| City of Tampa | 20 | 2026-10-02catalog check | 0 | 0 | 20 |
-| Hillsborough County | 8 | 2026-10-05catalog check | 0 | 0 | 8 |
-| Pinellas County | 7 | 2026-10-05catalog check | 0 | 0 | 7 |
-| Tampa Bay Regional Planning Council | 4 | 2026-10-05catalog check | 0 | 0 | 4 |
+| City of Clearwater | 6 | 2026-10-22health report | 6 | 0 | 0 |
+| City of St. Petersburg | 7 | 2026-10-22health report | 7 | 0 | 0 |
+| City of Tampa | 20 | 2026-10-22health report | 20 | 0 | 0 |
+| Hillsborough County | 8 | 2026-10-22health report | 8 | 0 | 0 |
+| Pinellas County | 7 | 2026-10-22health report | 7 | 0 | 0 |
+| Tampa Bay Regional Planning Council | 4 | 2026-10-22health report | 4 | 0 | 0 |
 
 Checked catalog entries and current verification by publisher {.table
 .tb-coverage-table}
