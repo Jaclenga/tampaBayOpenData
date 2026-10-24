@@ -109,15 +109,13 @@ person’s or from a later run.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> clearwater-park-buffers  Clearwater park buffers                            </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> pinellas-park-boundaries Pinellas County park boundaries                    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pinellas-trail           Pinellas Trail segments</span></span></code></pre></div>
-<p>A <strong>dataset</strong> is a collection of related records
-published by an organization. Each row in these search results points to
-one dataset, with a title and an <code>id</code> that you can use to
-retrieve it. <code>source = "checked"</code> searches the package’s
-built-in list of datasets whose structures have been inspected. This
-search does not download park records. Find the
-<code>hillsborough-parks</code> row; that is the ID we will use for the
-rest of this tutorial. The list can grow when the package is
-updated.</p>
+<p>Each row in these search results points to one dataset, with a title
+and an <code>id</code> that you can use to retrieve it.
+<code>source = "checked"</code> searches the package’s built-in list of
+datasets whose structures have been inspected. This search does not
+download park records. Find the <code>hillsborough-parks</code> row;
+that is the ID we will use for the rest of this tutorial. The list can
+grow when the package is updated.</p>
 </div>
 <div class="section level2">
 <h2 id="download-some-records">3. Download some records<a class="anchor" aria-label="anchor" href="#download-some-records"></a>
@@ -142,11 +140,8 @@ publisher’s current records.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="https://rdrr.io/r/utils/head.html" class="external-link">head()</a></code> shows the first few rows, <code><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow()</a></code>
-tells you how many rows arrived, and <code><a href="https://rdrr.io/r/base/names.html" class="external-link">names()</a></code> lists the
-columns. The publisher supplies these columns. One of them,
-<code>USES</code>, labels how each property is used. Which labels appear
-most often in the records you received?</p>
+<p>One of the rows, <code>USES</code>, labels how each property is used.
+Which labels appear most often in the records you received?</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">park_uses</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">parks</span><span class="op">$</span><span class="va">USES</span>, useNA <span class="op">=</span> <span class="st">"ifany"</span><span class="op">)</span></span>
 <span><span class="va">park_uses</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">park_uses</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>

@@ -43,14 +43,12 @@ matches[, c("id", "title")]
 #> 6 pinellas-trail           Pinellas Trail segments
 ```
 
-A **dataset** is a collection of related records published by an
-organization. Each row in these search results points to one dataset,
-with a title and an `id` that you can use to retrieve it.
-`source = "checked"` searches the package’s built-in list of datasets
-whose structures have been inspected. This search does not download park
-records. Find the `hillsborough-parks` row; that is the ID we will use
-for the rest of this tutorial. The list can grow when the package is
-updated.
+Each row in these search results points to one dataset, with a title and
+an `id` that you can use to retrieve it. `source = "checked"` searches
+the package’s built-in list of datasets whose structures have been
+inspected. This search does not download park records. Find the
+`hillsborough-parks` row; that is the ID we will use for the rest of
+this tutorial. The list can grow when the package is updated.
 
 ## 3. Download some records
 
@@ -81,12 +79,8 @@ nrow(parks)
 names(parks)
 ```
 
-[`head()`](https://rdrr.io/r/utils/head.html) shows the first few rows,
-[`nrow()`](https://rdrr.io/r/base/nrow.html) tells you how many rows
-arrived, and [`names()`](https://rdrr.io/r/base/names.html) lists the
-columns. The publisher supplies these columns. One of them, `USES`,
-labels how each property is used. Which labels appear most often in the
-records you received?
+One of the rows, `USES`, labels how each property is used. Which labels
+appear most often in the records you received?
 
 ``` r
 
