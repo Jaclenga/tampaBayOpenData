@@ -17,13 +17,56 @@ concurrency:
 jobs:
   pkgcheck:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
       TAMPA_OPEN_DATA_LIVE: "false"
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      NOT_CRAN: "true"
     steps:
-      - uses: ropensci-review-tools/pkgcheck-action@main
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           # Check the exact commit whose R-CMD-check run succeeded.
           ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
-          post-to-issue: "false"
+          fetch-depth: 0
+      - uses: r-lib/actions/setup-pandoc@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          extra-packages: |
+            ropensci-review-tools/pkgcheck
+            any::pkgstats
+          needs: check
+      - name: Run pkgcheck
+        shell: Rscript {0}
+        run: |
+          pkgstats::ctags_install(sudo = TRUE)
+          checks <- pkgcheck::pkgcheck()
+          print(checks)
+          report <- pkgcheck::checks_to_markdown(checks, render = FALSE)
+          report_dir <- file.path(Sys.getenv("RUNNER_TEMP"), "pkgcheck-results")
+          dir.create(report_dir, recursive = TRUE, showWarnings = FALSE)
+          writeLines(report, file.path(report_dir, "full.md"))
+          writeLines(report, Sys.getenv("GITHUB_STEP_SUMMARY"))
+
+          network_file <- checks$info$network_file
+          if (length(network_file) == 1L && !is.na(network_file) && file.exists(network_file)) {
+            file.copy(network_file, report_dir)
+          }
+
+          # Match the upstream action's failure policy: errors in the summary.
+          separator <- grep("---", report, fixed = TRUE)
+          summary_end <- if (length(separator)) separator[[1L]] else length(report)
+          errors <- grep("^- :heavy_multiplication_x:", report[seq_len(summary_end)], value = TRUE)
+          if (length(errors)) {
+            stop(paste(errors, collapse = "\n"), call. = FALSE)
+          }
+      - name: Upload pkgcheck results
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pkgcheck-results
+          path: ${{ runner.temp }}/pkgcheck-results
+          if-no-files-found: ignore
