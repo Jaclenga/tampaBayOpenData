@@ -42,7 +42,6 @@ matches <- tbod_search_datasets("parks", source = "checked")
 matches[, c("id", "title")]
 ```
 
-A **dataset** is a collection of related records published by an organization.
 Each row in these search results points to one dataset, with a title and an
 `id` that you can use to retrieve it. `source = "checked"` searches the
 package's built-in list of datasets whose structures have been inspected.
@@ -76,9 +75,7 @@ nrow(parks)
 names(parks)
 ```
 
-`head()` shows the first few rows, `nrow()` tells you how many rows arrived,
-and `names()` lists the columns. The publisher supplies these columns. One
-of them, `USES`, labels how each property is used. Which labels appear most
+One of the rows, `USES`, labels how each property is used. Which labels appear most
 often in the records you received?
 
 ```{r count-uses}
