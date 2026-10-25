@@ -21,8 +21,11 @@ template:
 navbar:
   structure:
     left: [get_started, articles, reference, data_coverage, changelog]
-    right: [search]
+    right: [feedback, search]
   components:
+    feedback:
+      text: Give feedback
+      href: https://github.com/Jaclenga/tampaBayOpenData/issues/new?template=feedback.md
     get_started:
       text: Get started
       href: articles/first-five-minutes.html
