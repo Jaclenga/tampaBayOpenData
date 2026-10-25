@@ -66,6 +66,11 @@ tampaBayOpenData::tbod_dataset_info("construction-permits")[
 #> [1] "2026-09-29"
 ```
 
+The portal table lists organizations; the dataset tables list individual
+layers. Use `title` and `jurisdiction` to narrow the subject and place,
+then pass the chosen dataset `id` to inspection or retrieval, not the
+portal ID.
+
 `source = "checked"` reads the registry without HTTP. IDs such as
 `construction-permits` and `stpete-parks` are package names, not ArcGIS
 item IDs. `tbod_dataset_info(id)` gives the scope, terms, source URL,
@@ -101,11 +106,32 @@ specific analysis.
 
 tbod_search_datasets("permit", source = "checked", limit = 5)[,
   c("id", "title", "publisher")]
+#> # A tibble: 1 × 3
+#>   id                   title                     publisher    
+#>   <chr>                <chr>                     <chr>        
+#> 1 construction-permits Permits (active GIS view) City of Tampa
 tbod_search_datasets("permti", source = "checked", limit = 5)[,
   c("id", "title", "publisher")]
+#> # A tibble: 1 × 3
+#>   id                   title                     publisher    
+#>   <chr>                <chr>                     <chr>        
+#> 1 construction-permits Permits (active GIS view) City of Tampa
 tbod_search_datasets("", source = "checked", limit = 5)[,
   c("id", "title", "publisher")]
+#> # A tibble: 5 × 3
+#>   id                   title                                     publisher    
+#>   <chr>                <chr>                                     <chr>        
+#> 1 construction-permits Permits (active GIS view)                 City of Tampa
+#> 2 development-cases    Active development coordination cases     City of Tampa
+#> 3 capital-projects     Capital improvement projects              City of Tampa
+#> 4 city-boundary        Tampa boundary (shoreline representation) City of Tampa
+#> 5 neighborhoods        Neighborhood association boundaries       City of Tampa
 ```
+
+These are dataset suggestions, not permit records. Compare the typo
+search with the correctly spelled search: a spelling fallback helps
+locate a source, but its first result still needs a scope check. The
+empty search lists entries without restricting the topic.
 
 `limit` is a nonnegative whole number or `Inf` (the default). It selects
 the first rows **after** source discovery, checked overlay, filtering,
@@ -128,6 +154,12 @@ if (nrow(found)) {
   tbod_dataset_info(selected)
 }
 ```
+
+Expect a table with one row per discovered layer, or no rows if nothing
+is found within the scan. `modified` dates the portal item, while
+`item_id`, `service_url`, and `layer_id` locate its source; inspecting
+the first row is an example, not a recommendation to use the
+highest-ranked hit.
 
 By default,
 [`tbod_list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_datasets.md)
@@ -263,6 +295,11 @@ attr(results, "discovery_scanned_items")
 attr(results, "discovery_issues")
 attr(results, "discovery_failed_portals")
 ```
+
+The first output is a logical value: `FALSE` means you should
+investigate the remaining diagnostics before interpreting an empty or
+short result. The truncated and failed portal outputs name where the
+scan stopped or failed; they do not count missing datasets.
 
 Check `discovery_complete` before treating results as a complete scan of
 the selected public portal indexes. It does not establish a complete

@@ -159,6 +159,12 @@ source[c("publisher", "source_url", "retrieved_at", "matched_rows",
          "returned_rows", "complete", "integrity")]
 ```
 
+Expect `projects` to be a tibble with the requested attributes and one
+row per mapped feature, without a geometry column. The provenance list
+reports the download’s source and time; equal matching and returned row
+counts, together with `complete = TRUE`, establish a full retrieval of
+this public-facing layer.
+
 The package checks returned object IDs for missing or repeated feature
 records during retrieval. The live service may still change attributes
 between requests. Save the provenance alongside any result you plan to
@@ -265,6 +271,13 @@ knitr::kable(utils::head(neighborhood_counts, 10),
              caption = "Top source neighborhood labels, by mapped feature row")
 ```
 
+Each summary row names a source label (or a type-and-phase pair), and
+`mapped_features` counts feature rows with that label. For example, the
+phase table lets you compare how the same type is distributed across
+reported phases; `(Missing)` keeps unlabeled records visible. The
+leading rows and their counts are determined by your download, not fixed
+expected results.
+
 The chart uses the same feature-level counts. It is generated from your
 live retrieval when you run it; the website does not display invented or
 stale type counts.
@@ -332,6 +345,12 @@ zero spending.
 summary(projects[c("estcost", "actcost")])
 ```
 
+[`summary()`](https://rdrr.io/r/base/summary.html) reports each cost
+field’s range, quartiles, mean, and missing-value count when applicable.
+Read the two columns separately: `estcost` holds reported estimates and
+`actcost` holds reported actual costs, with unavailable values shown as
+missing rather than treated as zero.
+
 Review ID repetition and disagreement across rows. The table below
 identifies project IDs that require further source review; it never sums
 `estcost` or `actcost` across map features. A single numeric value
@@ -389,6 +408,12 @@ if (length(rows_by_id) == 0L) {
                caption = "Example IDs with differing source attributes")
 }
 ```
+
+In the audit, `mapped_features` counts rows per retained ID, while each
+`distinct_*` column counts different nonmissing values recorded under
+that ID. A value above one flags disagreement for review; the
+`needs_review` table shows up to ten such IDs, or no rows if this test
+finds none.
 
 If you need a canonical project count or total budget, first obtain a
 publisher-supported definition of a project ID, a rule for multiple

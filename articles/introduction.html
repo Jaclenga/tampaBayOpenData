@@ -128,6 +128,10 @@ them in an internet-connected R session.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $verified</span></span>
 <span><span class="co">#&gt; [1] "2026-09-29"</span></span></code></pre></div>
+<p>The first table lists publishers; the second lists dataset layers,
+not park records. Choose a dataset by its title and jurisdiction, then
+read its <code>scope_note</code> to check whether it covers your
+question.</p>
 <p><code><a href="../reference/tbod_dataset_info.html">tbod_dataset_info()</a></code> reports a checked entry’s source,
 terms, and scope. To look beyond the catalog, search the live
 portals:</p>
@@ -158,6 +162,11 @@ jurisdictions, supply <code>jurisdiction</code> as well.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">permits</span><span class="op">$</span><span class="va">PROJECTSTATUS</span><span class="op">)</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><code>permits</code> is a tibble, a data frame with a compact printed
+display, containing active permit-viewer features. The sorted output
+pairs each <code>PROJECTSTATUS</code> label with the number of returned
+rows carrying it; use this to see which labels occur most often in your
+preview.</p>
 <p>The counts describe the retrieved subset. Omit <code>limit</code> to
 retrieve all matching rows. Passing a discovery row keeps its source
 information:</p>
@@ -183,6 +192,11 @@ without <code>out_sr</code>, the client keeps the native CRS.</p>
 <code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                        out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span></span></code></pre></div>
+<p>An <code>sf</code> result is still a table, with a geometry column
+holding each feature’s location. The coordinate check should print
+<code>4326</code> after a successful request; this identifies the
+longitude-latitude system, not a count of projects. Here the rows are
+active development-case locations, not capital improvements.</p>
 <p>The <a href="retrieval.html">retrieval article</a> maps this layer
 and describes filters, integrity checks, data types, and downloads.</p>
 </div>
@@ -196,6 +210,10 @@ transformations that may discard attributes.</p>
 <code class="sourceCode R"><span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">projects</span>, provenance <span class="op">=</span> <span class="va">source</span><span class="op">)</span>,</span>
 <span>        <span class="st">"development-cases.rds"</span><span class="op">)</span></span></code></pre></div>
+<p><code>source</code> is a named list describing the download, rather
+than another table of cases. The saved file keeps that record alongside
+the data so you can identify which source and retrieval date underlie a
+later result.</p>
 <p>The <a href="coverage.html">coverage article</a> covers source
 limits, attribution, and citation. A retrieved layer is not necessarily
 a complete historical record or a legal boundary.</p>

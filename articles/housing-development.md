@@ -65,6 +65,11 @@ knitr::kable(catalog_hits, row.names = FALSE)
 | development | construction-permits | Permits (active GIS view) | City of Tampa | Development | 2026-09-29 |
 | development | pinellas-assisted-housing | Pinellas assisted housing | Pinellas County | Housing | 2026-10-05 |
 
+Each row is a catalog hit, not an application or a housing site.
+`search_term` shows which search found it, so one dataset can appear
+under several terms; `category` is a catalog topic rather than an
+application status.
+
 This tutorial uses the checked City of Tampa `development-cases` entry,
 a **point layer of active entitlement applications**. The checked
 `construction-permits` entry is an active permit viewer with
@@ -154,6 +159,11 @@ utils::str(cases[, case_fields])
 head(cases[, case_fields])
 ```
 
+Expect `cases` to be a tibble, a data frame with the six requested
+columns and one row per returned map feature; no geometry was requested
+here. The provenance check establishes a complete download of this
+active view, not a complete history of development applications.
+
 `RECORDID` is the source’s case identifier and `OBJECTID` identifies a
 mapped feature row. They may not have the same grain. The following
 diagnostics keep missing labels and repeated nonblank case IDs visible.
@@ -198,6 +208,12 @@ status_counts <- sort(table(case_data$status, useNA = "ifany"),
                       decreasing = TRUE)
 status_counts
 ```
+
+In `quality`, `check` names a diagnostic and `rows` gives its count. The
+repeated-ID count measures occurrences after the first, not the number
+of distinct repeated IDs; missing-value counts can overlap and should
+not be added together. `status_counts` pairs each reported status with
+its feature-row count, with an `NA` group if statuses are missing.
 
 Do not automatically remove repeated case IDs: a case can have more than
 one mapped row, and dropping one could erase location information.
@@ -324,6 +340,12 @@ if (!isTRUE(housing_source$complete) ||
 head(housing[, housing_fields])
 ```
 
+The returned housing table has one row per source polygon feature even
+though this request omits geometry. `PID` is the parcel identifier,
+`DEVELOPMENT` names the development, and the unit fields report total
+and assisted units for that record; they are not counts of the polygon
+features themselves.
+
 ![Archived scatterplot of reported total and assisted units in mapped
 Pinellas housing records, with a diagonal marking equal
 counts.](figures/pinellas-assisted-housing-2026-10-06.png)
@@ -337,6 +359,11 @@ unit counts, not necessarily a distinct housing site. This image is
 historical; run the live code above to inspect current records. Source:
 [Pinellas County ArcGIS
 layer](https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_AssistedHousing_view/FeatureServer/0).*
+
+On the diagonal, reported assisted units equal total units; below it,
+only a portion of the reported units are assisted. This compares the two
+attributes within records, rather than showing how many units are
+currently available.
 
 The separate [Pinellas housing
 exploration](https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/stories/05-pinellas-assisted-housing.Rmd)

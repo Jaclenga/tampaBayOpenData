@@ -244,11 +244,11 @@ Examples using checked sources, summaries, and visualizations.
   Find Hillsborough EPC monitoring samples, audit missing measurements,
   and compare paired oxygen readings.
 
-- [Mapping Tampa capital-project
-  locations](https://jaclenga.github.io/tampaBayOpenData/articles/mapping-capital-improvements.md):
+- [Where Are Tampa's Public Infrastructure
+  Projects?](https://jaclenga.github.io/tampaBayOpenData/articles/mapping-capital-improvements.md):
 
-  Find City of Tampa capital-project locations, map source project
-  types, and count source feature rows carefully.
+  Find City of Tampa capital-project locations and map where different
+  kinds of public work are recorded.
 
 - [Explore infrastructure and capital
   projects](https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.md):

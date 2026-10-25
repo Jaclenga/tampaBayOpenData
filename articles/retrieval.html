@@ -95,6 +95,17 @@ live publishers when run in R; none run during the site build.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"matched_rows"</span>, <span class="st">"returned_rows"</span>, <span class="st">"complete"</span>, <span class="st">"integrity"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>Expect a tibble (a data frame) with up to 100 active permit-viewer
+feature rows and the three requested columns. <code>RECORD_ID</code>
+identifies the source record, <code>PROJECTSTATUS</code> is its label,
+and <code>LASTUPDATE</code> is an update time, not an issue date. The
+filter excludes missing statuses but does not select a particular
+status.</p>
+<p>The provenance output is a named list: <code>matched_rows</code>
+counts matches at the source, <code>returned_rows</code> counts
+downloaded rows, and <code>complete</code> says whether all matches were
+returned. <code>integrity</code> names the membership check used; it
+does not assess whether the publisher’s attributes are correct.</p>
 <p><code>where</code> uses ArcGIS SQL; <code>fields</code> requires
 exact source field names. Inspect current fields with
 <code>tbod_dataset_info("construction-permits", refresh = TRUE)$fields</code>;
@@ -147,6 +158,12 @@ endpoint metadata. <code>tbod_schema(id)</code> reads it offline;
 <span><span class="va">report</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_check_schema.html">tbod_check_schema</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
 <span><span class="va">report</span><span class="op">$</span><span class="va">status</span></span>
 <span><span class="va">report</span><span class="op">$</span><span class="va">issues</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"category"</span>, <span class="st">"severity"</span>, <span class="st">"field"</span>, <span class="st">"expected"</span>, <span class="st">"actual"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>In the issues table, <code>field</code> identifies an affected
+column, <code>expected</code> is the saved definition, and
+<code>actual</code> is the current one; <code>category</code> and
+<code>severity</code> describe the difference and its effect on
+retrieval. An empty issues table means no reported differences, not that
+individual records have been validated.</p>
 <p>The status is <code>"unchanged"</code>, <code>"compatible"</code>, or
 <code>"incompatible"</code>. Added fields and changed aliases warn but
 allow retrieval. Removed or renamed fields, type changes, and object-ID,
@@ -253,6 +270,11 @@ nonspatial table can be retrieved with <code>spatial = FALSE</code>.</p>
 <span>  <span class="st">"city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span></span></code></pre></div>
+<p>Both results are <code>sf</code> tables: their geometry columns hold
+case points and a boundary outline respectively. The printed
+<code>4326</code> confirms the requested longitude-latitude coordinate
+reference system (CRS), the rule for interpreting coordinates; it does
+not establish location accuracy.</p>
 <p>The layers use one CRS for the map. Exclude empty case geometries
 from the display:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -275,6 +297,11 @@ from the display:</p>
 <span>    box.col <span class="op">=</span> <span class="st">"#DCE7EB"</span>, cex <span class="op">=</span> <span class="fl">0.85</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
+<p>The dots show where active case features are recorded relative to the
+outline; nearby or overlapping dots do not by themselves establish a
+count of distinct developments or completed buildings. Rows without
+geometry remain in <code>projects</code> but cannot appear on this
+map.</p>
 <p>The checked <code>city-boundary</code> layer follows a shoreline
 representation and is map context, not a legal survey boundary. See <a href="coverage.html">coverage and source limits</a> before interpreting
 a map or its record counts.</p>
@@ -300,6 +327,13 @@ root as <code>portal</code>.</p>
 <span><span class="va">saved</span><span class="op">$</span><span class="va">complete</span></span>
 <span><span class="va">first_chunk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">saved</span><span class="op">$</span><span class="va">files</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">first_chunk</span><span class="op">)</span></span></code></pre></div>
+<p><code>saved</code> is a download summary, not a table of permits. Its
+<code>files</code> component lists local chunk paths;
+<code>first_chunk</code> contains only the first file’s records, so that
+file alone should not be treated as the whole download. A query with no
+matches may have no chunk to read; check
+<code>length(saved$files)</code> first when adapting this example to a
+filtered request.</p>
 <p>Repeat the same call to resume. The client rechecks the schema and
 full ID manifest, verifies saved chunks against checkpoints, and
 downloads missing chunks. Changed query options, schema, CRS, endpoint,

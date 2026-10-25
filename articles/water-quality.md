@@ -168,6 +168,14 @@ str(samples[, needed])
 head(samples[, needed])
 ```
 
+Expect `samples` to be a tibble with the six selected fields and one row
+per observation record in the current station view, not one row per
+station. [`str()`](https://rdrr.io/r/utils/str.html) shows each column’s
+R type; [`head()`](https://rdrr.io/r/utils/head.html) shows a few
+records, including `NA` where a field was not reported. Counts and
+measurement values depend on the publisher’s current view and are not
+displayed as live results here.
+
 [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
 converts the UTC ArcGIS `SampleTime` value to an R date-time when the
 current metadata still declares that time reference. Source column names
@@ -205,6 +213,12 @@ paired <- clean[has_pair, , drop = FALSE]
 paired$difference <- paired$do_t - paired$do_b
 ```
 
+The audit’s `check` column names each measure and `count` gives its
+value. Station IDs count locations, while the other rows count
+observations; a record missing both oxygen fields contributes to both
+missing-field counts. The last row tells you how many records can enter
+the paired comparison.
+
 Summarize site coverage and sample dates separately from the oxygen
 comparison. This is a snapshot of the current view: the month table
 describes which dates are present, **not** a trend or a consistent
@@ -238,6 +252,12 @@ if (length(areas)) {
   message("No paired records have a nonblank area label.")
 }
 ```
+
+`station_counts` counts observations per reported station, and
+`range(dated)` gives the earliest and latest dates present. In
+`by_area`, `paired_records` counts included observations; a positive
+`median_do_t_minus_do_b` means the median within-record difference is
+above zero, not that every pair has that sign.
 
 The `by_area` median is a descriptive comparison of the two **reported**
 fields, with units unconfirmed. Records may cover stations or dates

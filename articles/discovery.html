@@ -139,6 +139,10 @@ built. The checked-catalog example runs offline.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $verified</span></span>
 <span><span class="co">#&gt; [1] "2026-09-29"</span></span></code></pre></div>
+<p>The portal table lists organizations; the dataset tables list
+individual layers. Use <code>title</code> and <code>jurisdiction</code>
+to narrow the subject and place, then pass the chosen dataset
+<code>id</code> to inspection or retrieval, not the portal ID.</p>
 <p><code>source = "checked"</code> reads the registry without HTTP. IDs
 such as <code>construction-permits</code> and <code>stpete-parks</code>
 are package names, not ArcGIS item IDs.
@@ -171,10 +175,30 @@ specific analysis.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"permit"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">[</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">#&gt;   id                   title                     publisher    </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> construction-permits Permits (active GIS view) City of Tampa</span></span>
 <span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"permti"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">[</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">#&gt;   id                   title                     publisher    </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> construction-permits Permits (active GIS view) City of Tampa</span></span>
 <span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">""</span>, source <span class="op">=</span> <span class="st">"checked"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">[</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
+<span><span class="co">#&gt;   id                   title                                     publisher    </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> construction-permits Permits (active GIS view)                 City of Tampa</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> development-cases    Active development coordination cases     City of Tampa</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> capital-projects     Capital improvement projects              City of Tampa</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> city-boundary        Tampa boundary (shoreline representation) City of Tampa</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> neighborhoods        Neighborhood association boundaries       City of Tampa</span></span></code></pre></div>
+<p>These are dataset suggestions, not permit records. Compare the typo
+search with the correctly spelled search: a spelling fallback helps
+locate a source, but its first result still needs a scope check. The
+empty search lists entries without restricting the topic.</p>
 <p><code>limit</code> is a nonnegative whole number or <code>Inf</code>
 (the default). It selects the first rows <strong>after</strong> source
 discovery, checked overlay, filtering, and ranking. Even
@@ -196,6 +220,11 @@ an incomplete scan complete.</p>
 <span>  <span class="va">selected</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item_id"</span>, <span class="st">"service_url"</span>, <span class="st">"layer_id"</span>, <span class="st">"portal"</span><span class="op">)</span><span class="op">]</span></span>
 <span>  <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
+<p>Expect a table with one row per discovered layer, or no rows if
+nothing is found within the scan. <code>modified</code> dates the portal
+item, while <code>item_id</code>, <code>service_url</code>, and
+<code>layer_id</code> locate its source; inspecting the first row is an
+example, not a recommendation to use the highest-ranked hit.</p>
 <p>By default, <code><a href="../reference/tbod_list_datasets.html">tbod_list_datasets()</a></code> and
 <code><a href="../reference/tbod_search_datasets.html">tbod_search_datasets()</a></code> use <code>source = "all"</code>:
 they search all six portals and include the checked catalog.
@@ -355,6 +384,11 @@ rows. Use <code><a href="../reference/tbod_list_portals.html">tbod_list_portals(
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_scanned_items"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_issues"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_failed_portals"</span><span class="op">)</span></span></code></pre></div>
+<p>The first output is a logical value: <code>FALSE</code> means you
+should investigate the remaining diagnostics before interpreting an
+empty or short result. The truncated and failed portal outputs name
+where the scan stopped or failed; they do not count missing
+datasets.</p>
 <p>Check <code>discovery_complete</code> before treating results as a
 complete scan of the selected public portal indexes. It does not
 establish a complete inventory of publisher services. Portal indexes can

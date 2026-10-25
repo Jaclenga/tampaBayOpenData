@@ -2033,11 +2033,15 @@ such as <code>NAME</code>; older joined
 <span></span>
 <span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
 <span><span class="va">info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"source_url"</span>, <span class="st">"scope_note"</span>, <span class="st">"terms"</span>, <span class="st">"verified"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>Read <code>scope_note</code> and <code>terms</code> before analysis.
-<code>verified</code> records an endpoint check, not feature freshness.
-A portal item’s <code>modified</code> date can also differ from its
-records’ dates; <code>modified_source</code> distinguishes live item
-timestamps from saved catalog snapshots.</p>
+<p>The output is a named list about one dataset, not a table of permit
+records. <code>source_url</code> takes you to the publisher’s source
+page; <code>scope_note</code> helps decide whether the records can
+answer your question, and <code>terms</code> describes reuse conditions.
+These are reasons to inspect metadata before downloading.</p>
+<p><code>verified</code> records an endpoint check, not feature
+freshness. A portal item’s <code>modified</code> date can also differ
+from its records’ dates; <code>modified_source</code> distinguishes live
+item timestamps from saved catalog snapshots.</p>
 <p>Discovered items may change, disappear, or lack clear reuse terms.
 Inspect their source metadata and publisher terms. The checked catalog
 remains available offline if a live portal fails.</p>
@@ -2054,6 +2058,11 @@ row counts, integrity method, and completeness. Direct URL retrieval has
 <code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">projects</span>, provenance <span class="op">=</span> <span class="va">source</span><span class="op">)</span>, <span class="st">"development-cases.rds"</span><span class="op">)</span></span></code></pre></div>
+<p>The saved RDS file contains two named components: <code>data</code>
+is the spatial table of active case features, and
+<code>provenance</code> describes the request that produced it. This
+lets someone revisiting your map distinguish a change in source data
+from a change in your analysis.</p>
 <p>Save provenance separately before transformations or exports that may
 discard attributes. A finite subset is marked incomplete when more rows
 match. Object-ID checks detect missing, duplicate, or unexpected
@@ -2069,6 +2078,12 @@ selected layers:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">health</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_check_catalog.html">tbod_check_catalog</a></span><span class="op">(</span>ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"construction-permits"</span>, <span class="st">"stpete-parks"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">health</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dataset_id"</span>, <span class="st">"status"</span>, <span class="st">"schema_status"</span>, <span class="st">"details"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>In the displayed columns, <code>dataset_id</code> identifies the
+entry, <code>status</code> gives the overall check result,
+<code>schema_status</code> describes the structure comparison, and
+<code>details</code> explains the result. Use these together to decide
+which source needs inspection rather than treating every unsuccessful
+check as the same problem.</p>
 <p>This contacts the publishers and returns one row per checked entry.
 Statuses include <code>healthy</code>, <code>unavailable</code>,
 <code>schema_changed</code>, <code>unsupported</code>, and

@@ -59,6 +59,10 @@ tampaBayOpenData::tbod_dataset_info("construction-permits")[
 #> [1] "2026-09-29"
 ```
 
+The first table lists publishers; the second lists dataset layers, not
+park records. Choose a dataset by its title and jurisdiction, then read
+its `scope_note` to check whether it covers your question.
+
 [`tbod_dataset_info()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_dataset_info.md)
 reports a checked entry’s source, terms, and scope. To look beyond the
 catalog, search the live portals:
@@ -98,6 +102,11 @@ head(permits)
 sort(table(permits$PROJECTSTATUS), decreasing = TRUE)
 ```
 
+`permits` is a tibble, a data frame with a compact printed display,
+containing active permit-viewer features. The sorted output pairs each
+`PROJECTSTATUS` label with the number of returned rows carrying it; use
+this to see which labels occur most often in your preview.
+
 The counts describe the retrieved subset. Omit `limit` to retrieve all
 matching rows. Passing a discovery row keeps its source information:
 
@@ -130,6 +139,12 @@ projects <- tbod_get_dataset("development-cases", spatial = TRUE,
 sf::st_crs(projects)$epsg
 ```
 
+An `sf` result is still a table, with a geometry column holding each
+feature’s location. The coordinate check should print `4326` after a
+successful request; this identifies the longitude-latitude system, not a
+count of projects. Here the rows are active development-case locations,
+not capital improvements.
+
 The [retrieval
 article](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.md)
 maps this layer and describes filters, integrity checks, data types, and
@@ -147,6 +162,11 @@ source <- tbod_provenance(projects)
 saveRDS(list(data = projects, provenance = source),
         "development-cases.rds")
 ```
+
+`source` is a named list describing the download, rather than another
+table of cases. The saved file keeps that record alongside the data so
+you can identify which source and retrieval date underlie a later
+result.
 
 The [coverage
 article](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.md)

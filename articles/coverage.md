@@ -132,10 +132,16 @@ info <- tbod_dataset_info("construction-permits")
 info[c("title", "source_url", "scope_note", "terms", "verified")]
 ```
 
-Read `scope_note` and `terms` before analysis. `verified` records an
-endpoint check, not feature freshness. A portal item’s `modified` date
-can also differ from its records’ dates; `modified_source` distinguishes
-live item timestamps from saved catalog snapshots.
+The output is a named list about one dataset, not a table of permit
+records. `source_url` takes you to the publisher’s source page;
+`scope_note` helps decide whether the records can answer your question,
+and `terms` describes reuse conditions. These are reasons to inspect
+metadata before downloading.
+
+`verified` records an endpoint check, not feature freshness. A portal
+item’s `modified` date can also differ from its records’ dates;
+`modified_source` distinguishes live item timestamps from saved catalog
+snapshots.
 
 Discovered items may change, disappear, or lack clear reuse terms.
 Inspect their source metadata and publisher terms. The checked catalog
@@ -155,6 +161,11 @@ projects <- tbod_get_dataset("development-cases", spatial = TRUE, out_sr = 4326)
 source <- tbod_provenance(projects)
 saveRDS(list(data = projects, provenance = source), "development-cases.rds")
 ```
+
+The saved RDS file contains two named components: `data` is the spatial
+table of active case features, and `provenance` describes the request
+that produced it. This lets someone revisiting your map distinguish a
+change in source data from a change in your analysis.
 
 Save provenance separately before transformations or exports that may
 discard attributes. A finite subset is marked incomplete when more rows
@@ -176,6 +187,12 @@ for a current metadata and schema check of the bundled catalog, or pass
 health <- tbod_check_catalog(ids = c("construction-permits", "stpete-parks"))
 health[, c("dataset_id", "status", "schema_status", "details")]
 ```
+
+In the displayed columns, `dataset_id` identifies the entry, `status`
+gives the overall check result, `schema_status` describes the structure
+comparison, and `details` explains the result. Use these together to
+decide which source needs inspection rather than treating every
+unsuccessful check as the same problem.
 
 This contacts the publishers and returns one row per checked entry.
 Statuses include `healthy`, `unavailable`, `schema_changed`,

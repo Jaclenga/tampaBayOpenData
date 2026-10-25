@@ -5,15 +5,15 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Mapping Tampa capital-project locations • tampaBayOpenData</title>
+<title>Where Are Tampa's Public Infrastructure Projects? • tampaBayOpenData</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Mapping Tampa capital-project locations">
-<meta name="description" content="Find City of Tampa capital-project locations, map source project types, and count source feature rows carefully.">
-<meta property="og:description" content="Find City of Tampa capital-project locations, map source project types, and count source feature rows carefully.">
+<meta property="og:title" content="Where Are Tampa's Public Infrastructure Projects?">
+<meta name="description" content="Find City of Tampa capital-project locations and map where different kinds of public work are recorded.">
+<meta property="og:description" content="Find City of Tampa capital-project locations and map where different kinds of public work are recorded.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -67,7 +67,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Mapping Tampa capital-project locations</h1>
+      <h1>Where Are Tampa's Public Infrastructure Projects?</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/vignettes/mapping-capital-improvements.Rmd" class="external-link"><code>vignettes/mapping-capital-improvements.Rmd</code></a></small>
@@ -77,425 +77,289 @@
     
     
 <div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+<h2 id="what-will-we-investigate">1. What will we investigate?<a class="anchor" aria-label="anchor" href="#what-will-we-investigate"></a>
 </h2>
-<p>Capital improvement projects are public investments in things such as
-streets, water systems, parks, and public buildings. A map shows where
-the City has recorded this work and which project types appear in
-different places.</p>
-<p>In this tutorial, you will use the <code>tampaBayOpenData</code>
-package to find the City of Tampa’s public capital-project layer,
-download its mapped locations, and color them by the project’s type as
-recorded by the City. You will also make a small table of those types
-and check whether multiple source rows share a project identifier. The
-finished map shows <em>locations</em>, while the table counts <em>source
-feature rows</em>. Neither is automatically a count of distinct
-projects.</p>
-<p>You need basic R data-frame skills, but no GIS experience. The
-<code>sf</code> package holds shapes and coordinates, and
-<code>ggplot2</code> draws the map. The live-data steps are shown for
-you to run in order in an internet-connected R session. They do not run
-during ordinary package checks or website builds. If you have a local
-copy of this repository and want to render the article with current City
-data, run <code>Sys.setenv(TAMPA_OPEN_DATA_LIVE = "true")</code> in R
-before calling
-<code>rmarkdown::render("vignettes/mapping-capital-improvements.Rmd")</code>.
-Your results may differ as the City updates its data.</p>
+<p>Where does Tampa’s public capital-project map record infrastructure
+work, and how do the locations differ by the City’s project-type labels?
+We will map the City’s published project locations against its
+shoreline-adjusted boundary, then check which neighborhood labels appear
+most often. These records describe mapped work, not the City’s complete
+investment ledger.</p>
+<p>You need basic R and the optional <code>sf</code> package, which
+stores tables with coordinates and shapes. The map uses base R; no other
+plotting package is needed. Install these packages once, then load them
+in each new session:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span>, <span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span></code></pre></div>
+<p>Installation and retrieval need an internet connection. The rendered
+page uses real data saved on October 24, 2026 (Eastern time), so
+ordinary builds work offline. Run the code below in order to retrieve
+current data; the section at the end explains how to render the whole
+page with live data.</p>
 </div>
 <div class="section level2">
-<h2 id="find-the-data">Find the data<a class="anchor" aria-label="anchor" href="#find-the-data"></a>
+<h2 id="find-the-relevant-datasets">2. Find the relevant datasets<a class="anchor" aria-label="anchor" href="#find-the-relevant-datasets"></a>
 </h2>
-<p>Install the package and the two optional mapping packages if you need
-them. <code>knitr</code> formats tables, and <code>rmarkdown</code>
-renders the article.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sf"</span>, <span class="st">"ggplot2"</span>, <span class="st">"knitr"</span>, <span class="st">"rmarkdown"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Search the package’s <strong>checked catalog</strong>. This reads a
-bundled list, so it does not contact a data publisher. The
-<code>jurisdiction</code> argument keeps the search focused on
-Tampa.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">project_matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
+<p>Search the package’s checked catalog for capital projects in Tampa.
+This search reads the bundled catalog without contacting a
+publisher.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">project_matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
 <span>  <span class="st">"capital"</span>, jurisdiction <span class="op">=</span> <span class="st">"tampa"</span>, source <span class="op">=</span> <span class="st">"checked"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">project_matches</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"geometry_type"</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Checked Tampa capital-project data"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<caption>Checked Tampa capital-project data</caption>
-<colgroup>
-<col width="21%">
-<col width="37%">
-<col width="17%">
-<col width="23%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">id</th>
-<th align="left">title</th>
-<th align="left">publisher</th>
-<th align="left">geometry_type</th>
-</tr></thead>
-<tbody><tr class="odd">
-<td align="left">capital-projects</td>
-<td align="left">Capital improvement projects</td>
-<td align="left">City of Tampa</td>
-<td align="left">esriGeometryPoint</td>
-</tr></tbody>
-</table>
-<p>The <code>capital-projects</code> entry is the City’s public-facing
-capital-project <strong>point</strong> layer. A point marks an
-individual location. A <strong>line</strong> could trace a road or pipe;
-a <strong>polygon</strong> could outline a work area. The checked Tampa
-catalog does not currently identify matching line or polygon
-<em>capital-project</em> layers. The checked <code>city-boundary</code>
-polygon is useful as a background, but it is not another set of
-projects. Even when several shapes depict the same underlying work, they
-should not be added together as separate projects.</p>
-<p>Check the source note and saved field names before using them. The
-<code>verified</code> date is when the package checked the endpoint, not
-when each project was updated.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<span><span class="va">project_matches</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"geometry_type"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">#&gt;   id               title                        geometry_type    </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> capital-projects Capital improvement projects esriGeometryPoint</span></span></code></pre></div>
+<p>The <code>capital-projects</code> entry contains points: each point
+marks a location. A line could trace a road or pipe, and a polygon could
+outline a work area; this checked project entry contains neither. We use
+the separate <code>city-boundary</code> polygon only as a backdrop, not
+as another set of projects.</p>
+<p>Check the source description and exact field names before retrieving
+records. The saved schema and source notes below also work offline.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">project_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"capital-projects"</span><span class="op">)</span></span>
-<span><span class="va">project_info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"verified"</span>, <span class="st">"scope_note"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">project_info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"scope_note"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $publisher</span></span>
 <span><span class="co">#&gt; [1] "City of Tampa"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $source_url</span></span>
 <span><span class="co">#&gt; [1] "https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e"</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $verified</span></span>
-<span><span class="co">#&gt; [1] "2026-09-29"</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $scope_note</span></span>
 <span><span class="co">#&gt; [1] "The service description says its definition query selects Show to Public = Yes, while the layer metadata does not expose that definition expression. Coordinates use ArcGIS WKID 103023 / latestWKID 6443, in feet, rather than the Web Mercator CRS used by the other selected layers."</span></span>
 <span></span>
-<span><span class="va">project_fields</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBJECTID"</span>, <span class="st">"projid"</span>, <span class="st">"projtype"</span>, <span class="st">"Neighborhood"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"city-boundary"</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"geometry_type"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; $title</span></span>
+<span><span class="co">#&gt; [1] "Tampa boundary (shoreline representation)"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $geometry_type</span></span>
+<span><span class="co">#&gt; [1] "esriGeometryPolygon"</span></span>
+<span><span class="va">project_fields</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBJECTID"</span>, <span class="st">"projid"</span>, <span class="st">"projname"</span>, <span class="st">"projtype"</span>, <span class="st">"Neighborhood"</span><span class="op">)</span></span>
 <span><span class="va">project_schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"capital-projects"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">project_fields</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">project_schema</span><span class="op">$</span><span class="va">fields</span><span class="op">$</span><span class="va">name</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">project_schema</span><span class="op">$</span><span class="va">fields</span><span class="op">[</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">project_fields</span>, <span class="va">project_schema</span><span class="op">$</span><span class="va">fields</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"alias"</span>, <span class="st">"type"</span><span class="op">)</span></span>
 <span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
 <span><span class="co">#&gt;   name         alias              type               </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> OBJECTID     OBJECTID           esriFieldTypeOID   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> projid       Project Identifier esriFieldTypeString</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> projtype     Project Type       esriFieldTypeString</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Neighborhood Neighborhood       esriFieldTypeString</span></span></code></pre></div>
-<p><code>OBJECTID</code> identifies a map feature, <code>projid</code>
-is a source project identifier, <code>projtype</code> contains the
-City’s type label, and <code>Neighborhood</code> is the City’s
-neighborhood label. We will use only these fields and the geometry,
-which keeps the download small.</p>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> projname     Project Name       esriFieldTypeString</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> projtype     Project Type       esriFieldTypeString</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Neighborhood Neighborhood       esriFieldTypeString</span></span></code></pre></div>
+<p><code>OBJECTID</code> identifies a feature row; <code>projid</code>
+is the publisher’s project identifier and can repeat across locations.
+<code>projname</code>, <code>projtype</code>, and
+<code>Neighborhood</code> provide the source name, type, and
+neighborhood label. We keep every feature row rather than assuming each
+is a unique project.</p>
 </div>
 <div class="section level2">
-<h2 id="download-the-data">Download the data<a class="anchor" aria-label="anchor" href="#download-the-data"></a>
+<h2 id="retrieve-the-locations-and-boundary">3. Retrieve the locations and boundary<a class="anchor" aria-label="anchor" href="#retrieve-the-locations-and-boundary"></a>
 </h2>
-<p><code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> retrieves the current records.
-<code>spatial = TRUE</code> asks for an <code>sf</code> object: an
-ordinary table with a geometry column. <code>out_sr = 4326</code>
-requests latitude and longitude coordinates for both layers. We retrieve
-all matching records because a limited preview would give misleading
-category shares. The checked project layer had hundreds of features in
-the repository’s dated example, rather than a large regional
-inventory.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p><code>spatial = TRUE</code> returns an <code>sf</code> table with a
+geometry column, which we need for mapping. <code>out_sr = 4326</code>
+requests longitude and latitude for both layers; using the same
+coordinate reference system lets their coordinates line up.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">capital_projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"capital-projects"</span>,</span>
-<span>  fields <span class="op">=</span> <span class="va">project_fields</span>,</span>
-<span>  spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  out_sr <span class="op">=</span> <span class="fl">4326</span>,</span>
-<span>  total_timeout <span class="op">=</span> <span class="fl">180</span></span>
+<span>  <span class="st">"capital-projects"</span>, fields <span class="op">=</span> <span class="va">project_fields</span>,</span>
+<span>  spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span>, limit <span class="op">=</span> <span class="fl">1000</span></span>
 <span><span class="op">)</span></span>
-<span></span>
 <span><span class="va">tampa_boundary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
-<span>  spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
+<span>  spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span>, limit <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Stop with a clear message if either source has no features or if the
-download is incomplete. The package records its source and retrieval
-time; keep that information when sharing results. A server failure or
-changed field name also stops the example rather than creating a
-substitute dataset.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p>These limits comfortably covered the saved example’s 201 project
+features and one boundary feature. Check completeness before
+interpreting the map: if the publisher grows beyond a limit, stop and
+review the request rather than mapping an unmarked preview.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">project_source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">)</span></span>
 <span><span class="va">boundary_source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">tampa_boundary</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="va">project_source</span><span class="op">$</span><span class="va">complete</span><span class="op">)</span> <span class="op">||</span></span>
-<span>    <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="va">boundary_source</span><span class="op">$</span><span class="va">complete</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"A source download was incomplete; try again later."</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="va">project_source</span><span class="op">$</span><span class="va">complete</span><span class="op">)</span> <span class="op">||</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="va">boundary_source</span><span class="op">$</span><span class="va">complete</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Incomplete download: review the limits before mapping."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">tampa_boundary</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"A source returned no map features; try again later."</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"A source returned no features."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="va">project_source</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"retrieved_at"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>The two layers must use the same coordinate reference system, or CRS,
-to line up on the map. EPSG:4326 is the common latitude-longitude CRS
-requested above.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span> <span class="op">==</span> <span class="fl">4326</span><span class="op">)</span> <span class="op">||</span></span>
-<span>    <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">tampa_boundary</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span> <span class="op">==</span> <span class="fl">4326</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"The map layers were not returned in EPSG:4326."</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="prepare-and-categorize-projects">Prepare and categorize projects<a class="anchor" aria-label="anchor" href="#prepare-and-categorize-projects"></a>
-</h2>
-<p>Use the publisher’s <code>projtype</code> values as categories.
-Trimming spaces makes labels consistent without guessing what a
-description means. Missing or blank values get an explicit
-<code>(Missing source type)</code> label. A check prevents that label
-from merging with an actual source value. Add the source ID so it stays
-clear where these records came from if you later combine data.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span> <span class="op">==</span> <span class="fl">4326</span><span class="op">)</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isTRUE</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">tampa_boundary</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span> <span class="op">==</span> <span class="fl">4326</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">project_source</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"retrieved_at"</span>, <span class="st">"returned_rows"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; $retrieved_at</span></span>
+<span><span class="co">#&gt; [1] "2026-10-25 02:35:57 UTC"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $returned_rows</span></span>
+<span><span class="co">#&gt; [1] 201</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $complete</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>The displayed provenance is a named list: <code>retrieved_at</code>
+dates this download, <code>returned_rows</code> counts feature rows, and
+<code>complete</code> says whether all matching rows were retrieved.
+Compare the timestamp when revisiting the map; an older download can
+explain differences from the City’s current display.</p>
+<p>Keep the source objects if you want to revisit this analysis.
+<code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> preserves their geometry and retrieval provenance
+together.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">capital_projects</span><span class="op">$</span><span class="va">project_category</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">projtype</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">missing_type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">project_category</span><span class="op">)</span> <span class="op">|</span></span>
-<span>  <span class="va">capital_projects</span><span class="op">$</span><span class="va">project_category</span> <span class="op">==</span> <span class="st">""</span></span>
-<span><span class="va">missing_label</span> <span class="op">&lt;-</span> <span class="st">"(Missing source type)"</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="va">missing_label</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">capital_projects</span><span class="op">$</span><span class="va">project_category</span><span class="op">[</span><span class="op">!</span><span class="va">missing_type</span><span class="op">]</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"The source uses the missing-type display label; choose another label."</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="va">capital_projects</span><span class="op">$</span><span class="va">project_category</span><span class="op">[</span><span class="va">missing_type</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">missing_label</span></span>
-<span><span class="va">capital_projects</span><span class="op">$</span><span class="va">source_dataset</span> <span class="op">&lt;-</span> <span class="st">"capital-projects"</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">project_category</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>The project identifier deserves a separate check. Blank identifiers
-are treated as missing. Repeated nonblank values suggest that one
-project may have several mapped points. Some nonblank values could also
-be placeholder codes; the City would need to confirm their meaning
-before anyone uses IDs to count distinct projects.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>capital_projects <span class="op">=</span> <span class="va">capital_projects</span>, tampa_boundary <span class="op">=</span> <span class="va">tampa_boundary</span><span class="op">)</span>,</span>
+<span>        <span class="st">"tampa-infrastructure.rds"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="create-the-map">4. Create the map<a class="anchor" aria-label="anchor" href="#create-the-map"></a>
+</h2>
+<p>The package retains missing coordinates as empty geometries. Set
+those rows aside for mapping and report how many were excluded; they
+remain in the original table.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">capital_projects</span><span class="op">$</span><span class="va">project_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">projid</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">blank_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">project_id</span><span class="op">)</span> <span class="op">|</span></span>
-<span>  <span class="va">capital_projects</span><span class="op">$</span><span class="va">project_id</span> <span class="op">==</span> <span class="st">""</span></span>
-<span><span class="va">capital_projects</span><span class="op">$</span><span class="va">project_id</span><span class="op">[</span><span class="va">blank_id</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA_character_</span></span>
-<span></span>
-<span><span class="va">known_ids</span> <span class="op">&lt;-</span> <span class="va">capital_projects</span><span class="op">$</span><span class="va">project_id</span><span class="op">[</span></span>
-<span>  <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">project_id</span><span class="op">)</span></span>
-<span><span class="op">]</span></span>
-<span><span class="va">id_frequency</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">known_ids</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  check <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Source feature rows"</span>, <span class="st">"Rows missing an ID"</span>, <span class="st">"IDs on multiple rows"</span><span class="op">)</span>,</span>
-<span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">)</span>,</span>
-<span>            <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">project_id</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>            <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">id_frequency</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>These are checks on <em>feature rows and ID values</em>, not a
-project total. We do not combine this point layer with other project
-geometries or remove rows merely because an ID repeats.</p>
-</div>
-<div class="section level2">
-<h2 id="create-an-infrastructure-project-map">Create an infrastructure project map<a class="anchor" aria-label="anchor" href="#create-an-infrastructure-project-map"></a>
-</h2>
-<p>First remove points with missing geometry from the map. Keep them in
-the summary table: a record without coordinates still has a source
-category.</p>
+<code class="sourceCode R"><span><span class="va">missing_geometry</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_query.html" class="external-link">st_is_empty</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">missing_geometry</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span><span class="va">mapped_projects</span> <span class="op">&lt;-</span> <span class="va">capital_projects</span><span class="op">[</span><span class="op">!</span><span class="va">missing_geometry</span>, <span class="op">]</span></span>
+<span><span class="va">tampa_boundary</span> <span class="op">&lt;-</span> <span class="va">tampa_boundary</span><span class="op">[</span><span class="op">!</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_query.html" class="external-link">st_is_empty</a></span><span class="op">(</span><span class="va">tampa_boundary</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">tampa_boundary</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"No usable geometry for the map."</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry_type.html" class="external-link">st_geometry_type</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">)</span> <span class="op">==</span> <span class="st">"POINT"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Use the City’s type labels directly, with missing or blank labels
+displayed as “Not reported”. A named color for each label keeps points
+and legend in agreement even if the publisher changes the
+categories.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mapped_projects</span> <span class="op">&lt;-</span> <span class="va">capital_projects</span><span class="op">[</span></span>
-<span>  <span class="op">!</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_query.html" class="external-link">st_is_empty</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">)</span>,</span>
-<span><span class="op">]</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"No capital-project locations are available to map."</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-<p>To keep the legend short, show the five most common named source
-types <strong>among points with coordinates</strong> in their own
-colors. Other named types share an <code>(Other types on map)</code>
-color, while missing types retain their own label. This groups labels
-<strong>for display only</strong>; the table below retains every source
-type.</p>
+<code class="sourceCode R"><span><span class="va">project_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">$</span><span class="va">projtype</span><span class="op">)</span></span>
+<span><span class="va">project_types</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">project_types</span><span class="op">)</span> <span class="op">|</span> <span class="va">project_types</span> <span class="op">==</span> <span class="st">""</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Not reported"</span></span>
+<span><span class="va">type_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">project_types</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">type_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">hcl.colors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">type_labels</span><span class="op">)</span>, <span class="st">"Dark 3"</span><span class="op">)</span>, <span class="va">type_labels</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">project_types</span><span class="op">)</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; project_types</span></span>
+<span><span class="co">#&gt;          Transportation              Wastewater                   Water </span></span>
+<span><span class="co">#&gt;                      63                      48                      46 </span></span>
+<span><span class="co">#&gt;  Stormwater Engineering      Parks &amp; Recreation Contract Administration </span></span>
+<span><span class="co">#&gt;                      19                      17                       4 </span></span>
+<span><span class="co">#&gt;     Facility Management </span></span>
+<span><span class="co">#&gt;                       4</span></span></code></pre></div>
+<p>The printed output pairs each type label with its number of points
+available to map. A missing-type group remains visible, but records
+without coordinates have already been excluded from these counts; use
+the original table when investigating all feature records.</p>
+<p>Draw the boundary first, then add the original point geometries. The
+map extent includes both layers so points beyond the backdrop are still
+visible; the legend sits beside the map to avoid covering locations.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">visible_type_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">$</span><span class="va">project_category</span><span class="op">)</span>,</span>
-<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">visible_type_counts</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"project_category"</span>, <span class="st">"plotted_locations"</span><span class="op">)</span></span>
-<span><span class="va">visible_type_counts</span> <span class="op">&lt;-</span> <span class="va">visible_type_counts</span><span class="op">[</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">visible_type_counts</span><span class="op">$</span><span class="va">plotted_locations</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span><span class="op">]</span></span>
-<span><span class="va">named_types</span> <span class="op">&lt;-</span> <span class="va">visible_type_counts</span><span class="op">$</span><span class="va">project_category</span><span class="op">[</span></span>
-<span>  <span class="va">visible_type_counts</span><span class="op">$</span><span class="va">project_category</span> <span class="op">!=</span> <span class="va">missing_label</span></span>
-<span><span class="op">]</span></span>
-<span><span class="va">top_types</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">named_types</span>, <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">map_extent</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">tampa_boundary</span><span class="op">)</span>,</span>
+<span>                           <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html" class="external-link">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, widths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1.4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">tampa_boundary</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"grey95"</span>, border <span class="op">=</span> <span class="st">"grey60"</span>,</span>
+<span>     xlim <span class="op">=</span> <span class="va">map_extent</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"xmin"</span>, <span class="st">"xmax"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>     ylim <span class="op">=</span> <span class="va">map_extent</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ymin"</span>, <span class="st">"ymax"</span><span class="op">)</span><span class="op">]</span>, axes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">"Longitude"</span>, ylab <span class="op">=</span> <span class="st">"Latitude"</span>,</span>
+<span>     main <span class="op">=</span> <span class="st">"Tampa's public infrastructure project locations"</span>, cex.main <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, pch <span class="op">=</span> <span class="fl">16</span>, cex <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>     col <span class="op">=</span> <span class="va">type_colors</span><span class="op">[</span><span class="va">project_types</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">3</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/frame.html" class="external-link">plot.new</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"center"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">type_labels</span>, <span class="st">"City outline"</span><span class="op">)</span>,</span>
+<span>       col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">type_colors</span>, <span class="st">"grey60"</span><span class="op">)</span>,</span>
+<span>       pch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">16</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">type_labels</span><span class="op">)</span><span class="op">)</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>       lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">type_labels</span><span class="op">)</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Source project type"</span>, bty <span class="op">=</span> <span class="st">"n"</span>, cex <span class="op">=</span> <span class="fl">0.85</span><span class="op">)</span></span></code></pre></div>
+<p><img src="mapping-capital-improvements_files/figure-html/capital-project-map-1.png" class="r-plt" alt="Tampa capital-project point locations colored by City project-type labels, over a shoreline-adjusted city boundary, with a separate legend." width="960"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">other_label</span> <span class="op">&lt;-</span> <span class="st">"(Other types on map)"</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="va">other_label</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">mapped_projects</span><span class="op">$</span><span class="va">project_category</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"The source uses the map grouping label; choose another label."</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="va">mapped_projects</span><span class="op">$</span><span class="va">map_category</span> <span class="op">&lt;-</span> <span class="va">mapped_projects</span><span class="op">$</span><span class="va">project_category</span></span>
-<span><span class="va">other_type</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="va">mapped_projects</span><span class="op">$</span><span class="va">map_category</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">top_types</span>, <span class="va">missing_label</span><span class="op">)</span></span>
-<span><span class="va">mapped_projects</span><span class="op">$</span><span class="va">map_category</span><span class="op">[</span><span class="va">other_type</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">other_label</span></span></code></pre></div>
-<p>The boundary is a light background. Project points sit on top and are
-colored by the source type. <code>ggplot2</code> handles the shared CRS,
-and the legend names the displayed categories.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html" class="external-link">layout</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<p>Each dot is one published feature location, colored by the source
+type. Dots can overlap, and a point does not describe the full length of
+a road project or the area affected by construction. The outline is the
+City’s shoreline-adjusted representation, not a legal survey.</p>
+</div>
+<div class="section level2">
+<h2 id="read-the-geography">5. Read the geography<a class="anchor" aria-label="anchor" href="#read-the-geography"></a>
+</h2>
+<p>In the October 24 snapshot, locations extend through the central part
+of the city and into both its northern and southern sections; they are
+not confined to one downtown site. The map also shows different project
+types occupying nearby locations, rather than distinct regions reserved
+for each type. These are observations of mapped locations, not
+measurements of service coverage.</p>
+<p>The City’s neighborhood labels help check the apparent concentration.
+Count all feature rows, including ones without geometry, and keep
+missing labels visible rather than assigning them to a neighborhood
+ourselves.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">project_map</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">tampa_boundary</span>, fill <span class="op">=</span> <span class="st">"#F1F4F5"</span>,</span>
-<span>                   color <span class="op">=</span> <span class="st">"#8A9BA4"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mapped_projects</span>,</span>
-<span>                   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">map_category</span><span class="op">)</span>,</span>
-<span>                   size <span class="op">=</span> <span class="fl">1.8</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_color_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Dark2"</span>, name <span class="op">=</span> <span class="st">"Source project type"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title <span class="op">=</span> <span class="st">"Where are Tampa's mapped capital improvements?"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Public project locations from the City of Tampa"</span>,</span>
-<span>    caption <span class="op">=</span> <span class="st">"Each dot is a mapped feature; one project can have several dots."</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.title <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">project_map</span><span class="op">)</span></span></code></pre></div>
-<p>The live code above creates a color-coded map from the checked
-catalog layer. The map below provides a dated offline example using the
-City’s related <a href="https://arcgis.tampagov.net/arcgis/rest/services/CapitalProjects/CapitalProjects/FeatureServer/0" class="external-link">capital-project
-dashboard point layer</a>, saved in a <a href="https://github.com/Jaclenga/Tampa-Development-Records/blob/main/data/raw/capital_improvements.geojson" class="external-link">public
-GeoJSON archive</a> on <strong>August 23, 2026</strong> (<a href="https://github.com/Jaclenga/Tampa-Development-Records/blob/main/data/raw/snapshot_metadata.json" class="external-link">retrieval
-note</a>). Its 192 points and their <code>projtype</code> labels were
-saved together. As in the live code, the five most frequent types have
-their own colors, and the remaining types share an
-<code>(Other types on map)</code> color. The dashboard is a separate
-City service from the checked <code>capital-projects</code> endpoint, so
-its feature IDs and counts should not be combined with a current
-download. The light backdrop is the checked Tampa city boundary.</p>
-<div class="float">
-<img src="figures/tampa-capital-projects-by-type-2026-08-23.png" alt="Dated map of 192 City of Tampa dashboard capital-project point features colored by the five most frequent project-type labels and an other-types group, over the shoreline-adjusted city boundary."><div class="figcaption">Dated map of 192 City of Tampa dashboard
-capital-project point features colored by the five most frequent
-project-type labels and an other-types group, over the
-shoreline-adjusted city boundary.</div>
-</div>
+<code class="sourceCode R"><span><span class="va">neighborhood_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">Neighborhood</span><span class="op">)</span></span>
+<span><span class="va">neighborhood_labels</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">neighborhood_labels</span><span class="op">)</span> <span class="op">|</span> <span class="va">neighborhood_labels</span> <span class="op">==</span> <span class="st">""</span><span class="op">]</span> <span class="op">&lt;-</span></span>
+<span>  <span class="st">"Not reported"</span></span>
+<span><span class="va">neighborhood_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">neighborhood_labels</span><span class="op">)</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">neighborhood_counts</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; neighborhood_labels</span></span>
+<span><span class="co">#&gt;               Not reported       Old Seminole Heights </span></span>
+<span><span class="co">#&gt;                         14                         12 </span></span>
+<span><span class="co">#&gt;              Tampa Heights        Downtown River Arts </span></span>
+<span><span class="co">#&gt;                         11                          9 </span></span>
+<span><span class="co">#&gt; Tampa Downtown Partnership  Interbay - South of Gandy </span></span>
+<span><span class="co">#&gt;                          8                          6 </span></span>
+<span><span class="co">#&gt;         Bayshore Beautiful                  Drew Park </span></span>
+<span><span class="co">#&gt;                          5                          5 </span></span>
+<span><span class="co">#&gt;      Gandy / Sun Bay South Southeast Seminole Heights </span></span>
+<span><span class="co">#&gt;                          5                          5</span></span></code></pre></div>
+<p>In the saved data, Old Seminole Heights has 12 feature rows and Tampa
+Heights has 11, more than any other reported neighborhood label. This
+gives two named areas to investigate further, rather than relying only
+on overlapping dots. Missing labels are not a geographic area, and the
+table uses publisher labels, not a new calculation of which boundary
+contains each point.</p>
 </div>
 <div class="section level2">
-<h2 id="summarize-the-results">Summarize the results<a class="anchor" aria-label="anchor" href="#summarize-the-results"></a>
+<h2 id="what-this-map-cannot-tell-us">6. What this map cannot tell us<a class="anchor" aria-label="anchor" href="#what-this-map-cannot-tell-us"></a>
 </h2>
-<p>The table counts <strong>source feature rows</strong> by the City’s
-project-type label. It includes records without coordinates, so its
-counts may exceed the number of points on your live map. The first row
-identifies the most frequent label in <em>your</em> download; the answer
-can change as the publisher updates the layer.</p>
+<ul>
+<li>The layer is the City’s public-facing selection, not a complete
+inventory of infrastructure or capital spending. Blank areas do not
+prove no work exists.</li>
+<li>Several locations can share a project ID; nearby dots can overlap.
+We have neither removed repeated IDs nor counted features as distinct
+projects.</li>
+<li>Points mark locations, not construction footprints. Separate line or
+polygon layers could describe the same work and would need review before
+combining.</li>
+<li>Publisher updates can change records, labels, and coordinates.
+Retrieval checks do not establish current construction status or
+accuracy on the ground.</li>
+<li>Clustering alone cannot show unequal funding or investment. That
+would require reliable project-level costs, population and need, and
+coverage information.</li>
+</ul>
+<p>Data: City of Tampa <a href="https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e" class="external-link">capital-project
+layer</a> and <a href="https://tampa.maps.arcgis.com/home/item.html?id=ed03de89b95340359431d13bd2bc38f2" class="external-link">shoreline-adjusted
+boundary</a>, both recorded as CC0 in the checked catalog. Source
+details and retrieval times are retained in
+<code>tbod_provenance(capital_projects)</code> and
+<code>tbod_provenance(tampa_boundary)</code>.</p>
+<div class="section level3">
+<h3 id="render-with-current-data">Render with current data<a class="anchor" aria-label="anchor" href="#render-with-current-data"></a>
+</h3>
+<p>With the package, <code>sf</code>, <code>knitr</code>,
+<code>rmarkdown</code>, and Pandoc installed, run this from the
+repository root with internet access. Live retrieval errors stop the
+render instead of falling back to the saved data.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">category_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">project_category</span><span class="op">)</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">category_summary</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"project_category"</span>, <span class="st">"feature_rows"</span><span class="op">)</span></span>
-<span><span class="va">category_summary</span> <span class="op">&lt;-</span> <span class="va">category_summary</span><span class="op">[</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">category_summary</span><span class="op">$</span><span class="va">feature_rows</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span><span class="op">]</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">category_summary</span>,</span>
-<span>  row.names <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"City project-type labels by source feature row"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>For a fixed example visible in this offline article, the small table
-below counts the <strong>192 dashboard point features</strong> in the
-August 23 archive used for the color map. These are not counts from the
-checked catalog endpoint. Run the code above for current values from
-that endpoint.</p>
-<table class="table">
-<thead><tr class="header">
-<th align="left">Source project type</th>
-<th align="right">Feature rows</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">Transportation</td>
-<td align="right">55</td>
-</tr>
-<tr class="even">
-<td align="left">Water</td>
-<td align="right">46</td>
-</tr>
-<tr class="odd">
-<td align="left">Wastewater</td>
-<td align="right">43</td>
-</tr>
-<tr class="even">
-<td align="left">Stormwater Engineering</td>
-<td align="right">23</td>
-</tr>
-<tr class="odd">
-<td align="left">Parks &amp; Recreation</td>
-<td align="right">17</td>
-</tr>
-<tr class="even">
-<td align="left">Facility Management</td>
-<td align="right">4</td>
-</tr>
-<tr class="odd">
-<td align="left">Contract Administration</td>
-<td align="right">4</td>
-</tr>
-</tbody>
-</table>
-<p>Transportation has the most source feature rows in this snapshot
-(55), followed by Water (46) and Wastewater (43). The bar chart repeats
-those counts; the color map shows where the same archived features were
-recorded.</p>
-<div class="float">
-<img src="figures/tampa-capital-project-types-2026-08-23.png" alt="Bar chart of the 192 City of Tampa dashboard capital-project source feature rows by project type on August 23, 2026."><div class="figcaption">Bar chart of the 192 City of Tampa dashboard
-capital-project source feature rows by project type on August 23,
-2026.</div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>TAMPA_OPEN_DATA_LIVE <span class="op">=</span> <span class="st">"true"</span><span class="op">)</span></span>
+<span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/render.html" class="external-link">render</a></span><span class="op">(</span><span class="st">"vignettes/mapping-capital-improvements.Rmd"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.unsetenv</a></span><span class="op">(</span><span class="st">"TAMPA_OPEN_DATA_LIVE"</span><span class="op">)</span></span></code></pre></div>
+<p>Ordinary builds leave this variable unset and use the saved snapshot.
+When <code>sf</code> is unavailable, the page displays a saved map made
+from that same snapshot and skips spatial code; install <code>sf</code>
+to run the mapping steps. Dated observations above refer to the saved
+data, not future live renders. The <a href="infrastructure-projects.html">infrastructure article</a> discusses
+project IDs, status, and cost fields in more detail.</p>
 </div>
-<p>In the dated map, many dots cluster in central Tampa. Transportation
-and Wastewater points also appear farther north and south. These are
-visual impressions of published feature locations, not measured
-investment levels.</p>
-<p>The City’s <code>Neighborhood</code> field offers another simple view
-of concentration. The first row in this table has the most source
-feature rows with that label. These labels are not a spatial
-calculation, and some may be blank or missing.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">capital_projects</span><span class="op">$</span><span class="va">source_neighborhood</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">Neighborhood</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">missing_neighborhood</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">source_neighborhood</span><span class="op">)</span> <span class="op">|</span></span>
-<span>  <span class="va">capital_projects</span><span class="op">$</span><span class="va">source_neighborhood</span> <span class="op">==</span> <span class="st">""</span></span>
-<span><span class="va">missing_neighborhood_label</span> <span class="op">&lt;-</span> <span class="st">"(Missing neighborhood)"</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="va">missing_neighborhood_label</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span></span>
-<span>    <span class="va">capital_projects</span><span class="op">$</span><span class="va">source_neighborhood</span><span class="op">[</span><span class="op">!</span><span class="va">missing_neighborhood</span><span class="op">]</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"The source uses the missing-neighborhood display label; choose another."</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="va">capital_projects</span><span class="op">$</span><span class="va">source_neighborhood</span><span class="op">[</span><span class="va">missing_neighborhood</span><span class="op">]</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">missing_neighborhood_label</span></span>
-<span><span class="va">neighborhood_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">source_neighborhood</span><span class="op">)</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">neighborhood_summary</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"source_neighborhood"</span>, <span class="st">"feature_rows"</span><span class="op">)</span></span>
-<span><span class="va">neighborhood_summary</span> <span class="op">&lt;-</span> <span class="va">neighborhood_summary</span><span class="op">[</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">neighborhood_summary</span><span class="op">$</span><span class="va">feature_rows</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span><span class="op">]</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">neighborhood_summary</span>, <span class="fl">10</span><span class="op">)</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>Look at the map to see whether some category colors are concentrated
-or spread across Tampa. A cluster means more <em>features</em> are
-mapped there, not necessarily more distinct projects or dollars. A
-project may have several locations, and source coverage may vary by
-area. The map does not show funding amounts, construction progress, or
-completed infrastructure.</p>
-</div>
-<div class="section level2">
-<h2 id="limitations-and-next-steps">Limitations and next steps<a class="anchor" aria-label="anchor" href="#limitations-and-next-steps"></a>
-</h2>
-<p>This is the City’s <a href="https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e" class="external-link">public-facing
-capital-project layer</a>, not a complete capital ledger. The checked
-catalog’s verification date does not measure the freshness of every
-record. Labels, identifiers, and locations can be missing or updated;
-one project may have multiple point features. The boundary is a
-shoreline-adjusted map representation, not a legal survey. Geographic
-concentration alone cannot establish whether investment is fair:
-population, need, project size, cost, and unmapped work would matter
-too.</p>
-<p>To adapt this workflow, search the checked catalog for another topic
-or publisher, inspect its source note and schema, then change the
-dataset ID and field names. A true line or polygon project layer would
-need its own source review and map symbol. Before combining layers,
-check whether their features share project identifiers. The <a href="infrastructure-projects.html">infrastructure article</a> explores
-ID, status, phase, and cost fields in more detail.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

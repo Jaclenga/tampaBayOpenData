@@ -227,6 +227,12 @@ its time budget.</p>
 <span>         <span class="st">"complete"</span>, <span class="st">"integrity"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">samples</span><span class="op">[</span>, <span class="va">needed</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">samples</span><span class="op">[</span>, <span class="va">needed</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p>Expect <code>samples</code> to be a tibble with the six selected
+fields and one row per observation record in the current station view,
+not one row per station. <code><a href="https://rdrr.io/r/utils/str.html" class="external-link">str()</a></code> shows each column’s R type;
+<code><a href="https://rdrr.io/r/utils/head.html" class="external-link">head()</a></code> shows a few records, including <code>NA</code> where
+a field was not reported. Counts and measurement values depend on the
+publisher’s current view and are not displayed as live results here.</p>
 <p><code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> converts the UTC ArcGIS
 <code>SampleTime</code> value to an R date-time when the current
 metadata still declares that time reference. Source column names are
@@ -260,6 +266,11 @@ reading.</p>
 <span></span>
 <span><span class="va">paired</span> <span class="op">&lt;-</span> <span class="va">clean</span><span class="op">[</span><span class="va">has_pair</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
 <span><span class="va">paired</span><span class="op">$</span><span class="va">difference</span> <span class="op">&lt;-</span> <span class="va">paired</span><span class="op">$</span><span class="va">do_t</span> <span class="op">-</span> <span class="va">paired</span><span class="op">$</span><span class="va">do_b</span></span></code></pre></div>
+<p>The audit’s <code>check</code> column names each measure and
+<code>count</code> gives its value. Station IDs count locations, while
+the other rows count observations; a record missing both oxygen fields
+contributes to both missing-field counts. The last row tells you how
+many records can enter the paired comparison.</p>
 <p>Summarize site coverage and sample dates separately from the oxygen
 comparison. This is a snapshot of the current view: the month table
 describes which dates are present, <strong>not</strong> a trend or a
@@ -290,6 +301,12 @@ consistent monthly sampling schedule.</p>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"No paired records have a nonblank area label."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
+<p><code>station_counts</code> counts observations per reported station,
+and <code>range(dated)</code> gives the earliest and latest dates
+present. In <code>by_area</code>, <code>paired_records</code> counts
+included observations; a positive <code>median_do_t_minus_do_b</code>
+means the median within-record difference is above zero, not that every
+pair has that sign.</p>
 <p>The <code>by_area</code> median is a descriptive comparison of the
 two <strong>reported</strong> fields, with units unconfirmed. Records
 may cover stations or dates unevenly; do not rank areas as better or

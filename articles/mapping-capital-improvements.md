@@ -1,434 +1,332 @@
-# Mapping Tampa capital-project locations
+# Where Are Tampa's Public Infrastructure Projects?
 
-## Introduction
+## 1. What will we investigate?
 
-Capital improvement projects are public investments in things such as
-streets, water systems, parks, and public buildings. A map shows where
-the City has recorded this work and which project types appear in
-different places.
+Where does Tampa’s public capital-project map record infrastructure
+work, and how do the locations differ by the City’s project-type labels?
+We will map the City’s published project locations against its
+shoreline-adjusted boundary, then check which neighborhood labels appear
+most often. These records describe mapped work, not the City’s complete
+investment ledger.
 
-In this tutorial, you will use the `tampaBayOpenData` package to find
-the City of Tampa’s public capital-project layer, download its mapped
-locations, and color them by the project’s type as recorded by the City.
-You will also make a small table of those types and check whether
-multiple source rows share a project identifier. The finished map shows
-*locations*, while the table counts *source feature rows*. Neither is
-automatically a count of distinct projects.
-
-You need basic R data-frame skills, but no GIS experience. The `sf`
-package holds shapes and coordinates, and `ggplot2` draws the map. The
-live-data steps are shown for you to run in order in an
-internet-connected R session. They do not run during ordinary package
-checks or website builds. If you have a local copy of this repository
-and want to render the article with current City data, run
-`Sys.setenv(TAMPA_OPEN_DATA_LIVE = "true")` in R before calling
-`rmarkdown::render("vignettes/mapping-capital-improvements.Rmd")`. Your
-results may differ as the City updates its data.
-
-## Find the data
-
-Install the package and the two optional mapping packages if you need
-them. `knitr` formats tables, and `rmarkdown` renders the article.
+You need basic R and the optional `sf` package, which stores tables with
+coordinates and shapes. The map uses base R; no other plotting package
+is needed. Install these packages once, then load them in each new
+session:
 
 ``` r
 
-install.packages("tampaBayOpenData")
-install.packages(c("sf", "ggplot2", "knitr", "rmarkdown"))
+install.packages(c("tampaBayOpenData", "sf"))
 ```
-
-Search the package’s **checked catalog**. This reads a bundled list, so
-it does not contact a data publisher. The `jurisdiction` argument keeps
-the search focused on Tampa.
 
 ``` r
 
 library(tampaBayOpenData)
+```
+
+Installation and retrieval need an internet connection. The rendered
+page uses real data saved on October 24, 2026 (Eastern time), so
+ordinary builds work offline. Run the code below in order to retrieve
+current data; the section at the end explains how to render the whole
+page with live data.
+
+## 2. Find the relevant datasets
+
+Search the package’s checked catalog for capital projects in Tampa. This
+search reads the bundled catalog without contacting a publisher.
+
+``` r
 
 project_matches <- tbod_search_datasets(
   "capital", jurisdiction = "tampa", source = "checked"
 )
-knitr::kable(
-  project_matches[, c("id", "title", "publisher", "geometry_type")],
-  caption = "Checked Tampa capital-project data"
-)
+project_matches[, c("id", "title", "geometry_type")]
+#> # A tibble: 1 × 3
+#>   id               title                        geometry_type    
+#>   <chr>            <chr>                        <chr>            
+#> 1 capital-projects Capital improvement projects esriGeometryPoint
 ```
 
-| id | title | publisher | geometry_type |
-|:---|:---|:---|:---|
-| capital-projects | Capital improvement projects | City of Tampa | esriGeometryPoint |
+The `capital-projects` entry contains points: each point marks a
+location. A line could trace a road or pipe, and a polygon could outline
+a work area; this checked project entry contains neither. We use the
+separate `city-boundary` polygon only as a backdrop, not as another set
+of projects.
 
-Checked Tampa capital-project data {.table}
-
-The `capital-projects` entry is the City’s public-facing capital-project
-**point** layer. A point marks an individual location. A **line** could
-trace a road or pipe; a **polygon** could outline a work area. The
-checked Tampa catalog does not currently identify matching line or
-polygon *capital-project* layers. The checked `city-boundary` polygon is
-useful as a background, but it is not another set of projects. Even when
-several shapes depict the same underlying work, they should not be added
-together as separate projects.
-
-Check the source note and saved field names before using them. The
-`verified` date is when the package checked the endpoint, not when each
-project was updated.
+Check the source description and exact field names before retrieving
+records. The saved schema and source notes below also work offline.
 
 ``` r
 
 project_info <- tbod_dataset_info("capital-projects")
-project_info[c("publisher", "source_url", "verified", "scope_note")]
+project_info[c("publisher", "source_url", "scope_note")]
 #> $publisher
 #> [1] "City of Tampa"
 #> 
 #> $source_url
 #> [1] "https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e"
 #> 
-#> $verified
-#> [1] "2026-09-29"
-#> 
 #> $scope_note
 #> [1] "The service description says its definition query selects Show to Public = Yes, while the layer metadata does not expose that definition expression. Coordinates use ArcGIS WKID 103023 / latestWKID 6443, in feet, rather than the Web Mercator CRS used by the other selected layers."
 
-project_fields <- c("OBJECTID", "projid", "projtype", "Neighborhood")
+tbod_dataset_info("city-boundary")[c("title", "geometry_type")]
+#> $title
+#> [1] "Tampa boundary (shoreline representation)"
+#> 
+#> $geometry_type
+#> [1] "esriGeometryPolygon"
+project_fields <- c("OBJECTID", "projid", "projname", "projtype", "Neighborhood")
 project_schema <- tbod_schema("capital-projects")
-stopifnot(all(project_fields %in% project_schema$fields$name))
 project_schema$fields[
   match(project_fields, project_schema$fields$name),
   c("name", "alias", "type")
 ]
-#> # A tibble: 4 × 3
+#> # A tibble: 5 × 3
 #>   name         alias              type               
 #>   <chr>        <chr>              <chr>              
 #> 1 OBJECTID     OBJECTID           esriFieldTypeOID   
 #> 2 projid       Project Identifier esriFieldTypeString
-#> 3 projtype     Project Type       esriFieldTypeString
-#> 4 Neighborhood Neighborhood       esriFieldTypeString
+#> 3 projname     Project Name       esriFieldTypeString
+#> 4 projtype     Project Type       esriFieldTypeString
+#> 5 Neighborhood Neighborhood       esriFieldTypeString
 ```
 
-`OBJECTID` identifies a map feature, `projid` is a source project
-identifier, `projtype` contains the City’s type label, and
-`Neighborhood` is the City’s neighborhood label. We will use only these
-fields and the geometry, which keeps the download small.
+`OBJECTID` identifies a feature row; `projid` is the publisher’s project
+identifier and can repeat across locations. `projname`, `projtype`, and
+`Neighborhood` provide the source name, type, and neighborhood label. We
+keep every feature row rather than assuming each is a unique project.
 
-## Download the data
+## 3. Retrieve the locations and boundary
 
-[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
-retrieves the current records. `spatial = TRUE` asks for an `sf` object:
-an ordinary table with a geometry column. `out_sr = 4326` requests
-latitude and longitude coordinates for both layers. We retrieve all
-matching records because a limited preview would give misleading
-category shares. The checked project layer had hundreds of features in
-the repository’s dated example, rather than a large regional inventory.
+`spatial = TRUE` returns an `sf` table with a geometry column, which we
+need for mapping. `out_sr = 4326` requests longitude and latitude for
+both layers; using the same coordinate reference system lets their
+coordinates line up.
 
 ``` r
 
 capital_projects <- tbod_get_dataset(
-  "capital-projects",
-  fields = project_fields,
-  spatial = TRUE,
-  out_sr = 4326,
-  total_timeout = 180
+  "capital-projects", fields = project_fields,
+  spatial = TRUE, out_sr = 4326, limit = 1000
 )
-
 tampa_boundary <- tbod_get_dataset(
   "city-boundary", fields = "OBJECTID",
-  spatial = TRUE, out_sr = 4326
+  spatial = TRUE, out_sr = 4326, limit = 100
 )
 ```
 
-Stop with a clear message if either source has no features or if the
-download is incomplete. The package records its source and retrieval
-time; keep that information when sharing results. A server failure or
-changed field name also stops the example rather than creating a
-substitute dataset.
+These limits comfortably covered the saved example’s 201 project
+features and one boundary feature. Check completeness before
+interpreting the map: if the publisher grows beyond a limit, stop and
+review the request rather than mapping an unmarked preview.
 
 ``` r
 
 project_source <- tbod_provenance(capital_projects)
 boundary_source <- tbod_provenance(tampa_boundary)
-
-if (!isTRUE(project_source$complete) ||
-    !isTRUE(boundary_source$complete)) {
-  stop("A source download was incomplete; try again later.")
+if (!isTRUE(project_source$complete) || !isTRUE(boundary_source$complete)) {
+  stop("Incomplete download: review the limits before mapping.")
 }
 if (nrow(capital_projects) == 0 || nrow(tampa_boundary) == 0) {
-  stop("A source returned no map features; try again later.")
+  stop("A source returned no features.")
 }
-project_source[c("publisher", "source_url", "retrieved_at")]
+stopifnot(isTRUE(sf::st_crs(capital_projects)$epsg == 4326),
+          isTRUE(sf::st_crs(tampa_boundary)$epsg == 4326))
+project_source[c("retrieved_at", "returned_rows", "complete")]
+#> $retrieved_at
+#> [1] "2026-10-25 02:35:57 UTC"
+#> 
+#> $returned_rows
+#> [1] 201
+#> 
+#> $complete
+#> [1] TRUE
 ```
 
-The two layers must use the same coordinate reference system, or CRS, to
-line up on the map. EPSG:4326 is the common latitude-longitude CRS
-requested above.
+The displayed provenance is a named list: `retrieved_at` dates this
+download, `returned_rows` counts feature rows, and `complete` says
+whether all matching rows were retrieved. Compare the timestamp when
+revisiting the map; an older download can explain differences from the
+City’s current display.
+
+Keep the source objects if you want to revisit this analysis.
+[`saveRDS()`](https://rdrr.io/r/base/readRDS.html) preserves their
+geometry and retrieval provenance together.
 
 ``` r
 
-if (!isTRUE(sf::st_crs(capital_projects)$epsg == 4326) ||
-    !isTRUE(sf::st_crs(tampa_boundary)$epsg == 4326)) {
-  stop("The map layers were not returned in EPSG:4326.")
+saveRDS(list(capital_projects = capital_projects, tampa_boundary = tampa_boundary),
+        "tampa-infrastructure.rds")
+```
+
+## 4. Create the map
+
+The package retains missing coordinates as empty geometries. Set those
+rows aside for mapping and report how many were excluded; they remain in
+the original table.
+
+``` r
+
+missing_geometry <- sf::st_is_empty(capital_projects)
+sum(missing_geometry)
+#> [1] 0
+mapped_projects <- capital_projects[!missing_geometry, ]
+tampa_boundary <- tampa_boundary[!sf::st_is_empty(tampa_boundary), ]
+if (nrow(mapped_projects) == 0 || nrow(tampa_boundary) == 0) {
+  stop("No usable geometry for the map.")
 }
+stopifnot(all(sf::st_geometry_type(mapped_projects) == "POINT"))
 ```
 
-## Prepare and categorize projects
-
-Use the publisher’s `projtype` values as categories. Trimming spaces
-makes labels consistent without guessing what a description means.
-Missing or blank values get an explicit `(Missing source type)` label. A
-check prevents that label from merging with an actual source value. Add
-the source ID so it stays clear where these records came from if you
-later combine data.
+Use the City’s type labels directly, with missing or blank labels
+displayed as “Not reported”. A named color for each label keeps points
+and legend in agreement even if the publisher changes the categories.
 
 ``` r
 
-capital_projects$project_category <- trimws(
-  as.character(capital_projects$projtype)
-)
-missing_type <- is.na(capital_projects$project_category) |
-  capital_projects$project_category == ""
-missing_label <- "(Missing source type)"
-if (missing_label %in% capital_projects$project_category[!missing_type]) {
-  stop("The source uses the missing-type display label; choose another label.")
-}
-capital_projects$project_category[missing_type] <- missing_label
-capital_projects$source_dataset <- "capital-projects"
-
-sort(unique(capital_projects$project_category))
+project_types <- trimws(mapped_projects$projtype)
+project_types[is.na(project_types) | project_types == ""] <- "Not reported"
+type_labels <- sort(unique(project_types))
+type_colors <- setNames(hcl.colors(length(type_labels), "Dark 3"), type_labels)
+sort(table(project_types), decreasing = TRUE)
+#> project_types
+#>          Transportation              Wastewater                   Water 
+#>                      63                      48                      46 
+#>  Stormwater Engineering      Parks & Recreation Contract Administration 
+#>                      19                      17                       4 
+#>     Facility Management 
+#>                       4
 ```
 
-The project identifier deserves a separate check. Blank identifiers are
-treated as missing. Repeated nonblank values suggest that one project
-may have several mapped points. Some nonblank values could also be
-placeholder codes; the City would need to confirm their meaning before
-anyone uses IDs to count distinct projects.
+The printed output pairs each type label with its number of points
+available to map. A missing-type group remains visible, but records
+without coordinates have already been excluded from these counts; use
+the original table when investigating all feature records.
+
+Draw the boundary first, then add the original point geometries. The map
+extent includes both layers so points beyond the backdrop are still
+visible; the legend sits beside the map to avoid covering locations.
 
 ``` r
 
-capital_projects$project_id <- trimws(as.character(capital_projects$projid))
-blank_id <- is.na(capital_projects$project_id) |
-  capital_projects$project_id == ""
-capital_projects$project_id[blank_id] <- NA_character_
-
-known_ids <- capital_projects$project_id[
-  !is.na(capital_projects$project_id)
-]
-id_frequency <- table(known_ids)
-
-data.frame(
-  check = c("Source feature rows", "Rows missing an ID", "IDs on multiple rows"),
-  value = c(nrow(capital_projects),
-            sum(is.na(capital_projects$project_id)),
-            sum(id_frequency > 1))
-)
+map_extent <- sf::st_bbox(c(sf::st_geometry(tampa_boundary),
+                           sf::st_geometry(mapped_projects)))
+layout(matrix(c(1, 2), nrow = 1), widths = c(3, 1.4))
+par(mar = c(4, 4, 3, 1))
+plot(sf::st_geometry(tampa_boundary), col = "grey95", border = "grey60",
+     xlim = map_extent[c("xmin", "xmax")],
+     ylim = map_extent[c("ymin", "ymax")], axes = TRUE,
+     xlab = "Longitude", ylab = "Latitude",
+     main = "Tampa's public infrastructure project locations", cex.main = 0.9)
+plot(sf::st_geometry(mapped_projects), add = TRUE, pch = 16, cex = 0.8,
+     col = type_colors[project_types])
+par(mar = c(1, 0, 3, 0))
+plot.new()
+legend("center", legend = c(type_labels, "City outline"),
+       col = c(type_colors, "grey60"),
+       pch = c(rep(16, length(type_labels)), NA),
+       lty = c(rep(NA, length(type_labels)), 1),
+       title = "Source project type", bty = "n", cex = 0.85)
 ```
 
-These are checks on *feature rows and ID values*, not a project total.
-We do not combine this point layer with other project geometries or
-remove rows merely because an ID repeats.
-
-## Create an infrastructure project map
-
-First remove points with missing geometry from the map. Keep them in the
-summary table: a record without coordinates still has a source category.
+![Tampa capital-project point locations colored by City project-type
+labels, over a shoreline-adjusted city boundary, with a separate
+legend.](mapping-capital-improvements_files/figure-html/capital-project-map-1.png)
 
 ``` r
 
-mapped_projects <- capital_projects[
-  !sf::st_is_empty(capital_projects),
-]
-if (nrow(mapped_projects) == 0) {
-  stop("No capital-project locations are available to map.")
-}
+layout(1)
 ```
 
-To keep the legend short, show the five most common named source types
-**among points with coordinates** in their own colors. Other named types
-share an `(Other types on map)` color, while missing types retain their
-own label. This groups labels **for display only**; the table below
-retains every source type.
+Each dot is one published feature location, colored by the source type.
+Dots can overlap, and a point does not describe the full length of a
+road project or the area affected by construction. The outline is the
+City’s shoreline-adjusted representation, not a legal survey.
+
+## 5. Read the geography
+
+In the October 24 snapshot, locations extend through the central part of
+the city and into both its northern and southern sections; they are not
+confined to one downtown site. The map also shows different project
+types occupying nearby locations, rather than distinct regions reserved
+for each type. These are observations of mapped locations, not
+measurements of service coverage.
+
+The City’s neighborhood labels help check the apparent concentration.
+Count all feature rows, including ones without geometry, and keep
+missing labels visible rather than assigning them to a neighborhood
+ourselves.
 
 ``` r
 
-visible_type_counts <- as.data.frame(
-  table(mapped_projects$project_category),
-  stringsAsFactors = FALSE
-)
-names(visible_type_counts) <- c("project_category", "plotted_locations")
-visible_type_counts <- visible_type_counts[
-  order(visible_type_counts$plotted_locations, decreasing = TRUE),
-]
-named_types <- visible_type_counts$project_category[
-  visible_type_counts$project_category != missing_label
-]
-top_types <- utils::head(named_types, 5)
+neighborhood_labels <- trimws(capital_projects$Neighborhood)
+neighborhood_labels[is.na(neighborhood_labels) | neighborhood_labels == ""] <-
+  "Not reported"
+neighborhood_counts <- sort(table(neighborhood_labels), decreasing = TRUE)
+head(neighborhood_counts, 10)
+#> neighborhood_labels
+#>               Not reported       Old Seminole Heights 
+#>                         14                         12 
+#>              Tampa Heights        Downtown River Arts 
+#>                         11                          9 
+#> Tampa Downtown Partnership  Interbay - South of Gandy 
+#>                          8                          6 
+#>         Bayshore Beautiful                  Drew Park 
+#>                          5                          5 
+#>      Gandy / Sun Bay South Southeast Seminole Heights 
+#>                          5                          5
 ```
+
+In the saved data, Old Seminole Heights has 12 feature rows and Tampa
+Heights has 11, more than any other reported neighborhood label. This
+gives two named areas to investigate further, rather than relying only
+on overlapping dots. Missing labels are not a geographic area, and the
+table uses publisher labels, not a new calculation of which boundary
+contains each point.
+
+## 6. What this map cannot tell us
+
+- The layer is the City’s public-facing selection, not a complete
+  inventory of infrastructure or capital spending. Blank areas do not
+  prove no work exists.
+- Several locations can share a project ID; nearby dots can overlap. We
+  have neither removed repeated IDs nor counted features as distinct
+  projects.
+- Points mark locations, not construction footprints. Separate line or
+  polygon layers could describe the same work and would need review
+  before combining.
+- Publisher updates can change records, labels, and coordinates.
+  Retrieval checks do not establish current construction status or
+  accuracy on the ground.
+- Clustering alone cannot show unequal funding or investment. That would
+  require reliable project-level costs, population and need, and
+  coverage information.
+
+Data: City of Tampa [capital-project
+layer](https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e)
+and [shoreline-adjusted
+boundary](https://tampa.maps.arcgis.com/home/item.html?id=ed03de89b95340359431d13bd2bc38f2),
+both recorded as CC0 in the checked catalog. Source details and
+retrieval times are retained in `tbod_provenance(capital_projects)` and
+`tbod_provenance(tampa_boundary)`.
+
+### Render with current data
+
+With the package, `sf`, `knitr`, `rmarkdown`, and Pandoc installed, run
+this from the repository root with internet access. Live retrieval
+errors stop the render instead of falling back to the saved data.
 
 ``` r
 
-other_label <- "(Other types on map)"
-if (other_label %in% mapped_projects$project_category) {
-  stop("The source uses the map grouping label; choose another label.")
-}
-mapped_projects$map_category <- mapped_projects$project_category
-other_type <- !mapped_projects$map_category %in%
-  c(top_types, missing_label)
-mapped_projects$map_category[other_type] <- other_label
+Sys.setenv(TAMPA_OPEN_DATA_LIVE = "true")
+rmarkdown::render("vignettes/mapping-capital-improvements.Rmd")
+Sys.unsetenv("TAMPA_OPEN_DATA_LIVE")
 ```
 
-The boundary is a light background. Project points sit on top and are
-colored by the source type. `ggplot2` handles the shared CRS, and the
-legend names the displayed categories.
-
-``` r
-
-project_map <- ggplot2::ggplot() +
-  ggplot2::geom_sf(data = tampa_boundary, fill = "#F1F4F5",
-                   color = "#8A9BA4", linewidth = 0.3) +
-  ggplot2::geom_sf(data = mapped_projects,
-                   ggplot2::aes(color = map_category),
-                   size = 1.8, alpha = 0.8) +
-  ggplot2::scale_color_brewer(palette = "Dark2", name = "Source project type") +
-  ggplot2::labs(
-    title = "Where are Tampa's mapped capital improvements?",
-    subtitle = "Public project locations from the City of Tampa",
-    caption = "Each dot is a mapped feature; one project can have several dots."
-  ) +
-  ggplot2::theme_minimal(base_size = 12) +
-  ggplot2::theme(axis.title = ggplot2::element_blank())
-print(project_map)
-```
-
-The live code above creates a color-coded map from the checked catalog
-layer. The map below provides a dated offline example using the City’s
-related [capital-project dashboard point
-layer](https://arcgis.tampagov.net/arcgis/rest/services/CapitalProjects/CapitalProjects/FeatureServer/0),
-saved in a [public GeoJSON
-archive](https://github.com/Jaclenga/Tampa-Development-Records/blob/main/data/raw/capital_improvements.geojson)
-on **August 23, 2026** ([retrieval
-note](https://github.com/Jaclenga/Tampa-Development-Records/blob/main/data/raw/snapshot_metadata.json)).
-Its 192 points and their `projtype` labels were saved together. As in
-the live code, the five most frequent types have their own colors, and
-the remaining types share an `(Other types on map)` color. The dashboard
-is a separate City service from the checked `capital-projects` endpoint,
-so its feature IDs and counts should not be combined with a current
-download. The light backdrop is the checked Tampa city boundary.
-
-![Dated map of 192 City of Tampa dashboard capital-project point
-features colored by the five most frequent project-type labels and an
-other-types group, over the shoreline-adjusted city
-boundary.](figures/tampa-capital-projects-by-type-2026-08-23.png)
-
-Dated map of 192 City of Tampa dashboard capital-project point features
-colored by the five most frequent project-type labels and an other-types
-group, over the shoreline-adjusted city boundary.
-
-## Summarize the results
-
-The table counts **source feature rows** by the City’s project-type
-label. It includes records without coordinates, so its counts may exceed
-the number of points on your live map. The first row identifies the most
-frequent label in *your* download; the answer can change as the
-publisher updates the layer.
-
-``` r
-
-category_summary <- as.data.frame(
-  table(capital_projects$project_category), stringsAsFactors = FALSE
-)
-names(category_summary) <- c("project_category", "feature_rows")
-category_summary <- category_summary[
-  order(category_summary$feature_rows, decreasing = TRUE),
-]
-knitr::kable(
-  category_summary,
-  row.names = FALSE,
-  caption = "City project-type labels by source feature row"
-)
-```
-
-For a fixed example visible in this offline article, the small table
-below counts the **192 dashboard point features** in the August 23
-archive used for the color map. These are not counts from the checked
-catalog endpoint. Run the code above for current values from that
-endpoint.
-
-| Source project type     | Feature rows |
-|:------------------------|-------------:|
-| Transportation          |           55 |
-| Water                   |           46 |
-| Wastewater              |           43 |
-| Stormwater Engineering  |           23 |
-| Parks & Recreation      |           17 |
-| Facility Management     |            4 |
-| Contract Administration |            4 |
-
-Transportation has the most source feature rows in this snapshot (55),
-followed by Water (46) and Wastewater (43). The bar chart repeats those
-counts; the color map shows where the same archived features were
-recorded.
-
-![Bar chart of the 192 City of Tampa dashboard capital-project source
-feature rows by project type on August 23,
-2026.](figures/tampa-capital-project-types-2026-08-23.png)
-
-Bar chart of the 192 City of Tampa dashboard capital-project source
-feature rows by project type on August 23, 2026.
-
-In the dated map, many dots cluster in central Tampa. Transportation and
-Wastewater points also appear farther north and south. These are visual
-impressions of published feature locations, not measured investment
-levels.
-
-The City’s `Neighborhood` field offers another simple view of
-concentration. The first row in this table has the most source feature
-rows with that label. These labels are not a spatial calculation, and
-some may be blank or missing.
-
-``` r
-
-capital_projects$source_neighborhood <- trimws(
-  as.character(capital_projects$Neighborhood)
-)
-missing_neighborhood <- is.na(capital_projects$source_neighborhood) |
-  capital_projects$source_neighborhood == ""
-missing_neighborhood_label <- "(Missing neighborhood)"
-if (missing_neighborhood_label %in%
-    capital_projects$source_neighborhood[!missing_neighborhood]) {
-  stop("The source uses the missing-neighborhood display label; choose another.")
-}
-capital_projects$source_neighborhood[missing_neighborhood] <-
-  missing_neighborhood_label
-neighborhood_summary <- as.data.frame(
-  table(capital_projects$source_neighborhood), stringsAsFactors = FALSE
-)
-names(neighborhood_summary) <- c("source_neighborhood", "feature_rows")
-neighborhood_summary <- neighborhood_summary[
-  order(neighborhood_summary$feature_rows, decreasing = TRUE),
-]
-knitr::kable(utils::head(neighborhood_summary, 10), row.names = FALSE)
-```
-
-Look at the map to see whether some category colors are concentrated or
-spread across Tampa. A cluster means more *features* are mapped there,
-not necessarily more distinct projects or dollars. A project may have
-several locations, and source coverage may vary by area. The map does
-not show funding amounts, construction progress, or completed
-infrastructure.
-
-## Limitations and next steps
-
-This is the City’s [public-facing capital-project
-layer](https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e),
-not a complete capital ledger. The checked catalog’s verification date
-does not measure the freshness of every record. Labels, identifiers, and
-locations can be missing or updated; one project may have multiple point
-features. The boundary is a shoreline-adjusted map representation, not a
-legal survey. Geographic concentration alone cannot establish whether
-investment is fair: population, need, project size, cost, and unmapped
-work would matter too.
-
-To adapt this workflow, search the checked catalog for another topic or
-publisher, inspect its source note and schema, then change the dataset
-ID and field names. A true line or polygon project layer would need its
-own source review and map symbol. Before combining layers, check whether
-their features share project identifiers. The [infrastructure
+Ordinary builds leave this variable unset and use the saved snapshot.
+When `sf` is unavailable, the page displays a saved map made from that
+same snapshot and skips spatial code; install `sf` to run the mapping
+steps. Dated observations above refer to the saved data, not future live
+renders. The [infrastructure
 article](https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.md)
-explores ID, status, phase, and cost fields in more detail.
+discusses project IDs, status, and cost fields in more detail.
