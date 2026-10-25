@@ -42,6 +42,14 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
+      - name: Install spatial libraries for macOS R-devel
+        if: runner.os == 'macOS' && matrix.config.r == 'devel'
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+        run: |
+          brew install pkg-config udunits gdal
+          echo "UDUNITS2_INCLUDE=$(brew --prefix udunits)/include" >> "$GITHUB_ENV"
+          echo "UDUNITS2_LIBS=$(brew --prefix udunits)/lib" >> "$GITHUB_ENV"
       - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
         with:
           extra-packages: any::rcmdcheck
