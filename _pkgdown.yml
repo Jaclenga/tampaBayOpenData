@@ -20,7 +20,7 @@ template:
 
 navbar:
   structure:
-    left: [get_started, articles, reference, data_coverage, changelog]
+    left: [get_started, articles, articles_menu, reference, data_coverage, changelog]
     right: [feedback, search]
   components:
     feedback:
@@ -31,6 +31,12 @@ navbar:
       href: articles/first-five-minutes.html
     articles:
       text: Articles
+      href: articles/index.html
+      id: articles-index
+    articles_menu:
+      text: ""
+      id: articles-menu
+      aria-label: Toggle articles menu
       menu:
         - text: More ways to get started
           href: articles/introduction.html
@@ -46,8 +52,6 @@ navbar:
           href: articles/mapping-capital-improvements.html
         - text: Infrastructure and capital projects
           href: articles/infrastructure-projects.html
-        - text: All articles
-          href: articles/index.html
     data_coverage:
       text: Data coverage
       href: articles/coverage.html
