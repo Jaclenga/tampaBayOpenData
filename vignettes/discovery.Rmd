@@ -36,6 +36,10 @@ tampaBayOpenData::tbod_dataset_info("construction-permits")[
   c("title", "scope_note", "verified")]
 ```
 
+The portal table lists organizations; the dataset tables list individual
+layers. Use `title` and `jurisdiction` to narrow the subject and place, then
+pass the chosen dataset `id` to inspection or retrieval, not the portal ID.
+
 `source = "checked"` reads the registry without HTTP. IDs such as
 `construction-permits` and `stpete-parks` are package names, not ArcGIS item
 IDs. `tbod_dataset_info(id)` gives the scope, terms, source URL, and endpoint
@@ -63,7 +67,7 @@ categories, publisher, and description in that order; title, ID, and source
 URL then break ties consistently. These are ordering rules,
 not measures of dataset quality or relevance to a specific analysis.
 
-```{r checked-search-ranking}
+```{r checked-search-ranking, eval=TRUE}
 tbod_search_datasets("permit", source = "checked", limit = 5)[,
   c("id", "title", "publisher")]
 tbod_search_datasets("permti", source = "checked", limit = 5)[,
@@ -71,6 +75,11 @@ tbod_search_datasets("permti", source = "checked", limit = 5)[,
 tbod_search_datasets("", source = "checked", limit = 5)[,
   c("id", "title", "publisher")]
 ```
+
+These are dataset suggestions, not permit records. Compare the typo search
+with the correctly spelled search: a spelling fallback helps locate a source,
+but its first result still needs a scope check. The empty search lists entries
+without restricting the topic.
 
 `limit` is a nonnegative whole number or `Inf` (the default). It selects the
 first rows **after** source discovery, checked overlay, filtering, and ranking.
@@ -91,6 +100,11 @@ if (nrow(found)) {
   tbod_dataset_info(selected)
 }
 ```
+
+Expect a table with one row per discovered layer, or no rows if nothing is
+found within the scan. `modified` dates the portal item, while `item_id`,
+`service_url`, and `layer_id` locate its source; inspecting the first row is
+an example, not a recommendation to use the highest-ranked hit.
 
 By default, `tbod_list_datasets()` and `tbod_search_datasets()` use `source = "all"`:
 they search all six portals and include the checked catalog.
@@ -207,6 +221,11 @@ attr(results, "discovery_scanned_items")
 attr(results, "discovery_issues")
 attr(results, "discovery_failed_portals")
 ```
+
+The first output is a logical value: `FALSE` means you should investigate the
+remaining diagnostics before interpreting an empty or short result. The
+truncated and failed portal outputs name where the scan stopped or failed;
+they do not count missing datasets.
 
 Check `discovery_complete` before treating results as a complete scan of the
 selected public portal indexes. It does not establish a complete inventory of

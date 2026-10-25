@@ -33,6 +33,16 @@ head(permits)
 tbod_provenance(permits)[c("matched_rows", "returned_rows", "complete", "integrity")]
 ```
 
+Expect a tibble (a data frame) with up to 100 active permit-viewer feature
+rows and the three requested columns. `RECORD_ID` identifies the source record,
+`PROJECTSTATUS` is its label, and `LASTUPDATE` is an update time, not an issue
+date. The filter excludes missing statuses but does not select a particular status.
+
+The provenance output is a named list: `matched_rows` counts matches at the
+source, `returned_rows` counts downloaded rows, and `complete` says whether
+all matches were returned. `integrity` names the membership check used; it
+does not assess whether the publisher's attributes are correct.
+
 `where` uses ArcGIS SQL; `fields` requires exact source field names. Inspect
 current fields with
 `tbod_dataset_info("construction-permits", refresh = TRUE)$fields`; its metadata
@@ -86,6 +96,11 @@ report <- tbod_check_schema("construction-permits")
 report$status
 report$issues[, c("category", "severity", "field", "expected", "actual")]
 ```
+
+In the issues table, `field` identifies an affected column, `expected` is the
+saved definition, and `actual` is the current one; `category` and `severity`
+describe the difference and its effect on retrieval. An empty issues table
+means no reported differences, not that individual records have been validated.
 
 The status is `"unchanged"`, `"compatible"`, or `"incompatible"`. Added fields
 and changed aliases warn but allow retrieval. Removed or renamed fields, type
@@ -196,6 +211,11 @@ boundary <- tbod_get_dataset(
 sf::st_crs(projects)$epsg
 ```
 
+Both results are `sf` tables: their geometry columns hold case points and a
+boundary outline respectively. The printed `4326` confirms the requested
+longitude-latitude coordinate reference system (CRS), the rule for interpreting
+coordinates; it does not establish location accuracy.
+
 The layers use one CRS for the map. Exclude empty case geometries from the
 display:
 
@@ -221,6 +241,11 @@ if (nrow(mapped_projects) > 0L) {
 }
 ```
 
+The dots show where active case features are recorded relative to the outline;
+nearby or overlapping dots do not by themselves establish a count of distinct
+developments or completed buildings. Rows without geometry remain in `projects`
+but cannot appear on this map.
+
 The checked `city-boundary` layer follows a shoreline representation and is
 map context, not a legal survey boundary. See [coverage and source
 limits](coverage.html) before interpreting a map or its record counts.
@@ -245,6 +270,12 @@ saved$complete
 first_chunk <- readRDS(saved$files[[1]])
 tbod_provenance(first_chunk)
 ```
+
+`saved` is a download summary, not a table of permits. Its `files` component
+lists local chunk paths; `first_chunk` contains only the first file's records,
+so that file alone should not be treated as the whole download. A query with
+no matches may have no chunk to read; check `length(saved$files)` first when
+adapting this example to a filtered request.
 
 Repeat the same call to resume. The client rechecks the schema and full ID
 manifest, verifies saved chunks against checkpoints, and downloads missing

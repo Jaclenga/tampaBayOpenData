@@ -1,0 +1,24 @@
+Snapshot for "Where Are Tampa's Public Infrastructure Projects?"
+
+Publisher: City of Tampa
+Checked IDs: capital-projects and city-boundary
+Projects source: https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e
+Boundary source: https://tampa.maps.arcgis.com/home/item.html?id=ed03de89b95340359431d13bd2bc38f2
+Both source items recorded as CC0 in the checked catalog.
+Projects retrieved: 2026-10-25 02:35:57 UTC (October 24, Eastern time).
+
+tampa-infrastructure.rds contains the original sf results, including source
+provenance, saved as a list named capital_projects and tampa_boundary.
+The vignette's download chunk reproduces both bounded requests. The save-data
+chunk reproduces the list; use this snapshot path when deliberately updating
+it. Both downloads were complete: 201 project features and one boundary
+feature. No project geometry was missing. No IDs were deduplicated, and no
+geometry was converted to another type.
+
+The default vignette executes its mapping code on this snapshot when sf is
+installed. figures/tampa-infrastructure-snapshot.png is the same map extracted
+from the rendered vignette, for builds without the optional sf package.
+Update that image and the dated prose when changing the snapshot. Source
+metadata, query, field schemas, counts, and UTC timestamps remain available
+through tbod_provenance() on each saved object. Live rendering never silently
+substitutes this snapshot after a retrieval failure.

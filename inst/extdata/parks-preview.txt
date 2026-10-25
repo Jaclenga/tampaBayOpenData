@@ -1,0 +1,28 @@
+Saved data for first-five-minutes.Rmd
+
+Publisher: Hillsborough County
+Dataset: Hillsborough County parks and recreation properties
+Checked ID: hillsborough-parks
+Source: https://hillsborough.maps.arcgis.com/home/item.html?id=96d17f4369f14bc5b283d8863b016373
+Layer: https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Parks_and_Recreation/FeatureServer/0
+License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+Retrieved: 2026-10-25 02:32:22 UTC (October 24 in America/New_York)
+
+parks-preview.rds is the unmodified result of:
+  library(tampaBayOpenData)
+  parks <- tbod_get_dataset("hillsborough-parks", limit = 100)
+  saveRDS(parks, "inst/extdata/parks-preview.rds")
+
+It contains 100 of 541 matching property records at retrieval time, not a
+random sample or complete park inventory. Its attached source attributes
+preserve retrieval provenance, query, schema, and publisher metadata.
+After installation, read the saved table and its provenance with:
+  parks_file <- system.file("extdata", "parks-preview.rds",
+                            package = "tampaBayOpenData", mustWork = TRUE)
+  parks <- readRDS(parks_file)
+  tbod_provenance(parks)
+
+The vignette always uses this real snapshot for offline builds. Its separate
+live retrieval option is displayed but never evaluated by a build. Updating
+the snapshot requires updating this note and the dated interpretation in the
+vignette after checking the new data. No synthetic records were added.
