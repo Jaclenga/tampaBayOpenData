@@ -33,8 +33,9 @@ tbod_search_datasets(
 - query:
 
   A single search string. Checked matching treats punctuation literally
-  and ignores case. Separate words must all match. An empty or
-  whitespace-only query lists datasets.
+  and ignores case; its separate words must all match. Live matching
+  uses the ArcGIS portal index. An empty or whitespace-only query lists
+  datasets.
 
 - jurisdiction:
 
