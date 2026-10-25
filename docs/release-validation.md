@@ -1,31 +1,30 @@
 # Release validation: tampaBayOpenData 0.1.0
 
-Validation date: October 24, 2026, America/New_York. Machine-readable logs use
-UTC and therefore include October 25. This report distinguishes the committed
-baseline from the locally corrected candidate. No release was published,
-submitted, committed, or pushed by this audit.
+Initial validation: October 24, 2026, America/New_York. Cross-platform follow-up:
+October 25. Machine-readable logs use UTC. The maintainer authorized commits
+and pushes to `validation/cran-0.1.0-20261025` for this follow-up; `main` was
+not changed. No CRAN submission or GitHub release was made.
 
 ## A. Release candidate
 
 The baseline is commit `98d9780ef89d65e6211a030df10751c2a693e62f` on `main`;
-the working tree was clean at inspection. The final candidate is that commit
-plus the changes listed below, with the package version unchanged at `0.1.0`.
-It is an uncommitted candidate, not a new Git revision.
+the working tree was clean at inspection. The qualification candidate is
+commit `0db68d969d0a8a23be55ae114d2900d9a8b4bcfc` on
+`validation/cran-0.1.0-20261025`, with the package version unchanged at `0.1.0`.
+Report-only follow-up commits are excluded from the package by `.Rbuildignore`.
 
-- Archive: [tampaBayOpenData_0.1.0.tar.gz](../.artifacts/release-validation/final3-run/tampaBayOpenData_0.1.0.tar.gz).
-- SHA-256: `252D801FA434B618B62BC8F9A4300A7808CE707D1A6004AE1F289E88DCC77171`.
-- Size: 985,279 bytes.
+- Archive: [tampaBayOpenData_0.1.0.tar.gz](../.artifacts/release-validation/qualified-source-run/tampaBayOpenData_0.1.0.tar.gz).
+- SHA-256: `1326FAD31468F2C0229D16C3EE71B2ED2F4B2894F82953FD50EEE0CDD3BBC60E`.
+- Size: 983,180 bytes.
 - Build: Windows 11 x64 build 26300, R 4.5.1 (2025-06-13), locale `C`,
   `TZ=UTC`; all nine vignettes built with live retrieval disabled.
-- [Source manifest](../.artifacts/release-validation/final-source-manifest.sha256)
-  SHA-256: `2AB5AB0A03C7032A49FA5E8FBFF40316CA4242DDB1705D79B9E8DAA99CCA8E91`.
-- [Source patch](../.artifacts/release-validation/final-source.patch),
-  [tarball member list](../.artifacts/release-validation/final-tarball-files.txt),
-  and [build log](../.artifacts/release-validation/final3-run/build.log).
+- [Staged Git source manifest](../.artifacts/release-validation/qualification-ci/qualified-source-manifest.sha256).
+  SHA-256: `ACBA42BC2D803708B6E68B9B99B043B291B25BDF6212DE9D5E3C43FC64510609`.
+- [Tarball member list](../.artifacts/release-validation/qualification-ci/qualified-tarball-files.txt)
+  and [build log](../.artifacts/release-validation/qualified-source-run/build.log).
 
-The patch records tracked-file edits; the newly located assets are recorded
-in the manifest and included in the source archive. Their RDS and PNG hashes
-match the original assets byte for byte.
+The source was exported from the committed Git tree before building. The
+relocated RDS and PNG hashes match the original assets byte for byte.
 
 The source was staged separately from the working repository using tracked
 files plus the deliberately relocated tutorial assets. The archive contains
@@ -46,25 +45,70 @@ and [R 4.6 dependency installation log](../.artifacts/release-validation/install
 
 ## B. Cross-platform results
 
-### Final prebuilt archive
+### Corrected candidate qualification (October 25)
 
-Only results against the SHA-256 above belong in this table. A reused archive
-has `NOT RUN` in the Build column when no separate native build was performed.
-Local remote CRAN incoming checks were disabled explicitly; this does not
-validate external URLs or ORCID availability.
+[Run 40162249386](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/40162249386)
+executed all seven configurations against commit
+`0db68d969d0a8a23be55ae114d2900d9a8b4bcfc`. Every job built a source
+tarball, installed it, ran `R CMD check --as-cran --no-manual`, executed tests
+and examples, and rebuilt the vignettes. The actual job logs and downloaded
+check artifacts were inspected; all seven `00check.log` files end in
+`Status: OK`, with no errors, warnings, or notes.
+
+| OS | R version | Build | Check | Errors | Warnings | Notes | Evidence |
+|---|---|---|---|---|---|---|---|
+| Ubuntu 24.04.5 x64 | release 4.6.1 | PASS | PASS | 0 | 0 | 0 | [Job 121076060040](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/40162249386/job/121076060040) |
+| Ubuntu 24.04.5 x64 | devel 4.7.0, 2026-10-23 r90760 | PASS | PASS | 0 | 0 | 0 | [Job 121076059942](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/40162249386/job/121076059942) |
+| Ubuntu 24.04.5 x64 | oldrel 4.5.3 | PASS | PASS | 0 | 0 | 0 | [Job 121076059997](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/40162249386/job/121076059997) |
+| Windows Server 2022 x64 | release 4.6.1 | PASS | PASS | 0 | 0 | 0 | [Job 121076059747](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/40162249386/job/121076059747) |
+| Windows Server 2022 x64 | devel 4.7.0, 2026-10-23 r90760 | PASS | PASS | 0 | 0 | 0 | [Job 121076059950](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/40162249386/job/121076059950) |
+| macOS Tahoe 26.6.2 ARM64 | release 4.6.1 | PASS | PASS | 0 | 0 | 0 | [Job 121076059952](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/40162249386/job/121076059952) |
+| macOS Tahoe 26.6.2 ARM64 | devel 4.7.0, 2026-10-24 r90762 | PASS | PASS | 0 | 0 | 0 | [Job 121076059972](https://github.com/Jaclenga/tampaBayOpenData/actions/runs/40162249386/job/121076059972) |
+
+Windows recorded 6,350 passing assertions per job; Linux and macOS recorded
+6,349 each. All jobs had zero test failures, zero test warnings, and 23
+documented skips. The extra Windows assertion verifies native cleanup's exit
+status; all platforms verify that the test link disappears and its target
+survives. No test was weakened to remove a warning.
+
+The CI jobs built separate archives rather than checking the identical bytes
+of the local archive in section A. Their SHA-256 hashes, R versions, test
+summaries, and check statuses are recorded in
+[results.csv](../.artifacts/release-validation/qualification-ci/results.csv).
+All 123 selected code, test, Rd, vignette-source, catalog/schema, and binary
+asset files matched the committed source in every archive, with text line
+endings normalized; see
+[source-equivalence.csv](../.artifacts/release-validation/qualification-ci/source-equivalence.csv).
+Generated HTML and build metadata were not asserted byte-identical.
+All seven archived parks HTML files contained their rendered chart; the
+Linux release, Windows devel, and macOS devel charts were also visually
+inspected for readable bars and labels. See the
+[HTML inspection log](../.artifacts/release-validation/qualification-ci/html-inspection.log).
+
+CI uses the R actions' defaults: CRAN incoming checks and remote clock
+verification are disabled. These successful runs do not establish external
+URL/ORCID verification. The local check below retains the clock check.
+
+The exact archive in section A also passed a complete local Windows R 4.6.1
+`R CMD check --as-cran`: **0 errors, 0 warnings, 1 clock note**, 6,350 passing
+assertions, zero test warnings, and 23 skips. Examples, all nine vignette
+rebuilds, and PDF/HTML manuals passed. See its
+[check log](../.artifacts/release-validation/qualified-windows461-run/tampaBayOpenData.Rcheck/00check.log).
+
+### Earlier local archive (October 24)
+
+These historical results checked the earlier archive with SHA-256
+`252D801FA434B618B62BC8F9A4300A7808CE707D1A6004AE1F289E88DCC77171`,
+not the follow-up archive in section A. A reused archive has `NOT RUN` in the
+Build column when no separate native build was performed. Local remote CRAN
+incoming checks were disabled explicitly; this does not validate external
+URLs or ORCID availability.
 
 | OS | R version | Build | Check | Errors | Warnings | Notes | Evidence |
 |---|---|---|---|---|---|---|---|
 | Windows 11 x64 | 4.5.1 | PASS | PASS | 0 | 0 | 1 | [Local log](../.artifacts/release-validation/final3-windows451-run/tampaBayOpenData.Rcheck/00check.log) |
 | Windows 11 x64 | 4.6.1 release | NOT RUN | PASS | 0 | 0 | 1 | [Local log](../.artifacts/release-validation/final3-windows461-run/tampaBayOpenData.Rcheck/00check.log) |
 | Ubuntu 24.04.3, WSL2 x64 | 4.3.3, additional compatibility check | NOT RUN | FAIL | 0 | 1 | 2 | [Local log](../.artifacts/release-validation/final3-linux433-run/console.log) |
-| Ubuntu Linux | release | NOT RUN | NOT RUN | — | — | — | Baseline CI below is a different artifact |
-| Ubuntu Linux | devel | NOT RUN | NOT RUN | — | — | — | Baseline CI below is a different artifact |
-| Ubuntu Linux | oldrel | NOT RUN | NOT RUN | — | — | — | Baseline CI below is a different artifact |
-| Windows | devel | NOT RUN | NOT RUN | — | — | — | Added to CI; no run of the updated workflow |
-| macOS Apple Silicon | release | NOT RUN | NOT RUN | — | — | — | Baseline CI below is a different artifact |
-| macOS Apple Silicon | devel | NOT RUN | NOT RUN | — | — | — | Added to CI; no run of the updated workflow |
-| macOS Intel | release/devel | NOT RUN | NOT RUN | — | — | — | No Intel runner used in this audit |
 
 The additional Linux check completed, but fails a strict no-warning gate;
 its missing-tool warning and two notes are classified in Finding 8.
@@ -103,7 +147,10 @@ platform builds; none is asserted to equal the local final tarball.
 
 ### Category A: deterministic, offline qualification
 
-- Both final Windows checks passed 6,347 assertions with zero test failures or
+- The current candidate's seven-platform results and exact local-archive
+  check are recorded above. All 23 skips remain the same opt-in live and
+  excluded development-tool cases as in the initial audit.
+- Both original local Windows checks passed 6,347 assertions with zero test failures or
   test warnings and 23 documented skips. Examples, all nine vignette rebuilds,
   and PDF/HTML manuals passed. Their only check NOTE was inability to verify
   current time remotely. Linux R 4.3.3 also passed 6,347 assertions with zero
@@ -154,6 +201,9 @@ Additional Linux evidence:
 [installed rendering](../.artifacts/release-validation/tutorials-linux.log),
 [filesystem/time zones](../.artifacts/release-validation/stress-linux.log),
 and [installation](../.artifacts/release-validation/linux-installed.log).
+The final qualified archive's installed parks and mapping sources were also
+rendered with HTTP blocked, with zero attempted requests:
+[qualified-tutorials.log](../.artifacts/release-validation/qualification-ci/qualified-tutorials.log).
 
 The reviewed suite deterministically exercises timeouts, rate limits,
 Retry-After handling, HTTP/ArcGIS errors, invalid JSON, empty responses,
@@ -170,8 +220,9 @@ the same counting/chart code. Two additional requests retrieved at most two
 features each from `capital-projects` and `city-boundary`, with `spatial=TRUE`
 and `out_sr=4326`; returned CRS and provenance checks passed.
 
-The log records exact endpoints, UTC times, returned/matching counts, and
-completeness: [final-live.log](../.artifacts/release-validation/final-live.log).
+The final qualification log records exact endpoints, UTC times,
+returned/matching counts, and completeness:
+[qualified-live.log](../.artifacts/release-validation/qualification-ci/qualified-live.log).
 The live parks and capital-project results were deliberately incomplete
 previews; the one-feature boundary was complete. This smoke check passed but
 does **not** establish that every checked layer or live discovery path works.
@@ -186,12 +237,15 @@ was intentionally overloaded or asked to manufacture failure responses.
    the 16-function namespace and public signatures are unchanged. The
    hand-authored catalog-health help page is intentionally not generated.
 
-2. **Windows test cleanup defect — resolved.** Baseline CI's
-   `test-download.R` recursively removed a temporary junction. A local R 4.6.1
-   reproduction showed that nonrecursive `unlink()` removes the link while
-   retaining its target and marker file. Changed only cleanup to nonrecursive
-   removal, preserving the existing path-containment checks and all rejection
-   assertions. The focused download suite passed without the junction warning.
+2. **Windows test cleanup defect — resolved and verified remotely.** Baseline
+   CI's `test-download.R` could not remove a redirected test directory because
+   of a Windows reparse-tag mismatch. Nonrecursive `unlink()` passed locally
+   but retained the warning on hosted Windows release/devel runners. Cleanup
+   now uses PowerShell's nonrecursive `[System.IO.Directory]::Delete()` on
+   Windows and `unlink()` on Unix. Existing path-containment and rejection
+   assertions remain, with additional assertions for successful cleanup and
+   preservation of the target. Both final Windows jobs passed without the
+   test or session-cleanup warnings; no warnings were suppressed.
 
 3. **Installed tutorial defect — resolved.** Re-rendering the installed
    mapping Rmd failed at `readRDS("data/tampa-infrastructure.rds")`; its data
@@ -201,12 +255,18 @@ was intentionally overloaded or asked to manufacture failure responses.
    dependency, geometry transformation, or public function was introduced.
    Installed renders with and without `sf` now pass offline.
 
-4. **CI coverage gap — configured, NOT RUN.** Added Windows R-devel and
-   macOS R-devel to the existing matrix. The pinned maintained R actions,
-   caching, artifact uploads, read-only permissions, PR/main triggers, and
-   separate bounded live workflow remain in place. YAML parsed successfully;
-   seven matrix configurations were verified. The updated workflow has not
-   run, and it was not pushed. Intel macOS remains untested.
+4. **CI coverage gap — resolved for the requested matrix.** Added Windows
+   R-devel and macOS R-devel and executed all seven jobs on the corrected
+   candidate. The initial macOS R-devel attempt failed while installing
+   `units`, before package checks, because UDUNITS2 was absent. A conditional
+   Homebrew step now installs `pkg-config`, `udunits`, and `gdal` and supplies
+   the documented UDUNITS2 include/library paths. This follows the
+   [units configuration](https://github.com/r-quantities/units/blob/main/configure.ac)
+   and [sf installation guidance](https://github.com/r-spatial/sf/blob/main/README.md).
+   Both the system-library fix and Windows cleanup correction were verified
+   by the final matrix. YAML was validated before execution. The pinned
+   actions, caching, artifacts, read-only permissions, and separate live
+   workflow remain. Intel macOS remains untested.
 
 5. **Local environment issues — isolated.** Early Windows R 4.6.1 attempts
    loaded an old unprefixed package from a portable runtime's forced
@@ -233,11 +293,11 @@ was intentionally overloaded or asked to manufacture failure responses.
    the exercised base-R file operations.
 
 8. **Final check diagnostics — investigated, no package change required.**
-   Both Windows checks report `unable to verify current time` (R 4.6.1 uses
+   The local Windows checks report `unable to verify current time` (R 4.6.1 uses
    capitalized wording). The clock check remained enabled; no package dates
    or timestamps were changed to hide the note. Remote package-index access
    warnings are retained in console logs; dependency checks still completed.
-   R 4.5.1 also reports that its local testthat binary was built under R 4.5.3;
+   The historical R 4.5.1 check also reports that its local testthat binary was built under R 4.5.3;
    this dependency-version warning precedes tests, whose warning count is zero.
    The newer R 4.6.1 dependency library does not have that mismatch.
 
@@ -253,12 +313,13 @@ was intentionally overloaded or asked to manufacture failure responses.
 
 ## E. Remaining risks
 
-The final corrected artifact still needs the current Linux release/devel and
-Windows devel checks, and macOS qualification. Baseline CI is encouraging
-evidence but cannot certify the changed artifact. Linux R 4.3.3 is an extra
-compatibility result, not a substitute for release or devel. R 4.1, declared
-as the minimum, was not executed. The local Linux check omits the PDF manual;
-the baseline CI jobs also use `--no-manual`.
+The required Linux release/devel and Windows release/devel checks, Linux
+oldrel, and macOS ARM64 release/devel qualification have now executed and
+passed on the corrected source. Intel macOS and R 4.1, declared as the
+minimum, were not executed. Linux R 4.3.3 is only an additional historical
+compatibility check; its missing-qpdf warning was not hidden or counted as a
+clean check. CI omits the PDF manual; the exact current archive's local
+Windows check passed both PDF and HTML manual checks.
 
 External URL/ORCID checks, the full live suite, Intel macOS, and Windows ACL
 restrictions remain unverified. Native curl, GDAL, GEOS, and PROJ behavior
@@ -282,7 +343,7 @@ R CMD check --as-cran --library=/absolute/path/to/clean-library tampaBayOpenData
 commands and environment. For example, from the repository root:
 
 ```powershell
-& .artifacts/release-validation/run.ps1 -Action check -Stage repeat-windows451 -ArtifactStage final3
+& .artifacts/release-validation/run.ps1 -Action check -Stage repeat-windows451 -ArtifactStage qualified-source
 ```
 
 The dependency inventory, final source manifest, source archive, and logs are
@@ -294,10 +355,14 @@ report can be updated without changing the checked package payload.
 
 ## F. CRAN readiness decision
 
-**NOT READY.** No release-blocking package defect was found in the completed
-final checks, but required qualification of this corrected artifact is
-incomplete: current Linux release/devel and Windows devel results are missing.
-The baseline matrix cannot certify a changed tarball, and the additional
-Linux R 4.3.3 check has a documented missing-tool warning. Complete the
-remaining matrix and review those diagnostics before submitting. No submission
-or release publication was attempted.
+**CONDITIONALLY READY.** The previously missing platform checks are complete:
+all seven requested configurations passed on the corrected candidate, and no
+known release-blocking package defect remains. The earlier **NOT READY**
+decision based on an incomplete matrix is superseded.
+
+Remaining noncritical validation gaps are the unexecuted Intel macOS/minimum-R
+configurations, full live suite beyond the bounded smoke checks, and remote
+CRAN incoming URL/ORCID verification. The maintainer should review the latter
+before submission. This decision does not claim that every platform checked
+the identical local tarball bytes; the platform archives and source-equivalence
+evidence are preserved. No CRAN submission or release publication was attempted.
