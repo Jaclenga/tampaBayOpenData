@@ -93,6 +93,32 @@ jobs:
           if (!identical(normalize(expected), normalize(actual))) {
             stop("Generated homepage description does not match _pkgdown.yml")
           }
+      - name: Verify shared feedback navigation
+        shell: Rscript {0}
+        run: |
+          feedback <- yaml::read_yaml("_pkgdown.yml")$navbar$components$feedback
+          required <- file.path("_site", c("index.html",
+            "articles/first-five-minutes.html", "articles/index.html",
+            "reference/index.html", "reference/tbod_get_dataset.html",
+            "articles/coverage.html", "news/index.html"))
+          stopifnot(all(file.exists(required)))
+          pages <- list.files("_site", pattern = "\\.html$", recursive = TRUE,
+                              full.names = TRUE)
+          checked <- 0L
+          for (page in pages) {
+            html <- xml2::read_html(page)
+            navbar <- xml2::xml_find_all(html, ".//nav[@aria-label='Site navigation']")
+            # pkgdown redirect pages have no navigation.
+            if (!length(navbar) && !page %in% required) next
+            links <- xml2::xml_find_all(navbar, ".//a")
+            feedback_links <- links[trimws(xml2::xml_text(links)) == feedback$text]
+            if (length(feedback_links) != 1L ||
+                !identical(xml2::xml_attr(feedback_links, "href"), feedback$href)) {
+              stop("Missing, duplicated, or incorrect feedback link in ", page)
+            }
+            checked <- checked + 1L
+          }
+          message("Verified shared feedback navigation on ", checked, " pages")
       - name: Verify main has not advanced
         if: github.ref == 'refs/heads/main'
         shell: bash
