@@ -1,3 +1,8 @@
+/* In the collapsed navbar, place the article list below its split controls. */
+.articles-split > .dropdown-menu {
+  flex-basis: 100%;
+}
+
 /* Keep the landing page readable while leaving reference and article layouts native. */
 .template-home #main .page-header {
   min-height: 0;
