@@ -57,7 +57,7 @@ tbod_check_catalog(
 A tibble with one row per selected entry and `publisher`,
 `jurisdiction`, `dataset_id`, `endpoint`, `checked_at` (UTC POSIXct),
 `status` (`healthy`, `unavailable`, `schema_changed`, `unsupported`, or
-`unknown`), `failure_type`, `http_status`, `service_status`, and
+`unknown`), `failure_type`, `http_status`, `service_status` and
 `layer_status` (`available`, `unavailable`, or `unknown`),
 `schema_status` (`unchanged`, `compatible`, `incompatible`, or
 `unavailable`), `schema_issues` (a list of issue tibbles), and
@@ -86,10 +86,10 @@ from 0 to 10).
 the schema matches the saved snapshot. `schema_changed` includes both
 compatible and incompatible drift; inspect `schema_status` and
 `schema_issues`. Confirmed schema drift remains `schema_changed` if
-Query capability is unreported. A missing object-ID field is reported as
-schema drift when a baseline exists; the details also identify
-unsupported record retrieval. With no saved baseline, `schema_status` is
-`unavailable` and `status` is `unknown`. `unsupported` includes layers
+Query capability is unreported. With no saved baseline, `schema_status`
+is `unavailable` and `status` is `unknown`. A missing object-ID field is
+reported as schema drift when a baseline exists; the details also
+identify unsupported record retrieval. `unsupported` includes layers
 that cannot be queried and access failures. By default the check does
 not retrieve features or run count and object-ID queries. A layer can
 advertise Query yet fail those operations during retrieval. Set

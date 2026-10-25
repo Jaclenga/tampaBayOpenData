@@ -47,7 +47,7 @@ result is a point-in-time metadata check, not a measure of record freshness."></
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Check the current health of checked catalog layers</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/R/catalog-health.R" class="external-link"><code>R/catalog-health.R</code></a></small>
       <div class="d-none name"><code>tbod_check_catalog.Rd</code></div>
     </div>
 
@@ -111,18 +111,17 @@ behavior. Query probes do not retrieve features.</p></dd>
     <p>A tibble with one row per selected entry and <code>publisher</code>,
 <code>jurisdiction</code>, <code>dataset_id</code>, <code>endpoint</code>, <code>checked_at</code> (UTC POSIXct),
 <code>status</code> (<code>healthy</code>, <code>unavailable</code>, <code>schema_changed</code>, <code>unsupported</code>, or
-<code>unknown</code>), <code>failure_type</code>, <code>http_status</code>, <code>service_status</code>,
-and <code>layer_status</code> (<code>available</code>, <code>unavailable</code>, or <code>unknown</code>),
+<code>unknown</code>), <code>failure_type</code>, <code>http_status</code>, <code>service_status</code> and
+<code>layer_status</code> (<code>available</code>, <code>unavailable</code>, or <code>unknown</code>),
 <code>schema_status</code> (<code>unchanged</code>, <code>compatible</code>, <code>incompatible</code>, or
-<code>unavailable</code>), <code>schema_issues</code> (a list of issue tibbles), and
-<code>details</code>. <code>health_state</code> summarizes status as <code>healthy</code>, <code>degraded</code>,
-<code>unavailable</code>, or <code>unknown</code>. <code>response_time_ms</code> is elapsed request
-time including retries and a missing-layer service-root probe, excluding
-deliberate pauses; it is missing if no request was made. <code>query_status</code> is
-<code>not_checked</code>, <code>verified</code>, <code>failed</code>, or <code>unknown</code>;
-<code>query_failure_type</code>, <code>query_http_status</code>, and <code>query_details</code>
-explain a failed or uncertain probe. <code>http_status</code> is missing when no
-metadata HTTP response was received.</p>
+<code>unavailable</code>), <code>schema_issues</code> (a list of issue tibbles), and <code>details</code>.
+<code>health_state</code> summarizes status as <code>healthy</code>, <code>degraded</code>, <code>unavailable</code>,
+or <code>unknown</code>. <code>response_time_ms</code> is elapsed request time including retries
+and a missing-layer service-root probe, excluding deliberate pauses; it is
+missing if no request was made. <code>query_status</code> is <code>not_checked</code>, <code>verified</code>,
+<code>failed</code>, or <code>unknown</code>; <code>query_failure_type</code>, <code>query_http_status</code>, and
+<code>query_details</code> explain a failed or uncertain probe. <code>http_status</code> is
+missing when no metadata HTTP response was received.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -139,10 +138,10 @@ from 0 to 10).</p>
 schema matches the saved snapshot. <code>schema_changed</code> includes both
 compatible and incompatible drift; inspect <code>schema_status</code> and
 <code>schema_issues</code>. Confirmed schema drift remains <code>schema_changed</code> if Query
-capability is unreported. A missing object-ID field is reported as schema
+capability is unreported. With no saved baseline, <code>schema_status</code> is <code>unavailable</code>
+and <code>status</code> is <code>unknown</code>. A missing object-ID field is reported as schema
 drift when a baseline exists; the details also identify unsupported record
-retrieval. With no saved baseline, <code>schema_status</code> is
-<code>unavailable</code> and <code>status</code> is <code>unknown</code>. <code>unsupported</code> includes layers
+retrieval. <code>unsupported</code> includes layers
 that cannot be queried and access failures. By default the check does not
 retrieve features or run count and object-ID queries. A layer can advertise Query
 yet fail those operations during retrieval. Set <code>probe_query = TRUE</code> to
