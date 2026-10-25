@@ -216,7 +216,6 @@ tbod_schema <- function(id, jurisdiction = NULL, refresh = FALSE,
                    actual = as.character(actual_value))
   }
   issues <- .schema_issue_table()
-  add <- function(row) issues <<- rbind(issues, row)
   expected_fields <- .schema_field_table(expected$fields)
   actual_fields <- .schema_field_table(actual$fields)
   removed <- setdiff(expected_fields$name, actual_fields$name)
@@ -238,10 +237,10 @@ tbod_schema <- function(id, jurisdiction = NULL, refresh = FALSE,
         (identical(other_row$alias, old_row$alias) && nzchar(old_row$alias))
     }, logical(1))]
     if (length(reverse) != 1L) next
-    add(issue("renamed_field", "incompatible", old, old, new))
+    issues <- rbind(issues, issue("renamed_field", "incompatible", old, old, new))
     new_row <- actual_fields[match(new, actual_fields$name), , drop = FALSE]
     if (!identical(old_row$type, new_row$type)) {
-      add(issue("changed_type", "incompatible", new, old_row$type,
+      issues <- rbind(issues, issue("changed_type", "incompatible", new, old_row$type,
                 new_row$type))
     }
     removed <- setdiff(removed, old)
@@ -249,40 +248,40 @@ tbod_schema <- function(id, jurisdiction = NULL, refresh = FALSE,
   }
   for (name in removed) {
     row <- expected_fields[match(name, expected_fields$name), , drop = FALSE]
-    add(issue("removed_field", "incompatible", name, row$type, ""))
+    issues <- rbind(issues, issue("removed_field", "incompatible", name, row$type, ""))
   }
   for (name in added) {
     row <- actual_fields[match(name, actual_fields$name), , drop = FALSE]
-    add(issue("added_field", "compatible", name, "", row$type))
+    issues <- rbind(issues, issue("added_field", "compatible", name, "", row$type))
   }
   for (name in intersect(expected_fields$name, actual_fields$name)) {
     old_type <- expected_fields$type[match(name, expected_fields$name)]
     new_type <- actual_fields$type[match(name, actual_fields$name)]
     if (!identical(old_type, new_type)) {
-      add(issue("changed_type", "incompatible", name, old_type, new_type))
+      issues <- rbind(issues, issue("changed_type", "incompatible", name, old_type, new_type))
     }
     old_alias <- expected_fields$alias[match(name, expected_fields$name)]
     new_alias <- actual_fields$alias[match(name, actual_fields$name)]
     if (!identical(old_alias, new_alias)) {
-      add(issue("changed_alias", "compatible", name, old_alias, new_alias))
+      issues <- rbind(issues, issue("changed_alias", "compatible", name, old_alias, new_alias))
     }
   }
   if (!identical(expected$object_id_field, actual$object_id_field)) {
-    add(issue("object_id_change", "incompatible", "", expected$object_id_field,
+    issues <- rbind(issues, issue("object_id_change", "incompatible", "", expected$object_id_field,
               actual$object_id_field))
   }
   if (!identical(expected$geometry_type, actual$geometry_type)) {
-    add(issue("geometry_change", "incompatible", "", expected$geometry_type,
+    issues <- rbind(issues, issue("geometry_change", "incompatible", "", expected$geometry_type,
               actual$geometry_type))
   }
   if (!.same_schema_crs(expected$spatial_reference,
                         actual$spatial_reference)) {
-    add(issue("crs_change", "incompatible", "",
+    issues <- rbind(issues, issue("crs_change", "incompatible", "",
               .schema_crs_key(expected$spatial_reference) %||% "none",
               .schema_crs_key(actual$spatial_reference) %||% "none"))
   }
   if (!is.null(endpoint) && !identical(expected$endpoint, endpoint)) {
-    add(issue("endpoint_change", "incompatible", "", expected$endpoint,
+    issues <- rbind(issues, issue("endpoint_change", "incompatible", "", expected$endpoint,
               endpoint))
   }
   .schema_report(dataset, expected, actual, issues)

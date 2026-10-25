@@ -262,15 +262,13 @@ arcgis_fetch <- function(dataset, metadata, where, fields, spatial, out_sr,
     result <- .fetch_manifest_batches(ids, size, handlers$request_page,
                                       handlers$add_page, result, dataset, url)
   } else if (target > 0) {
-    offset_error <- NULL
     result <- tryCatch(.fetch_ordered_pages(order, target, size, manifest$ids,
                                             handlers$request_page, handlers$add_page,
                                             result, metadata, dataset, url), error = function(e) {
       if (!preview || !is.null(order_by) || !.offset_fallback_error(e)) stop(e)
-      offset_error <<- e
-      result
+      e
     })
-    if (!is.null(offset_error)) {
+    if (inherits(result, "error")) {
       manifest <- tryCatch(.manifest(url, params, metadata, dataset, timeout,
                                      count = count), error = function(e) {
         .abort(paste0("Automatic offset preview failed, and the object-ID manifest ",
