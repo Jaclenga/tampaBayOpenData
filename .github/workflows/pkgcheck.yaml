@@ -33,6 +33,7 @@ jobs:
       - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
         with:
           use-public-rspm: true
+      - uses: r-lib/actions/setup-tinytex@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
       - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
         with:
           extra-packages: |
@@ -45,9 +46,14 @@ jobs:
           pkgstats::ctags_install(sudo = TRUE)
           checks <- pkgcheck::pkgcheck()
           print(checks)
-          report <- pkgcheck::checks_to_markdown(checks, render = FALSE)
           report_dir <- file.path(Sys.getenv("RUNNER_TEMP"), "pkgcheck-results")
           dir.create(report_dir, recursive = TRUE, showWarnings = FALSE)
+          saveRDS(checks, file.path(report_dir, "checks.rds"))
+          report <- pkgcheck::checks_to_markdown(checks, render = FALSE)
+          # Some pkgcheck components return lists of Markdown lines.
+          # Flatten those lines without coercing arbitrary objects to text.
+          report <- unlist(report, recursive = TRUE, use.names = FALSE)
+          stopifnot(is.character(report), length(report) > 0L, !anyNA(report))
           writeLines(report, file.path(report_dir, "full.md"))
           writeLines(report, Sys.getenv("GITHUB_STEP_SUMMARY"))
 
