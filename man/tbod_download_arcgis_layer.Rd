@@ -63,7 +63,8 @@ inferred publisher identity. A saved manifest fixes the endpoint, query,
 fields, schema, CRS, IDs, and batch size; a resumed call rechecks them before
 reusing validated chunks. Successful validation writes \code{complete.rds} in
 the download directory; a resumed call clears and recreates it after
-matching the manifest and revalidating chunks. See \code{\link[=tbod_download_dataset]{tbod_download_dataset()}} for the directory, lock, and record-change rules.
+matching the manifest and revalidating chunks. See \code{\link[=tbod_download_dataset]{tbod_download_dataset()}}
+for the directory, lock, and record-change rules.
 }
 \examples{
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {

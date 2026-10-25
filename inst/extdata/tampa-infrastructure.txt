@@ -10,15 +10,19 @@ Projects retrieved: 2026-10-25 02:35:57 UTC (October 24, Eastern time).
 tampa-infrastructure.rds contains the original sf results, including source
 provenance, saved as a list named capital_projects and tampa_boundary.
 The vignette's download chunk reproduces both bounded requests. The save-data
-chunk reproduces the list; use this snapshot path when deliberately updating
+chunk reproduces the list; save it to inst/extdata/tampa-infrastructure.rds
+when deliberately updating
 it. Both downloads were complete: 201 project features and one boundary
 feature. No project geometry was missing. No IDs were deduplicated, and no
 geometry was converted to another type.
 
 The default vignette executes its mapping code on this snapshot when sf is
-installed. figures/tampa-infrastructure-snapshot.png is the same map extracted
+installed. inst/extdata/tampa-infrastructure-snapshot.png is the same map extracted
 from the rendered vignette, for builds without the optional sf package.
 Update that image and the dated prose when changing the snapshot. Source
 metadata, query, field schemas, counts, and UTC timestamps remain available
 through tbod_provenance() on each saved object. Live rendering never silently
 substitutes this snapshot after a retrieval failure.
+
+The snapshot and fallback image are installed in extdata, so installed vignette
+sources can find them through system.file() without a repository checkout.

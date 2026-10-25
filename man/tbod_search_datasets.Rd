@@ -24,8 +24,9 @@ tbod_search_datasets(
 }
 \arguments{
 \item{query}{A single search string. Checked matching treats punctuation
-literally and ignores case. Separate words must all match. An empty or
-whitespace-only query lists datasets.}
+literally and ignores case; its separate words must all match. Live
+matching uses the ArcGIS portal index. An empty or whitespace-only query
+lists datasets.}
 
 \item{jurisdiction}{Jurisdiction code or vector of codes from
 \code{\link[=tbod_list_portals]{tbod_list_portals()}}, or \code{"all"} (default). Filters checked and live

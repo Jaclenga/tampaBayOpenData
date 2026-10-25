@@ -228,7 +228,8 @@ test_that("a redirected checkpoint directory is rejected before any writes", {
       resolved <- normalizePath(checkpoint_dir, winslash = "/", mustWork = TRUE)
       temporary <- paste0(normalizePath(tempdir(), winslash = "/", mustWork = TRUE), "/")
       if (startsWith(tolower(resolved), tolower(temporary))) {
-        unlink(checkpoint_dir, recursive = TRUE)
+        # Remove only the link. Recursive removal can fail on Windows junctions.
+        unlink(checkpoint_dir, recursive = FALSE)
       }
     }
   }, add = TRUE)

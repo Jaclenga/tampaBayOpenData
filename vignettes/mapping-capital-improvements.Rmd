@@ -14,7 +14,8 @@ has_sf <- requireNamespace("sf", quietly = TRUE)
 if (live_data && !has_sf) stop("Install sf before rendering with live data.")
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = has_sf)
 if (has_sf && !live_data) {
-  snapshot <- readRDS("data/tampa-infrastructure.rds")
+  snapshot <- readRDS(system.file("extdata", "tampa-infrastructure.rds",
+                                 package = "tampaBayOpenData", mustWork = TRUE))
   capital_projects <- snapshot$capital_projects
   tampa_boundary <- snapshot$tampa_boundary
 }
@@ -193,7 +194,8 @@ layout(1)
 ```
 
 ```{r map-without-sf, eval=!has_sf, echo=FALSE}
-knitr::include_graphics("figures/tampa-infrastructure-snapshot.png")
+knitr::include_graphics(system.file("extdata", "tampa-infrastructure-snapshot.png",
+                                   package = "tampaBayOpenData", mustWork = TRUE))
 ```
 
 Each dot is one published feature location, colored by the source type.
