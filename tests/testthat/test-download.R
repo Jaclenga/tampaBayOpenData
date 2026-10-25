@@ -228,8 +228,19 @@ test_that("a redirected checkpoint directory is rejected before any writes", {
       resolved <- normalizePath(checkpoint_dir, winslash = "/", mustWork = TRUE)
       temporary <- paste0(normalizePath(tempdir(), winslash = "/", mustWork = TRUE), "/")
       if (startsWith(tolower(resolved), tolower(temporary))) {
-        # Remove only the link. Recursive removal can fail on Windows junctions.
-        unlink(checkpoint_dir, recursive = FALSE)
+        # R's unlink can reject Windows reparse tags, even without recursion.
+        if (.Platform$OS.type == "windows") {
+          literal <- gsub("'", "''", checkpoint_dir, fixed = TRUE)
+          command <- paste0("[System.IO.Directory]::Delete('", literal, "')")
+          status <- system2("powershell", c("-NoProfile", "-NonInteractive",
+            "-Command", shQuote(command, type = "cmd")),
+            stdout = FALSE, stderr = FALSE)
+          expect_identical(status, 0L)
+        } else {
+          unlink(checkpoint_dir, recursive = FALSE)
+        }
+        expect_false(dir.exists(checkpoint_dir))
+        expect_true(dir.exists(outside))
       }
     }
   }, add = TRUE)
