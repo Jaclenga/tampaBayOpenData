@@ -1,5 +1,9 @@
 # tampaBayOpenData (development version)
 
+- Adds a separate 10-second connection timeout and optional pacing before
+  each HTTP attempt via `tampaBayOpenData.connect_timeout` and
+  `tampaBayOpenData.request_delay`. Both respect the overall operation budget;
+  pacing defaults to zero. Public function signatures and dependencies are unchanged.
 - Discovery recognizes `Query` capability tokens with spaces or case changes,
   accepts trailing slashes on service and layer URLs, and reports missing
   stable item IDs as unavailable.

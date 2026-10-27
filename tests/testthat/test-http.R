@@ -233,3 +233,62 @@ test_that("dataset retrieval traverses real HTTP request construction for every 
                         logical(1))))
   expect_true(tbod_provenance(result)$complete)
 })
+test_that("connection timeout is capped by the attempt and remaining budget", {
+  previous <- options(tampaBayOpenData.connect_timeout = 4)
+  on.exit(options(previous), add = TRUE)
+  capture <- http_capture()
+  url <- "https://example.invalid/FeatureServer/0"
+  arcgis_request(url, timeout = 12)
+  arcgis_request(url, timeout = 2)
+  local_mocked_bindings(.operation_clock = function() 100)
+  arcgis_request(url, timeout = .operation_timeout(12, 0.5))
+  expect_equal(vapply(capture(), function(req) req$options$connecttimeout_ms,
+                      numeric(1)), c(4000, 2000, 500))
+})
+
+test_that("pacing precedes each dispatch and consumes the operation budget", {
+  previous <- options(tampaBayOpenData.request_delay = 0.5,
+                      tampaBayOpenData.max_retries = 1L)
+  on.exit(options(previous), add = TRUE)
+  now <- 0
+  events <- character()
+  attempts <- 0L
+  local_mocked_bindings(
+    .operation_clock = function() now,
+    .operation_sleep = function(seconds) {
+      now <<- now + seconds
+      events <<- c(events, paste0("wait:", seconds))
+    },
+    .arcgis_backoff = function(...) 0.25
+  )
+  local_mocked_bindings(req_perform = function(req, ...) {
+    attempts <<- attempts + 1L
+    events <<- c(events, "dispatch")
+    expect_equal(req$options$timeout_ms, if (attempts == 1L) 1500 else 750)
+    http_fixture_response(req, '{"count":1}', if (attempts == 1L) 429L else 200L)
+  }, .package = "httr2")
+  url <- "https://example.invalid/FeatureServer/0"
+  expect_identical(arcgis_request(url, timeout = .operation_timeout(30, 2))$count, 1L)
+  expect_identical(events, c("wait:0.5", "dispatch", "wait:0.25",
+                            "wait:0.5", "dispatch"))
+  expect_error(arcgis_request(url, timeout = .operation_timeout(30, 0.25)),
+               class = "tampa_timeout_error")
+  expect_identical(attempts, 2L)
+})
+
+test_that("invalid transport options fail before dispatch", {
+  previous <- options(tampaBayOpenData.connect_timeout = NULL,
+                      tampaBayOpenData.request_delay = NULL)
+  on.exit(options(previous), add = TRUE)
+  capture <- http_capture()
+  for (name in c("connect_timeout", "request_delay")) {
+    option <- paste0("tampaBayOpenData.", name)
+    for (value in list(-1, Inf, NA_real_, "1", c(1, 2), 3601)) {
+      options(stats::setNames(list(value), option))
+      expect_error(arcgis_request("https://example.invalid/FeatureServer/0"),
+                   option, fixed = TRUE, class = "tampa_input_error")
+    }
+    options(stats::setNames(list(NULL), option))
+  }
+  expect_length(capture(), 0L)
+})

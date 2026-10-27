@@ -26,7 +26,12 @@ arcgis_http <- function(url, params, timeout) {
 # A fresh transfer timeout is calculated after every backoff wait.
 .perform_arcgis_http <- function(req, timeout, url) {
   max_retries <- .arcgis_max_retries()
+  connect_timeout <- .arcgis_transport_option("connect_timeout", 10, 0.001)
+  request_delay <- .arcgis_transport_option("request_delay", 0, 0)
   for (attempt in seq_len(max_retries + 1L)) {
+    # Optional pacing applies to every dispatch, including retries. Keep it
+    # inside the operation deadline and recompute transfer limits afterwards.
+    if (request_delay > 0) .operation_retry_wait(request_delay, timeout, url = url)
     .check_operation_timeout(timeout, url = url)
     remaining <- .operation_remaining(timeout)
     if (remaining < 0.001) {
@@ -34,6 +39,8 @@ arcgis_http <- function(url, params, timeout) {
              url = url, subclass = "tampa_timeout_error")
     }
     current <- httr2::req_timeout(req, min(as.numeric(timeout), remaining))
+    current <- httr2::req_options(current, connecttimeout_ms = max(1,
+      floor(1000 * min(connect_timeout, as.numeric(timeout), remaining))))
     response <- tryCatch(httr2::req_perform(current), error = identity)
     .check_operation_timeout(timeout, url = url)
     failed <- inherits(response, "error")
@@ -63,6 +70,17 @@ arcgis_http <- function(url, params, timeout) {
     }
     .operation_retry_wait(delay, timeout, url = url)
   }
+}
+
+.arcgis_transport_option <- function(name, default, minimum) {
+  option <- paste0("tampaBayOpenData.", name)
+  value <- getOption(option, default)
+  if (!is.numeric(value) || length(value) != 1L || is.na(value) ||
+      !is.finite(value) || value < minimum || value > 3600) {
+    .abort(paste0("Option `", option, "` must be a finite number from ",
+                  minimum, " to 3600 seconds."), subclass = "tampa_input_error")
+  }
+  as.numeric(value)
 }
 
 .arcgis_retryable_transport_error <- function(error) {
