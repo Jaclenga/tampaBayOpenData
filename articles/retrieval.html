@@ -221,6 +221,21 @@ default. Set <code>total_timeout = Inf</code> explicitly for an
 operation without an overall deadline. Requests and retry waits use the
 remaining budget. Parsing is checked after it finishes, so computation
 can exceed the budget before a timeout is reported.</p>
+<p>The default per-attempt <code>timeout</code> is 30 seconds.
+Connection establishment has a separate 10-second limit, capped by the
+attempt timeout and remaining budget. For a slow connection or a
+publisher requiring a lower request rate, configure:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>tampaBayOpenData.connect_timeout <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>        tampaBayOpenData.request_delay <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
+<span><span class="co"># Restore defaults:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>tampaBayOpenData.connect_timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>        tampaBayOpenData.request_delay <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<p>Connection timeout accepts 0.001 to 3600 seconds; request delay
+accepts 0 to 3600 seconds. Pacing defaults to zero and adds a wait
+before every HTTP attempt, including retries and metadata requests. It
+consumes <code>total_timeout</code> and supplements retry backoff. It
+does not coordinate separate R processes.</p>
 <p>Temporary connection failures and timeouts, HTTP 429 and selected
 server errors (500, 502, 503, 504), ArcGIS error objects with those
 codes inside HTTP 200 responses, and a generic transient ArcGIS query
@@ -231,7 +246,7 @@ failures and ArcGIS errors in successful HTTP responses have separate
 bounded sequences, so a mix of failures can involve more than four HTTP
 attempts overall. To change the limit for this R session, set an integer
 from 0 to 10:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>tampaBayOpenData.max_retries <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
 <span><span class="co"># Restore the default later with:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>tampaBayOpenData.max_retries <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
@@ -241,6 +256,11 @@ maximum wait of 30 seconds. An invalid header falls back to backoff.
 <code>total_timeout</code> applies across both sequences and can stop
 retries sooner. Once a retry limit is reached, the error reports the
 operation, endpoint, and failed recovery attempts.</p>
+<p>If the server requests more than 30 seconds, retrieval stops and
+reports the delay rather than retrying early. Retryable POST requests
+are read-only ArcGIS queries, not edits. Malformed JSON and incompatible
+response schemas fail without retrying. Diagnostics omit URL credentials
+and query parameters.</p>
 <p>Requests use <code>tampaBayOpenData/0.1.0</code> as the default user
 agent. Applications can identify themselves with
 <code>options(tampaBayOpenData.user_agent = "my-project/1.0 (contact: me@example.org)")</code>;
@@ -263,7 +283,7 @@ retain an exact representation when possible.</p>
 <code>out_sr</code> to keep the source’s native CRS. Point, line, and
 polygon layers are supported, including records with missing geometry. A
 nonspatial table can be retrieved with <code>spatial = FALSE</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
 <span><span class="op">)</span></span>
@@ -278,7 +298,7 @@ reference system (CRS), the rule for interpreting coordinates; it does
 not establish location accuracy.</p>
 <p>The layers use one CRS for the map. Exclude empty case geometries
 from the display:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mapped_projects</span> <span class="op">&lt;-</span> <span class="va">projects</span><span class="op">[</span><span class="op">!</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_query.html" class="external-link">st_is_empty</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
@@ -317,7 +337,7 @@ limit. Chunks are tibbles or <code>sf</code> objects.
 <code><a href="../reference/tbod_download_arcgis_layer.html">tbod_download_arcgis_layer()</a></code> handles direct URLs. For a
 stable ID from another ArcGIS Enterprise portal, pass its sharing REST
 root as <code>portal</code>.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">saved</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_download_dataset.html">tbod_download_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"construction-permits"</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"~/tampaBayOpenData-downloads/permits"</span>,</span>
