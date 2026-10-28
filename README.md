@@ -4,6 +4,8 @@
 [![CRAN version](https://img.shields.io/cran/v/tampaBayOpenData)](https://CRAN.R-project.org/package=tampaBayOpenData)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/tampaBayOpenData?color=blue)](https://CRAN.R-project.org/package=tampaBayOpenData)
 [![R CMD check](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgdown.yaml/badge.svg?branch=main)](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/pkgdown.yaml)
+[![Code coverage](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml/badge.svg?branch=main)](https://github.com/Jaclenga/tampaBayOpenData/actions/workflows/test-coverage.yaml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Jaclenga/tampaBayOpenData/blob/main/LICENSE.md)
 <!-- badges: end -->
 
