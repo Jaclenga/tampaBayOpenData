@@ -27,7 +27,7 @@ Organizations in the checked catalog
 
 Recently healthy
 
-51
+46
 
 Successful checks within 30 days
 
@@ -45,22 +45,22 @@ Layers without a saved field and geometry comparison
 
 Latest verification
 
-2026-10-30 14:22 UTC
+2026-10-31 13:49 UTC
 
 Latest matching health report
 
-0 checked entries have no conclusive recent health result.
+5 checked entries have no conclusive recent health result.
 
 ## By publisher
 
 | Publisher | Checked entries | Last verification | Healthy | Problematic | Unverified |
 |----|----|----|----|----|----|
-| City of Clearwater | 6 | 2026-10-30health report | 5 | 1 | 0 |
-| City of St. Petersburg | 7 | 2026-10-30health report | 7 | 0 | 0 |
-| City of Tampa | 20 | 2026-10-30health report | 20 | 0 | 0 |
-| Hillsborough County | 8 | 2026-10-30health report | 8 | 0 | 0 |
-| Pinellas County | 7 | 2026-10-30health report | 7 | 0 | 0 |
-| Tampa Bay Regional Planning Council | 4 | 2026-10-30health report | 4 | 0 | 0 |
+| City of Clearwater | 6 | 2026-10-31health report | 0 | 1 | 5 |
+| City of St. Petersburg | 7 | 2026-10-31health report | 7 | 0 | 0 |
+| City of Tampa | 20 | 2026-10-31health report | 20 | 0 | 0 |
+| Hillsborough County | 8 | 2026-10-31health report | 8 | 0 | 0 |
+| Pinellas County | 7 | 2026-10-31health report | 7 | 0 | 0 |
+| Tampa Bay Regional Planning Council | 4 | 2026-10-31health report | 4 | 0 | 0 |
 
 Checked catalog entries and current verification by publisher {.table
 .tb-coverage-table}
