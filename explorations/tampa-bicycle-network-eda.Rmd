@@ -24,7 +24,7 @@ Retrieve all records and check completeness and IDs.
 
 ```{r retrieve}
 segments <- tbod_get_dataset(
-  "tampa-bike-lanes",
+  "bike-lanes",
   fields = c("OBJECTID", "CONN_TYPE", "MILEAGE", "ROADWAY"),
   page_size = 500,
   total_timeout = 120
@@ -202,4 +202,4 @@ Counts and mileage do not measure route usability, safety, or access.
 Overlapping segments may count more than once; stress labels are source categories.
 
 Live attributes may change during retrieval. Review
-`tbod_dataset_info("tampa-bike-lanes")$terms` before reuse.
+`tbod_dataset_info("bike-lanes")$terms` before reuse.
