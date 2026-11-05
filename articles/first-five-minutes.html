@@ -97,16 +97,16 @@ offline after installation.</p>
 <p>Search the offline catalog:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"parks"</span>, source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span></span>
-<span><span class="va">matches</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"canonical_id"</span>, <span class="st">"publisher"</span>, <span class="st">"title"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
-<span><span class="co">#&gt;   canonical_id             publisher              title                         </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> tampa-parks              City of Tampa          Park polygons                 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> hillsborough-parks       Hillsborough County    Hillsborough County parks and…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> st-pete-parks            City of St. Petersburg St. Petersburg parks          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> clearwater-park-buffers  City of Clearwater     Clearwater park buffers       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> pinellas-park-boundaries Pinellas County        Pinellas County park boundari…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pinellas-trail           Pinellas County        Pinellas Trail segments</span></span></code></pre></div>
+<span><span class="va">matches</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
+<span><span class="co">#&gt;   id                       title                                              </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> parks                    Park polygons                                      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> hillsborough-parks       Hillsborough County parks and recreation properties</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> stpete-parks             St. Petersburg parks                               </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> clearwater-park-buffers  Clearwater park buffers                            </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> pinellas-park-boundaries Pinellas County park boundaries                    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pinellas-trail           Pinellas Trail segments</span></span></code></pre></div>
 <p>Use the <code>hillsborough-parks</code> ID below.</p>
 </div>
 <div class="section level2">

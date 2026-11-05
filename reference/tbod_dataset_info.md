@@ -9,12 +9,7 @@ date records an endpoint check, not record freshness. Use
 [`tbod_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_schema.md)
 to inspect the schema or
 [`tbod_check_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_schema.md)
-to compare it with the checked snapshot. Checked datasets expose a
-publisher-qualified `canonical_id` and a character vector of legacy
-`aliases`. The `id` column retains its historical value. Prefer
-canonical IDs in new scripts; existing aliases keep their targets.
-Unqualified subjects without a legacy mapping must identify a unique
-dataset.
+to compare it with the checked snapshot.
 
 ## Usage
 
@@ -70,7 +65,7 @@ contains `fields` (a tibble of source names, types, and aliases),
 ## Examples
 
 ``` r
-info <- tbod_dataset_info("tampa-construction-permits")
+info <- tbod_dataset_info("construction-permits")
 info[c("id", "title", "publisher", "source_url")]
 #> $id
 #> [1] "construction-permits"

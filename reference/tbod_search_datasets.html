@@ -173,8 +173,8 @@ This does not cap the number of live service items scanned; see
 and the search query are combined with AND. Publisher names are exact,
 case-insensitive filters; use <code><a href="tbod_list_portals.html">tbod_list_portals()</a></code> to inspect them. A
 publisher with no match returns no rows.</p>
-<p>Checked entries search canonical IDs, legacy aliases, title, description,
-publisher, category, and tags. Exact title or ID matches rank first, then title or ID prefixes,
+<p>Checked entries search ID, title, description, publisher, category, and
+tags. Exact title or ID matches rank first, then title or ID prefixes,
 substrings, and matches across title or ID words. Tags, categories, and
 publisher matches follow; description-only matches rank after those.
 Within a rank, each word scores title, ID, tags or categories, publisher,
@@ -204,16 +204,15 @@ public portal index, not every publisher service.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">tbod_search_datasets</span><span class="op">(</span><span class="st">"permit"</span>, source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 25</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 23</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id             title description jurisdiction publisher source_url service_url</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> construction-… Perm… Permit loc… tampa        City of … https://a… https://ar…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 18 more variables: geometry_type &lt;chr&gt;, category &lt;chr&gt;, verified &lt;date&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   terms &lt;chr&gt;, canonical_id &lt;chr&gt;, aliases &lt;list&gt;, layer_id &lt;int&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   date_fields &lt;list&gt;, tags &lt;list&gt;, item_id &lt;chr&gt;, portal &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   validation_status &lt;chr&gt;, modified &lt;dttm&gt;, modified_source &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   service_type &lt;chr&gt;, layer_type &lt;chr&gt;, categories &lt;list&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   original_metadata &lt;list&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 16 more variables: geometry_type &lt;chr&gt;, category &lt;chr&gt;, verified &lt;date&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   terms &lt;chr&gt;, layer_id &lt;int&gt;, date_fields &lt;list&gt;, tags &lt;list&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   item_id &lt;chr&gt;, portal &lt;chr&gt;, validation_status &lt;chr&gt;, modified &lt;dttm&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   modified_source &lt;chr&gt;, service_type &lt;chr&gt;, layer_type &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   categories &lt;list&gt;, original_metadata &lt;list&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

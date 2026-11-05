@@ -125,17 +125,16 @@ case-insensitive filters; use
 [`tbod_list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_portals.md)
 to inspect them. A publisher with no match returns no rows.
 
-Checked entries search canonical IDs, legacy aliases, title,
-description, publisher, category, and tags. Exact title or ID matches
-rank first, then title or ID prefixes, substrings, and matches across
-title or ID words. Tags, categories, and publisher matches follow;
-description-only matches rank after those. Within a rank, each word
-scores title, ID, tags or categories, publisher, and description in that
-order; title, ID, and source URL then break ties consistently. If no
-checked entry matches the literal query, a spelling fallback may return
-close checked entries. Query words must be alphanumeric, and words
-shorter than four characters have no typo tolerance. The fallback does
-not change live portal search terms.
+Checked entries search ID, title, description, publisher, category, and
+tags. Exact title or ID matches rank first, then title or ID prefixes,
+substrings, and matches across title or ID words. Tags, categories, and
+publisher matches follow; description-only matches rank after those.
+Within a rank, each word scores title, ID, tags or categories,
+publisher, and description in that order; title, ID, and source URL then
+break ties consistently. If no checked entry matches the literal query,
+a spelling fallback may return close checked entries. Query words must
+be alphanumeric, and words shorter than four characters have no typo
+tolerance. The fallback does not change live portal search terms.
 
 Live items come from the portal index, which can search fields not
 exposed in returned rows. Available row metadata helps rank them, but an
@@ -161,14 +160,13 @@ service.
 
 ``` r
 tbod_search_datasets("permit", source = "checked")
-#> # A tibble: 1 × 25
+#> # A tibble: 1 × 23
 #>   id             title description jurisdiction publisher source_url service_url
 #>   <chr>          <chr> <chr>       <chr>        <chr>     <chr>      <chr>      
 #> 1 construction-… Perm… Permit loc… tampa        City of … https://a… https://ar…
-#> # ℹ 18 more variables: geometry_type <chr>, category <chr>, verified <date>,
-#> #   terms <chr>, canonical_id <chr>, aliases <list>, layer_id <int>,
-#> #   date_fields <list>, tags <list>, item_id <chr>, portal <chr>,
-#> #   validation_status <chr>, modified <dttm>, modified_source <chr>,
-#> #   service_type <chr>, layer_type <chr>, categories <list>,
-#> #   original_metadata <list>
+#> # ℹ 16 more variables: geometry_type <chr>, category <chr>, verified <date>,
+#> #   terms <chr>, layer_id <int>, date_fields <list>, tags <list>,
+#> #   item_id <chr>, portal <chr>, validation_status <chr>, modified <dttm>,
+#> #   modified_source <chr>, service_type <chr>, layer_type <chr>,
+#> #   categories <list>, original_metadata <list>
 ```

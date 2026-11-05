@@ -29,7 +29,6 @@ CRAN release: 2026-10-21
   Checked-catalog fallback results retain live discovery failure
   details. Source-dependent NULL placement and text collation can limit
   ordering verification.
-
 - Retries rate limits, temporary connection failures and timeouts, HTTP
   500, 502, 503, and 504, ArcGIS error objects with those codes inside
   HTTP 200 responses, and generic transient ArcGIS query errors with
@@ -40,7 +39,6 @@ CRAN release: 2026-10-21
   `options(tampaBayOpenData.max_retries = 3L)` controls additional
   retries per HTTP transport or ArcGIS-body error sequence (integer 0
   through 10); existing public function signatures are unchanged.
-
 - Uses service-advertised record limits and pagination capabilities.
   Where ordering and result offsets are unavailable, retrieval uses
   object-ID batches. A small automatic preview can fall back to
@@ -52,7 +50,6 @@ CRAN release: 2026-10-21
   atomic `complete.rds` marker only after all chunks validate. Resume
   clears that marker before chunk revalidation and recreates it on
   success.
-
 - Includes a checked catalog of 52 ArcGIS layers from Tampa,
   St. Petersburg, Clearwater, Hillsborough County, Pinellas County, and
   the Tampa Bay Regional Planning Council. The [catalog
@@ -60,20 +57,17 @@ CRAN release: 2026-10-21
   records selection criteria, source limits, candidate decisions, and
   topic coverage. The catalog is selective; it does not mirror publisher
   data.
-
 - Exports 16 consistently named `tbod_*` functions for discovery,
   inspection, retrieval, and download. Twelve unprefixed development
   names were removed before the first release. See the [API migration
   guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/api-migration.md)
   for their replacements.
-
 - Searches the six configured public ArcGIS organizations as well as the
   offline checked catalog. Catalog searches support jurisdiction,
   publisher, validation status, geometry, topic, category, and item-date
   filters. Live scans default to 25 service items per organization and
   report truncation, issues, and failed portals. A bounded scan can miss
   matches.
-
 - Adds
   [`tbod_discover()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_discover.md)
   for another public ArcGIS sharing REST root, FeatureServer, MapServer,
@@ -81,7 +75,6 @@ CRAN release: 2026-10-21
   the same retrieval API. Discovered rows retain live item dates, tags,
   and categories; checked matches retain package IDs, scope, and terms.
   Direct URLs have `not_checked` status.
-
 - Compares current fields, object ID, geometry, CRS, and endpoint
   metadata against saved schemas before checked retrieval and downloads.
   Added fields or changed aliases warn; removed or type-changed fields,
@@ -90,7 +83,6 @@ CRAN release: 2026-10-21
   and
   [`tbod_check_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_schema.md)
   expose the metadata and drift report.
-
 - Retrieves tibbles or optional `sf` results with field selection,
   ArcGIS filters, ordering, row limits, and source provenance. Count and
   object-ID checks catch missing, duplicate, or unexpected pages.
@@ -99,31 +91,26 @@ CRAN release: 2026-10-21
   retrieval and downloads skip the object-ID request and report
   count-only integrity. Deliberate subsets remain marked incomplete.
   Sources can still change record attributes between requests.
-
 - Parses declared ArcGIS field types, dates, geometry, and spatial
   references. Date fields with unknown time-zone semantics remain raw
   milliseconds, except UTC editor-tracking fields identified by
   metadata. Request and operation timeouts bound live work.
-
 - Adds resumable RDS chunk downloads. Resuming rechecks current schema
   and full record membership, verifies saved checksums and provenance,
   and skips completed chunks. Atomic writes and an exclusive directory
   lock protect progress; live record attributes may differ across chunks
   or sessions.
-
 - Moves Tampa `parks` and `fire-stations` to their dedicated services
   after matching source IDs. The current fire-station fields are
   unqualified (for example, `NAME`); older joined `GIS.GovServiceInfo.*`
   fields are unavailable. Terms were updated for the replacement
   endpoints. The source data is not labeled CC0 by the package.
-
 - Adds offline catalog and schema checks, bounded twice-weekly live
   checks across all six publishers, and a separate manual integration
   suite. The [validation
   record](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md)
   gives dated evidence; live services can change afterward. CI actions
   are pinned to verified commits.
-
 - Adds
   [`tbod_check_catalog()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_catalog.md)
   for a point-in-time live metadata and schema report across selected
@@ -133,20 +120,17 @@ CRAN release: 2026-10-21
   reportable as unknown; confirmed schema drift remains visible when
   Query capability is unreported. A separate weekly workflow saves
   timestamped RDS, CSV, and Markdown reports as run artifacts.
-
 - Generates the Data coverage dashboard from the bundled checked catalog
   and an optional recent catalog-health report. Missing, stale, and
   unknown health results display as unverified; the site build makes no
   live ArcGIS requests. The [dashboard
   methodology](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/coverage-dashboard.md)
   explains the counts, limitations, and local build command.
-
 - Adds three offline-build-friendly tutorials for housing and
   development, Hillsborough water-quality observations, and Tampa
   capital projects. Each uses checked catalog IDs and source fields,
   shows reproducible live analysis code and a `ggplot2` visualization,
   and explains source and sampling limits.
-
 - Rejects malformed metadata and query responses, duplicate JSON keys,
   conflicting CRS identifiers, and invalid numeric object IDs. HTTP
   requests do not follow redirects; retry waits are capped at 30
@@ -155,11 +139,5 @@ CRAN release: 2026-10-21
   inline. The package requires httr2 1.2.3 or later and jsonlite 1.6.0
   or later; older native curl builds still need decompression security
   updates.
-
 - Credits `nycOpenData` as design inspiration. The ArcGIS client code is
   independently implemented.
-
-- Checked datasets now expose stable publisher-qualified `canonical_id`
-  values and legacy `aliases`. All retrieval APIs accept canonical IDs
-  and retain historical mappings. Ambiguous new subject identifiers list
-  qualified choices.

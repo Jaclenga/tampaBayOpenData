@@ -99,37 +99,36 @@ access.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> hillsborough Hillsborough County                 hillsborough</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pinellas     Pinellas County                     pinellas</span></span>
 <span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_list_datasets</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span><span class="op">[</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"canonical_id"</span>, <span class="st">"publisher"</span>, <span class="st">"title"</span>, <span class="st">"jurisdiction"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 52 × 5</span></span></span>
-<span><span class="co">#&gt;    canonical_id               publisher     title jurisdiction validation_status</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> tampa-construction-permits City of Tampa Perm… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> tampa-development-cases    City of Tampa Acti… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> tampa-capital-projects     City of Tampa Capi… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> tampa-city-boundary        City of Tampa Tamp… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> tampa-neighborhoods        City of Tampa Neig… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> tampa-council-districts    City of Tampa City… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> tampa-riverwalk            City of Tampa Tamp… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> tampa-parks                City of Tampa Park… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> tampa-fire-stations        City of Tampa City… tampa        checked          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> tampa-bike-lanes           City of Tampa Bicy… tampa        checked          </span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"jurisdiction"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 52 × 4</span></span></span>
+<span><span class="co">#&gt;    id                   title                     jurisdiction validation_status</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> construction-permits Permits (active GIS view) tampa        checked          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> development-cases    Active development coord… tampa        checked          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> capital-projects     Capital improvement proj… tampa        checked          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> city-boundary        Tampa boundary (shorelin… tampa        checked          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> neighborhoods        Neighborhood association… tampa        checked          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> council-districts    City council districts    tampa        checked          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> riverwalk            Tampa Riverwalk segments  tampa        checked          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> parks                Park polygons             tampa        checked          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> fire-stations        City of Tampa fire stati… tampa        checked          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> bike-lanes           Bicycle network segments  tampa        checked          </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 42 more rows</span></span></span>
 <span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
 <span>  <span class="st">"park"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  jurisdiction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stpete"</span>, <span class="st">"clearwater"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 25</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 23</span></span></span>
 <span><span class="co">#&gt;   id             title description jurisdiction publisher source_url service_url</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> clearwater-pa… Clea… City of Cl… clearwater   City of … https://g… https://gi…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> stpete-parks   St. … Public par… stpete       City of … https://c… https://se…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 18 more variables: geometry_type &lt;chr&gt;, category &lt;chr&gt;, verified &lt;date&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   terms &lt;chr&gt;, canonical_id &lt;chr&gt;, aliases &lt;list&gt;, layer_id &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   date_fields &lt;list&gt;, tags &lt;list&gt;, item_id &lt;chr&gt;, portal &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   validation_status &lt;chr&gt;, modified &lt;dttm&gt;, modified_source &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   service_type &lt;chr&gt;, layer_type &lt;chr&gt;, categories &lt;list&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   original_metadata &lt;list&gt;</span></span></span>
-<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"tampa-construction-permits"</span><span class="op">)</span><span class="op">[</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16 more variables: geometry_type &lt;chr&gt;, category &lt;chr&gt;, verified &lt;date&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   terms &lt;chr&gt;, layer_id &lt;int&gt;, date_fields &lt;list&gt;, tags &lt;list&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   item_id &lt;chr&gt;, portal &lt;chr&gt;, validation_status &lt;chr&gt;, modified &lt;dttm&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   modified_source &lt;chr&gt;, service_type &lt;chr&gt;, layer_type &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   categories &lt;list&gt;, original_metadata &lt;list&gt;</span></span></span>
+<span><span class="fu">tampaBayOpenData</span><span class="fu">::</span><span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span><span class="op">[</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"scope_note"</span>, <span class="st">"verified"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $title</span></span>
 <span><span class="co">#&gt; [1] "Permits (active GIS view)"</span></span>
@@ -139,9 +138,8 @@ access.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $verified</span></span>
 <span><span class="co">#&gt; [1] "2026-09-29"</span></span></code></pre></div>
-<p>Choose a layer by title and publisher, then use its
-<code>canonical_id</code>. The historical <code>id</code> remains
-available, and <code>aliases</code> lists accepted legacy names.</p>
+<p>Choose a layer by title and jurisdiction, then use its dataset
+<code>id</code>.</p>
 <p><code>tbod_dataset_info(id)</code> gives its scope, terms, source
 URL, and endpoint check date. See <a href="coverage.html">coverage</a>
 for catalog limits.</p>
@@ -156,27 +154,27 @@ an empty query lists datasets.</p>
 whether each source fits your question.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"permit"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">[</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"canonical_id"</span>, <span class="st">"publisher"</span>, <span class="st">"title"</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">#&gt;   canonical_id               publisher     title                    </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> tampa-construction-permits City of Tampa Permits (active GIS view)</span></span>
+<span><span class="co">#&gt;   id                   title                     publisher    </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> construction-permits Permits (active GIS view) City of Tampa</span></span>
 <span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"permti"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">[</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"canonical_id"</span>, <span class="st">"publisher"</span>, <span class="st">"title"</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">#&gt;   canonical_id               publisher     title                    </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> tampa-construction-permits City of Tampa Permits (active GIS view)</span></span>
+<span><span class="co">#&gt;   id                   title                     publisher    </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> construction-permits Permits (active GIS view) City of Tampa</span></span>
 <span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">""</span>, source <span class="op">=</span> <span class="st">"checked"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">[</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"canonical_id"</span>, <span class="st">"publisher"</span>, <span class="st">"title"</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
-<span><span class="co">#&gt;   canonical_id               publisher     title                                </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> tampa-construction-permits City of Tampa Permits (active GIS view)            </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> tampa-development-cases    City of Tampa Active development coordination cases</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> tampa-capital-projects     City of Tampa Capital improvement projects         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> tampa-city-boundary        City of Tampa Tampa boundary (shoreline representa…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> tampa-neighborhoods        City of Tampa Neighborhood association boundaries</span></span></code></pre></div>
+<span><span class="co">#&gt;   id                   title                                     publisher    </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> construction-permits Permits (active GIS view)                 City of Tampa</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> development-cases    Active development coordination cases     City of Tampa</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> capital-projects     Capital improvement projects              City of Tampa</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> city-boundary        Tampa boundary (shoreline representation) City of Tampa</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> neighborhoods        Neighborhood association boundaries       City of Tampa</span></span></code></pre></div>
 <p>Compare <code>permit</code>, the typo <code>permti</code>, and an
 empty query.</p>
 <p><code>limit</code> caps returned rows after search and filtering.
@@ -188,7 +186,7 @@ Neither guarantees a complete search.</p>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
-<span><span class="va">found</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"canonical_id"</span>, <span class="st">"publisher"</span>, <span class="st">"title"</span>, <span class="st">"validation_status"</span>, <span class="st">"modified"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">found</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"validation_status"</span>, <span class="st">"modified"</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># A one-row result carries the source needed for inspection or retrieval.</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">found</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -290,7 +288,7 @@ excluded when a date filter is used.</p>
 <span>  topic <span class="op">=</span> <span class="st">"transportation"</span>, modified_after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2025-01-01"</span><span class="op">)</span>,</span>
 <span>  max_items <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">county_transport</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"canonical_id"</span>, <span class="st">"publisher"</span>, <span class="st">"title"</span>, <span class="st">"modified"</span>, <span class="st">"modified_source"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<span><span class="va">county_transport</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"modified"</span>, <span class="st">"modified_source"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p><code>modified</code> dates a portal item or saved catalog snapshot,
 not every record. <code>verified</code> dates an endpoint check.</p>
 </div>

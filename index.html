@@ -87,9 +87,9 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"parks"</span>, source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span></span>
-<span><span class="va">matches</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"canonical_id"</span>, <span class="st">"publisher"</span>, <span class="st">"title"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">matches</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span><span class="va">parks</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"st-pete-parks"</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">parks</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"stpete-parks"</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">parks</span><span class="op">)</span></span></code></pre></div>
@@ -130,7 +130,7 @@
 <div class="section level2">
 <h2 id="data-sources-and-limitations">Data sources and limitations<a class="anchor" aria-label="anchor" href="#data-sources-and-limitations"></a>
 </h2>
-<p>The publishers maintain the underlying datasets; the package does not control their availability, completeness, or accuracy. <code>tbod_dataset_info("st-pete-parks")</code> shows catalog source details, and <code>tbod_provenance(parks)</code> records where and when a result was retrieved. These details help trace a result, but do not verify individual records.</p>
+<p>The publishers maintain the underlying datasets; the package does not control their availability, completeness, or accuracy. <code>tbod_dataset_info("stpete-parks")</code> shows catalog source details, and <code>tbod_provenance(parks)</code> records where and when a result was retrieved. These details help trace a result, but do not verify individual records.</p>
 <p>The package’s MIT license covers its code; source data may have different reuse terms. Check the <a href="https://jaclenga.github.io/tampaBayOpenData/articles/coverage.html">coverage and source notes</a> before using a dataset.</p>
 </div>
 <div class="section level2">

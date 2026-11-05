@@ -97,7 +97,7 @@ returned row counts, completeness, and summary provenance.
 
 ``` r
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-  url <- tbod_dataset_info("tampa-construction-permits")$source_url
+  url <- tbod_dataset_info("construction-permits")$source_url
   tbod_download_arcgis_layer(url, tempfile("permit-url-download-"),
     where = "OBJECTID <= 10", page_size = 5)
 }

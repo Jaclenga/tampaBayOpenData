@@ -34,17 +34,17 @@ tampaBayOpenData::tbod_list_portals()[, c("id", "publisher", "jurisdiction")]
 #> 5 hillsborough Hillsborough County                 hillsborough
 #> 6 pinellas     Pinellas County                     pinellas
 tampaBayOpenData::tbod_search_datasets("park", source = "checked")[,
-  c("canonical_id", "publisher", "title", "jurisdiction", "validation_status")]
-#> # A tibble: 6 × 5
-#>   canonical_id             publisher        title jurisdiction validation_status
-#>   <chr>                    <chr>            <chr> <chr>        <chr>            
-#> 1 tampa-parks              City of Tampa    Park… tampa        checked          
-#> 2 clearwater-park-buffers  City of Clearwa… Clea… clearwater   checked          
-#> 3 hillsborough-parks       Hillsborough Co… Hill… hillsborough checked          
-#> 4 pinellas-park-boundaries Pinellas County  Pine… pinellas     checked          
-#> 5 st-pete-parks            City of St. Pet… St. … stpete       checked          
-#> 6 pinellas-trail           Pinellas County  Pine… pinellas     checked
-tampaBayOpenData::tbod_dataset_info("tampa-construction-permits")[
+  c("id", "title", "jurisdiction", "validation_status")]
+#> # A tibble: 6 × 4
+#>   id                       title                  jurisdiction validation_status
+#>   <chr>                    <chr>                  <chr>        <chr>            
+#> 1 parks                    Park polygons          tampa        checked          
+#> 2 clearwater-park-buffers  Clearwater park buffe… clearwater   checked          
+#> 3 hillsborough-parks       Hillsborough County p… hillsborough checked          
+#> 4 pinellas-park-boundaries Pinellas County park … pinellas     checked          
+#> 5 stpete-parks             St. Petersburg parks   stpete       checked          
+#> 6 pinellas-trail           Pinellas Trail segmen… pinellas     checked
+tampaBayOpenData::tbod_dataset_info("construction-permits")[
   c("title", "scope_note", "verified")]
 #> $title
 #> [1] "Permits (active GIS view)"
@@ -63,7 +63,7 @@ To search live portals:
 ``` r
 
 found <- tbod_search_datasets("housing", source = "live", portals = "city")
-found[, c("canonical_id", "publisher", "title", "validation_status")]
+found[, c("id", "title", "publisher", "validation_status")]
 ```
 
 `portals` narrows the live search; `jurisdiction` filters both live and
@@ -75,14 +75,12 @@ for details.
 
 Pass a dataset ID or one-row search result to
 [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md).
-Prefer publisher-qualified canonical IDs. Historical aliases keep their
-original targets; ambiguous new subjects list the qualified
-alternatives.
+Add `jurisdiction` if an ID is shared by several jurisdictions.
 
 ``` r
 
 permits <- tbod_get_dataset(
-  "tampa-construction-permits",
+  "construction-permits",
   where = "PROJECTSTATUS IS NOT NULL",
   fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"),
   limit = 100
@@ -116,7 +114,7 @@ longitude and latitude; omit it to keep the source CRS.
 
 ``` r
 
-projects <- tbod_get_dataset("tampa-development-cases", spatial = TRUE,
+projects <- tbod_get_dataset("development-cases", spatial = TRUE,
                         out_sr = 4326)
 sf::st_crs(projects)$epsg
 ```

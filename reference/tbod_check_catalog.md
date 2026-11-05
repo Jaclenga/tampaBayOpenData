@@ -104,7 +104,7 @@ future service availability.
 
 ``` r
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-  report <- tbod_check_catalog(ids = "tampa-construction-permits")
+  report <- tbod_check_catalog(ids = "construction-permits")
   report[, c("dataset_id", "status", "schema_status", "details")]
 }
 ```

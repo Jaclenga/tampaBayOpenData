@@ -13,7 +13,7 @@ These examples need internet access and do not run during site builds.
 library(tampaBayOpenData)
 
 permits <- tbod_get_dataset(
-  "tampa-construction-permits",
+  "construction-permits",
   where = "PROJECTSTATUS IS NOT NULL",
   fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"),
   limit = 100
@@ -29,8 +29,7 @@ Provenance gives matching and returned counts. `complete` is `TRUE` only
 when all matches were returned.
 
 `where` uses ArcGIS SQL; `fields` needs exact source names. Inspect them
-with
-`tbod_dataset_info("tampa-construction-permits", refresh = TRUE)$fields`.
+with `tbod_dataset_info("construction-permits", refresh = TRUE)$fields`.
 See
 [`?tbod_get_dataset`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
 for advanced `query` filters.
@@ -76,8 +75,8 @@ with
 
 ``` r
 
-expected <- tbod_schema("tampa-construction-permits")
-report <- tbod_check_schema("tampa-construction-permits")
+expected <- tbod_schema("construction-permits")
+report <- tbod_check_schema("construction-permits")
 report$status
 report$issues[, c("category", "severity", "field", "expected", "actual")]
 ```
@@ -161,10 +160,10 @@ Install `sf` and request `spatial = TRUE` for geometry. Use
 ``` r
 
 projects <- tbod_get_dataset(
-  "tampa-development-cases", spatial = TRUE, out_sr = 4326
+  "development-cases", spatial = TRUE, out_sr = 4326
 )
 boundary <- tbod_get_dataset(
-  "tampa-city-boundary", fields = "OBJECTID", spatial = TRUE, out_sr = 4326
+  "city-boundary", fields = "OBJECTID", spatial = TRUE, out_sr = 4326
 )
 sf::st_crs(projects)$epsg
 ```
@@ -215,7 +214,7 @@ for direct URLs.
 ``` r
 
 saved <- tbod_download_dataset(
-  "tampa-construction-permits",
+  "construction-permits",
   path = "~/tampaBayOpenData-downloads/permits",
   fields = c("OBJECTID", "RECORD_ID", "LASTUPDATE"),
   page_size = 500,

@@ -60,7 +60,7 @@ geometry type, spatial reference, object-ID field, and dataset ID.
 ## Examples
 
 ``` r
-schema <- tbod_schema("tampa-construction-permits")
+schema <- tbod_schema("construction-permits")
 head(schema$fields[, c("name", "type")])
 #> # A tibble: 6 × 2
 #>   name               type               

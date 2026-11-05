@@ -24,14 +24,14 @@ Search the offline catalog:
 library(tampaBayOpenData)
 
 choices <- tbod_search_datasets("project", source = "checked")
-knitr::kable(choices[, c("canonical_id", "publisher", "title", "category")],
+knitr::kable(choices[, c("id", "title", "publisher", "category")],
              caption = "Checked project-related layers in this package")
 ```
 
-| canonical_id | publisher | title | category |
+| id | title | publisher | category |
 |:---|:---|:---|:---|
-| tampa-capital-projects | City of Tampa | Capital improvement projects | Infrastructure |
-| st-pete-public-works-projects | City of St. Petersburg | St. Petersburg mapped public works projects | Infrastructure |
+| capital-projects | Capital improvement projects | City of Tampa | Infrastructure |
+| stpete-public-works-projects | St. Petersburg mapped public works projects | City of St. Petersburg | Infrastructure |
 
 Checked project-related layers in this package {.table}
 
@@ -40,7 +40,7 @@ update.
 
 ``` r
 
-info <- tbod_dataset_info("tampa-capital-projects")
+info <- tbod_dataset_info("capital-projects")
 info[c("title", "publisher", "source_url", "verified", "scope_note")]
 #> $title
 #> [1] "Capital improvement projects"
@@ -65,7 +65,7 @@ incompatible.
 
 ``` r
 
-schema <- tbod_schema("tampa-capital-projects")
+schema <- tbod_schema("capital-projects")
 fields <- c("OBJECTID", "projid", "projname", "projtype", "projphase",
             "status", "Neighborhood", "estcost", "actcost", "planstart",
             "actend")
@@ -105,7 +105,7 @@ categories.
 
 projects <- tryCatch(
   tbod_get_dataset(
-    "tampa-capital-projects",
+    "capital-projects",
     fields = fields,
     total_timeout = 180
   ),
@@ -345,7 +345,7 @@ work.
 
 Source: [City of Tampa capital
 projects](https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e).
-Check `tbod_dataset_info("tampa-capital-projects")$terms` and save your
+Check `tbod_dataset_info("capital-projects")$terms` and save your
 package version and retrieval provenance.
 
 See

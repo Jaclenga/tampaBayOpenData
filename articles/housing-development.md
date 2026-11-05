@@ -52,13 +52,12 @@ knitr::kable(catalog_hits, row.names = FALSE)
 
 `search_term` shows which query found each dataset.
 
-Use `tampa-development-cases`, Tampa’s active entitlement-application
-layer. Permits and assisted-housing inventories cover different
-subjects.
+Use `development-cases`, Tampa’s active entitlement-application layer.
+Permits and assisted-housing inventories cover different subjects.
 
 ``` r
 
-case_info <- tbod_dataset_info("tampa-development-cases")
+case_info <- tbod_dataset_info("development-cases")
 case_info[c("publisher", "title", "source_url", "verified",
             "scope_note", "terms")]
 #> $publisher
@@ -79,7 +78,7 @@ case_info[c("publisher", "title", "source_url", "verified",
 #> $terms
 #> [1] "No explicit dataset license was found for this exact FeatureServer; its service iteminfo licenseInfo is empty. No license is inferred from a separate MapServer or the GeoHub site item. Source: https://arcgis.tampagov.net/arcgis/rest/services/Planning/ActiveEntitlementLocations/FeatureServer/info/iteminfo?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use."
 
-case_schema <- tbod_schema("tampa-development-cases")
+case_schema <- tbod_schema("development-cases")
 case_fields <- c("OBJECTID", "RECORDID", "APPSTATUS", "NEIGHBORHOOD",
                  "CREATEDDATE", "LASTUPDATE")
 stopifnot(all(case_fields %in% case_schema$fields$name))
@@ -106,7 +105,7 @@ Retrieve all matching rows and stop if the download is incomplete.
 ``` r
 
 cases <- tryCatch(
-  tbod_get_dataset("tampa-development-cases", fields = case_fields,
+  tbod_get_dataset("development-cases", fields = case_fields,
                    total_timeout = 180),
   error = function(e) {
     stop("Could not retrieve Tampa active development cases: ",

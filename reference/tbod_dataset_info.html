@@ -5,21 +5,13 @@ a stable ArcGIS ID resolves the current portal item. refresh = TRUE
 retrieves current fields, aliases, types, geometry, CRS, query capabilities,
 and editing metadata. The registry's verified date records an endpoint
 check, not record freshness. Use tbod_schema() to inspect the schema or
-tbod_check_schema() to compare it with the checked snapshot.
-Checked datasets expose a publisher-qualified canonical_id and a character
-vector of legacy aliases. The id column retains its historical value.
-Prefer canonical IDs in new scripts; existing aliases keep their targets.
-Unqualified subjects without a legacy mapping must identify a unique dataset."><meta property="og:description" content="Accepts a bundled ID, one-row discovery result, stable ArcGIS ID, or direct
+tbod_check_schema() to compare it with the checked snapshot."><meta property="og:description" content="Accepts a bundled ID, one-row discovery result, stable ArcGIS ID, or direct
 public HTTPS layer URL. A checked ID reads its bundled record offline;
 a stable ArcGIS ID resolves the current portal item. refresh = TRUE
 retrieves current fields, aliases, types, geometry, CRS, query capabilities,
 and editing metadata. The registry's verified date records an endpoint
 check, not record freshness. Use tbod_schema() to inspect the schema or
-tbod_check_schema() to compare it with the checked snapshot.
-Checked datasets expose a publisher-qualified canonical_id and a character
-vector of legacy aliases. The id column retains its historical value.
-Prefer canonical IDs in new scripts; existing aliases keep their targets.
-Unqualified subjects without a legacy mapping must identify a unique dataset."></head><body>
+tbod_check_schema() to compare it with the checked snapshot."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -73,11 +65,7 @@ a stable ArcGIS ID resolves the current portal item. <code>refresh = TRUE</code>
 retrieves current fields, aliases, types, geometry, CRS, query capabilities,
 and editing metadata. The registry's <code>verified</code> date records an endpoint
 check, not record freshness. Use <code><a href="tbod_schema.html">tbod_schema()</a></code> to inspect the schema or
-<code><a href="tbod_check_schema.html">tbod_check_schema()</a></code> to compare it with the checked snapshot.
-Checked datasets expose a publisher-qualified <code>canonical_id</code> and a character
-vector of legacy <code>aliases</code>. The <code>id</code> column retains its historical value.
-Prefer canonical IDs in new scripts; existing aliases keep their targets.
-Unqualified subjects without a legacy mapping must identify a unique dataset.</p>
+<code><a href="tbod_check_schema.html">tbod_check_schema()</a></code> to compare it with the checked snapshot.</p>
     </div>
 
     <div class="section level2">
@@ -135,7 +123,7 @@ contains <code>fields</code> (a tibble of source names, types, and aliases),
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu">tbod_dataset_info</span><span class="op">(</span><span class="st">"tampa-construction-permits"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu">tbod_dataset_info</span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"source_url"</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $id</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "construction-permits"</span>
