@@ -37,12 +37,12 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles-menu" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Toggle articles menu"></button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles-menu">
-<li><a class="dropdown-item" href="../articles/introduction.html">More ways to get started</a></li>
-    <li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
-    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+<li><a class="dropdown-item" href="../articles/introduction.html">Package basics</a></li>
+    <li><a class="dropdown-item" href="../articles/discovery.html">Find data</a></li>
+    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieve and download</a></li>
     <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
-    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
-    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Hillsborough water quality</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Map capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
   </ul>
 </li>
@@ -77,13 +77,11 @@
 
     
     
-<p><code>tampaBayOpenData</code> searches a bundled catalog of 52
-checked layers or the live ArcGIS portals of six Tampa Bay publishers.
-Maintainers have validated the configured endpoints for checked layers.
-A <code>discovered</code> layer comes from a portal index and has not
-received those checks.</p>
-<p>Live examples below are displayed but not run while the site is
-built. The checked-catalog example runs offline.</p>
+<p>Search the checked catalog or the live portals of six Tampa Bay
+publishers. Layers marked <code>discovered</code> have not had the
+catalog checks.</p>
+<p>The checked example runs offline. Live examples need internet
+access.</p>
 <div class="section level2">
 <h2 id="start-offline">Start offline<a class="anchor" aria-label="anchor" href="#start-offline"></a>
 </h2>
@@ -140,39 +138,20 @@ built. The checked-catalog example runs offline.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $verified</span></span>
 <span><span class="co">#&gt; [1] "2026-09-29"</span></span></code></pre></div>
-<p>The portal table lists organizations; the dataset tables list
-individual layers. Use <code>title</code> and <code>jurisdiction</code>
-to narrow the subject and place, then pass the chosen dataset
-<code>id</code> to inspection or retrieval, not the portal ID.</p>
-<p><code>source = "checked"</code> reads the registry without HTTP. IDs
-such as <code>construction-permits</code> and <code>stpete-parks</code>
-are package names, not ArcGIS item IDs.
-<code>tbod_dataset_info(id)</code> gives the scope, terms, source URL,
-and endpoint verification date; that date says nothing about record
-freshness. The <a href="coverage.html">coverage article</a> has counts
-by publisher, and the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md" class="external-link">selection
-policy</a> explains which layers enter the catalog.</p>
+<p>Choose a layer by title and jurisdiction, then use its dataset
+<code>id</code>.</p>
+<p><code>tbod_dataset_info(id)</code> gives its scope, terms, source
+URL, and endpoint check date. See <a href="coverage.html">coverage</a>
+for catalog limits.</p>
 </div>
 <div class="section level2">
-<h2 id="match-and-rank-search-results">Match and rank search results<a class="anchor" aria-label="anchor" href="#match-and-rank-search-results"></a>
+<h2 id="search-terms">Search terms<a class="anchor" aria-label="anchor" href="#search-terms"></a>
 </h2>
-<p><code><a href="../reference/tbod_search_datasets.html">tbod_search_datasets()</a></code> searches checked IDs, titles,
-descriptions, publisher names, categories, and tags. It ignores case,
-but treats punctuation literally. All words in the query must occur
-somewhere in a checked row; they can occur in different fields. If no
-checked row matches literally, the search tries a limited spelling
-fallback for alphanumeric query words; words shorter than four
-characters have no typo tolerance. The fallback searches only the
-checked catalog; it does not alter a live portal query. An empty or
-whitespace-only query lists datasets.</p>
-<p>Exact title or ID matches come first. Title or ID prefixes follow,
-then substrings, then rows whose title or ID contains the query words
-separately. Matches in tags, categories, or publisher come next;
-description-only matches follow those. Within each group, each word
-scores title, ID, tags or categories, publisher, and description in that
-order; title, ID, and source URL then break ties consistently. These are
-ordering rules, not measures of dataset quality or relevance to a
-specific analysis.</p>
+<p>Search ignores case and looks across catalog fields. All query words
+must match. A limited spelling fallback applies only to checked entries;
+an empty query lists datasets.</p>
+<p>Title and ID matches rank first. Ranking helps locate sources; check
+whether each source fits your question.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"permit"</span>, source <span class="op">=</span> <span class="st">"checked"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">[</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span><span class="op">)</span><span class="op">]</span></span>
@@ -196,20 +175,14 @@ specific analysis.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> capital-projects     Capital improvement projects              City of Tampa</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> city-boundary        Tampa boundary (shoreline representation) City of Tampa</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> neighborhoods        Neighborhood association boundaries       City of Tampa</span></span></code></pre></div>
-<p>These are dataset suggestions, not permit records. Compare the typo
-search with the correctly spelled search: a spelling fallback helps
-locate a source, but its first result still needs a scope check. The
-empty search lists entries without restricting the topic.</p>
-<p><code>limit</code> is a nonnegative whole number or <code>Inf</code>
-(the default). It selects the first rows <strong>after</strong> source
-discovery, checked overlay, filtering, and ranking. Even
-<code>limit = 0</code> still performs a selected live scan and retains
-its scan diagnostics. <code>max_items</code> separately caps the number
-of service items inspected per live portal. A result limit does not make
-an incomplete scan complete.</p>
+<p>Compare <code>permit</code>, the typo <code>permti</code>, and an
+empty query.</p>
+<p><code>limit</code> caps returned rows after search and filtering.
+<code>max_items</code> caps service items scanned per live portal.
+Neither guarantees a complete search.</p>
 </div>
 <div class="section level2">
-<h2 id="discover-live-portal-layers">Discover live portal layers<a class="anchor" aria-label="anchor" href="#discover-live-portal-layers"></a>
+<h2 id="search-live-portals">Search live portals<a class="anchor" aria-label="anchor" href="#search-live-portals"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
@@ -221,59 +194,25 @@ an incomplete scan complete.</p>
 <span>  <span class="va">selected</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item_id"</span>, <span class="st">"service_url"</span>, <span class="st">"layer_id"</span>, <span class="st">"portal"</span><span class="op">)</span><span class="op">]</span></span>
 <span>  <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="va">selected</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Expect a table with one row per discovered layer, or no rows if
-nothing is found within the scan. <code>modified</code> dates the portal
-item, while <code>item_id</code>, <code>service_url</code>, and
-<code>layer_id</code> locate its source; inspecting the first row is an
-example, not a recommendation to use the highest-ranked hit.</p>
-<p>By default, <code><a href="../reference/tbod_list_datasets.html">tbod_list_datasets()</a></code> and
-<code><a href="../reference/tbod_search_datasets.html">tbod_search_datasets()</a></code> use <code>source = "all"</code>:
-they search all six portals and include the checked catalog.
-<code>source = "live"</code> returns only layers found through portal
-indexes, including checked layers when a live endpoint matches a checked
-entry. If a source is not indexed or an index lags, it may not appear in
-live results; a compatible public ArcGIS layer can still be retrieved by
-URL with <code><a href="../reference/tbod_get_arcgis_layer.html">tbod_get_arcgis_layer()</a></code>. Portal indexes can match
-fields that are not returned in discovery rows.
-<code><a href="../reference/tbod_search_datasets.html">tbod_search_datasets()</a></code> ranks indexed hits using available
-title, ID, and metadata, but keeps all portal hits even when a returned
-row has no local text match. A layer found both live and in the checked
-catalog appears once with <code>checked</code> status. With
-<code>source = "all"</code>, a checked match can still appear when its
-portal index does not return it.</p>
-<p>Use <code>portals = "city"</code> for Tampa, <code>"tbrpc"</code> for
-the regional planning council, or <code>"stpete"</code>,
-<code>"clearwater"</code>, <code>"hillsborough"</code>, or
-<code>"pinellas"</code> for the other publishers. A vector selects
-several. <code><a href="../reference/tbod_list_portals.html">tbod_list_portals()</a></code> shows their publisher names
-and source locations offline. <code>jurisdiction</code> defaults to
-<code>"all"</code> for catalog functions and can be a code or a vector
-of codes. A jurisdiction or publisher filter narrows the organizations
-scanned and filters checked entries. <code>portals</code> only selects
-live organizations; it does not filter checked entries when
-<code>source = "all"</code>. Retrieval and download functions default to
-<code>jurisdiction = NULL</code>: a checked ID resolves across the
-bundled catalog when it is unique. If two jurisdictions use the same ID,
-supply <code>jurisdiction</code> to select one.</p>
-<p>When a live endpoint matches a checked entry, the result keeps its
-package ID, scope, and terms, combines checked and portal tags and
-categories, and uses the portal item’s modification time. New IDs have
-the form <code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code> and can be
-passed to <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> later. The item or service can
-still change or disappear. Retrieval checks query responses and requires
-<code>Query</code> when the layer advertises a capabilities list.</p>
+<p>Each row is a layer. Inspect its metadata before retrieval.</p>
+<p>The default <code>source = "all"</code> combines live results with
+the checked catalog. Use <code>"live"</code> for portal results or
+<code>"checked"</code> for the offline catalog. Matching endpoints
+appear once with checked status.</p>
+<p><code><a href="../reference/tbod_list_portals.html">tbod_list_portals()</a></code> lists publisher codes. Use
+<code>portals</code> to select live publishers, or
+<code>jurisdiction</code> to filter both live and checked results.</p>
+<p>New IDs use <code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code> and
+work with <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code>.</p>
 </div>
 <div class="section level2">
-<h2 id="search-beyond-the-bundled-publishers">Search beyond the bundled publishers<a class="anchor" aria-label="anchor" href="#search-beyond-the-bundled-publishers"></a>
+<h2 id="search-another-arcgis-source">Search another ArcGIS source<a class="anchor" aria-label="anchor" href="#search-another-arcgis-source"></a>
 </h2>
-<p><code><a href="../reference/tbod_discover.html">tbod_discover()</a></code> accepts a public ArcGIS sharing REST
-root, FeatureServer or MapServer service root, or a layer URL. Portal
-queries search public service items; service queries filter layer names.
-Both return rows accepted by <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code>. Portal
-results have <code>discovered</code> status and stable
-<code>arcgis:</code> IDs; service results have <code>not_checked</code>
-status and use the layer URL as their ID. Queryable MapServer layers are
-supported.</p>
+<p><code><a href="../reference/tbod_discover.html">tbod_discover()</a></code> accepts a public portal, service, or
+layer URL and returns rows you can pass to
+<code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code>. Portal results are
+<code>discovered</code>; direct service results are
+<code>not_checked</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replace this example address with your portal's public sharing REST root.</span></span>
 <span><span class="va">portal</span> <span class="op">&lt;-</span> <span class="st">"https://example.maps.arcgis.com/sharing/rest"</span></span>
@@ -283,14 +222,9 @@ supported.</p>
 <span>  <span class="co"># A stable ArcGIS ID can also be resolved later through its own portal.</span></span>
 <span>  <span class="va">same_layer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="va">other</span><span class="op">$</span><span class="va">id</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, portal <span class="op">=</span> <span class="va">portal</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Custom sources default to an <code>"unspecified"</code> jurisdiction.
-Set <code>publisher</code> and <code>jurisdiction</code> in
-<code><a href="../reference/tbod_discover.html">tbod_discover()</a></code> when you know them; these labels then
-travel with the discovery row and its retrieval provenance. The
-<code>portal</code> argument on retrieval applies only to a stable
-<code>arcgis:&lt;item-id&gt;:&lt;layer-id&gt;</code> ID. When retrieving
-a direct layer URL, <code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> does not accept a
-<code>jurisdiction</code> override.</p>
+<p>Set <code>publisher</code> and <code>jurisdiction</code> during
+discovery when known. To resolve an <code>arcgis:</code> ID from a
+custom portal later, pass that portal on retrieval.</p>
 </div>
 <div class="section level2">
 <h2 id="filter-results">Filter results<a class="anchor" aria-label="anchor" href="#filter-results"></a>
@@ -344,12 +278,10 @@ timestamp.</td>
 </tr>
 </tbody>
 </table>
-<p>Character filters accept vectors: values within one filter are
-alternatives; separate filters and the search text must all match. Date
-bounds accept a <code>Date</code> or strict <code>"YYYY-MM-DD"</code>
-string for a whole UTC day, or a <code>POSIXct</code> value for an exact
-instant. Rows with unknown modification times are excluded only when a
-date bound is supplied.</p>
+<p>Values within one filter are alternatives; separate filters must all
+match. Date bounds accept <code>Date</code>, <code>"YYYY-MM-DD"</code>
+(UTC days), or <code>POSIXct</code> values. Rows with unknown dates are
+excluded when a date filter is used.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">county_transport</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
 <span>  <span class="st">"road"</span>, source <span class="op">=</span> <span class="st">"live"</span>, jurisdiction <span class="op">=</span> <span class="st">"pinellas"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -357,27 +289,16 @@ date bound is supplied.</p>
 <span>  max_items <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">county_transport</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"modified"</span>, <span class="st">"modified_source"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p><code>modified_source = "portal_item"</code> identifies a live ArcGIS
-item timestamp; <code>"checked_snapshot"</code> identifies an upstream
-timestamp saved in the checked registry. Neither establishes when every
-record was last updated. The separate checked <code>verified</code> date
-records an endpoint check, not feature freshness.</p>
+<p><code>modified</code> dates a portal item or saved catalog snapshot,
+not every record. <code>verified</code> dates an endpoint check.</p>
 </div>
 <div class="section level2">
-<h2 id="understand-scan-limits-and-failures">Understand scan limits and failures<a class="anchor" aria-label="anchor" href="#understand-scan-limits-and-failures"></a>
+<h2 id="check-scan-completeness">Check scan completeness<a class="anchor" aria-label="anchor" href="#check-scan-completeness"></a>
 </h2>
-<p><code>max_items</code> caps <strong>portal service items per
-organization</strong>, not the number of expanded layers. The default
-scans at most 25 items per organization. Use
-<code>max_items = Inf</code> explicitly to follow all available search
-pages, with a suitable <code>total_timeout</code>. A capped listing can
-miss matching items beyond the scan limit. <code>jurisdiction</code> and
-<code>publisher</code> narrow organizations before scanning; other
-filters apply after discovery and the checked overlay. Consequently, an
-item matching <code>topic</code> or <code>modified_after</code> may be
-missed by a capped scan. <code>publisher</code> matches a configured
-name exactly, without regard to case; a name with no match returns no
-rows. Use <code><a href="../reference/tbod_list_portals.html">tbod_list_portals()</a></code> to inspect names.</p>
+<p>Live scans default to 25 service items per publisher. Set
+<code>max_items = Inf</code> with a suitable <code>total_timeout</code>
+to scan all available pages. A capped scan can miss matches, including
+matches for filters applied after discovery.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_list_datasets.html">tbod_list_datasets</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"stpete"</span>, max_items <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_complete"</span><span class="op">)</span></span>
@@ -385,25 +306,12 @@ rows. Use <code><a href="../reference/tbod_list_portals.html">tbod_list_portals(
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_scanned_items"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_issues"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">results</span>, <span class="st">"discovery_failed_portals"</span><span class="op">)</span></span></code></pre></div>
-<p>The first output is a logical value: <code>FALSE</code> means you
-should investigate the remaining diagnostics before interpreting an
-empty or short result. The truncated and failed portal outputs name
-where the scan stopped or failed; they do not count missing
-datasets.</p>
-<p>Check <code>discovery_complete</code> before treating results as a
-complete scan of the selected public portal indexes. It does not
-establish a complete inventory of publisher services. Portal indexes can
-lag or omit items, private services are outside the search, and the
-package includes only public Feature Service and Map Service items with
-supported, queryable layers. The other attributes show scan progress,
-skipped items, and failed portals. A time budget can stop an operation;
-capped scans or item failures can leave returned results incomplete. A
-combined search retains rows from working publishers or from earlier
-pages of a failed scan. If all selected portals fail before returning
-rows, <code>source = "live"</code> errors; <code>source = "all"</code>
-warns and returns checked rows.</p>
-<p>Continue with <a href="retrieval.html">retrieval and downloads</a> or
-read about <a href="coverage.html">coverage and source limits</a>.</p>
+<p>If <code>discovery_complete</code> is <code>FALSE</code>, inspect the
+other diagnostics for truncated or failed portals.</p>
+<p>Even a complete scan covers only indexed public services. If every
+portal fails without returning rows, <code>source = "live"</code>
+errors; <code>source = "all"</code> warns and returns checked rows.</p>
+<p>Next: <a href="retrieval.html">retrieve records</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

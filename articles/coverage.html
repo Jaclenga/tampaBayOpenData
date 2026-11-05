@@ -37,12 +37,12 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles-menu" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Toggle articles menu"></button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles-menu">
-<li><a class="dropdown-item" href="../articles/introduction.html">More ways to get started</a></li>
-    <li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
-    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+<li><a class="dropdown-item" href="../articles/introduction.html">Package basics</a></li>
+    <li><a class="dropdown-item" href="../articles/discovery.html">Find data</a></li>
+    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieve and download</a></li>
     <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
-    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
-    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Hillsborough water quality</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Map capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
   </ul>
 </li>
@@ -77,18 +77,11 @@
 
     
     
-<p>The package retrieves public ArcGIS data; it does not host or archive
-the records. This dashboard describes the <strong>selective checked
-catalog</strong> bundled with this package. It never represents a
-complete inventory of any publisher’s datasets.</p>
-<p>The checked catalog lists layers curated for direct use by ID. A
-successful health check means one layer’s endpoint and metadata passed a
-recent check; it does not establish that its records are fresh or that a
-full download will succeed. <strong>Live discovery</strong> searches
-publisher portals for additional items when you call it. Portal
-indexing, service availability, and search limits affect those results,
-so neither this dashboard nor live discovery measures complete publisher
-coverage.</p>
+<p>This dashboard covers the package’s selected catalog, not every
+publisher dataset. The package retrieves records without hosting or
+archiving them.</p>
+<p>Health checks test endpoints and metadata. They do not confirm record
+freshness or guarantee a full download.</p>
 <section class="tb-coverage-dashboard" aria-label="Checked catalog dashboard"><div class="tb-coverage-metrics" aria-label="Catalog and health summary">
 <div class="tb-coverage-metric">
 <div class="tb-coverage-metric-label">
@@ -1987,147 +1980,85 @@ frame. It is not a legal boundary survey or current parcel boundary.
   filterRows();
 }());
 </script><div class="section level2">
-<h2 id="methodology-and-known-gaps">Methodology and known gaps<a class="anchor" aria-label="anchor" href="#methodology-and-known-gaps"></a>
+<h2 id="read-the-dashboard">Read the dashboard<a class="anchor" aria-label="anchor" href="#read-the-dashboard"></a>
 </h2>
-<p>Counts and publisher names come directly from the bundled checked
-catalog at site build time. This page uses the latest usable health
-report when one is supplied to the build. A report row must match the
-current catalog publisher, jurisdiction, dataset ID, and ArcGIS
-endpoint. A result is <strong>healthy</strong> or
-<strong>problematic</strong> only when it is no older than 30 days and
-no older than the catalog’s dated check. Recent
-<code>unavailable</code>, <code>schema_changed</code>, and
-<code>unsupported</code> results count as problematic.
-<code>unknown</code>, older, mismatched, and absent results are
-<strong>unverified</strong>. A timeout alone remains inconclusive. The
-last verification column labels catalog checks separately from health
-reports; catalog dates never imply a recent successful health check.</p>
-<p>Some publisher datasets have not been curated into the checked
-catalog. Publisher portals and services may be only partly represented,
-and discovery can miss unindexed or unavailable items. The dashboard
-counts layers without a saved schema baseline; those layers cannot
-receive a field and geometry comparison until a baseline is curated.
-Health checks read layer metadata and do not run record count or
-object-ID queries. Each dataset’s notes include its curated scope limits
-and relevant recent failure diagnostics. The <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md" class="external-link">catalog
-policy</a> records selection criteria; the <a href="discovery.html">discovery article</a> explains live search
-limits.</p>
+<p>Counts come from the bundled catalog. Health reports must match the
+current entry and endpoint, be no older than 30 days, and be at least as
+recent as the catalog check. Recent failures are problematic; stale,
+absent, mismatched, or inconclusive results are unverified.</p>
+<p>Layers without saved schemas cannot receive field and geometry
+comparisons. Health checks inspect metadata only. See the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md" class="external-link">catalog
+policy</a> and <a href="discovery.html">discovery guide</a> for
+selection and search limits.</p>
 </div>
 <div class="section level2">
-<h2 id="interpret-source-scope-before-analysis">Interpret source scope before analysis<a class="anchor" aria-label="anchor" href="#interpret-source-scope-before-analysis"></a>
+<h2 id="check-what-each-source-covers">Check what each source covers<a class="anchor" aria-label="anchor" href="#check-what-each-source-covers"></a>
 </h2>
-<p>Tampa’s permits and development cases are active views, not complete
-historical ledgers. Its <code>city-boundary</code> follows a shoreline
-representation, not a legal survey, and <code>water-service-area</code>
-extends beyond city limits. Clearwater’s park buffers are not park
-footprints; its critical-assets layer locates assets, not hazards. The
-Pinellas housing layer is a program inventory, not all housing.
-Hillsborough transit routes are not a live schedule. The regional
-planning council’s storm surge layer is a historical planning model, not
-current emergency guidance.</p>
-<p>These layers alone do not establish legal boundaries, road
-restrictions, service eligibility, or facility status. Comparable
-demographic coverage and current flood and environmental coverage across
-all six publishers remain limited. Inspect each layer’s
-<code>scope_note</code> and source metadata for its own limits. The
-current Tampa <code>fire-stations</code> source uses unqualified fields
-such as <code>NAME</code>; older joined
-<code>GIS.GovServiceInfo.*</code> fields are unavailable.</p>
+<ul>
+<li>Tampa permits and development cases cover active views, not full
+histories.</li>
+<li>City boundaries and park buffers need careful interpretation.</li>
+<li>Housing inventories, transit routes, and historical storm-surge
+models do not confirm eligibility, schedules, or current emergency
+conditions.</li>
+</ul>
+<p>Read each layer’s <code>scope_note</code> and source metadata before
+analysis.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
 <span><span class="va">info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"source_url"</span>, <span class="st">"scope_note"</span>, <span class="st">"terms"</span>, <span class="st">"verified"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>The output is a named list about one dataset, not a table of permit
-records. <code>source_url</code> takes you to the publisher’s source
-page; <code>scope_note</code> helps decide whether the records can
-answer your question, and <code>terms</code> describes reuse conditions.
-These are reasons to inspect metadata before downloading.</p>
-<p><code>verified</code> records an endpoint check, not feature
-freshness. A portal item’s <code>modified</code> date can also differ
-from its records’ dates; <code>modified_source</code> distinguishes live
-item timestamps from saved catalog snapshots.</p>
-<p>Discovered items may change, disappear, or lack clear reuse terms.
-Inspect their source metadata and publisher terms. The checked catalog
-remains available offline if a live portal fails.</p>
+<p><code>source_url</code>, <code>scope_note</code>, and
+<code>terms</code> describe the source and reuse conditions.</p>
+<p><code>verified</code> dates an endpoint check. Portal
+<code>modified</code> dates may also differ from individual record
+dates.</p>
 </div>
 <div class="section level2">
 <h2 id="keep-provenance-with-results">Keep provenance with results<a class="anchor" aria-label="anchor" href="#keep-provenance-with-results"></a>
 </h2>
-<p><code><a href="../reference/tbod_provenance.html">tbod_provenance()</a></code> reads a record attached to a retrieved
-tibble or <code>sf</code> object. It includes publisher and source URLs,
-portal and item ID when known, validation status, query, retrieval time,
-row counts, integrity method, and completeness. Direct URL retrieval has
-<code>not_checked</code> status.</p>
+<p>Save the source, query, retrieval time, and completeness details with
+the data:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">projects</span>, provenance <span class="op">=</span> <span class="va">source</span><span class="op">)</span>, <span class="st">"development-cases.rds"</span><span class="op">)</span></span></code></pre></div>
-<p>The saved RDS file contains two named components: <code>data</code>
-is the spatial table of active case features, and
-<code>provenance</code> describes the request that produced it. This
-lets someone revisiting your map distinguish a change in source data
-from a change in your analysis.</p>
-<p>Save provenance separately before transformations or exports that may
-discard attributes. A finite subset is marked incomplete when more rows
-match. Object-ID checks detect missing, duplicate, or unexpected
-records, but cannot freeze live attributes across requests. See <a href="retrieval.html">retrieval and downloads</a> for the integrity
-methods.</p>
+<p>Transformations may drop provenance attributes. Retrieval checks
+detect missing or repeated IDs, but live attributes can change during a
+download. See <a href="retrieval.html">retrieval</a>.</p>
 </div>
 <div class="section level2">
-<h2 id="monitoring-and-evidence">Monitoring and evidence<a class="anchor" aria-label="anchor" href="#monitoring-and-evidence"></a>
+<h2 id="check-catalog-health">Check catalog health<a class="anchor" aria-label="anchor" href="#check-catalog-health"></a>
 </h2>
-<p>Use <code><a href="../reference/tbod_check_catalog.html">tbod_check_catalog()</a></code> for a current metadata and
-schema check of the bundled catalog, or pass <code>ids</code> to inspect
-selected layers:</p>
+<p>Check selected layers against current metadata:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">health</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_check_catalog.html">tbod_check_catalog</a></span><span class="op">(</span>ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"construction-permits"</span>, <span class="st">"stpete-parks"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">health</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dataset_id"</span>, <span class="st">"status"</span>, <span class="st">"schema_status"</span>, <span class="st">"details"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>In the displayed columns, <code>dataset_id</code> identifies the
-entry, <code>status</code> gives the overall check result,
-<code>schema_status</code> describes the structure comparison, and
-<code>details</code> explains the result. Use these together to decide
-which source needs inspection rather than treating every unsuccessful
-check as the same problem.</p>
-<p>This contacts the publishers and returns one row per checked entry.
-Statuses include <code>healthy</code>, <code>unavailable</code>,
+<p>Read <code>status</code>, <code>schema_status</code>, and
+<code>details</code> for each result.</p>
+<p>Statuses include <code>healthy</code>, <code>unavailable</code>,
 <code>schema_changed</code>, <code>unsupported</code>, and
-<code>unknown</code>; transient failures remain <code>unknown</code>
-after bounded retries. Inspect <code>schema_issues</code> for field or
-geometry changes and <code>failure_type</code> and the service and layer
-status columns for request failures. The check reads layer metadata and
-does not run count or object-ID queries. A healthy row describes that
-moment’s endpoint and schema; it does not certify record freshness, full
-retrieval support, or future availability.</p>
-<p>Twice weekly monitoring checks the selected layers in the checked
-catalog, bounded live discovery, and county facility retrieval by
-descriptor and stable ID. It also checks server projection to EPSG:4326.
-Retrievals request at most two rows; scans inspect at most one service
-item per publisher. The <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md" class="external-link">test
-guide</a> describes these bounds and the manual live suite. The <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md" class="external-link">validation
-record</a> dates completed checks; they cannot guarantee future
-availability or record freshness.</p>
-<p>A separate weekly <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/.github/workflows/catalog-health.yaml" class="external-link">catalog
-health workflow</a> uses <code><a href="../reference/tbod_check_catalog.html">tbod_check_catalog()</a></code> and uploads
-timestamped RDS, CSV, and Markdown reports. It does not change the
-bundled catalog.</p>
+<code>unknown</code>. Inspect <code>schema_issues</code> or
+<code>failure_type</code> for details. A healthy result applies to the
+endpoint and schema at check time.</p>
+<p>See the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md" class="external-link">test
+guide</a> and <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/validation.md" class="external-link">validation
+record</a> for monitoring details.</p>
+<p>The weekly <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/.github/workflows/catalog-health.yaml" class="external-link">health
+workflow</a> saves reports without changing the catalog.</p>
 </div>
 <div class="section level2">
 <h2 id="cite-the-package-and-its-data-sources">Cite the package and its data sources<a class="anchor" aria-label="anchor" href="#cite-the-package-and-its-data-sources"></a>
 </h2>
-<p>For published work, cite the package version you used. R provides
-citation text and BibTeX after installation:</p>
+<p>Get the package citation:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/toLatex.html" class="external-link">toBibtex</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Cite the original data publisher and dataset separately.
-<code>tbod_dataset_info(id)</code> gives source details;
-<code>tbod_provenance(result)</code> records source and retrieval time.
-The MIT license applies to the package software, <strong>not</strong>
-government datasets. Publishers set their data terms. The package is
-independent of them and of rOpenSci.</p>
-<p>For implementation details, see the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/architecture.md" class="external-link">architecture
-and research basis</a>.</p>
+<p>Also cite the original publisher and dataset, including retrieval
+time. The package’s MIT license covers its software; each publisher sets
+data terms. The package is independent of the publishers and
+rOpenSci.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

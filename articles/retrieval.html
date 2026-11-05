@@ -37,12 +37,12 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles-menu" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Toggle articles menu"></button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles-menu">
-<li><a class="dropdown-item" href="../articles/introduction.html">More ways to get started</a></li>
-    <li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
-    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+<li><a class="dropdown-item" href="../articles/introduction.html">Package basics</a></li>
+    <li><a class="dropdown-item" href="../articles/discovery.html">Find data</a></li>
+    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieve and download</a></li>
     <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
-    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
-    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Hillsborough water quality</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Map capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
   </ul>
 </li>
@@ -77,11 +77,10 @@
 
     
     
-<p><code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> accepts a checked package ID, a
-discovery row, or a stable discovered ID. For a public HTTPS ArcGIS
-layer URL, use <code><a href="../reference/tbod_get_arcgis_layer.html">tbod_get_arcgis_layer()</a></code>. Both use the same
-type conversion, integrity checks, and provenance. The examples contact
-live publishers when run in R; none run during the site build.</p>
+<p>Retrieve a dataset by ID or search result with
+<code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code>. For a public ArcGIS layer URL, use
+<code><a href="../reference/tbod_get_arcgis_layer.html">tbod_get_arcgis_layer()</a></code>. These examples need internet
+access and do not run during site builds.</p>
 <div class="section level2">
 <h2 id="retrieve-and-filter-records">Retrieve and filter records<a class="anchor" aria-label="anchor" href="#retrieve-and-filter-records"></a>
 </h2>
@@ -96,86 +95,55 @@ live publishers when run in R; none run during the site build.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">permits</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"matched_rows"</span>, <span class="st">"returned_rows"</span>, <span class="st">"complete"</span>, <span class="st">"integrity"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>Expect a tibble (a data frame) with up to 100 active permit-viewer
-feature rows and the three requested columns. <code>RECORD_ID</code>
-identifies the source record, <code>PROJECTSTATUS</code> is its label,
-and <code>LASTUPDATE</code> is an update time, not an issue date. The
-filter excludes missing statuses but does not select a particular
-status.</p>
-<p>The provenance output is a named list: <code>matched_rows</code>
-counts matches at the source, <code>returned_rows</code> counts
-downloaded rows, and <code>complete</code> says whether all matches were
-returned. <code>integrity</code> names the membership check used; it
-does not assess whether the publisher’s attributes are correct.</p>
-<p><code>where</code> uses ArcGIS SQL; <code>fields</code> requires
-exact source field names. Inspect current fields with
-<code>tbod_dataset_info("construction-permits", refresh = TRUE)$fields</code>;
-its metadata also reports query capabilities. <code>query</code> accepts
-supported advanced ArcGIS spatial, time, and version filters. It does
-not allow overriding parameters that control the response format, field
-selection, aggregation, geometry simplification, or pagination; see
-<code><a href="../reference/tbod_get_dataset.html">?tbod_get_dataset</a></code> for the accepted names.</p>
-<p>The default <code>limit = Inf</code> retrieves all matches. A finite
-limit returns a subset; <code><a href="../reference/tbod_provenance.html">tbod_provenance()</a></code> sets
-<code>complete = FALSE</code> if more records match. For a reproducible
-subset, use <code>order_by</code> when the service supports ordering and
-offset pagination. The client adds an object-ID tie breaker.
-<code>limit = 0</code> returns a typed empty result after counting
-matches. <code><a href="../reference/tbod_get_permits.html">tbod_get_permits()</a></code>,
+<p>This returns up to 100 active permit-viewer rows.
+<code>LASTUPDATE</code> is an update time, not an issue date.</p>
+<p>Provenance gives matching and returned counts. <code>complete</code>
+is <code>TRUE</code> only when all matches were returned.</p>
+<p><code>where</code> uses ArcGIS SQL; <code>fields</code> needs exact
+source names. Inspect them with
+<code>tbod_dataset_info("construction-permits", refresh = TRUE)$fields</code>.
+See <code><a href="../reference/tbod_get_dataset.html">?tbod_get_dataset</a></code> for advanced <code>query</code>
+filters.</p>
+<p>Omit <code>limit</code> to retrieve all matches. Use
+<code>order_by</code> for a repeatable order when supported. Shortcuts
+include <code><a href="../reference/tbod_get_permits.html">tbod_get_permits()</a></code>,
 <code><a href="../reference/tbod_get_development_cases.html">tbod_get_development_cases()</a></code>, and
-<code><a href="../reference/tbod_get_capital_projects.html">tbod_get_capital_projects()</a></code> are shortcuts for three
-selected City of Tampa layers in the checked catalog.</p>
-<p>Pass a discovery row to carry its source and publisher into
-retrieval:</p>
+<code><a href="../reference/tbod_get_capital_projects.html">tbod_get_capital_projects()</a></code>.</p>
+<p>Retrieve a discovery row:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"housing"</span>, source <span class="op">=</span> <span class="st">"live"</span>, portals <span class="op">=</span> <span class="st">"city"</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">found</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">housing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="va">found</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, limit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">housing</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"item_id"</span>, <span class="st">"validation_status"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>For a compatible direct layer, pass a URL ending in
-<code>/FeatureServer/&lt;id&gt;</code> or
-<code>/MapServer/&lt;id&gt;</code>:</p>
+<p>Or use a layer URL ending in <code>/FeatureServer/&lt;id&gt;</code>
+or <code>/MapServer/&lt;id&gt;</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">yard_waste</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_arcgis_layer.html">tbod_get_arcgis_layer</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/4"</span>,</span>
 <span>  limit <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">yard_waste</span><span class="op">)</span><span class="op">$</span><span class="va">validation_status</span> <span class="co"># "not_checked"</span></span></code></pre></div>
-<p>Direct URL access has <code>not_checked</code> validation status and
-does not infer a publisher or ArcGIS portal item. It does not accept a
-<code>jurisdiction</code> override. Check the service’s source and reuse
-terms.</p>
+<p>Direct URLs have <code>not_checked</code> status. Review their source
+and reuse terms.</p>
 </div>
 <div class="section level2">
 <h2 id="check-the-live-schema">Check the live schema<a class="anchor" aria-label="anchor" href="#check-the-live-schema"></a>
 </h2>
-<p>Checked layers have bundled field, geometry, CRS, object-ID, and
-endpoint metadata. <code>tbod_schema(id)</code> reads it offline;
-<code>tbod_schema(id, refresh = TRUE)</code> reads the current service.
-<code>tbod_check_schema(id)</code> compares them:</p>
+<p><code><a href="../reference/tbod_schema.html">tbod_schema()</a></code> reads the saved schema;
+<code>refresh = TRUE</code> reads the service. Compare them with
+<code><a href="../reference/tbod_check_schema.html">tbod_check_schema()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
 <span><span class="va">report</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_check_schema.html">tbod_check_schema</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
 <span><span class="va">report</span><span class="op">$</span><span class="va">status</span></span>
 <span><span class="va">report</span><span class="op">$</span><span class="va">issues</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"category"</span>, <span class="st">"severity"</span>, <span class="st">"field"</span>, <span class="st">"expected"</span>, <span class="st">"actual"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>In the issues table, <code>field</code> identifies an affected
-column, <code>expected</code> is the saved definition, and
-<code>actual</code> is the current one; <code>category</code> and
-<code>severity</code> describe the difference and its effect on
-retrieval. An empty issues table means no reported differences, not that
-individual records have been validated.</p>
-<p>The status is <code>"unchanged"</code>, <code>"compatible"</code>, or
-<code>"incompatible"</code>. Added fields and changed aliases warn but
-allow retrieval. Removed or renamed fields, type changes, and object-ID,
-geometry, CRS, or endpoint changes stop retrieval before record queries.
-A vanished endpoint appears as <code>endpoint_disappeared</code> in
-<code>report$issues</code>.</p>
-<p>A direct URL or newly discovered layer has no bundled schema. Save
-its current metadata as <code>expected</code> for a later check. Without
-it, an untracked check returns <code>status = "untracked"</code>. For a
-stable ID from a custom Enterprise portal, pass <code>portal</code> to
-<code><a href="../reference/tbod_schema.html">tbod_schema()</a></code> or <code><a href="../reference/tbod_check_schema.html">tbod_check_schema()</a></code>.</p>
+<p>The report lists affected fields, expected and actual definitions,
+and severity.</p>
+<p>Compatible additions warn. Missing fields, type changes, and
+incompatible geometry, CRS, object-ID, or endpoint changes stop
+retrieval.</p>
+<p>For a direct or newly discovered layer, save a baseline yourself:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replace this example address with a public ArcGIS layer URL.</span></span>
 <span><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://example.org/arcgis/rest/services/Example/FeatureServer/0"</span></span>
@@ -183,106 +151,53 @@ stable ID from a custom Enterprise portal, pass <code>portal</code> to
 <span><span class="va">later</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_check_schema.html">tbod_check_schema</a></span><span class="op">(</span><span class="va">url</span>, expected <span class="op">=</span> <span class="va">baseline</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="integrity-and-time-budgets">Integrity and time budgets<a class="anchor" aria-label="anchor" href="#integrity-and-time-budgets"></a>
+<h2 id="retrieval-checks-and-timeouts">Retrieval checks and timeouts<a class="anchor" aria-label="anchor" href="#retrieval-checks-and-timeouts"></a>
 </h2>
-<p>Retrieval obtains a matching count and compares downloaded object IDs
-with the applicable full or subset manifest. Missing, duplicate, or
-unexpected records cause an error. For services with more than 10,000
-matches and reliable ordering and pagination, an incomplete finite
-preview of at most 1,000 rows can use an ordered sample and verify its
-returned IDs with a subset manifest. Other requests use the full
-matching ID manifest; <code>integrity = "full"</code> requests that path
-explicitly. Provenance reports <code>subset-manifest</code>,
-<code>full-manifest</code>, or <code>count-only</code> for
-<code>limit = 0</code> and never marks a deliberate subset complete when
-more rows match. A full manifest of more than one million matching
-records is rejected; narrow <code>where</code> or use an eligible
-bounded preview. If an automatic preview finds that the service ignores
-or rejects result offsets despite advertising them, it can restart with
-a full ID manifest and object-ID batches. This fallback is subject to
-the same one-million-record manifest limit. An explicit
-<code>order_by</code> request still fails when offsets cannot be used,
-because object-ID batches cannot preserve that requested order.</p>
-<p>These checks detect record-membership problems during a request. A
-live service can still change record attributes between pages. The
-client does not keep a runtime data cache.</p>
-<p>The client caps each feature request at the layer’s advertised record
-limit and uses object-ID batches when result offsets are unavailable. It
-splits a batch if the service marks it as truncated or returns fewer IDs
-than requested, even without a truncation flag. Explicit
-<code>order_by</code> needs both server ordering and result-offset
-support; otherwise the request fails. Persistently missing singleton
-records, duplicate or unexpected IDs, and empty or repeated ordered
-pages stop retrieval instead of producing a result marked complete.</p>
+<p>Retrieval checks counts and object IDs. Missing, repeated, or
+unexpected records stop the request. Large bounded previews may check a
+subset manifest; full manifests are limited to one million matches. Use
+a narrower <code>where</code> filter for larger sources. See
+<code><a href="../reference/tbod_get_dataset.html">?tbod_get_dataset</a></code> for integrity options.</p>
+<p>These checks cannot freeze attributes while a live service is being
+updated.</p>
 <p><code>timeout</code> limits each HTTP attempt.
-<code>total_timeout</code> sets an operation budget: 120 seconds for
-retrieval, 90 for catalog discovery, and 60 for metadata inspection by
-default. Set <code>total_timeout = Inf</code> explicitly for an
-operation without an overall deadline. Requests and retry waits use the
-remaining budget. Parsing is checked after it finishes, so computation
-can exceed the budget before a timeout is reported.</p>
-<p>The default per-attempt <code>timeout</code> is 30 seconds.
-Connection establishment has a separate 10-second limit, capped by the
-attempt timeout and remaining budget. For a slow connection or a
-publisher requiring a lower request rate, configure:</p>
+<code>total_timeout</code> defaults to 120 seconds for retrieval, 90 for
+discovery, and 60 for metadata. Use <code>Inf</code> to remove the
+overall deadline. Parsing may finish after the deadline before an error
+is reported.</p>
+<p>Attempts default to 30 seconds, with a 10-second connection limit.
+Adjust connection timing or add a delay between requests:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>tampaBayOpenData.connect_timeout <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>        tampaBayOpenData.request_delay <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="co"># Restore defaults:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>tampaBayOpenData.connect_timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>        tampaBayOpenData.request_delay <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
-<p>Connection timeout accepts 0.001 to 3600 seconds; request delay
-accepts 0 to 3600 seconds. Pacing defaults to zero and adds a wait
-before every HTTP attempt, including retries and metadata requests. It
-consumes <code>total_timeout</code> and supplements retry backoff. It
-does not coordinate separate R processes.</p>
-<p>Temporary connection failures and timeouts, HTTP 429 and selected
-server errors (500, 502, 503, 504), ArcGIS error objects with those
-codes inside HTTP 200 responses, and a generic transient ArcGIS query
-error are retried. Invalid queries, unavailable layers, authentication
-failures, and other permanent errors fail immediately. The default is
-three additional retries per retryable failure sequence. HTTP transport
-failures and ArcGIS errors in successful HTTP responses have separate
-bounded sequences, so a mix of failures can involve more than four HTTP
-attempts overall. To change the limit for this R session, set an integer
-from 0 to 10:</p>
+<p>Delays apply to every attempt, including retries, and count toward
+the overall timeout. Separate R processes are not coordinated.</p>
+<p>Temporary failures and rate limits are retried; permanent errors stop
+immediately. Set the retry limit for this session:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>tampaBayOpenData.max_retries <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
 <span><span class="co"># Restore the default later with:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>tampaBayOpenData.max_retries <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
-<p>Retry delays use exponential backoff with jitter. A valid
-<code>Retry-After</code> delay or HTTP date takes precedence, with a
-maximum wait of 30 seconds. An invalid header falls back to backoff.
-<code>total_timeout</code> applies across both sequences and can stop
-retries sooner. Once a retry limit is reached, the error reports the
-operation, endpoint, and failed recovery attempts.</p>
-<p>If the server requests more than 30 seconds, retrieval stops and
-reports the delay rather than retrying early. Retryable POST requests
-are read-only ArcGIS queries, not edits. Malformed JSON and incompatible
-response schemas fail without retrying. Diagnostics omit URL credentials
-and query parameters.</p>
-<p>Requests use <code>tampaBayOpenData/0.1.0</code> as the default user
-agent. Applications can identify themselves with
-<code>options(tampaBayOpenData.user_agent = "my-project/1.0 (contact: me@example.org)")</code>;
-set the option to <code>NULL</code> to restore the default.</p>
+<p>Retries use increasing delays. <code>Retry-After</code> takes
+precedence up to 30 seconds; a longer server-requested wait stops the
+operation.</p>
+<p>To identify your application, set
+<code>options(tampaBayOpenData.user_agent = "my-project/1.0 (contact: me@example.org)")</code>.
+Set it to <code>NULL</code> to restore the default.</p>
 </div>
 <div class="section level2">
 <h2 id="types-and-spatial-results">Types and spatial results<a class="anchor" aria-label="anchor" href="#types-and-spatial-results"></a>
 </h2>
-<p>Results preserve source column names and text values. ArcGIS
-epoch-millisecond date fields become UTC <code>POSIXct</code> unless the
-source declares an unknown time zone. In that case they remain raw
-milliseconds with a warning; UTC editor-tracking creation and edit dates
-identified by layer metadata are still converted. Date-only fields
-become <code>Date</code>; time-only and timestamp-offset fields remain
-strings. Integer fields are converted where safe, and large values
-retain an exact representation when possible.</p>
-<p>Install the optional <code>sf</code> package for spatial retrieval.
-<code>spatial = TRUE</code> returns an <code>sf</code> object;
-<code>out_sr = 4326</code> requests server projection to WGS 84. Omit
-<code>out_sr</code> to keep the source’s native CRS. Point, line, and
-polygon layers are supported, including records with missing geometry. A
-nonspatial table can be retrieved with <code>spatial = FALSE</code>.</p>
+<p>Source column names and text are preserved. ArcGIS date-times usually
+become UTC <code>POSIXct</code>; unknown-zone values remain milliseconds
+with a warning. Date-only fields become <code>Date</code>. Other
+date/time types retain source strings.</p>
+<p>Install <code>sf</code> and request <code>spatial = TRUE</code> for
+geometry. Use <code>out_sr = 4326</code> for WGS 84, or omit it to keep
+the native CRS.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
@@ -291,13 +206,9 @@ nonspatial table can be retrieved with <code>spatial = FALSE</code>.</p>
 <span>  <span class="st">"city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span></span></code></pre></div>
-<p>Both results are <code>sf</code> tables: their geometry columns hold
-case points and a boundary outline respectively. The printed
-<code>4326</code> confirms the requested longitude-latitude coordinate
-reference system (CRS), the rule for interpreting coordinates; it does
-not establish location accuracy.</p>
-<p>The layers use one CRS for the map. Exclude empty case geometries
-from the display:</p>
+<p>Both results are <code>sf</code> tables. The CRS check should print
+<code>4326</code>.</p>
+<p>Exclude empty case geometries before plotting:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mapped_projects</span> <span class="op">&lt;-</span> <span class="va">projects</span><span class="op">[</span><span class="op">!</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_query.html" class="external-link">st_is_empty</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span>, <span class="op">]</span></span>
 <span></span>
@@ -318,25 +229,18 @@ from the display:</p>
 <span>    box.col <span class="op">=</span> <span class="st">"#DCE7EB"</span>, cex <span class="op">=</span> <span class="fl">0.85</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>The dots show where active case features are recorded relative to the
-outline; nearby or overlapping dots do not by themselves establish a
-count of distinct developments or completed buildings. Rows without
-geometry remain in <code>projects</code> but cannot appear on this
-map.</p>
-<p>The checked <code>city-boundary</code> layer follows a shoreline
-representation and is map context, not a legal survey boundary. See <a href="coverage.html">coverage and source limits</a> before interpreting
-a map or its record counts.</p>
+<p>Dots are active case features. They may overlap, and rows without
+geometry remain in the data but are absent from the map.</p>
+<p>The shoreline-adjusted city outline is map context, not a legal
+survey. See <a href="coverage.html">coverage</a> for source limits.</p>
 </div>
 <div class="section level2">
 <h2 id="resume-a-large-download">Resume a large download<a class="anchor" aria-label="anchor" href="#resume-a-large-download"></a>
 </h2>
-<p><code><a href="../reference/tbod_download_dataset.html">tbod_download_dataset()</a></code> writes RDS chunks to a local
-directory without collecting all feature pages in memory. The full
-matching ID manifest still uses memory and has the one-million-match
-limit. Chunks are tibbles or <code>sf</code> objects.
-<code><a href="../reference/tbod_download_arcgis_layer.html">tbod_download_arcgis_layer()</a></code> handles direct URLs. For a
-stable ID from another ArcGIS Enterprise portal, pass its sharing REST
-root as <code>portal</code>.</p>
+<p><code><a href="../reference/tbod_download_dataset.html">tbod_download_dataset()</a></code> saves RDS chunks without
+collecting all pages in memory. Its ID manifest still has the
+one-million-match limit. Use <code><a href="../reference/tbod_download_arcgis_layer.html">tbod_download_arcgis_layer()</a></code>
+for direct URLs.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">saved</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_download_dataset.html">tbod_download_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"construction-permits"</span>,</span>
@@ -348,66 +252,37 @@ root as <code>portal</code>.</p>
 <span><span class="va">saved</span><span class="op">$</span><span class="va">complete</span></span>
 <span><span class="va">first_chunk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">saved</span><span class="op">$</span><span class="va">files</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">first_chunk</span><span class="op">)</span></span></code></pre></div>
-<p><code>saved</code> is a download summary, not a table of permits. Its
-<code>files</code> component lists local chunk paths;
-<code>first_chunk</code> contains only the first file’s records, so that
-file alone should not be treated as the whole download. A query with no
-matches may have no chunk to read; check
-<code>length(saved$files)</code> first when adapting this example to a
-filtered request.</p>
-<p>Repeat the same call to resume. The client rechecks the schema and
-full ID manifest, verifies saved chunks against checkpoints, and
-downloads missing chunks. Changed query options, schema, CRS, endpoint,
-or ID membership require a new directory. The first call needs an empty
-directory; <code>resume = FALSE</code> never overwrites an existing
-download. Interrupted temporary files are ignored. After all chunks have
-been validated, an atomic <code>complete.rds</code> marker appears in
-<code>path</code>; an interrupted first call leaves no marker. Once a
-resumed call confirms the saved manifest still matches, it removes the
-old marker before revalidating chunks and writes a new one only on
-success. A failure before the manifest check leaves the marker from the
-previous successful call. Chunk provenance describes each file;
-<code>saved$complete</code> describes the whole download. Records may
-change between sessions, so the files are not a frozen snapshot.</p>
-<p>Downloads default to <code>total_timeout = Inf</code>; a finite
-deadline leaves completed chunks available for a later resume. An
-exclusive directory lock prevents concurrent writers. If an R process is
-terminated, confirm it has stopped, then remove its empty
-<code>.lock</code> directory before resuming. Normal completion and
-handled errors release the lock.</p>
+<p><code>saved$files</code> lists chunk paths. Check that files exist
+before reading one when your filter may match no records.</p>
+<p>Repeat the same call to resume. Saved chunks, settings, schema, and
+IDs are rechecked. Changed settings or membership require a new empty
+directory. <code>saved$complete</code> describes the whole download;
+individual chunks do not. Live records may change between sessions.</p>
+<p>Downloads default to no overall deadline. Interrupted chunks can be
+resumed. If R was terminated, confirm it has stopped before removing a
+leftover empty <code>.lock</code> directory.</p>
 </div>
 <div class="section level2">
 <h2 id="troubleshooting-common-errors">Troubleshooting common errors<a class="anchor" aria-label="anchor" href="#troubleshooting-common-errors"></a>
 </h2>
 <ul>
 <li>
-<strong>Dataset ID not found:</strong> Search the checked catalog
-with <code>tbod_search_datasets("parks", source = "checked")</code> and
-use an ID from its results. A close suggestion in an error message is
-only a search aid.</li>
+<strong>Unknown ID:</strong> Search the catalog and use an ID from
+the results.</li>
 <li>
-<strong>Connection timeout or rate limit:</strong> The publisher may
-be slow or busy. Try again later. If requests consistently time out
-while the service responds, consider increasing <code>timeout</code> or
-<code>total_timeout</code> for that call.</li>
+<strong>Timeout or rate limit:</strong> Try later, or increase the
+time budget.</li>
 <li>
-<strong>Unknown field or changed schema:</strong> Check current
-field names with
-<code>tbod_dataset_info("construction-permits", refresh = TRUE)$fields</code>.
-For a checked ID, <code>tbod_check_schema("construction-permits")</code>
-shows changes that stopped retrieval.</li>
+<strong>Schema change:</strong> Inspect current fields and run
+<code><a href="../reference/tbod_check_schema.html">tbod_check_schema()</a></code>.</li>
 <li>
-<strong>Missing or repeated records:</strong> The package stops
-rather than returning a result that may be incomplete. Try again later
-or narrow the <code>where</code> filter.</li>
+<strong>Missing or repeated records:</strong> Retry or narrow
+<code>where</code>.</li>
 <li>
-<strong>Download cannot resume:</strong> Saved settings or records
-may differ from the current request, or a saved file may be damaged.
-Keep the existing files and start a new download in a different empty
-directory if they cannot be restored.</li>
+<strong>Cannot resume:</strong> Keep existing files and use a new
+empty directory.</li>
 </ul>
-<p>For source attribution and limitations, continue to <a href="coverage.html">coverage and provenance</a>. For the catalog’s scan
-behavior, see <a href="discovery.html">discovering data</a>.</p>
+<p>See <a href="coverage.html">coverage</a> for attribution and <a href="discovery.html">discovery</a> for search limits.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

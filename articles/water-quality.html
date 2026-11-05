@@ -37,12 +37,12 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles-menu" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Toggle articles menu"></button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles-menu">
-<li><a class="dropdown-item" href="../articles/introduction.html">More ways to get started</a></li>
-    <li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
-    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+<li><a class="dropdown-item" href="../articles/introduction.html">Package basics</a></li>
+    <li><a class="dropdown-item" href="../articles/discovery.html">Find data</a></li>
+    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieve and download</a></li>
     <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
-    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
-    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Hillsborough water quality</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Map capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
   </ul>
 </li>
@@ -77,43 +77,26 @@
 
     
     
-<p>This tutorial uses the checked <strong>Hillsborough EPC water-quality
-observations</strong> layer, a sample view from Hillsborough County
-monitoring stations rather than region-wide coverage of Tampa Bay. It
-asks a modest question: how many records contain both reported
-<code>DO_T</code> and <code>DO_B</code> measurements, and how do those
-paired values compare? It extends the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/stories/04-hillsborough-water-quality.Rmd" class="external-link">short
-paired-reading exploration</a> with an offline source check, a
-missing-data audit, station and date summaries, and a reproducible
-<code>ggplot2</code> chart.</p>
-<p>The source is a view of the <strong>latest staff-reviewed
-samples</strong>, not a complete monitoring history. The package checks
-its endpoint and schema; it does not validate laboratory methods or
-establish measurement units. This is one checked Hillsborough layer, not
-a survey of all Tampa Bay waters or monitoring programs.</p>
+<p>Compare reported <code>DO_T</code> and <code>DO_B</code> oxygen
+readings in Hillsborough EPC records.</p>
+<p>The layer contains the latest staff-reviewed samples, not a full
+history or region-wide survey. Confirm units and methods with the
+publisher.</p>
 <div class="section level2">
 <h2 id="set-up-r">Set up R<a class="anchor" aria-label="anchor" href="#set-up-r"></a>
 </h2>
-<p>Install the package from CRAN and <code>ggplot2</code> for the
-optional plotting step. The examples use base R for cleaning and
-summaries, so <code>ggplot2</code> is an optional tutorial dependency,
-not a required package import.</p>
+<p>Install the package and <code>ggplot2</code> for plotting:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggplot2"</span><span class="op">)</span>   <span class="co"># if needed for the chart</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span></code></pre></div>
-<p>The catalog and saved schema chunks below run without a network
-connection when this article is built. <strong>Live</strong> chunks are
-shown but not run during CRAN or website builds. Run those chunks in
-order in an internet-connected R session to analyze current
-observations. A source can change or be temporarily unavailable; the
-retrieval code reports a failure instead of substituting old data.</p>
+<p>Catalog examples run offline. Run live examples in order with
+internet access.</p>
 </div>
 <div class="section level2">
-<h2 id="find-the-checked-monitoring-layer">Find the checked monitoring layer<a class="anchor" aria-label="anchor" href="#find-the-checked-monitoring-layer"></a>
+<h2 id="find-data">Find data<a class="anchor" aria-label="anchor" href="#find-data"></a>
 </h2>
-<p>Search the curated catalog locally. <code>source = "checked"</code>
-avoids a live portal scan and returns stable package IDs.</p>
+<p>Search the offline catalog:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
@@ -141,15 +124,11 @@ avoids a live portal scan and returns stable package IDs.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $scope_note</span></span>
 <span><span class="co">#&gt; [1] "The Environmental Protection Commission's item describes the latest staff-reviewed samples at monitoring stations, not the complete sample history. Methods, units, detection limits, and site coverage require source review."</span></span></code></pre></div>
-<p>The <code>verified</code> date marks the catalog’s endpoint check,
-<strong>not</strong> a sampling date. The <a href="https://hillsborough.maps.arcgis.com/home/item.html?id=04f8f5d7491b4d7aa2aacc6df7ea7f13" class="external-link">ArcGIS
-source item</a> is published through Hillsborough County for its
-Environmental Protection Commission. Read the item’s terms before
-reusing results; the checked catalog does not identify an unrestricted
-reuse license for this layer.</p>
-<p>Use <a href="discovery.html">live discovery</a> to search for other
-water-related items. A live search depends on portal indexing and does
-not establish complete regional coverage.</p>
+<p>Check the <a href="https://hillsborough.maps.arcgis.com/home/item.html?id=04f8f5d7491b4d7aa2aacc6df7ea7f13" class="external-link">source
+item</a> and its terms. <code>verified</code> dates an endpoint check,
+not a sample.</p>
+<p>Use <a href="discovery.html">live discovery</a> to find other
+layers.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">found</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"water quality"</span>, source <span class="op">=</span> <span class="st">"live"</span>,</span>
 <span>                              jurisdiction <span class="op">=</span> <span class="st">"hillsborough"</span>, max_items <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
@@ -157,15 +136,11 @@ not establish complete regional coverage.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">found</span>, <span class="st">"discovery_complete"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="check-fields-locations-dates-and-units">Check fields, locations, dates, and units<a class="anchor" aria-label="anchor" href="#check-fields-locations-dates-and-units"></a>
+<h2 id="check-fields">Check fields<a class="anchor" aria-label="anchor" href="#check-fields"></a>
 </h2>
-<p>The saved layer schema identifies <code>StationNumber</code> and
-<code>AreaName</code> as location labels, <code>SampleTime</code> as an
-ArcGIS date field, <code>DO_T</code> and <code>DO_B</code> as numeric
-fields, and <code>ID</code> as the object ID. Its geometry is a point.
-These are actual source field names; the saved schema does
-<strong>not</strong> provide measurement units or a sampling protocol
-for the two oxygen fields.</p>
+<p><code>StationNumber</code> and <code>AreaName</code> label locations,
+<code>SampleTime</code> gives the sample time, and <code>DO_T</code> and
+<code>DO_B</code> hold numeric readings.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
 <span><span class="va">needed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"StationNumber"</span>, <span class="st">"AreaName"</span>, <span class="st">"SampleTime"</span>, <span class="st">"DO_T"</span>, <span class="st">"DO_B"</span><span class="op">)</span></span>
@@ -182,21 +157,13 @@ for the two oxygen fields.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> ID            esriFieldTypeOID</span></span>
 <span><span class="va">schema</span><span class="op">$</span><span class="va">geometry_type</span></span>
 <span><span class="co">#&gt; [1] "esriGeometryPoint"</span></span></code></pre></div>
-<p>Inspect the current service metadata before analysis. The package
-compares it with this bundled baseline again during retrieval and stops
-on incompatible changes. If source units, depth meanings, or
-quality-control codes matter to your question, confirm them in the
-publisher’s current documentation; field names alone are
-insufficient.</p>
+<p>Check current metadata and confirm units, depths, and quality codes
+with the publisher before interpreting differences.</p>
 </div>
 <div class="section level2">
-<h2 id="retrieve-and-audit-current-observations">Retrieve and audit current observations<a class="anchor" aria-label="anchor" href="#retrieve-and-audit-current-observations"></a>
+<h2 id="retrieve-and-clean">Retrieve and clean<a class="anchor" aria-label="anchor" href="#retrieve-and-clean"></a>
 </h2>
-<p>This requests the full current layer with just the fields used here.
-It checks the retrieval provenance before analysis so a partial result
-is never treated as a complete view. The request can fail because a
-service is unavailable, its schema changed, or the operation exceeded
-its time budget.</p>
+<p>Retrieve the full layer and check completeness:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">current</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="va">id</span>, refresh <span class="op">=</span> <span class="cn">TRUE</span>, total_timeout <span class="op">=</span> <span class="fl">90</span><span class="op">)</span>,</span>
@@ -228,21 +195,11 @@ its time budget.</p>
 <span>         <span class="st">"complete"</span>, <span class="st">"integrity"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">samples</span><span class="op">[</span>, <span class="va">needed</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">samples</span><span class="op">[</span>, <span class="va">needed</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p>Expect <code>samples</code> to be a tibble with the six selected
-fields and one row per observation record in the current station view,
-not one row per station. <code><a href="https://rdrr.io/r/utils/str.html" class="external-link">str()</a></code> shows each column’s R type;
-<code><a href="https://rdrr.io/r/utils/head.html" class="external-link">head()</a></code> shows a few records, including <code>NA</code> where
-a field was not reported. Counts and measurement values depend on the
-publisher’s current view and are not displayed as live results here.</p>
-<p><code><a href="../reference/tbod_get_dataset.html">tbod_get_dataset()</a></code> converts the UTC ArcGIS
-<code>SampleTime</code> value to an R date-time when the current
-metadata still declares that time reference. Source column names are
-preserved. The full retrieval checks object-ID membership, but live
-attributes can still change during a request.</p>
-<p>Clean blank station and area labels, retain only finite numbers for
-paired measurement calculations, and report exclusions. A missing
-<code>DO_T</code> or <code>DO_B</code> is <strong>not</strong> a zero
-reading.</p>
+<p>Each row is an observation; stations may appear more than once.</p>
+<p><code>SampleTime</code> becomes an R date-time when the metadata
+declares UTC.</p>
+<p>Clean blank labels and count missing readings. Missing values are not
+zeros.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">clean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  station <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">samples</span><span class="op">$</span><span class="va">StationNumber</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -267,15 +224,10 @@ reading.</p>
 <span></span>
 <span><span class="va">paired</span> <span class="op">&lt;-</span> <span class="va">clean</span><span class="op">[</span><span class="va">has_pair</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
 <span><span class="va">paired</span><span class="op">$</span><span class="va">difference</span> <span class="op">&lt;-</span> <span class="va">paired</span><span class="op">$</span><span class="va">do_t</span> <span class="op">-</span> <span class="va">paired</span><span class="op">$</span><span class="va">do_b</span></span></code></pre></div>
-<p>The audit’s <code>check</code> column names each measure and
-<code>count</code> gives its value. Station IDs count locations, while
-the other rows count observations; a record missing both oxygen fields
-contributes to both missing-field counts. The last row tells you how
-many records can enter the paired comparison.</p>
-<p>Summarize site coverage and sample dates separately from the oxygen
-comparison. This is a snapshot of the current view: the month table
-describes which dates are present, <strong>not</strong> a trend or a
-consistent monthly sampling schedule.</p>
+<p>The final audit row counts usable pairs. Missing-field counts can
+overlap.</p>
+<p>Summarize stations and dates. The month table describes available
+samples, not a historical trend or regular sampling schedule.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">station_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">clean</span><span class="op">$</span><span class="va">station</span>, useNA <span class="op">=</span> <span class="st">"no"</span><span class="op">)</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">station_counts</span>, <span class="fl">10</span><span class="op">)</span></span>
@@ -302,36 +254,23 @@ consistent monthly sampling schedule.</p>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"No paired records have a nonblank area label."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><code>station_counts</code> counts observations per reported station,
-and <code>range(dated)</code> gives the earliest and latest dates
-present. In <code>by_area</code>, <code>paired_records</code> counts
-included observations; a positive <code>median_do_t_minus_do_b</code>
-means the median within-record difference is above zero, not that every
-pair has that sign.</p>
-<p>The <code>by_area</code> median is a descriptive comparison of the
-two <strong>reported</strong> fields, with units unconfirmed. Records
-may cover stations or dates unevenly; do not rank areas as better or
-worse water quality from this table.</p>
+<p><code>by_area</code> summarizes paired observations and their median
+within-record <code>DO_T - DO_B</code> difference.</p>
+<p>Uneven station coverage and unconfirmed units prevent water-quality
+rankings.</p>
 </div>
 <div class="section level2">
 <h2 id="plot-paired-readings">Plot paired readings<a class="anchor" aria-label="anchor" href="#plot-paired-readings"></a>
 </h2>
-<p>The image below is an <strong>archived illustration</strong>,
-generated by the linked exploration from a full layer retrieval on
-<strong>October 6, 2026</strong>. It is not a current measurement or the
-output of this article’s live code. Points on the dashed diagonal have
-equal reported <code>DO_T</code> and <code>DO_B</code>; points away from
-it have different values. The original run reported 263 records, of
-which 161 contained both fields.</p>
+<p>Archived chart, October 6, 2026: 161 of 263 records had both
+readings. The dashed line marks equal values.</p>
 <div class="float">
 <img src="figures/hillsborough-oxygen-2026-10-06.png" alt="Archived October 6, 2026 paired DO_B versus DO_T scatterplot for the Hillsborough EPC station sample view, not region-wide Tampa Bay coverage. A dashed diagonal marks equal reported values."><div class="figcaption">Archived October 6, 2026 paired DO_B versus DO_T
 scatterplot for the Hillsborough EPC station sample view, not
 region-wide Tampa Bay coverage. A dashed diagonal marks equal reported
 values.</div>
 </div>
-<p>Run this <code>ggplot2</code> code after the live retrieval to make
-the same comparison for today’s view. It stops with an informative
-message if no paired readings are available.</p>
+<p>Plot current pairs after running the retrieval:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">paired</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"No records have both DO_T and DO_B; there is nothing to plot."</span>,</span>
@@ -358,28 +297,15 @@ message if no paired readings are available.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">oxygen_plot</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="interpret-and-reproduce-the-analysis">Interpret and reproduce the analysis<a class="anchor" aria-label="anchor" href="#interpret-and-reproduce-the-analysis"></a>
+<h2 id="read-the-chart-and-save-the-results">Read the chart and save the results<a class="anchor" aria-label="anchor" href="#read-the-chart-and-save-the-results"></a>
 </h2>
-<p>The chart compares two values <strong>within records that report
-both</strong>. Excluded records can differ systematically from included
-ones. <code>StationNumber</code> and <code>AreaName</code> describe
-source labels, not independently verified locations; the point layer’s
-site coverage is not known to be comprehensive. The source view cannot
-establish historical improvement, regulatory compliance, safety for
-swimming or drinking, or a cause of any difference. Confirm field units,
-sampling depths, detection limits, methods, and quality flags with the
-publisher before making environmental or policy claims.</p>
-<p>For a reproducible report, record the output of
-<code>tbod_provenance(samples)</code>, the package version from
-<code>packageVersion("tampaBayOpenData")</code>, the retrieval time, the
-fields selected, and the date you consulted the source item. Save the
-retrieved object and provenance together if you need to revisit a dated
-analysis. The package does not archive source records.</p>
-<p>Continue with <a href="housing-development.html">housing and
-development</a>, <a href="infrastructure-projects.html">infrastructure
-and capital projects</a>, or the <a href="coverage.html">Data Coverage
-dashboard</a> for the checked catalog’s scope and verification
-status.</p>
+<p>The chart includes only records with both readings. It cannot
+establish trends, causes, regulatory compliance, or swimming and
+drinking safety. Review units, sampling methods, and excluded records
+before further comparisons.</p>
+<p>Save <code>samples</code>, its provenance, and the package version
+with your results. The package does not archive source records.</p>
+<p>See <a href="coverage.html">coverage</a> for source limits.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

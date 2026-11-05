@@ -1,17 +1,14 @@
 # Get started with Tampa Bay open data
 
 `tampaBayOpenData` retrieves public ArcGIS data from six Tampa Bay
-publishers. It includes 52 checked layers in an offline catalog and can
-search the publishers’ live portals. Retrieval returns a tibble or, with
-`sf` installed, a spatial object.
+publishers as tables or spatial objects.
 
-The offline catalog examples below run during the vignette build. Live
-discovery and retrieval examples are displayed but not run; try them in
-an internet-connected R session.
+Catalog examples work offline. Live searches and downloads need internet
+access.
 
 ## Install
 
-Install the released package from CRAN:
+Install from CRAN:
 
 ``` r
 
@@ -20,7 +17,7 @@ install.packages("tampaBayOpenData")
 
 ## Find data
 
-The checked catalog has stable package IDs and works offline:
+Search the offline catalog:
 
 ``` r
 
@@ -59,13 +56,9 @@ tampaBayOpenData::tbod_dataset_info("construction-permits")[
 #> [1] "2026-09-29"
 ```
 
-The first table lists publishers; the second lists dataset layers, not
-park records. Choose a dataset by its title and jurisdiction, then read
-its `scope_note` to check whether it covers your question.
+Choose a dataset by title and jurisdiction. Read its `scope_note`.
 
-[`tbod_dataset_info()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_dataset_info.md)
-reports a checked entry’s source, terms, and scope. To look beyond the
-catalog, search the live portals:
+To search live portals:
 
 ``` r
 
@@ -73,22 +66,16 @@ found <- tbod_search_datasets("housing", source = "live", portals = "city")
 found[, c("id", "title", "publisher", "validation_status")]
 ```
 
-The default catalog search scans all six live publishers and includes
-checked entries. Set `portals` to narrow the live scan; matching checked
-entries still appear. Set `jurisdiction` to filter both live and checked
-results. A `discovered` result has not received the catalog’s source
-checks; inspect its metadata and reuse terms before analysis. The
-[discovery
-article](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.md)
-covers filters, scan limits, and ArcGIS sources outside the bundled
-region.
+`portals` narrows the live search; `jurisdiction` filters both live and
+checked results. Inspect discovered layers before using them. See
+[discovery](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.md)
+for details.
 
 ## Retrieve records
 
-Pass a checked ID, a discovered ID, or a one-row search result to
+Pass a dataset ID or one-row search result to
 [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md).
-If a checked ID is shared by multiple jurisdictions, supply
-`jurisdiction` as well.
+Add `jurisdiction` if an ID is shared by several jurisdictions.
 
 ``` r
 
@@ -102,13 +89,11 @@ head(permits)
 sort(table(permits$PROJECTSTATUS), decreasing = TRUE)
 ```
 
-`permits` is a tibble, a data frame with a compact printed display,
-containing active permit-viewer features. The sorted output pairs each
-`PROJECTSTATUS` label with the number of returned rows carrying it; use
-this to see which labels occur most often in your preview.
+`permits` contains active permit-viewer features. The table counts
+returned rows by status.
 
-The counts describe the retrieved subset. Omit `limit` to retrieve all
-matching rows. Passing a discovery row keeps its source information:
+Omit `limit` to retrieve all matches. You can also retrieve a discovery
+row:
 
 ``` r
 
@@ -118,19 +103,14 @@ if (nrow(found)) {
 }
 ```
 
-Before retrieving a checked layer, the package compares its current
-fields, geometry, and CRS with the bundled schema. Added fields warn;
-incompatible changes stop retrieval. See
-[`tbod_check_schema()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_check_schema.md)
-and the [retrieval
-article](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.md)
-for the full drift report.
+Checked layers are compared with the saved schema before retrieval.
+Incompatible changes stop the request; see
+[retrieval](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.md).
 
 ## Work with spatial data
 
-Install the optional `sf` package and request `spatial = TRUE` for an
-`sf` result. `out_sr = 4326` asks the service for WGS 84 coordinates;
-without `out_sr`, the client keeps the native CRS.
+Install `sf` and use `spatial = TRUE`. `out_sr = 4326` requests WGS 84
+longitude and latitude; omit it to keep the source CRS.
 
 ``` r
 
@@ -139,22 +119,15 @@ projects <- tbod_get_dataset("development-cases", spatial = TRUE,
 sf::st_crs(projects)$epsg
 ```
 
-An `sf` result is still a table, with a geometry column holding each
-feature’s location. The coordinate check should print `4326` after a
-successful request; this identifies the longitude-latitude system, not a
-count of projects. Here the rows are active development-case locations,
-not capital improvements.
+The result has a geometry column. Its CRS check should print `4326`.
 
-The [retrieval
-article](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.md)
-maps this layer and describes filters, integrity checks, data types, and
-downloads.
+See
+[retrieval](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.md)
+for a map example.
 
 ## Trace the source
 
-[`tbod_provenance()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_provenance.md)
-records the source, query, retrieval time, row counts, and completeness.
-Save it separately before transformations that may discard attributes.
+Save the download details before changing or exporting the data:
 
 ``` r
 
@@ -163,12 +136,6 @@ saveRDS(list(data = projects, provenance = source),
         "development-cases.rds")
 ```
 
-`source` is a named list describing the download, rather than another
-table of cases. The saved file keeps that record alongside the data so
-you can identify which source and retrieval date underlie a later
-result.
-
-The [coverage
-article](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.md)
-covers source limits, attribution, and citation. A retrieved layer is
-not necessarily a complete historical record or a legal boundary.
+See
+[coverage](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.md)
+for source limits and citation guidance.

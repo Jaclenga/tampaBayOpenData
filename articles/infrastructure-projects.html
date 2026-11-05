@@ -37,12 +37,12 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles-menu" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Toggle articles menu"></button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles-menu">
-<li><a class="dropdown-item" href="../articles/introduction.html">More ways to get started</a></li>
-    <li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
-    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+<li><a class="dropdown-item" href="../articles/introduction.html">Package basics</a></li>
+    <li><a class="dropdown-item" href="../articles/discovery.html">Find data</a></li>
+    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieve and download</a></li>
     <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
-    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
-    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Hillsborough water quality</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Map capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
   </ul>
 </li>
@@ -77,31 +77,20 @@
 
     
     
-<p>Which kinds of capital work appear on a public map, and where are
-their locations? This tutorial uses the checked <strong>City of Tampa
-capital improvement projects</strong> layer to explore those questions.
-The layer contains mapped features with project type, phase, status,
-location, dates, and cost fields. Its service description identifies a
-public-facing selection; it is not the City’s full capital ledger. A map
-feature is also not necessarily one project.</p>
-<p>The catalog and field-inspection chunks below run entirely offline.
-Retrieval, summaries, and the <code>ggplot2</code> chart are shown as
-code to run in your own R session. They do <strong>not</strong> contact
-the publisher during vignette or website builds, so this page makes no
-claim about current counts or project status.</p>
+<p>Summarize Tampa’s public capital-project map by type, phase, and
+neighborhood. Several locations may share one project ID.</p>
+<p>Catalog examples run offline. Run retrieval and chart code with
+internet access.</p>
 <div class="section level2">
 <h2 id="set-up-and-find-a-source">Set up and find a source<a class="anchor" aria-label="anchor" href="#set-up-and-find-a-source"></a>
 </h2>
-<p>Install the package from CRAN if needed. <code>knitr</code> formats
-the tables and <code>ggplot2</code> draws the chart; neither is a
-required package import.</p>
+<p>Install the package, <code>knitr</code> for tables, and
+<code>ggplot2</code> for the chart:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"knitr"</span><span class="op">)</span>        <span class="co"># for the summary tables</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggplot2"</span><span class="op">)</span>      <span class="co"># optional chart dependency</span></span></code></pre></div>
-<p>Search the bundled checked catalog without sending a request. The
-search term can surface projects from more than one publisher; the
-example selects the Tampa layer by its stable package ID.</p>
+<p>Search the offline catalog:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
@@ -137,14 +126,8 @@ example selects the Tampa layer by its stable package ID.</p>
 </tr>
 </tbody>
 </table>
-<p>Checked entries are selected references, not a full inventory of
-either publisher’s projects. <code>source = "live"</code> can discover
-other indexed layers, but portal searches are bounded and may miss
-items; see <a href="discovery.html">live discovery</a>. The <a href="coverage.html">Data Coverage dashboard</a> explains what “checked”
-verifies.</p>
-<p>Read the source and scope note before analyzing records. The
-<code>verified</code> date is an endpoint check, <strong>not</strong>
-the date of the most recent project update.</p>
+<p>Read the scope note. <code>verified</code> dates an endpoint check,
+not a project update.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"capital-projects"</span><span class="op">)</span></span>
 <span><span class="va">info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"verified"</span>, <span class="st">"scope_note"</span><span class="op">)</span><span class="op">]</span></span>
@@ -166,11 +149,8 @@ the date of the most recent project update.</p>
 <div class="section level2">
 <h2 id="inspect-the-available-fields">Inspect the available fields<a class="anchor" aria-label="anchor" href="#inspect-the-available-fields"></a>
 </h2>
-<p><code><a href="../reference/tbod_schema.html">tbod_schema()</a></code> reads the package’s saved schema without
-network access. The table shows the exact ArcGIS field names used below.
-When you retrieve the layer, the package compares current metadata with
-this saved schema and stops if an incompatible change would make the
-analysis unsafe.</p>
+<p>Read the saved schema. Retrieval stops if the live schema is
+incompatible.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"capital-projects"</span><span class="op">)</span></span>
 <span><span class="va">fields</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBJECTID"</span>, <span class="st">"projid"</span>, <span class="st">"projname"</span>, <span class="st">"projtype"</span>, <span class="st">"projphase"</span>,</span>
@@ -246,25 +226,16 @@ analysis unsafe.</p>
 </tr>
 </tbody>
 </table>
-<p><code>OBJECTID</code> identifies a <strong>map feature</strong>.
-<code>projid</code> is a source project identifier, but one ID can occur
-on several features. <code>projtype</code>, <code>projphase</code>, and
-<code>status</code> are publisher labels; inspect their actual values
-before combining categories. <code>estcost</code> and
-<code>actcost</code> are source attributes, not audited budget or
-payment transactions. <code>planstart</code> and <code>actend</code> are
-declared ArcGIS dates; inspect their returned classes before using them.
-Depending on the layer’s time-zone metadata, the package may keep
-unknown-zone dates as raw epoch milliseconds rather than interpreting
-them as UTC instants.</p>
+<p><code>OBJECTID</code> identifies a feature; <code>projid</code> may
+repeat across locations. Type, phase, status, and costs are publisher
+attributes. Dates with unknown time zones may remain raw
+milliseconds.</p>
 </div>
 <div class="section level2">
-<h2 id="retrieve-a-complete-feature-set">Retrieve a complete feature set<a class="anchor" aria-label="anchor" href="#retrieve-a-complete-feature-set"></a>
+<h2 id="retrieve-records">Retrieve records<a class="anchor" aria-label="anchor" href="#retrieve-records"></a>
 </h2>
-<p>Run this chunk when you want a current analysis. It requests all
-mapped features, checks retrieval provenance, and stops if the publisher
-cannot return a complete result. There is no <code>limit = 100</code>
-preview because a preview would make category shares misleading.</p>
+<p>Retrieve all features and check completeness before comparing
+categories.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
@@ -289,25 +260,15 @@ preview because a preview would make category shares misleading.</p>
 <span><span class="op">}</span></span>
 <span><span class="va">source</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"retrieved_at"</span>, <span class="st">"matched_rows"</span>,</span>
 <span>         <span class="st">"returned_rows"</span>, <span class="st">"complete"</span>, <span class="st">"integrity"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>Expect <code>projects</code> to be a tibble with the requested
-attributes and one row per mapped feature, without a geometry column.
-The provenance list reports the download’s source and time; equal
-matching and returned row counts, together with
-<code>complete = TRUE</code>, establish a full retrieval of this
-public-facing layer.</p>
-<p>The package checks returned object IDs for missing or repeated
-feature records during retrieval. The live service may still change
-attributes between requests. Save the provenance alongside any result
-you plan to reuse:</p>
+<p><code>projects</code> has one row per feature and no geometry
+column.</p>
+<p>Save the download details. Live attributes can change between
+requests:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="st">"analysis-output"</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">projects</span>, provenance <span class="op">=</span> <span class="va">source</span><span class="op">)</span>,</span>
 <span>        <span class="st">"analysis-output/tampa-capital-projects.rds"</span><span class="op">)</span></span></code></pre></div>
-<p>Inspect the returned classes, a few rows, and missing values before
-making a chart. In particular, <code>status</code> and
-<code>projphase</code> are separate source fields; an
-<code>actend</code> value alone is not proof that a project was accepted
-as complete.</p>
+<p>Inspect column types, values, and missing data:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">projects</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBJECTID"</span>, <span class="st">"projid"</span>, <span class="st">"projtype"</span>, <span class="st">"projphase"</span>, <span class="st">"status"</span>,</span>
 <span>               <span class="st">"Neighborhood"</span>, <span class="st">"estcost"</span>, <span class="st">"actcost"</span>, <span class="st">"planstart"</span>, <span class="st">"actend"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
@@ -317,15 +278,11 @@ as complete.</p>
 <span>                  <span class="st">"actcost"</span>, <span class="st">"actend"</span><span class="op">)</span><span class="op">]</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="clean-labels-and-summarize-mapped-activity">Clean labels and summarize mapped activity<a class="anchor" aria-label="anchor" href="#clean-labels-and-summarize-mapped-activity"></a>
+<h2 id="summarize">Summarize<a class="anchor" aria-label="anchor" href="#summarize"></a>
 </h2>
-<p>Keep unknown labels visible. The helper changes only missing or blank
-text to <code>(Missing)</code>; it does not merge source categories with
-similar names. It also sets aside blank and <strong>suspected</strong>
-placeholder IDs (<code>N/A</code>, <code>NA</code>,
-<code>0000000</code>) for a later ID audit. Those placeholder rules are
-an analytical choice based on a <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/stories/01-tampa-capital-project-grain.Rmd" class="external-link">dated
-exploration</a>, not an official publisher codebook.</p>
+<p>Keep blank labels as <code>(Missing)</code>. Set aside blank IDs and
+suspected placeholders (<code>N/A</code>, <code>NA</code>,
+<code>0000000</code>); these are working rules, not official codes.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">label_or_missing</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
@@ -344,11 +301,8 @@ exploration</a>, not an official publisher codebook.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"N/A"</span>, <span class="st">"NA"</span>, <span class="st">"0000000"</span><span class="op">)</span></span>
 <span><span class="va">working_id</span><span class="op">[</span><span class="va">blank_id</span> <span class="op">|</span> <span class="va">placeholder_id</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA_character_</span></span>
 <span><span class="va">projects</span><span class="op">$</span><span class="va">working_id</span> <span class="op">&lt;-</span> <span class="va">working_id</span></span></code></pre></div>
-<p>Count <strong>feature rows</strong> by the source’s project type and
-phase. This answers what the public map contains, without claiming a
-count of distinct projects. The neighborhood table uses the publisher’s
-<code>Neighborhood</code> attribute; it does not assign points to a new
-geographic boundary.</p>
+<p>Count feature rows by type, phase, and the source’s neighborhood
+label:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">type_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">projects</span><span class="op">$</span><span class="va">project_type</span><span class="op">)</span>,</span>
 <span>                             stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -388,15 +342,9 @@ geographic boundary.</p>
 <span><span class="op">]</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">neighborhood_counts</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Top source neighborhood labels, by mapped feature row"</span><span class="op">)</span></span></code></pre></div>
-<p>Each summary row names a source label (or a type-and-phase pair), and
-<code>mapped_features</code> counts feature rows with that label. For
-example, the phase table lets you compare how the same type is
-distributed across reported phases; <code>(Missing)</code> keeps
-unlabeled records visible. The leading rows and their counts are
-determined by your download, not fixed expected results.</p>
-<p>The chart uses the same feature-level counts. It is generated from
-your live retrieval when you run it; the website does not display
-invented or stale type counts.</p>
+<p><code>mapped_features</code> counts rows for each label or label
+pair.</p>
+<p>Plot the type counts:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Install ggplot2 to draw this chart: install.packages('ggplot2')"</span><span class="op">)</span></span>
@@ -419,17 +367,11 @@ invented or stale type counts.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>panel.grid.major.y <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>A taller bar indicates more <strong>mapped locations</strong>
-carrying that source type, not more unique projects or a larger budget.
-The top-ten neighborhood table is likewise a count of mapped feature
-rows with those source labels. Multiple locations may share a project
-ID, and blank locations or labels can affect both views.</p>
-<p>This archived map gives a geographic example while keeping the
-vignette build offline. It was generated from the City’s public
-capital-project layer and shoreline-adjusted boundary on <strong>October
-3, 2026</strong>, using the repository’s <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tools/render-home-map.R" class="external-link">map
-script</a>. The plotted 394 features are a dated snapshot, not a current
-count or a project-completion map.</p>
+<p>Bars count mapped features, not distinct projects or budget
+amounts.</p>
+<p>Archived map: 394 features retrieved October 3, 2026. The <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/tools/render-home-map.R" class="external-link">map
+script</a> uses the City’s capital-project and shoreline-adjusted
+boundary layers.</p>
 <div class="float">
 <img src="figures/tampa-capital-projects-2026-10-03.png" alt="Archived map of City of Tampa capital-project feature locations on October 3, 2026, over a shoreline-adjusted city boundary."><div class="figcaption">Archived map of City of Tampa capital-project
 feature locations on October 3, 2026, over a shoreline-adjusted city
@@ -441,26 +383,16 @@ context, not a legal survey. Multiple points can represent one
 project.</em></p>
 </div>
 <div class="section level2">
-<h2 id="check-the-unit-before-interpreting-cost-or-completion">Check the unit before interpreting cost or completion<a class="anchor" aria-label="anchor" href="#check-the-unit-before-interpreting-cost-or-completion"></a>
+<h2 id="check-ids-and-costs">Check IDs and costs<a class="anchor" aria-label="anchor" href="#check-ids-and-costs"></a>
 </h2>
-<p>Start by seeing whether the cost fields contain values. This is a
-diagnostic summary of <strong>feature-row attributes</strong>; do not
-read its quartiles or totals as a project budget distribution. A zero
-<code>actcost</code> could reflect the source’s reporting convention
-rather than proof of zero spending.</p>
+<p>Inspect cost values before using them. Zero actual cost may be a
+reporting convention rather than zero spending.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">projects</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"estcost"</span>, <span class="st">"actcost"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> reports each cost field’s range, quartiles,
-mean, and missing-value count when applicable. Read the two columns
-separately: <code>estcost</code> holds reported estimates and
-<code>actcost</code> holds reported actual costs, with unavailable
-values shown as missing rather than treated as zero.</p>
-<p>Review ID repetition and disagreement across rows. The table below
-identifies project IDs that require further source review; it never sums
-<code>estcost</code> or <code>actcost</code> across map features. A
-single numeric value repeated on several points is one recorded value,
-not several payments. Different values under one ID should not be
-resolved by arbitrarily taking the first row.</p>
+<p><code>estcost</code> holds reported estimates; <code>actcost</code>
+holds reported actual costs.</p>
+<p>Check repeated IDs and conflicting values before aggregating
+costs:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">usable</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">projects</span><span class="op">$</span><span class="va">working_id</span><span class="op">)</span></span>
 <span><span class="va">rows_by_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">usable</span><span class="op">)</span>, <span class="va">projects</span><span class="op">$</span><span class="va">working_id</span><span class="op">[</span><span class="va">usable</span><span class="op">]</span><span class="op">)</span></span>
@@ -509,36 +441,21 @@ resolved by arbitrarily taking the first row.</p>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">needs_review</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>               caption <span class="op">=</span> <span class="st">"Example IDs with differing source attributes"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>In the audit, <code>mapped_features</code> counts rows per retained
-ID, while each <code>distinct_*</code> column counts different
-nonmissing values recorded under that ID. A value above one flags
-disagreement for review; the <code>needs_review</code> table shows up to
-ten such IDs, or no rows if this test finds none.</p>
-<p>If you need a canonical project count or total budget, first obtain a
-publisher-supported definition of a project ID, a rule for multiple
-locations and conflicting values, and the relevant financial ledger.
-<code>projphase</code>, <code>status</code>, <code>actend</code>, and
-<code>actcost</code> are source attributes for follow-up; none alone
-establishes verified completion, final expenditure, or when money was
-paid. The public-facing selection may omit unmapped or unpublished
-projects.</p>
+<p><code>distinct_*</code> values above one flag disagreement within an
+ID.</p>
+<p>Get a publisher-supported rule for repeated IDs before counting
+projects or adding costs. Status, dates, and costs alone do not verify
+completion or final spending. The public map is only part of the City’s
+capital work.</p>
 </div>
 <div class="section level2">
-<h2 id="reproducibility-and-next-steps">Reproducibility and next steps<a class="anchor" aria-label="anchor" href="#reproducibility-and-next-steps"></a>
+<h2 id="save-the-source-details">Save the source details<a class="anchor" aria-label="anchor" href="#save-the-source-details"></a>
 </h2>
-<p>The example uses the checked <code>capital-projects</code> ID and the
-<a href="https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e" class="external-link">City
-of Tampa ArcGIS item</a>. The catalog records that item’s CC0 statement
-and the City’s source terms; consult
-<code>tbod_dataset_info("capital-projects")$terms</code> before
-redistributing data. Record your package version, retrieval timestamp,
-source URL, fields, and provenance with any analysis. Rerunning the live
-code may produce different labels, rows, costs, or statuses as the
-publisher updates the service.</p>
-<p>For a complementary housing and permitting workflow, see <a href="housing-development.html">Housing and development activity</a>.
-For observations with a very different sampling structure, see <a href="water-quality.html">Water quality around Tampa Bay</a>. The <a href="coverage.html">Data Coverage dashboard</a> distinguishes checked
-catalog entries from current endpoint verification and explains the
-catalog’s known gaps.</p>
+<p>Source: <a href="https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e" class="external-link">City
+of Tampa capital projects</a>. Check
+<code>tbod_dataset_info("capital-projects")$terms</code> and save your
+package version and retrieval provenance.</p>
+<p>See <a href="coverage.html">coverage</a> for catalog limits.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

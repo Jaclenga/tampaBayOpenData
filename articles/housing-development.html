@@ -37,12 +37,12 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles-menu" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Toggle articles menu"></button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles-menu">
-<li><a class="dropdown-item" href="../articles/introduction.html">More ways to get started</a></li>
-    <li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
-    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+<li><a class="dropdown-item" href="../articles/introduction.html">Package basics</a></li>
+    <li><a class="dropdown-item" href="../articles/discovery.html">Find data</a></li>
+    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieve and download</a></li>
     <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
-    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
-    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Hillsborough water quality</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Map capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
   </ul>
 </li>
@@ -77,27 +77,16 @@
 
     
     
-<p>This walkthrough asks: <strong>where are the cases in Tampa’s current
-development application map, and what statuses do its mapped records
-have?</strong> You will find a source, retrieve all its current records,
-check its fields, clean text values, and chart the neighborhoods named
-in the layer. A separate Pinellas County housing layer illustrates how a
-related question can require a different source. The package’s checked
-catalog is selective; these layers do not represent all housing or
-development in either county.</p>
-<p>The catalog and schema chunks below run without network access when
-this page is built. <strong>Live chunks are shown but not run during
-package checks or the website build.</strong> Run them in order in an
-internet-connected R session. Their results and chart will reflect the
-publisher’s records at the time you run them. A dated, illustrative
-chart from a separate Pinellas analysis appears below; no record-level
-source data is bundled here.</p>
+<p>Count Tampa’s active development-case records by neighborhood. Then
+inspect a separate Pinellas assisted-housing inventory.</p>
+<p>Catalog examples run offline. Run live examples in order with
+internet access. The archived Pinellas chart is dated October 6,
+2026.</p>
 <div class="section level2">
 <h2 id="set-up">Set up<a class="anchor" aria-label="anchor" href="#set-up"></a>
 </h2>
-<p>Install the package from CRAN, <code>knitr</code> for the catalog
-table, and <code>ggplot2</code> for the chart. The installation commands
-are not run when this page is built.</p>
+<p>Install <code>tampaBayOpenData</code>, <code>knitr</code> for the
+catalog table, and <code>ggplot2</code> for the chart:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"knitr"</span><span class="op">)</span>               <span class="co"># for the catalog table</span></span>
@@ -108,10 +97,7 @@ are not run when this page is built.</p>
 <div class="section level2">
 <h2 id="find-a-suitable-layer">Find a suitable layer<a class="anchor" aria-label="anchor" href="#find-a-suitable-layer"></a>
 </h2>
-<p><code>source = "checked"</code> searches bundled entries offline.
-Search several terms because a permit map, an active application view,
-and a housing program inventory answer different questions. The exact
-catalog results may change when the package is updated.</p>
+<p>Search the offline catalog:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">terms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"housing"</span>, <span class="st">"permit"</span>, <span class="st">"development"</span><span class="op">)</span></span>
 <span><span class="va">matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">terms</span>, <span class="kw">function</span><span class="op">(</span><span class="va">term</span><span class="op">)</span> <span class="op">{</span></span>
@@ -198,19 +184,10 @@ catalog results may change when the package is updated.</p>
 </tr>
 </tbody>
 </table>
-<p>Each row is a catalog hit, not an application or a housing site.
-<code>search_term</code> shows which search found it, so one dataset can
-appear under several terms; <code>category</code> is a catalog topic
-rather than an application status.</p>
-<p>This tutorial uses the checked City of Tampa
-<code>development-cases</code> entry, a <strong>point layer of active
-entitlement applications</strong>. The checked
-<code>construction-permits</code> entry is an active permit viewer with
-<code>CREATEDDATE</code> and <code>LASTUPDATE</code>, but no advertised
-permit issue-date field. Pinellas County’s
-<code>pinellas-assisted-housing</code> entry describes an
-assisted-housing program inventory, not every housing development. Read
-each entry’s scope and reuse terms before choosing a source.</p>
+<p><code>search_term</code> shows which query found each dataset.</p>
+<p>Use <code>development-cases</code>, Tampa’s active
+entitlement-application layer. Permits and assisted-housing inventories
+cover different subjects.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">case_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"development-cases"</span><span class="op">)</span></span>
 <span><span class="va">case_info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"title"</span>, <span class="st">"source_url"</span>, <span class="st">"verified"</span>,</span>
@@ -248,25 +225,14 @@ each entry’s scope and reuse terms before choosing a source.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> NEIGHBORHOOD esriFieldTypeString Neighborhood      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> CREATEDDATE  esriFieldTypeDate   Created Date      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> LASTUPDATE   esriFieldTypeDate   Last Update</span></span></code></pre></div>
-<p><code>verified</code> dates the catalog’s endpoint check, not the
-freshness of each record. The saved schema lists
-<code>CREATEDDATE</code> and <code>LASTUPDATE</code> as ArcGIS date
-fields. <code>APPSTATUS</code> and <code>NEIGHBORHOOD</code> are text
-fields; do not assume their values are standardized. If you need sources
-beyond these checked entries, use
-<code>tbod_search_datasets("housing", source = "live")</code> and
-inspect the discovery result’s completeness and source terms as
-described in the <a href="discovery.html">discovery article</a>.</p>
+<p>Check the scope, fields, and terms. <code>verified</code> dates an
+endpoint check, not individual records.</p>
 </div>
 <div class="section level2">
 <h2 id="retrieve-and-inspect-current-cases">Retrieve and inspect current cases<a class="anchor" aria-label="anchor" href="#retrieve-and-inspect-current-cases"></a>
 </h2>
-<p>Omitting <code>limit</code> requests the full matching layer. This
-matters for a neighborhood comparison: an arbitrary first page would not
-represent all mapped active cases. A three-minute operation budget
-bounds the example. <code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch()</a></code> adds context if the service
-is unavailable or its schema has changed; the code stops rather than
-making a chart from partial data.</p>
+<p>Retrieve all matching rows and stop if the download is
+incomplete.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cases</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"development-cases"</span>, fields <span class="op">=</span> <span class="va">case_fields</span>,</span>
@@ -287,25 +253,17 @@ making a chart from partial data.</p>
 <span>              <span class="st">"returned_rows"</span>, <span class="st">"integrity"</span>, <span class="st">"complete"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">cases</span><span class="op">[</span>, <span class="va">case_fields</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cases</span><span class="op">[</span>, <span class="va">case_fields</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p>Expect <code>cases</code> to be a tibble, a data frame with the six
-requested columns and one row per returned map feature; no geometry was
-requested here. The provenance check establishes a complete download of
-this active view, not a complete history of development
-applications.</p>
-<p><code>RECORDID</code> is the source’s case identifier and
-<code>OBJECTID</code> identifies a mapped feature row. They may not have
-the same grain. The following diagnostics keep missing labels and
-repeated nonblank case IDs visible. We count <strong>mapped
-rows</strong>, not unique projects or new housing units.</p>
+<p><code>cases</code> has one row per map feature, without geometry.</p>
+<p><code>OBJECTID</code> identifies a feature; <code>RECORDID</code>
+identifies a case and may repeat. Count feature rows here, not unique
+projects or housing units.</p>
 </div>
 <div class="section level2">
 <h2 id="clean-and-summarize">Clean and summarize<a class="anchor" aria-label="anchor" href="#clean-and-summarize"></a>
 </h2>
-<p>Trim whitespace and turn blank source labels into missing values.
-ArcGIS date fields arrive as R date-time values; use the service’s
-advertised Eastern time zone when deriving a local calendar date.
-<code>CREATEDDATE</code> describes creation of a record in this active
-view, not a permit issue or housing completion date.</p>
+<p>Trim labels and convert blank values to missing. Use Eastern time for
+local dates. <code>CREATEDDATE</code> records creation in the active
+view, not completion.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">clean_label</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
@@ -335,26 +293,18 @@ view, not a permit issue or housing completion date.</p>
 <span><span class="va">status_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">case_data</span><span class="op">$</span><span class="va">status</span>, useNA <span class="op">=</span> <span class="st">"ifany"</span><span class="op">)</span>,</span>
 <span>                      decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">status_counts</span></span></code></pre></div>
-<p>In <code>quality</code>, <code>check</code> names a diagnostic and
-<code>rows</code> gives its count. The repeated-ID count measures
-occurrences after the first, not the number of distinct repeated IDs;
-missing-value counts can overlap and should not be added together.
-<code>status_counts</code> pairs each reported status with its
-feature-row count, with an <code>NA</code> group if statuses are
-missing.</p>
-<p>Do not automatically remove repeated case IDs: a case can have more
-than one mapped row, and dropping one could erase location information.
-Investigate those IDs and the source’s record definitions before
-claiming a count of distinct applications.</p>
+<p><code>quality</code> counts missing labels and ID occurrences after
+the first. Missing-value counts can overlap. <code>status_counts</code>
+counts rows by status.</p>
+<p>Investigate repeated case IDs before removing rows; they may mark
+different locations.</p>
 </div>
 <div class="section level2">
 <h2 id="chart-the-mapped-neighborhoods">Chart the mapped neighborhoods<a class="anchor" aria-label="anchor" href="#chart-the-mapped-neighborhoods"></a>
 </h2>
-<p>This chart uses the ten neighborhoods with the most <strong>mapped
-rows in the current active view</strong>. It excludes rows with no
-neighborhood label, whose count remains in <code>quality</code>. It is a
-count of source features, not a population-adjusted rate, a citywide
-total of development, or a measure of construction completed.</p>
+<p>Plot the ten neighborhoods with the most mapped rows. Rows without
+neighborhood labels remain in <code>quality</code> but are excluded from
+the chart.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Install ggplot2 to draw the neighborhood chart."</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -395,25 +345,14 @@ total of development, or a measure of construction completed.</p>
 <span>      <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">neighborhood_plot</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>The plotted bars describe the records available <strong>at retrieval
-time</strong>. Cases can enter or leave the active view, and some
-neighborhoods may have missing labels or different mapping practices.
-Larger counts do not prove more homes were built. A chart of
-<code>CREATEDDATE</code> among today’s active cases would also exclude
-earlier cases that have left the view, so it would not show a complete
-historical trend in applications.</p>
+<p>The chart describes the active view at retrieval time. It cannot show
+completed housing or a full historical trend.</p>
 </div>
 <div class="section level2">
-<h2 id="a-related-housing-source-answers-a-different-question">A related housing source answers a different question<a class="anchor" aria-label="anchor" href="#a-related-housing-source-answers-a-different-question"></a>
+<h2 id="look-at-the-pinellas-housing-inventory">Look at the Pinellas housing inventory<a class="anchor" aria-label="anchor" href="#look-at-the-pinellas-housing-inventory"></a>
 </h2>
-<p>Pinellas County’s checked <code>pinellas-assisted-housing</code>
-layer reports fields such as <code>CITY</code>,
-<code>HOUSINGPROGRAM</code>, <code>TOTALUNITS</code>, and
-<code>ASSISTEDUNITS</code>. You can inspect its current records with the
-same retrieval and provenance checks, then decide whether your question
-concerns mapped program records or reported units. The code below is
-deliberately a source inspection, not a sum of units: multiple polygons
-or repeated parcel identifiers may represent the same site.</p>
+<p>Inspect <code>pinellas-assisted-housing</code> for reported total and
+assisted units. Review repeated parcels before adding unit counts.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">housing_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"pinellas-assisted-housing"</span><span class="op">)</span></span>
 <span><span class="va">housing_info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"scope_note"</span>, <span class="st">"terms"</span><span class="op">)</span><span class="op">]</span></span>
@@ -460,11 +399,8 @@ or repeated parcel identifiers may represent the same site.</p>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"The housing inventory result is incomplete."</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">housing</span><span class="op">[</span>, <span class="va">housing_fields</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p>The returned housing table has one row per source polygon feature
-even though this request omits geometry. <code>PID</code> is the parcel
-identifier, <code>DEVELOPMENT</code> names the development, and the unit
-fields report total and assisted units for that record; they are not
-counts of the polygon features themselves.</p>
+<p><code>PID</code> identifies the parcel; each row represents a source
+polygon.</p>
 <div class="float">
 <img src="figures/pinellas-assisted-housing-2026-10-06.png" alt="Archived scatterplot of reported total and assisted units in mapped Pinellas housing records, with a diagonal marking equal counts."><div class="figcaption">Archived scatterplot of reported total and
 assisted units in mapped Pinellas housing records, with a diagonal
@@ -476,34 +412,20 @@ usable unit counts, not necessarily a distinct housing site. This image
 is historical; run the live code above to inspect current records.
 Source: <a href="https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_AssistedHousing_view/FeatureServer/0" class="external-link">Pinellas
 County ArcGIS layer</a>.</em></p>
-<p>On the diagonal, reported assisted units equal total units; below it,
-only a portion of the reported units are assisted. This compares the two
-attributes within records, rather than showing how many units are
-currently available.</p>
-<p>The separate <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/stories/05-pinellas-assisted-housing.Rmd" class="external-link">Pinellas
-housing exploration</a> checks unit-count pairs and repeated parcel IDs
-in more detail. That report uses live data and records the date of its
-observations; rerun it for a current analysis.</p>
+<p>The diagonal marks equal assisted and total units. These counts do
+not show current vacancies.</p>
+<p>See the <a href="https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/stories/05-pinellas-assisted-housing.Rmd" class="external-link">Pinellas
+example</a> for unit checks and repeated parcel IDs.</p>
 </div>
 <div class="section level2">
-<h2 id="reproducibility-and-limits">Reproducibility and limits<a class="anchor" aria-label="anchor" href="#reproducibility-and-limits"></a>
+<h2 id="save-and-interpret">Save and interpret<a class="anchor" aria-label="anchor" href="#save-and-interpret"></a>
 </h2>
-<p>Keep <code>case_source</code> with any derived table or image; it
-records the endpoint, retrieval time, row counts, and completeness
-check. The checked schema and catalog are dated snapshots, while the
-worked neighborhood chart uses live City of Tampa records when run. The
-Pinellas chart above is a dated image from another analysis; no
-record-level source data is bundled with this tutorial.</p>
-<p>The Tampa layer is an active application view rather than a
-historical ledger of all development cases. It does not establish
-approvals, housing starts, completed construction, or units delivered.
-The Pinellas layer is a program inventory; it does not establish current
-eligibility, vacancies, or a complete affordable-housing inventory.
-Neither layer covers all of its publisher’s data, and the package’s
-checked catalog does not measure complete publisher coverage. See <a href="coverage.html">Data Coverage</a> for verification status and
-selection limits. Continue with <a href="water-quality.html">water
-quality</a> or <a href="infrastructure-projects.html">infrastructure and
-capital projects</a> for other source-specific analysis patterns.</p>
+<p>Keep <code>case_source</code> with your results to record the source
+and retrieval time.</p>
+<p>Tampa’s active view excludes earlier cases that have left it.
+Pinellas covers a housing program inventory, without confirming
+eligibility or availability. See <a href="coverage.html">coverage</a>
+for source limits.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

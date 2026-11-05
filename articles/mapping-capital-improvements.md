@@ -1,18 +1,12 @@
 # Where Are Tampa's Public Infrastructure Projects?
 
-## 1. What will we investigate?
+## 1. Set up
 
-Where does Tampa’s public capital-project map record infrastructure
-work, and how do the locations differ by the City’s project-type labels?
-We will map the City’s published project locations against its
-shoreline-adjusted boundary, then check which neighborhood labels appear
-most often. These records describe mapped work, not the City’s complete
-investment ledger.
+Map Tampa’s public capital-project locations by type and count their
+neighborhood labels.
 
-You need basic R and the optional `sf` package, which stores tables with
-coordinates and shapes. The map uses base R; no other plotting package
-is needed. Install these packages once, then load them in each new
-session:
+Install the packages once, then load them in each R session. The map
+uses `sf` and base R.
 
 ``` r
 
@@ -24,16 +18,13 @@ install.packages(c("tampaBayOpenData", "sf"))
 library(tampaBayOpenData)
 ```
 
-Installation and retrieval need an internet connection. The rendered
-page uses real data saved on October 24, 2026 (Eastern time), so
-ordinary builds work offline. Run the code below in order to retrieve
-current data; the section at the end explains how to render the whole
-page with live data.
+This page uses a snapshot saved October 24, 2026. Run the retrieval code
+with internet access for current data; see the live-render command
+below.
 
-## 2. Find the relevant datasets
+## 2. Find data
 
-Search the package’s checked catalog for capital projects in Tampa. This
-search reads the bundled catalog without contacting a publisher.
+Search the offline catalog:
 
 ``` r
 
@@ -47,14 +38,10 @@ project_matches[, c("id", "title", "geometry_type")]
 #> 1 capital-projects Capital improvement projects esriGeometryPoint
 ```
 
-The `capital-projects` entry contains points: each point marks a
-location. A line could trace a road or pipe, and a polygon could outline
-a work area; this checked project entry contains neither. We use the
-separate `city-boundary` polygon only as a backdrop, not as another set
-of projects.
+Use `capital-projects` for locations and `city-boundary` for the
+backdrop.
 
-Check the source description and exact field names before retrieving
-records. The saved schema and source notes below also work offline.
+Check the source and field names:
 
 ``` r
 
@@ -91,17 +78,13 @@ project_schema$fields[
 #> 5 Neighborhood Neighborhood       esriFieldTypeString
 ```
 
-`OBJECTID` identifies a feature row; `projid` is the publisher’s project
-identifier and can repeat across locations. `projname`, `projtype`, and
-`Neighborhood` provide the source name, type, and neighborhood label. We
-keep every feature row rather than assuming each is a unique project.
+`OBJECTID` identifies a feature. `projid` identifies a project and may
+repeat across locations.
 
-## 3. Retrieve the locations and boundary
+## 3. Retrieve data
 
-`spatial = TRUE` returns an `sf` table with a geometry column, which we
-need for mapping. `out_sr = 4326` requests longitude and latitude for
-both layers; using the same coordinate reference system lets their
-coordinates line up.
+Use `spatial = TRUE` for geometry and `out_sr = 4326` for both layers to
+share WGS 84 longitude and latitude.
 
 ``` r
 
@@ -115,10 +98,8 @@ tampa_boundary <- tbod_get_dataset(
 )
 ```
 
-These limits comfortably covered the saved example’s 201 project
-features and one boundary feature. Check completeness before
-interpreting the map: if the publisher grows beyond a limit, stop and
-review the request rather than mapping an unmarked preview.
+The snapshot has 201 project features and one boundary. Check
+completeness in case current records exceed the requested limits.
 
 ``` r
 
@@ -143,15 +124,10 @@ project_source[c("retrieved_at", "returned_rows", "complete")]
 #> [1] TRUE
 ```
 
-The displayed provenance is a named list: `retrieved_at` dates this
-download, `returned_rows` counts feature rows, and `complete` says
-whether all matching rows were retrieved. Compare the timestamp when
-revisiting the map; an older download can explain differences from the
-City’s current display.
+`retrieved_at` dates the download; `complete` confirms all matches were
+returned.
 
-Keep the source objects if you want to revisit this analysis.
-[`saveRDS()`](https://rdrr.io/r/base/readRDS.html) preserves their
-geometry and retrieval provenance together.
+Save the data and provenance:
 
 ``` r
 
@@ -161,9 +137,8 @@ saveRDS(list(capital_projects = capital_projects, tampa_boundary = tampa_boundar
 
 ## 4. Create the map
 
-The package retains missing coordinates as empty geometries. Set those
-rows aside for mapping and report how many were excluded; they remain in
-the original table.
+Exclude empty geometries from the map, keeping them in the original
+table:
 
 ``` r
 
@@ -178,9 +153,7 @@ if (nrow(mapped_projects) == 0 || nrow(tampa_boundary) == 0) {
 stopifnot(all(sf::st_geometry_type(mapped_projects) == "POINT"))
 ```
 
-Use the City’s type labels directly, with missing or blank labels
-displayed as “Not reported”. A named color for each label keeps points
-and legend in agreement even if the publisher changes the categories.
+Assign colors by type. Keep blank types as “Not reported”.
 
 ``` r
 
@@ -198,14 +171,9 @@ sort(table(project_types), decreasing = TRUE)
 #>                       4
 ```
 
-The printed output pairs each type label with its number of points
-available to map. A missing-type group remains visible, but records
-without coordinates have already been excluded from these counts; use
-the original table when investigating all feature records.
+These counts include only records with coordinates.
 
-Draw the boundary first, then add the original point geometries. The map
-extent includes both layers so points beyond the backdrop are still
-visible; the legend sits beside the map to avoid covering locations.
+Draw the boundary, then add the points:
 
 ``` r
 
@@ -238,24 +206,14 @@ legend.](mapping-capital-improvements_files/figure-html/capital-project-map-1.pn
 layout(1)
 ```
 
-Each dot is one published feature location, colored by the source type.
-Dots can overlap, and a point does not describe the full length of a
-road project or the area affected by construction. The outline is the
-City’s shoreline-adjusted representation, not a legal survey.
+Dots mark feature locations and may overlap. They do not show
+construction footprints. The shoreline-adjusted boundary is map context,
+not a legal survey.
 
-## 5. Read the geography
+## 5. Count neighborhoods
 
-In the October 24 snapshot, locations extend through the central part of
-the city and into both its northern and southern sections; they are not
-confined to one downtown site. The map also shows different project
-types occupying nearby locations, rather than distinct regions reserved
-for each type. These are observations of mapped locations, not
-measurements of service coverage.
-
-The City’s neighborhood labels help check the apparent concentration.
-Count all feature rows, including ones without geometry, and keep
-missing labels visible rather than assigning them to a neighborhood
-ourselves.
+Count the source’s neighborhood labels across all rows, including those
+without geometry:
 
 ``` r
 
@@ -277,30 +235,15 @@ head(neighborhood_counts, 10)
 #>                          5                          5
 ```
 
-In the saved data, Old Seminole Heights has 12 feature rows and Tampa
-Heights has 11, more than any other reported neighborhood label. This
-gives two named areas to investigate further, rather than relying only
-on overlapping dots. Missing labels are not a geographic area, and the
-table uses publisher labels, not a new calculation of which boundary
-contains each point.
+In the snapshot, Old Seminole Heights has 12 rows and Tampa Heights has
+11. Missing labels stay in their own group.
 
-## 6. What this map cannot tell us
+## Limits
 
-- The layer is the City’s public-facing selection, not a complete
-  inventory of infrastructure or capital spending. Blank areas do not
-  prove no work exists.
-- Several locations can share a project ID; nearby dots can overlap. We
-  have neither removed repeated IDs nor counted features as distinct
-  projects.
-- Points mark locations, not construction footprints. Separate line or
-  polygon layers could describe the same work and would need review
-  before combining.
-- Publisher updates can change records, labels, and coordinates.
-  Retrieval checks do not establish current construction status or
-  accuracy on the ground.
-- Clustering alone cannot show unequal funding or investment. That would
-  require reliable project-level costs, population and need, and
-  coverage information.
+The layer covers a public-facing selection. Several points may belong to
+one project, and blank areas do not prove no work exists. These
+locations alone cannot measure spending, construction status, or
+investment equity.
 
 Data: City of Tampa [capital-project
 layer](https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e)
@@ -312,9 +255,8 @@ retrieval times are retained in `tbod_provenance(capital_projects)` and
 
 ### Render with current data
 
-With the package, `sf`, `knitr`, `rmarkdown`, and Pandoc installed, run
-this from the repository root with internet access. Live retrieval
-errors stop the render instead of falling back to the saved data.
+With the packages and Pandoc installed, run from the repository root
+with internet access:
 
 ``` r
 
@@ -323,10 +265,7 @@ rmarkdown::render("vignettes/mapping-capital-improvements.Rmd")
 Sys.unsetenv("TAMPA_OPEN_DATA_LIVE")
 ```
 
-Ordinary builds leave this variable unset and use the saved snapshot.
-When `sf` is unavailable, the page displays a saved map made from that
-same snapshot and skips spatial code; install `sf` to run the mapping
-steps. Dated observations above refer to the saved data, not future live
-renders. The [infrastructure
-article](https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.md)
-discusses project IDs, status, and cost fields in more detail.
+Ordinary builds use the saved snapshot. Without `sf`, the page shows its
+saved map and skips spatial code. See
+[infrastructure](https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.md)
+for project IDs, status, and costs.

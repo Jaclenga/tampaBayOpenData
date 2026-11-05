@@ -1,13 +1,11 @@
 # tampaBayOpenData
 
-`tampaBayOpenData` provides R functions for searching public datasets
-from six Tampa Bay publishers and retrieving their records. It includes
-a selected list of datasets whose structure has been checked and can
-also search publisher catalogs online. Results are returned as tables
-or, with the optional `sf` package, spatial objects.
+Search public data from six Tampa Bay publishers and retrieve records in
+R. Use the checked catalog offline or search live portals. Results are
+tables or, with `sf`, spatial objects.
 
-[Five-minute beginner
-tutorial](https://jaclenga.github.io/tampaBayOpenData/articles/first-five-minutes.html)
+[Get
+started](https://jaclenga.github.io/tampaBayOpenData/articles/first-five-minutes.html)
 
 ## Install
 
@@ -111,6 +109,9 @@ walkthrough](https://jaclenga.github.io/tampaBayOpenData/articles/introduction.h
   quality](https://jaclenga.github.io/tampaBayOpenData/articles/water-quality.html),
   and [infrastructure
   projects](https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.html).
+- [All guides and
+  walkthroughs](https://jaclenga.github.io/tampaBayOpenData/articles/index.html),
+  including links to the short reports and bicycle examples.
 
 ## Data sources and limitations
 

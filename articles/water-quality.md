@@ -1,26 +1,14 @@
 # Explore Hillsborough water-quality observations
 
-This tutorial uses the checked **Hillsborough EPC water-quality
-observations** layer, a sample view from Hillsborough County monitoring
-stations rather than region-wide coverage of Tampa Bay. It asks a modest
-question: how many records contain both reported `DO_T` and `DO_B`
-measurements, and how do those paired values compare? It extends the
-[short paired-reading
-exploration](https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/stories/04-hillsborough-water-quality.Rmd)
-with an offline source check, a missing-data audit, station and date
-summaries, and a reproducible `ggplot2` chart.
+Compare reported `DO_T` and `DO_B` oxygen readings in Hillsborough EPC
+records.
 
-The source is a view of the **latest staff-reviewed samples**, not a
-complete monitoring history. The package checks its endpoint and schema;
-it does not validate laboratory methods or establish measurement units.
-This is one checked Hillsborough layer, not a survey of all Tampa Bay
-waters or monitoring programs.
+The layer contains the latest staff-reviewed samples, not a full history
+or region-wide survey. Confirm units and methods with the publisher.
 
 ## Set up R
 
-Install the package from CRAN and `ggplot2` for the optional plotting
-step. The examples use base R for cleaning and summaries, so `ggplot2`
-is an optional tutorial dependency, not a required package import.
+Install the package and `ggplot2` for plotting:
 
 ``` r
 
@@ -29,17 +17,12 @@ install.packages("ggplot2")   # if needed for the chart
 library(tampaBayOpenData)
 ```
 
-The catalog and saved schema chunks below run without a network
-connection when this article is built. **Live** chunks are shown but not
-run during CRAN or website builds. Run those chunks in order in an
-internet-connected R session to analyze current observations. A source
-can change or be temporarily unavailable; the retrieval code reports a
-failure instead of substituting old data.
+Catalog examples run offline. Run live examples in order with internet
+access.
 
-## Find the checked monitoring layer
+## Find data
 
-Search the curated catalog locally. `source = "checked"` avoids a live
-portal scan and returns stable package IDs.
+Search the offline catalog:
 
 ``` r
 
@@ -71,18 +54,13 @@ info[c("publisher", "title", "source_url", "verified", "scope_note")]
 #> [1] "The Environmental Protection Commission's item describes the latest staff-reviewed samples at monitoring stations, not the complete sample history. Methods, units, detection limits, and site coverage require source review."
 ```
 
-The `verified` date marks the catalog’s endpoint check, **not** a
-sampling date. The [ArcGIS source
+Check the [source
 item](https://hillsborough.maps.arcgis.com/home/item.html?id=04f8f5d7491b4d7aa2aacc6df7ea7f13)
-is published through Hillsborough County for its Environmental
-Protection Commission. Read the item’s terms before reusing results; the
-checked catalog does not identify an unrestricted reuse license for this
-layer.
+and its terms. `verified` dates an endpoint check, not a sample.
 
 Use [live
 discovery](https://jaclenga.github.io/tampaBayOpenData/articles/discovery.md)
-to search for other water-related items. A live search depends on portal
-indexing and does not establish complete regional coverage.
+to find other layers.
 
 ``` r
 
@@ -92,14 +70,10 @@ found[, c("id", "title", "publisher", "validation_status")]
 attr(found, "discovery_complete")
 ```
 
-## Check fields, locations, dates, and units
+## Check fields
 
-The saved layer schema identifies `StationNumber` and `AreaName` as
-location labels, `SampleTime` as an ArcGIS date field, `DO_T` and `DO_B`
-as numeric fields, and `ID` as the object ID. Its geometry is a point.
-These are actual source field names; the saved schema does **not**
-provide measurement units or a sampling protocol for the two oxygen
-fields.
+`StationNumber` and `AreaName` label locations, `SampleTime` gives the
+sample time, and `DO_T` and `DO_B` hold numeric readings.
 
 ``` r
 
@@ -120,19 +94,12 @@ schema$geometry_type
 #> [1] "esriGeometryPoint"
 ```
 
-Inspect the current service metadata before analysis. The package
-compares it with this bundled baseline again during retrieval and stops
-on incompatible changes. If source units, depth meanings, or
-quality-control codes matter to your question, confirm them in the
-publisher’s current documentation; field names alone are insufficient.
+Check current metadata and confirm units, depths, and quality codes with
+the publisher before interpreting differences.
 
-## Retrieve and audit current observations
+## Retrieve and clean
 
-This requests the full current layer with just the fields used here. It
-checks the retrieval provenance before analysis so a partial result is
-never treated as a complete view. The request can fail because a service
-is unavailable, its schema changed, or the operation exceeded its time
-budget.
+Retrieve the full layer and check completeness:
 
 ``` r
 
@@ -168,23 +135,12 @@ str(samples[, needed])
 head(samples[, needed])
 ```
 
-Expect `samples` to be a tibble with the six selected fields and one row
-per observation record in the current station view, not one row per
-station. [`str()`](https://rdrr.io/r/utils/str.html) shows each column’s
-R type; [`head()`](https://rdrr.io/r/utils/head.html) shows a few
-records, including `NA` where a field was not reported. Counts and
-measurement values depend on the publisher’s current view and are not
-displayed as live results here.
+Each row is an observation; stations may appear more than once.
 
-[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
-converts the UTC ArcGIS `SampleTime` value to an R date-time when the
-current metadata still declares that time reference. Source column names
-are preserved. The full retrieval checks object-ID membership, but live
-attributes can still change during a request.
+`SampleTime` becomes an R date-time when the metadata declares UTC.
 
-Clean blank station and area labels, retain only finite numbers for
-paired measurement calculations, and report exclusions. A missing `DO_T`
-or `DO_B` is **not** a zero reading.
+Clean blank labels and count missing readings. Missing values are not
+zeros.
 
 ``` r
 
@@ -213,16 +169,11 @@ paired <- clean[has_pair, , drop = FALSE]
 paired$difference <- paired$do_t - paired$do_b
 ```
 
-The audit’s `check` column names each measure and `count` gives its
-value. Station IDs count locations, while the other rows count
-observations; a record missing both oxygen fields contributes to both
-missing-field counts. The last row tells you how many records can enter
-the paired comparison.
+The final audit row counts usable pairs. Missing-field counts can
+overlap.
 
-Summarize site coverage and sample dates separately from the oxygen
-comparison. This is a snapshot of the current view: the month table
-describes which dates are present, **not** a trend or a consistent
-monthly sampling schedule.
+Summarize stations and dates. The month table describes available
+samples, not a historical trend or regular sampling schedule.
 
 ``` r
 
@@ -253,25 +204,16 @@ if (length(areas)) {
 }
 ```
 
-`station_counts` counts observations per reported station, and
-`range(dated)` gives the earliest and latest dates present. In
-`by_area`, `paired_records` counts included observations; a positive
-`median_do_t_minus_do_b` means the median within-record difference is
-above zero, not that every pair has that sign.
+`by_area` summarizes paired observations and their median within-record
+`DO_T - DO_B` difference.
 
-The `by_area` median is a descriptive comparison of the two **reported**
-fields, with units unconfirmed. Records may cover stations or dates
-unevenly; do not rank areas as better or worse water quality from this
-table.
+Uneven station coverage and unconfirmed units prevent water-quality
+rankings.
 
 ## Plot paired readings
 
-The image below is an **archived illustration**, generated by the linked
-exploration from a full layer retrieval on **October 6, 2026**. It is
-not a current measurement or the output of this article’s live code.
-Points on the dashed diagonal have equal reported `DO_T` and `DO_B`;
-points away from it have different values. The original run reported 263
-records, of which 161 contained both fields.
+Archived chart, October 6, 2026: 161 of 263 records had both readings.
+The dashed line marks equal values.
 
 ![Archived October 6, 2026 paired DO_B versus DO_T scatterplot for the
 Hillsborough EPC station sample view, not region-wide Tampa Bay
@@ -282,9 +224,7 @@ Archived October 6, 2026 paired DO_B versus DO_T scatterplot for the
 Hillsborough EPC station sample view, not region-wide Tampa Bay
 coverage. A dashed diagonal marks equal reported values.
 
-Run this `ggplot2` code after the live retrieval to make the same
-comparison for today’s view. It stops with an informative message if no
-paired readings are available.
+Plot current pairs after running the retrieval:
 
 ``` r
 
@@ -313,29 +253,16 @@ oxygen_plot <- ggplot2::ggplot(paired, ggplot2::aes(x = do_b, y = do_t)) +
 print(oxygen_plot)
 ```
 
-## Interpret and reproduce the analysis
+## Read the chart and save the results
 
-The chart compares two values **within records that report both**.
-Excluded records can differ systematically from included ones.
-`StationNumber` and `AreaName` describe source labels, not independently
-verified locations; the point layer’s site coverage is not known to be
-comprehensive. The source view cannot establish historical improvement,
-regulatory compliance, safety for swimming or drinking, or a cause of
-any difference. Confirm field units, sampling depths, detection limits,
-methods, and quality flags with the publisher before making
-environmental or policy claims.
+The chart includes only records with both readings. It cannot establish
+trends, causes, regulatory compliance, or swimming and drinking safety.
+Review units, sampling methods, and excluded records before further
+comparisons.
 
-For a reproducible report, record the output of
-`tbod_provenance(samples)`, the package version from
-`packageVersion("tampaBayOpenData")`, the retrieval time, the fields
-selected, and the date you consulted the source item. Save the retrieved
-object and provenance together if you need to revisit a dated analysis.
-The package does not archive source records.
+Save `samples`, its provenance, and the package version with your
+results. The package does not archive source records.
 
-Continue with [housing and
-development](https://jaclenga.github.io/tampaBayOpenData/articles/housing-development.md),
-[infrastructure and capital
-projects](https://jaclenga.github.io/tampaBayOpenData/articles/infrastructure-projects.md),
-or the [Data Coverage
-dashboard](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.md)
-for the checked catalog’s scope and verification status.
+See
+[coverage](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.md)
+for source limits.

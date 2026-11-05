@@ -1,12 +1,9 @@
 # Discovering Tampa Bay data
 
-`tampaBayOpenData` searches a bundled catalog of 52 checked layers or
-the live ArcGIS portals of six Tampa Bay publishers. Maintainers have
-validated the configured endpoints for checked layers. A `discovered`
-layer comes from a portal index and has not received those checks.
+Search the checked catalog or the live portals of six Tampa Bay
+publishers. Layers marked `discovered` have not had the catalog checks.
 
-Live examples below are displayed but not run while the site is built.
-The checked-catalog example runs offline.
+The checked example runs offline. Live examples need internet access.
 
 ## Start offline
 
@@ -66,41 +63,21 @@ tampaBayOpenData::tbod_dataset_info("construction-permits")[
 #> [1] "2026-09-29"
 ```
 
-The portal table lists organizations; the dataset tables list individual
-layers. Use `title` and `jurisdiction` to narrow the subject and place,
-then pass the chosen dataset `id` to inspection or retrieval, not the
-portal ID.
+Choose a layer by title and jurisdiction, then use its dataset `id`.
 
-`source = "checked"` reads the registry without HTTP. IDs such as
-`construction-permits` and `stpete-parks` are package names, not ArcGIS
-item IDs. `tbod_dataset_info(id)` gives the scope, terms, source URL,
-and endpoint verification date; that date says nothing about record
-freshness. The [coverage
-article](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.md)
-has counts by publisher, and the [selection
-policy](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md)
-explains which layers enter the catalog.
+`tbod_dataset_info(id)` gives its scope, terms, source URL, and endpoint
+check date. See
+[coverage](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.md)
+for catalog limits.
 
-## Match and rank search results
+## Search terms
 
-[`tbod_search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_search_datasets.md)
-searches checked IDs, titles, descriptions, publisher names, categories,
-and tags. It ignores case, but treats punctuation literally. All words
-in the query must occur somewhere in a checked row; they can occur in
-different fields. If no checked row matches literally, the search tries
-a limited spelling fallback for alphanumeric query words; words shorter
-than four characters have no typo tolerance. The fallback searches only
-the checked catalog; it does not alter a live portal query. An empty or
-whitespace-only query lists datasets.
+Search ignores case and looks across catalog fields. All query words
+must match. A limited spelling fallback applies only to checked entries;
+an empty query lists datasets.
 
-Exact title or ID matches come first. Title or ID prefixes follow, then
-substrings, then rows whose title or ID contains the query words
-separately. Matches in tags, categories, or publisher come next;
-description-only matches follow those. Within each group, each word
-scores title, ID, tags or categories, publisher, and description in that
-order; title, ID, and source URL then break ties consistently. These are
-ordering rules, not measures of dataset quality or relevance to a
-specific analysis.
+Title and ID matches rank first. Ranking helps locate sources; check
+whether each source fits your question.
 
 ``` r
 
@@ -128,19 +105,13 @@ tbod_search_datasets("", source = "checked", limit = 5)[,
 #> 5 neighborhoods        Neighborhood association boundaries       City of Tampa
 ```
 
-These are dataset suggestions, not permit records. Compare the typo
-search with the correctly spelled search: a spelling fallback helps
-locate a source, but its first result still needs a scope check. The
-empty search lists entries without restricting the topic.
+Compare `permit`, the typo `permti`, and an empty query.
 
-`limit` is a nonnegative whole number or `Inf` (the default). It selects
-the first rows **after** source discovery, checked overlay, filtering,
-and ranking. Even `limit = 0` still performs a selected live scan and
-retains its scan diagnostics. `max_items` separately caps the number of
-service items inspected per live portal. A result limit does not make an
-incomplete scan complete.
+`limit` caps returned rows after search and filtering. `max_items` caps
+service items scanned per live portal. Neither guarantees a complete
+search.
 
-## Discover live portal layers
+## Search live portals
 
 ``` r
 
@@ -155,63 +126,27 @@ if (nrow(found)) {
 }
 ```
 
-Expect a table with one row per discovered layer, or no rows if nothing
-is found within the scan. `modified` dates the portal item, while
-`item_id`, `service_url`, and `layer_id` locate its source; inspecting
-the first row is an example, not a recommendation to use the
-highest-ranked hit.
+Each row is a layer. Inspect its metadata before retrieval.
 
-By default,
-[`tbod_list_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_datasets.md)
-and
-[`tbod_search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_search_datasets.md)
-use `source = "all"`: they search all six portals and include the
-checked catalog. `source = "live"` returns only layers found through
-portal indexes, including checked layers when a live endpoint matches a
-checked entry. If a source is not indexed or an index lags, it may not
-appear in live results; a compatible public ArcGIS layer can still be
-retrieved by URL with
-[`tbod_get_arcgis_layer()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_arcgis_layer.md).
-Portal indexes can match fields that are not returned in discovery rows.
-[`tbod_search_datasets()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_search_datasets.md)
-ranks indexed hits using available title, ID, and metadata, but keeps
-all portal hits even when a returned row has no local text match. A
-layer found both live and in the checked catalog appears once with
-`checked` status. With `source = "all"`, a checked match can still
-appear when its portal index does not return it.
+The default `source = "all"` combines live results with the checked
+catalog. Use `"live"` for portal results or `"checked"` for the offline
+catalog. Matching endpoints appear once with checked status.
 
-Use `portals = "city"` for Tampa, `"tbrpc"` for the regional planning
-council, or `"stpete"`, `"clearwater"`, `"hillsborough"`, or
-`"pinellas"` for the other publishers. A vector selects several.
 [`tbod_list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_portals.md)
-shows their publisher names and source locations offline. `jurisdiction`
-defaults to `"all"` for catalog functions and can be a code or a vector
-of codes. A jurisdiction or publisher filter narrows the organizations
-scanned and filters checked entries. `portals` only selects live
-organizations; it does not filter checked entries when `source = "all"`.
-Retrieval and download functions default to `jurisdiction = NULL`: a
-checked ID resolves across the bundled catalog when it is unique. If two
-jurisdictions use the same ID, supply `jurisdiction` to select one.
+lists publisher codes. Use `portals` to select live publishers, or
+`jurisdiction` to filter both live and checked results.
 
-When a live endpoint matches a checked entry, the result keeps its
-package ID, scope, and terms, combines checked and portal tags and
-categories, and uses the portal item’s modification time. New IDs have
-the form `arcgis:<item-id>:<layer-id>` and can be passed to
-[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
-later. The item or service can still change or disappear. Retrieval
-checks query responses and requires `Query` when the layer advertises a
-capabilities list.
+New IDs use `arcgis:<item-id>:<layer-id>` and work with
+[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md).
 
-## Search beyond the bundled publishers
+## Search another ArcGIS source
 
 [`tbod_discover()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_discover.md)
-accepts a public ArcGIS sharing REST root, FeatureServer or MapServer
-service root, or a layer URL. Portal queries search public service
-items; service queries filter layer names. Both return rows accepted by
+accepts a public portal, service, or layer URL and returns rows you can
+pass to
 [`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md).
-Portal results have `discovered` status and stable `arcgis:` IDs;
-service results have `not_checked` status and use the layer URL as their
-ID. Queryable MapServer layers are supported.
+Portal results are `discovered`; direct service results are
+`not_checked`.
 
 ``` r
 
@@ -225,15 +160,9 @@ if (nrow(other)) {
 }
 ```
 
-Custom sources default to an `"unspecified"` jurisdiction. Set
-`publisher` and `jurisdiction` in
-[`tbod_discover()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_discover.md)
-when you know them; these labels then travel with the discovery row and
-its retrieval provenance. The `portal` argument on retrieval applies
-only to a stable `arcgis:<item-id>:<layer-id>` ID. When retrieving a
-direct layer URL,
-[`tbod_get_dataset()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_get_dataset.md)
-does not accept a `jurisdiction` override.
+Set `publisher` and `jurisdiction` during discovery when known. To
+resolve an `arcgis:` ID from a custom portal later, pass that portal on
+retrieval.
 
 ## Filter results
 
@@ -249,11 +178,10 @@ Both catalog functions accept these optional filters:
 | `category` | Exact category path or final category label, ignoring case. |
 | `modified_after`, `modified_before` | Inclusive bounds on the catalog’s `modified` timestamp. |
 
-Character filters accept vectors: values within one filter are
-alternatives; separate filters and the search text must all match. Date
-bounds accept a `Date` or strict `"YYYY-MM-DD"` string for a whole UTC
-day, or a `POSIXct` value for an exact instant. Rows with unknown
-modification times are excluded only when a date bound is supplied.
+Values within one filter are alternatives; separate filters must all
+match. Date bounds accept `Date`, `"YYYY-MM-DD"` (UTC days), or
+`POSIXct` values. Rows with unknown dates are excluded when a date
+filter is used.
 
 ``` r
 
@@ -265,26 +193,15 @@ county_transport <- tbod_search_datasets(
 county_transport[, c("id", "title", "publisher", "modified", "modified_source")]
 ```
 
-`modified_source = "portal_item"` identifies a live ArcGIS item
-timestamp; `"checked_snapshot"` identifies an upstream timestamp saved
-in the checked registry. Neither establishes when every record was last
-updated. The separate checked `verified` date records an endpoint check,
-not feature freshness.
+`modified` dates a portal item or saved catalog snapshot, not every
+record. `verified` dates an endpoint check.
 
-## Understand scan limits and failures
+## Check scan completeness
 
-`max_items` caps **portal service items per organization**, not the
-number of expanded layers. The default scans at most 25 items per
-organization. Use `max_items = Inf` explicitly to follow all available
-search pages, with a suitable `total_timeout`. A capped listing can miss
-matching items beyond the scan limit. `jurisdiction` and `publisher`
-narrow organizations before scanning; other filters apply after
-discovery and the checked overlay. Consequently, an item matching
-`topic` or `modified_after` may be missed by a capped scan. `publisher`
-matches a configured name exactly, without regard to case; a name with
-no match returns no rows. Use
-[`tbod_list_portals()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_list_portals.md)
-to inspect names.
+Live scans default to 25 service items per publisher. Set
+`max_items = Inf` with a suitable `total_timeout` to scan all available
+pages. A capped scan can miss matches, including matches for filters
+applied after discovery.
 
 ``` r
 
@@ -296,25 +213,12 @@ attr(results, "discovery_issues")
 attr(results, "discovery_failed_portals")
 ```
 
-The first output is a logical value: `FALSE` means you should
-investigate the remaining diagnostics before interpreting an empty or
-short result. The truncated and failed portal outputs name where the
-scan stopped or failed; they do not count missing datasets.
+If `discovery_complete` is `FALSE`, inspect the other diagnostics for
+truncated or failed portals.
 
-Check `discovery_complete` before treating results as a complete scan of
-the selected public portal indexes. It does not establish a complete
-inventory of publisher services. Portal indexes can lag or omit items,
-private services are outside the search, and the package includes only
-public Feature Service and Map Service items with supported, queryable
-layers. The other attributes show scan progress, skipped items, and
-failed portals. A time budget can stop an operation; capped scans or
-item failures can leave returned results incomplete. A combined search
-retains rows from working publishers or from earlier pages of a failed
-scan. If all selected portals fail before returning rows,
-`source = "live"` errors; `source = "all"` warns and returns checked
-rows.
+Even a complete scan covers only indexed public services. If every
+portal fails without returning rows, `source = "live"` errors;
+`source = "all"` warns and returns checked rows.
 
-Continue with [retrieval and
-downloads](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.md)
-or read about [coverage and source
-limits](https://jaclenga.github.io/tampaBayOpenData/articles/coverage.md).
+Next: [retrieve
+records](https://jaclenga.github.io/tampaBayOpenData/articles/retrieval.md).

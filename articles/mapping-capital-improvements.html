@@ -37,12 +37,12 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles-menu" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Toggle articles menu"></button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles-menu">
-<li><a class="dropdown-item" href="../articles/introduction.html">More ways to get started</a></li>
-    <li><a class="dropdown-item" href="../articles/discovery.html">Discovering Tampa Bay data</a></li>
-    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieving and downloading data</a></li>
+<li><a class="dropdown-item" href="../articles/introduction.html">Package basics</a></li>
+    <li><a class="dropdown-item" href="../articles/discovery.html">Find data</a></li>
+    <li><a class="dropdown-item" href="../articles/retrieval.html">Retrieve and download</a></li>
     <li><a class="dropdown-item" href="../articles/housing-development.html">Housing and development activity</a></li>
-    <li><a class="dropdown-item" href="../articles/water-quality.html">Water quality around Tampa Bay</a></li>
-    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Mapping Tampa capital improvements</a></li>
+    <li><a class="dropdown-item" href="../articles/water-quality.html">Hillsborough water quality</a></li>
+    <li><a class="dropdown-item" href="../articles/mapping-capital-improvements.html">Map capital projects</a></li>
     <li><a class="dropdown-item" href="../articles/infrastructure-projects.html">Infrastructure and capital projects</a></li>
   </ul>
 </li>
@@ -78,34 +78,24 @@
     
     
 <div class="section level2">
-<h2 id="what-will-we-investigate">1. What will we investigate?<a class="anchor" aria-label="anchor" href="#what-will-we-investigate"></a>
+<h2 id="set-up">1. Set up<a class="anchor" aria-label="anchor" href="#set-up"></a>
 </h2>
-<p>Where does Tampa’s public capital-project map record infrastructure
-work, and how do the locations differ by the City’s project-type labels?
-We will map the City’s published project locations against its
-shoreline-adjusted boundary, then check which neighborhood labels appear
-most often. These records describe mapped work, not the City’s complete
-investment ledger.</p>
-<p>You need basic R and the optional <code>sf</code> package, which
-stores tables with coordinates and shapes. The map uses base R; no other
-plotting package is needed. Install these packages once, then load them
-in each new session:</p>
+<p>Map Tampa’s public capital-project locations by type and count their
+neighborhood labels.</p>
+<p>Install the packages once, then load them in each R session. The map
+uses <code>sf</code> and base R.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tampaBayOpenData"</span>, <span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span></code></pre></div>
-<p>Installation and retrieval need an internet connection. The rendered
-page uses real data saved on October 24, 2026 (Eastern time), so
-ordinary builds work offline. Run the code below in order to retrieve
-current data; the section at the end explains how to render the whole
-page with live data.</p>
+<p>This page uses a snapshot saved October 24, 2026. Run the retrieval
+code with internet access for current data; see the live-render command
+below.</p>
 </div>
 <div class="section level2">
-<h2 id="find-the-relevant-datasets">2. Find the relevant datasets<a class="anchor" aria-label="anchor" href="#find-the-relevant-datasets"></a>
+<h2 id="find-data">2. Find data<a class="anchor" aria-label="anchor" href="#find-data"></a>
 </h2>
-<p>Search the package’s checked catalog for capital projects in Tampa.
-This search reads the bundled catalog without contacting a
-publisher.</p>
+<p>Search the offline catalog:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">project_matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
 <span>  <span class="st">"capital"</span>, jurisdiction <span class="op">=</span> <span class="st">"tampa"</span>, source <span class="op">=</span> <span class="st">"checked"</span></span>
@@ -115,13 +105,9 @@ publisher.</p>
 <span><span class="co">#&gt;   id               title                        geometry_type    </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> capital-projects Capital improvement projects esriGeometryPoint</span></span></code></pre></div>
-<p>The <code>capital-projects</code> entry contains points: each point
-marks a location. A line could trace a road or pipe, and a polygon could
-outline a work area; this checked project entry contains neither. We use
-the separate <code>city-boundary</code> polygon only as a backdrop, not
-as another set of projects.</p>
-<p>Check the source description and exact field names before retrieving
-records. The saved schema and source notes below also work offline.</p>
+<p>Use <code>capital-projects</code> for locations and
+<code>city-boundary</code> for the backdrop.</p>
+<p>Check the source and field names:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">project_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"capital-projects"</span><span class="op">)</span></span>
 <span><span class="va">project_info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"scope_note"</span><span class="op">)</span><span class="op">]</span></span>
@@ -154,20 +140,15 @@ records. The saved schema and source notes below also work offline.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> projname     Project Name       esriFieldTypeString</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> projtype     Project Type       esriFieldTypeString</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Neighborhood Neighborhood       esriFieldTypeString</span></span></code></pre></div>
-<p><code>OBJECTID</code> identifies a feature row; <code>projid</code>
-is the publisher’s project identifier and can repeat across locations.
-<code>projname</code>, <code>projtype</code>, and
-<code>Neighborhood</code> provide the source name, type, and
-neighborhood label. We keep every feature row rather than assuming each
-is a unique project.</p>
+<p><code>OBJECTID</code> identifies a feature. <code>projid</code>
+identifies a project and may repeat across locations.</p>
 </div>
 <div class="section level2">
-<h2 id="retrieve-the-locations-and-boundary">3. Retrieve the locations and boundary<a class="anchor" aria-label="anchor" href="#retrieve-the-locations-and-boundary"></a>
+<h2 id="retrieve-data">3. Retrieve data<a class="anchor" aria-label="anchor" href="#retrieve-data"></a>
 </h2>
-<p><code>spatial = TRUE</code> returns an <code>sf</code> table with a
-geometry column, which we need for mapping. <code>out_sr = 4326</code>
-requests longitude and latitude for both layers; using the same
-coordinate reference system lets their coordinates line up.</p>
+<p>Use <code>spatial = TRUE</code> for geometry and
+<code>out_sr = 4326</code> for both layers to share WGS 84 longitude and
+latitude.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">capital_projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
 <span>  <span class="st">"capital-projects"</span>, fields <span class="op">=</span> <span class="va">project_fields</span>,</span>
@@ -177,10 +158,8 @@ coordinate reference system lets their coordinates line up.</p>
 <span>  <span class="st">"city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
 <span>  spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span>, limit <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>These limits comfortably covered the saved example’s 201 project
-features and one boundary feature. Check completeness before
-interpreting the map: if the publisher grows beyond a limit, stop and
-review the request rather than mapping an unmarked preview.</p>
+<p>The snapshot has 201 project features and one boundary. Check
+completeness in case current records exceed the requested limits.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">project_source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">)</span></span>
 <span><span class="va">boundary_source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_provenance.html">tbod_provenance</a></span><span class="op">(</span><span class="va">tampa_boundary</span><span class="op">)</span></span>
@@ -201,14 +180,9 @@ review the request rather than mapping an unmarked preview.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $complete</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>The displayed provenance is a named list: <code>retrieved_at</code>
-dates this download, <code>returned_rows</code> counts feature rows, and
-<code>complete</code> says whether all matching rows were retrieved.
-Compare the timestamp when revisiting the map; an older download can
-explain differences from the City’s current display.</p>
-<p>Keep the source objects if you want to revisit this analysis.
-<code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> preserves their geometry and retrieval provenance
-together.</p>
+<p><code>retrieved_at</code> dates the download; <code>complete</code>
+confirms all matches were returned.</p>
+<p>Save the data and provenance:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>capital_projects <span class="op">=</span> <span class="va">capital_projects</span>, tampa_boundary <span class="op">=</span> <span class="va">tampa_boundary</span><span class="op">)</span>,</span>
 <span>        <span class="st">"tampa-infrastructure.rds"</span><span class="op">)</span></span></code></pre></div>
@@ -216,9 +190,8 @@ together.</p>
 <div class="section level2">
 <h2 id="create-the-map">4. Create the map<a class="anchor" aria-label="anchor" href="#create-the-map"></a>
 </h2>
-<p>The package retains missing coordinates as empty geometries. Set
-those rows aside for mapping and report how many were excluded; they
-remain in the original table.</p>
+<p>Exclude empty geometries from the map, keeping them in the original
+table:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">missing_geometry</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_query.html" class="external-link">st_is_empty</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">missing_geometry</span><span class="op">)</span></span>
@@ -229,10 +202,7 @@ remain in the original table.</p>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"No usable geometry for the map."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry_type.html" class="external-link">st_geometry_type</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">)</span> <span class="op">==</span> <span class="st">"POINT"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Use the City’s type labels directly, with missing or blank labels
-displayed as “Not reported”. A named color for each label keeps points
-and legend in agreement even if the publisher changes the
-categories.</p>
+<p>Assign colors by type. Keep blank types as “Not reported”.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">project_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">$</span><span class="va">projtype</span><span class="op">)</span></span>
 <span><span class="va">project_types</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">project_types</span><span class="op">)</span> <span class="op">|</span> <span class="va">project_types</span> <span class="op">==</span> <span class="st">""</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Not reported"</span></span>
@@ -246,13 +216,8 @@ categories.</p>
 <span><span class="co">#&gt;                      19                      17                       4 </span></span>
 <span><span class="co">#&gt;     Facility Management </span></span>
 <span><span class="co">#&gt;                       4</span></span></code></pre></div>
-<p>The printed output pairs each type label with its number of points
-available to map. A missing-type group remains visible, but records
-without coordinates have already been excluded from these counts; use
-the original table when investigating all feature records.</p>
-<p>Draw the boundary first, then add the original point geometries. The
-map extent includes both layers so points beyond the backdrop are still
-visible; the legend sits beside the map to avoid covering locations.</p>
+<p>These counts include only records with coordinates.</p>
+<p>Draw the boundary, then add the points:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_extent</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">tampa_boundary</span><span class="op">)</span>,</span>
 <span>                           <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">mapped_projects</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -275,24 +240,15 @@ visible; the legend sits beside the map to avoid covering locations.</p>
 <p><img src="mapping-capital-improvements_files/figure-html/capital-project-map-1.png" class="r-plt" alt="Tampa capital-project point locations colored by City project-type labels, over a shoreline-adjusted city boundary, with a separate legend." width="960"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html" class="external-link">layout</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p>Each dot is one published feature location, colored by the source
-type. Dots can overlap, and a point does not describe the full length of
-a road project or the area affected by construction. The outline is the
-City’s shoreline-adjusted representation, not a legal survey.</p>
+<p>Dots mark feature locations and may overlap. They do not show
+construction footprints. The shoreline-adjusted boundary is map context,
+not a legal survey.</p>
 </div>
 <div class="section level2">
-<h2 id="read-the-geography">5. Read the geography<a class="anchor" aria-label="anchor" href="#read-the-geography"></a>
+<h2 id="count-neighborhoods">5. Count neighborhoods<a class="anchor" aria-label="anchor" href="#count-neighborhoods"></a>
 </h2>
-<p>In the October 24 snapshot, locations extend through the central part
-of the city and into both its northern and southern sections; they are
-not confined to one downtown site. The map also shows different project
-types occupying nearby locations, rather than distinct regions reserved
-for each type. These are observations of mapped locations, not
-measurements of service coverage.</p>
-<p>The City’s neighborhood labels help check the apparent concentration.
-Count all feature rows, including ones without geometry, and keep
-missing labels visible rather than assigning them to a neighborhood
-ourselves.</p>
+<p>Count the source’s neighborhood labels across all rows, including
+those without geometry:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">neighborhood_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span><span class="va">capital_projects</span><span class="op">$</span><span class="va">Neighborhood</span><span class="op">)</span></span>
 <span><span class="va">neighborhood_labels</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">neighborhood_labels</span><span class="op">)</span> <span class="op">|</span> <span class="va">neighborhood_labels</span> <span class="op">==</span> <span class="st">""</span><span class="op">]</span> <span class="op">&lt;-</span></span>
@@ -310,33 +266,16 @@ ourselves.</p>
 <span><span class="co">#&gt;                          5                          5 </span></span>
 <span><span class="co">#&gt;      Gandy / Sun Bay South Southeast Seminole Heights </span></span>
 <span><span class="co">#&gt;                          5                          5</span></span></code></pre></div>
-<p>In the saved data, Old Seminole Heights has 12 feature rows and Tampa
-Heights has 11, more than any other reported neighborhood label. This
-gives two named areas to investigate further, rather than relying only
-on overlapping dots. Missing labels are not a geographic area, and the
-table uses publisher labels, not a new calculation of which boundary
-contains each point.</p>
+<p>In the snapshot, Old Seminole Heights has 12 rows and Tampa Heights
+has 11. Missing labels stay in their own group.</p>
 </div>
 <div class="section level2">
-<h2 id="what-this-map-cannot-tell-us">6. What this map cannot tell us<a class="anchor" aria-label="anchor" href="#what-this-map-cannot-tell-us"></a>
+<h2 id="limits">Limits<a class="anchor" aria-label="anchor" href="#limits"></a>
 </h2>
-<ul>
-<li>The layer is the City’s public-facing selection, not a complete
-inventory of infrastructure or capital spending. Blank areas do not
-prove no work exists.</li>
-<li>Several locations can share a project ID; nearby dots can overlap.
-We have neither removed repeated IDs nor counted features as distinct
-projects.</li>
-<li>Points mark locations, not construction footprints. Separate line or
-polygon layers could describe the same work and would need review before
-combining.</li>
-<li>Publisher updates can change records, labels, and coordinates.
-Retrieval checks do not establish current construction status or
-accuracy on the ground.</li>
-<li>Clustering alone cannot show unequal funding or investment. That
-would require reliable project-level costs, population and need, and
-coverage information.</li>
-</ul>
+<p>The layer covers a public-facing selection. Several points may belong
+to one project, and blank areas do not prove no work exists. These
+locations alone cannot measure spending, construction status, or
+investment equity.</p>
 <p>Data: City of Tampa <a href="https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e" class="external-link">capital-project
 layer</a> and <a href="https://tampa.maps.arcgis.com/home/item.html?id=ed03de89b95340359431d13bd2bc38f2" class="external-link">shoreline-adjusted
 boundary</a>, both recorded as CC0 in the checked catalog. Source
@@ -346,20 +285,15 @@ details and retrieval times are retained in
 <div class="section level3">
 <h3 id="render-with-current-data">Render with current data<a class="anchor" aria-label="anchor" href="#render-with-current-data"></a>
 </h3>
-<p>With the package, <code>sf</code>, <code>knitr</code>,
-<code>rmarkdown</code>, and Pandoc installed, run this from the
-repository root with internet access. Live retrieval errors stop the
-render instead of falling back to the saved data.</p>
+<p>With the packages and Pandoc installed, run from the repository root
+with internet access:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>TAMPA_OPEN_DATA_LIVE <span class="op">=</span> <span class="st">"true"</span><span class="op">)</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/render.html" class="external-link">render</a></span><span class="op">(</span><span class="st">"vignettes/mapping-capital-improvements.Rmd"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.unsetenv</a></span><span class="op">(</span><span class="st">"TAMPA_OPEN_DATA_LIVE"</span><span class="op">)</span></span></code></pre></div>
-<p>Ordinary builds leave this variable unset and use the saved snapshot.
-When <code>sf</code> is unavailable, the page displays a saved map made
-from that same snapshot and skips spatial code; install <code>sf</code>
-to run the mapping steps. Dated observations above refer to the saved
-data, not future live renders. The <a href="infrastructure-projects.html">infrastructure article</a> discusses
-project IDs, status, and cost fields in more detail.</p>
+<p>Ordinary builds use the saved snapshot. Without <code>sf</code>, the
+page shows its saved map and skips spatial code. See <a href="infrastructure-projects.html">infrastructure</a> for project IDs,
+status, and costs.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

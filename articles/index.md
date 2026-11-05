@@ -16,7 +16,7 @@ Find a layer and retrieve its records.
   Find a dataset, retrieve its records, work with spatial data, and
   trace its source.
 
-### In depth
+### Guides
 
 Discovery, retrieval, and source limits.
 
@@ -37,9 +37,15 @@ Discovery, retrieval, and source limits.
   Understand publisher coverage, preserve provenance, and assess source
   limits.
 
-### Applied tutorials
+### Walkthroughs
 
-Examples using checked sources, summaries, and visualizations.
+Summarize records and make charts or maps. More examples on GitHub:
+[eight short
+reports](https://github.com/Jaclenga/tampaBayOpenData/tree/main/explorations/stories),
+[bicycle-network
+analysis](https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/tampa-bicycle-network-eda.Rmd),
+and a [bicycle
+notebook](https://github.com/Jaclenga/tampaBayOpenData/blob/main/inst/examples/bike-network.Rmd).
 
 - [Explore housing and development
   activity](https://jaclenga.github.io/tampaBayOpenData/articles/housing-development.md):
