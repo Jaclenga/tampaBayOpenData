@@ -150,7 +150,7 @@ validate and continue saved chunks.
 
 ``` r
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-  saved <- tbod_download_dataset("construction-permits",
+  saved <- tbod_download_dataset("tampa-construction-permits",
     tempfile("permit-download-"), where = "OBJECTID <= 10", page_size = 5)
   if (length(saved$files)) tbod_provenance(readRDS(saved$files[[1L]]))
 }

@@ -31,21 +31,21 @@ Search the offline catalog:
 project_matches <- tbod_search_datasets(
   "capital", jurisdiction = "tampa", source = "checked"
 )
-project_matches[, c("id", "title", "geometry_type")]
-#> # A tibble: 1 × 3
-#>   id               title                        geometry_type    
-#>   <chr>            <chr>                        <chr>            
-#> 1 capital-projects Capital improvement projects esriGeometryPoint
+project_matches[, c("canonical_id", "publisher", "title", "geometry_type")]
+#> # A tibble: 1 × 4
+#>   canonical_id           publisher     title                       geometry_type
+#>   <chr>                  <chr>         <chr>                       <chr>        
+#> 1 tampa-capital-projects City of Tampa Capital improvement projec… esriGeometry…
 ```
 
-Use `capital-projects` for locations and `city-boundary` for the
-backdrop.
+Use `tampa-capital-projects` for locations and `tampa-city-boundary` for
+the backdrop.
 
 Check the source and field names:
 
 ``` r
 
-project_info <- tbod_dataset_info("capital-projects")
+project_info <- tbod_dataset_info("tampa-capital-projects")
 project_info[c("publisher", "source_url", "scope_note")]
 #> $publisher
 #> [1] "City of Tampa"
@@ -56,14 +56,14 @@ project_info[c("publisher", "source_url", "scope_note")]
 #> $scope_note
 #> [1] "The service description says its definition query selects Show to Public = Yes, while the layer metadata does not expose that definition expression. Coordinates use ArcGIS WKID 103023 / latestWKID 6443, in feet, rather than the Web Mercator CRS used by the other selected layers."
 
-tbod_dataset_info("city-boundary")[c("title", "geometry_type")]
+tbod_dataset_info("tampa-city-boundary")[c("title", "geometry_type")]
 #> $title
 #> [1] "Tampa boundary (shoreline representation)"
 #> 
 #> $geometry_type
 #> [1] "esriGeometryPolygon"
 project_fields <- c("OBJECTID", "projid", "projname", "projtype", "Neighborhood")
-project_schema <- tbod_schema("capital-projects")
+project_schema <- tbod_schema("tampa-capital-projects")
 project_schema$fields[
   match(project_fields, project_schema$fields$name),
   c("name", "alias", "type")
@@ -89,11 +89,11 @@ share WGS 84 longitude and latitude.
 ``` r
 
 capital_projects <- tbod_get_dataset(
-  "capital-projects", fields = project_fields,
+  "tampa-capital-projects", fields = project_fields,
   spatial = TRUE, out_sr = 4326, limit = 1000
 )
 tampa_boundary <- tbod_get_dataset(
-  "city-boundary", fields = "OBJECTID",
+  "tampa-city-boundary", fields = "OBJECTID",
   spatial = TRUE, out_sr = 4326, limit = 100
 )
 ```

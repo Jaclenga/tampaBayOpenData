@@ -29,16 +29,16 @@ Search the offline catalog:
 ``` r
 
 matches <- tbod_search_datasets("parks", source = "checked")
-matches[, c("id", "title")]
-#> # A tibble: 6 × 2
-#>   id                       title                                              
-#>   <chr>                    <chr>                                              
-#> 1 parks                    Park polygons                                      
-#> 2 hillsborough-parks       Hillsborough County parks and recreation properties
-#> 3 stpete-parks             St. Petersburg parks                               
-#> 4 clearwater-park-buffers  Clearwater park buffers                            
-#> 5 pinellas-park-boundaries Pinellas County park boundaries                    
-#> 6 pinellas-trail           Pinellas Trail segments
+matches[, c("canonical_id", "publisher", "title")]
+#> # A tibble: 6 × 3
+#>   canonical_id             publisher              title                         
+#>   <chr>                    <chr>                  <chr>                         
+#> 1 tampa-parks              City of Tampa          Park polygons                 
+#> 2 hillsborough-parks       Hillsborough County    Hillsborough County parks and…
+#> 3 st-pete-parks            City of St. Petersburg St. Petersburg parks          
+#> 4 clearwater-park-buffers  City of Clearwater     Clearwater park buffers       
+#> 5 pinellas-park-boundaries Pinellas County        Pinellas County park boundari…
+#> 6 pinellas-trail           Pinellas County        Pinellas Trail segments
 ```
 
 Use the `hillsborough-parks` ID below.

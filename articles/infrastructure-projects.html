@@ -95,33 +95,33 @@ internet access.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">choices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span><span class="st">"project"</span>, source <span class="op">=</span> <span class="st">"checked"</span><span class="op">)</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">choices</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"category"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">choices</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"canonical_id"</span>, <span class="st">"publisher"</span>, <span class="st">"title"</span>, <span class="st">"category"</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Checked project-related layers in this package"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Checked project-related layers in this package</caption>
 <colgroup>
 <col width="26%">
-<col width="39%">
 <col width="20%">
+<col width="39%">
 <col width="13%">
 </colgroup>
 <thead><tr class="header">
-<th align="left">id</th>
-<th align="left">title</th>
+<th align="left">canonical_id</th>
 <th align="left">publisher</th>
+<th align="left">title</th>
 <th align="left">category</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">capital-projects</td>
-<td align="left">Capital improvement projects</td>
+<td align="left">tampa-capital-projects</td>
 <td align="left">City of Tampa</td>
+<td align="left">Capital improvement projects</td>
 <td align="left">Infrastructure</td>
 </tr>
 <tr class="even">
-<td align="left">stpete-public-works-projects</td>
-<td align="left">St. Petersburg mapped public works projects</td>
+<td align="left">st-pete-public-works-projects</td>
 <td align="left">City of St. Petersburg</td>
+<td align="left">St. Petersburg mapped public works projects</td>
 <td align="left">Infrastructure</td>
 </tr>
 </tbody>
@@ -129,7 +129,7 @@ internet access.</p>
 <p>Read the scope note. <code>verified</code> dates an endpoint check,
 not a project update.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"capital-projects"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"tampa-capital-projects"</span><span class="op">)</span></span>
 <span><span class="va">info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"verified"</span>, <span class="st">"scope_note"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $title</span></span>
 <span><span class="co">#&gt; [1] "Capital improvement projects"</span></span>
@@ -152,7 +152,7 @@ not a project update.</p>
 <p>Read the saved schema. Retrieval stops if the live schema is
 incompatible.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"capital-projects"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"tampa-capital-projects"</span><span class="op">)</span></span>
 <span><span class="va">fields</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBJECTID"</span>, <span class="st">"projid"</span>, <span class="st">"projname"</span>, <span class="st">"projtype"</span>, <span class="st">"projphase"</span>,</span>
 <span>            <span class="st">"status"</span>, <span class="st">"Neighborhood"</span>, <span class="st">"estcost"</span>, <span class="st">"actcost"</span>, <span class="st">"planstart"</span>,</span>
 <span>            <span class="st">"actend"</span><span class="op">)</span></span>
@@ -239,7 +239,7 @@ categories.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
-<span>    <span class="st">"capital-projects"</span>,</span>
+<span>    <span class="st">"tampa-capital-projects"</span>,</span>
 <span>    fields <span class="op">=</span> <span class="va">fields</span>,</span>
 <span>    total_timeout <span class="op">=</span> <span class="fl">180</span></span>
 <span>  <span class="op">)</span>,</span>
@@ -453,8 +453,8 @@ capital work.</p>
 </h2>
 <p>Source: <a href="https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e" class="external-link">City
 of Tampa capital projects</a>. Check
-<code>tbod_dataset_info("capital-projects")$terms</code> and save your
-package version and retrieval provenance.</p>
+<code>tbod_dataset_info("tampa-capital-projects")$terms</code> and save
+your package version and retrieval provenance.</p>
 <p>See <a href="coverage.html">coverage</a> for catalog limits.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

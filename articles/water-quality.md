@@ -29,11 +29,11 @@ Search the offline catalog:
 library(tampaBayOpenData)
 
 water <- tbod_search_datasets("water quality", source = "checked")
-water[, c("id", "title", "publisher", "category", "validation_status")]
+water[, c("canonical_id", "publisher", "title", "category", "validation_status")]
 #> # A tibble: 1 × 5
-#>   id                         title          publisher category validation_status
-#>   <chr>                      <chr>          <chr>     <chr>    <chr>            
-#> 1 hillsborough-water-quality Hillsborough … Hillsbor… Environ… checked
+#>   canonical_id               publisher          title category validation_status
+#>   <chr>                      <chr>              <chr> <chr>    <chr>            
+#> 1 hillsborough-water-quality Hillsborough Coun… Hill… Environ… checked
 
 id <- "hillsborough-water-quality"
 info <- tbod_dataset_info(id)
@@ -66,7 +66,7 @@ to find other layers.
 
 found <- tbod_search_datasets("water quality", source = "live",
                               jurisdiction = "hillsborough", max_items = 10)
-found[, c("id", "title", "publisher", "validation_status")]
+found[, c("canonical_id", "publisher", "title", "validation_status")]
 attr(found, "discovery_complete")
 ```
 
