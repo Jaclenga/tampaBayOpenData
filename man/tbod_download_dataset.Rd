@@ -117,7 +117,7 @@ with the same \code{path} to validate and continue saved chunks.
 }
 \examples{
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-  saved <- tbod_download_dataset("tampa-construction-permits",
+  saved <- tbod_download_dataset("construction-permits",
     tempfile("permit-download-"), where = "OBJECTID <= 10", page_size = 5)
   if (length(saved$files)) tbod_provenance(readRDS(saved$files[[1L]]))
 }

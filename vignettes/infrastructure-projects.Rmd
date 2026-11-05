@@ -33,14 +33,14 @@ Search the offline catalog:
 library(tampaBayOpenData)
 
 choices <- tbod_search_datasets("project", source = "checked")
-knitr::kable(choices[, c("canonical_id", "publisher", "title", "category")],
+knitr::kable(choices[, c("id", "title", "publisher", "category")],
              caption = "Checked project-related layers in this package")
 ```
 
 Read the scope note. `verified` dates an endpoint check, not a project update.
 
 ```{r source-info, eval=TRUE}
-info <- tbod_dataset_info("tampa-capital-projects")
+info <- tbod_dataset_info("capital-projects")
 info[c("title", "publisher", "source_url", "verified", "scope_note")]
 ```
 
@@ -49,7 +49,7 @@ info[c("title", "publisher", "source_url", "verified", "scope_note")]
 Read the saved schema. Retrieval stops if the live schema is incompatible.
 
 ```{r field-guide, eval=TRUE}
-schema <- tbod_schema("tampa-capital-projects")
+schema <- tbod_schema("capital-projects")
 fields <- c("OBJECTID", "projid", "projname", "projtype", "projphase",
             "status", "Neighborhood", "estcost", "actcost", "planstart",
             "actend")
@@ -71,7 +71,7 @@ Retrieve all features and check completeness before comparing categories.
 ```{r retrieve-projects}
 projects <- tryCatch(
   tbod_get_dataset(
-    "tampa-capital-projects",
+    "capital-projects",
     fields = fields,
     total_timeout = 180
   ),
@@ -295,7 +295,7 @@ final spending. The public map is only part of the City's capital work.
 ## Save the source details
 
 Source: [City of Tampa capital projects](https://tampa.maps.arcgis.com/home/item.html?id=2226a20de08641e38cedd1c2d7cac69e).
-Check `tbod_dataset_info("tampa-capital-projects")$terms` and save your package
+Check `tbod_dataset_info("capital-projects")$terms` and save your package
 version and retrieval provenance.
 
 See [coverage](coverage.html) for catalog limits.

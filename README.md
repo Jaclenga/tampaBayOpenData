@@ -35,9 +35,9 @@ and inspect the resulting table:
 library(tampaBayOpenData)
 
 matches <- tbod_search_datasets("parks", source = "checked")
-matches[, c("canonical_id", "publisher", "title")]
+matches[, c("id", "title")]
 
-parks <- tbod_get_dataset("st-pete-parks", limit = 100)
+parks <- tbod_get_dataset("stpete-parks", limit = 100)
 head(parks)
 nrow(parks)
 names(parks)
@@ -97,7 +97,7 @@ or follow the [spatial walkthrough](https://jaclenga.github.io/tampaBayOpenData/
 ## Data sources and limitations
 
 The publishers maintain the underlying datasets; the package does not control
-their availability, completeness, or accuracy. `tbod_dataset_info("st-pete-parks")`
+their availability, completeness, or accuracy. `tbod_dataset_info("stpete-parks")`
 shows catalog source details, and `tbod_provenance(parks)` records where and
 when a result was retrieved. These details help trace a result, but do not
 verify individual records.

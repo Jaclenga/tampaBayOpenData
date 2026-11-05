@@ -89,8 +89,8 @@ and the search query are combined with AND. Publisher names are exact,
 case-insensitive filters; use \code{\link[=tbod_list_portals]{tbod_list_portals()}} to inspect them. A
 publisher with no match returns no rows.
 
-Checked entries search canonical IDs, legacy aliases, title, description,
-publisher, category, and tags. Exact title or ID matches rank first, then title or ID prefixes,
+Checked entries search ID, title, description, publisher, category, and
+tags. Exact title or ID matches rank first, then title or ID prefixes,
 substrings, and matches across title or ID words. Tags, categories, and
 publisher matches follow; description-only matches rank after those.
 Within a rank, each word scores title, ID, tags or categories, publisher,

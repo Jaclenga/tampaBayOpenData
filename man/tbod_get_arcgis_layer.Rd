@@ -81,7 +81,7 @@ inferred publisher or portal item identity.
 }
 \examples{
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-  url <- tbod_dataset_info("tampa-construction-permits")$source_url
+  url <- tbod_dataset_info("construction-permits")$source_url
   data <- tbod_get_arcgis_layer(url, limit = 10)
   tbod_provenance(data)$validation_status
 }

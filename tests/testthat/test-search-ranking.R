@@ -4,9 +4,6 @@ search_ranking_entry <- function(base, id, title, description = "",
                                  publisher = "City of Tampa", tags = character()) {
   entry <- base
   entry$id <- id
-  entry$canonical_id <- paste0("tampa-", id)
-  entry$subject_id <- id
-  entry$aliases <- list()
   entry$title <- title
   entry$description <- description
   entry$publisher <- publisher

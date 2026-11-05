@@ -119,7 +119,3 @@
   still need decompression security updates.
 - Credits `nycOpenData` as design inspiration. The ArcGIS client code is
   independently implemented.
-
-* Checked datasets now expose stable publisher-qualified `canonical_id` values
-  and legacy `aliases`. All retrieval APIs accept canonical IDs and retain
-  historical mappings. Ambiguous new subject identifiers list qualified choices.

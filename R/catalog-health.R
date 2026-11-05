@@ -381,7 +381,7 @@
 #' @export
 #' @examples
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   report <- tbod_check_catalog(ids = "tampa-construction-permits")
+#'   report <- tbod_check_catalog(ids = "construction-permits")
 #'   report[, c("dataset_id", "status", "schema_status", "details")]
 #' }
 tbod_check_catalog <- function(jurisdiction = "all", ids = NULL, timeout = 10,
@@ -401,9 +401,14 @@ tbod_check_catalog <- function(jurisdiction = "all", ids = NULL, timeout = 10,
       .abort("`ids` must be a nonempty vector of unique checked dataset IDs.",
              subclass = "tampa_input_error")
     }
-    resolved <- lapply(ids, .lookup_dataset, jurisdiction = jurisdiction)
-    selected <- vapply(resolved, `[[`, character(1), "id")
-    entries <- Filter(function(entry) entry$id %in% selected, entries)
+    available <- vapply(entries, `[[`, character(1), "id")
+    missing <- setdiff(ids, available)
+    if (length(missing)) {
+      .abort(paste0("Unknown checked dataset ID(s) for `", jurisdiction, "`: ",
+                    paste(missing, collapse = ", "), "."),
+             subclass = "tampa_input_error")
+    }
+    entries <- Filter(function(entry) entry$id %in% ids, entries)
   }
   if (!length(entries)) {
     .abort(paste0("No checked catalog entries are available for `", jurisdiction, "`."),

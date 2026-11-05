@@ -76,7 +76,6 @@
   }
   keys <- vapply(entries, function(x) paste(x$jurisdiction, x$id, sep = "/"), character(1))
   if (anyDuplicated(keys)) .abort("Registry dataset IDs must be unique within each jurisdiction.")
-  .validate_dataset_identifiers(entries)
   invisible(entries)
 }
 
@@ -103,9 +102,6 @@
   endpoints <- character(length(entries))
   for (i in seq_along(entries)) {
     entry <- entries[[i]]
-    .string(entry$canonical_id, "checked.canonical_id")
-    .string(entry$subject_id, "checked.subject_id")
-    if (is.null(entry$aliases)) .abort("Checked datasets must record their aliases array.")
     key <- paste(entry$jurisdiction, entry$publisher, sep = "\r")
     if (!key %in% publisher_keys) {
       .abort(paste0("Checked dataset `", entry$id,
@@ -177,19 +173,14 @@
   .string(id, "id")
   all_entries <- .read_registry()
   entries <- .jurisdiction_entries(jurisdiction, all_entries)
-  established <- Filter(function(x) id %in% c(.canonical_dataset_id(x),
-                                              .dataset_aliases(x)), all_entries)
-  found <- if (length(established)) {
-    Filter(function(x) identical(jurisdiction, "all") ||
-             identical(x$jurisdiction, jurisdiction), established)
-  } else .match_dataset_identifier(id, entries)
+  found <- Filter(function(x) identical(x$id, id), entries)
   if (!length(found)) {
     safe_id <- grepl("^[A-Za-z0-9][A-Za-z0-9-]{0,63}$", id)
     scope <- if (identical(jurisdiction, "all")) "" else {
       paste0(" for jurisdiction `", jurisdiction, "`")
     }
     elsewhere <- if (identical(jurisdiction, "all")) character() else {
-      unique(vapply(Filter(function(x) id %in% c(.canonical_dataset_id(x), .dataset_aliases(x)), all_entries),
+      unique(vapply(Filter(function(x) identical(x$id, id), all_entries),
                     `[[`, character(1), "jurisdiction"))
     }
     suggestions <- character()
@@ -216,12 +207,9 @@
   }
   if (length(found) != 1L) {
     .abort(paste0("Dataset `", id, "` exists in more than one jurisdiction. ",
-                  "Supply its specific `jurisdiction` or a qualified ID: ",
-                  paste(vapply(found, .canonical_dataset_id, character(1)), collapse = ", "), "."), subclass = "tampa_input_error")
+                  "Supply its specific `jurisdiction`."), subclass = "tampa_input_error")
   }
   entry <- found[[1L]]
-  entry$canonical_id <- .canonical_dataset_id(entry)
-  entry$aliases <- .dataset_aliases(entry)
   entry$tags <- unlist(entry$tags, use.names = FALSE) %||% character()
   entry$date_fields <- unlist(entry$date_fields, use.names = FALSE) %||% character()
   entry$validation_status <- "checked"
@@ -244,8 +232,6 @@
   scalar <- setdiff(.registry_required_fields(), c("layer_id", "date_fields", "tags"))
   cols <- lapply(scalar, function(name) vapply(entries, function(x) x[[name]], character(1)))
   names(cols) <- scalar
-  cols$canonical_id <- vapply(entries, .canonical_dataset_id, character(1))
-  cols$aliases <- lapply(entries, .dataset_aliases)
   cols$layer_id <- vapply(entries, function(x) as.integer(x$layer_id), integer(1))
   cols$date_fields <- lapply(entries, function(x) unlist(x$date_fields, use.names = FALSE) %||% character())
   cols$tags <- lapply(entries, function(x) unlist(x$tags, use.names = FALSE) %||% character())
@@ -267,60 +253,4 @@
   cols$categories <- lapply(entries, function(x) x$category)
   cols$original_metadata <- entries
   tibble::as_tibble(cols)
-}
-
-# Explicit catalog metadata freezes identifiers independently of coverage or titles.
-.canonical_dataset_id <- function(entry) entry$canonical_id %||% entry$id
-
-.dataset_aliases <- function(entry) {
-  unique(c(entry$id, unlist(entry$aliases, use.names = FALSE)))
-}
-
-.validate_dataset_identifiers <- function(entries) {
-  explicit <- vapply(entries, function(x) !is.null(x$canonical_id), logical(1))
-  for (entry in entries[explicit]) {
-    .string(entry$canonical_id, "registry.canonical_id")
-    .string(entry$subject_id, "registry.subject_id")
-    if (!all(grepl("^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
-                   c(entry$canonical_id, entry$subject_id)))) {
-      .abort("Canonical and subject dataset IDs must be stable hyphenated slugs.")
-    }
-    if (!is.null(entry$aliases) &&
-        (!is.list(entry$aliases) || !is.null(names(entry$aliases)) ||
-         !all(vapply(entry$aliases, function(x) is.character(x) &&
-           length(x) == 1L && !is.na(x) &&
-           grepl("^[a-z][a-z0-9]*(-[a-z0-9]+)*$", x), logical(1))))) {
-      .abort("Registry aliases must be an array of identifier strings.")
-    }
-  }
-  if (!any(explicit)) return(invisible(entries))
-  canonical <- vapply(entries, .canonical_dataset_id, character(1))
-  if (anyDuplicated(canonical)) .abort("Canonical dataset IDs must be globally unique.")
-  owners <- list()
-  for (i in seq_along(entries)) {
-    for (key in unique(c(canonical[[i]], .dataset_aliases(entries[[i]])))) {
-      if (!is.null(owners[[key]]) && owners[[key]] != i) {
-        .abort(paste0("Dataset identifier alias collision: `", key, "`."))
-      }
-      owners[[key]] <- i
-    }
-  }
-  invisible(entries)
-}
-
-.match_dataset_identifier <- function(id, entries) {
-  # Established aliases take precedence over inferred unqualified subjects.
-  exact <- Filter(function(x) id %in% c(.canonical_dataset_id(x),
-                                       .dataset_aliases(x)), entries)
-  if (length(exact)) return(exact)
-  found <- Filter(function(x) {
-    # Only infer subjects from explicit qualified IDs, never from legacy IDs.
-    !is.null(x$canonical_id) && identical(x$subject_id, id)
-  }, entries)
-  if (length(found) > 1L) {
-    .abort(paste0("Ambiguous dataset identifier `", id, "`. Use one of: ",
-      paste(vapply(found, .canonical_dataset_id, character(1)), collapse = ", "), "."),
-      subclass = "tampa_input_error")
-  }
-  found
 }

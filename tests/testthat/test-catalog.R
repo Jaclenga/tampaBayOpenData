@@ -121,9 +121,8 @@ test_that("registry validation distinguishes valid boundaries from malformed rec
   }
 })
 
-test_that("legacy registry IDs are unique within a jurisdiction", {
+test_that("dataset IDs are unique within a jurisdiction", {
   entry <- .read_registry()[[1L]]
-  entry$canonical_id <- entry$subject_id <- entry$aliases <- NULL
   second <- entry
   second$jurisdiction <- "neighboring-city"
   expect_invisible(.validate_registry(list(entry, second)))
@@ -135,7 +134,6 @@ test_that("legacy registry IDs are unique within a jurisdiction", {
 
 test_that("expected schemas distinguish equal IDs in different jurisdictions", {
   first <- .read_registry()[[1L]]
-  first$canonical_id <- first$subject_id <- first$aliases <- NULL
   second <- first
   second$jurisdiction <- "neighboring-city"
   second$service_url <- "https://example.org/arcgis/rest/services/Permits/FeatureServer"

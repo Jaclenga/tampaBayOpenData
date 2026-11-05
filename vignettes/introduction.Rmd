@@ -34,8 +34,8 @@ library(tampaBayOpenData)
 
 tampaBayOpenData::tbod_list_portals()[, c("id", "publisher", "jurisdiction")]
 tampaBayOpenData::tbod_search_datasets("park", source = "checked")[,
-  c("canonical_id", "publisher", "title", "jurisdiction", "validation_status")]
-tampaBayOpenData::tbod_dataset_info("tampa-construction-permits")[
+  c("id", "title", "jurisdiction", "validation_status")]
+tampaBayOpenData::tbod_dataset_info("construction-permits")[
   c("title", "scope_note", "verified")]
 ```
 
@@ -45,7 +45,7 @@ To search live portals:
 
 ```{r live-discovery}
 found <- tbod_search_datasets("housing", source = "live", portals = "city")
-found[, c("canonical_id", "publisher", "title", "validation_status")]
+found[, c("id", "title", "publisher", "validation_status")]
 ```
 
 `portals` narrows the live search; `jurisdiction` filters both live and
@@ -55,12 +55,11 @@ checked results. Inspect discovered layers before using them. See
 ## Retrieve records
 
 Pass a dataset ID or one-row search result to `tbod_get_dataset()`.
-Prefer publisher-qualified canonical IDs. Historical aliases keep their original
-targets; ambiguous new subjects list the qualified alternatives.
+Add `jurisdiction` if an ID is shared by several jurisdictions.
 
 ```{r retrieve}
 permits <- tbod_get_dataset(
-  "tampa-construction-permits",
+  "construction-permits",
   where = "PROJECTSTATUS IS NOT NULL",
   fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"),
   limit = 100
@@ -90,7 +89,7 @@ Install `sf` and use `spatial = TRUE`. `out_sr = 4326` requests WGS 84
 longitude and latitude; omit it to keep the source CRS.
 
 ```{r spatial}
-projects <- tbod_get_dataset("tampa-development-cases", spatial = TRUE,
+projects <- tbod_get_dataset("development-cases", spatial = TRUE,
                         out_sr = 4326)
 sf::st_crs(projects)$epsg
 ```

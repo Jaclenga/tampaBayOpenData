@@ -142,7 +142,7 @@ retries. \code{total_timeout} may stop attempts earlier.
 }
 \examples{
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-  data <- tbod_get_dataset("tampa-construction-permits", limit = 5)
+  data <- tbod_get_dataset("construction-permits", limit = 5)
   tbod_provenance(data)$source_url
 }
 }

@@ -45,12 +45,8 @@ retrieves current fields, aliases, types, geometry, CRS, query capabilities,
 and editing metadata. The registry's \code{verified} date records an endpoint
 check, not record freshness. Use \code{\link[=tbod_schema]{tbod_schema()}} to inspect the schema or
 \code{\link[=tbod_check_schema]{tbod_check_schema()}} to compare it with the checked snapshot.
-Checked datasets expose a publisher-qualified \code{canonical_id} and a character
-vector of legacy \code{aliases}. The \code{id} column retains its historical value.
-Prefer canonical IDs in new scripts; existing aliases keep their targets.
-Unqualified subjects without a legacy mapping must identify a unique dataset.
 }
 \examples{
-info <- tbod_dataset_info("tampa-construction-permits")
+info <- tbod_dataset_info("construction-permits")
 info[c("id", "title", "publisher", "source_url")]
 }

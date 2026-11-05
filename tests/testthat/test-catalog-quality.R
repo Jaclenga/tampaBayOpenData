@@ -64,8 +64,6 @@ test_that("checked quality checks reject undocumented and mismatched records", {
   }
   duplicate <- entry
   duplicate$id <- paste0(entry$id, "-copy")
-  duplicate$canonical_id <- paste0(entry$canonical_id, "-copy")
-  duplicate$aliases <- list(duplicate$id)
   expect_error(.validate_checked_catalog(list(entry, duplicate)),
                "duplicate a service and layer", class = "tampa_data_error")
   housing <- entry
@@ -81,8 +79,6 @@ test_that("generic registry validation still accepts other publisher fixtures", 
   neighboring <- entry
   neighboring$jurisdiction <- "neighboring-city"
   neighboring$publisher <- "Neighboring city"
-  neighboring$id <- neighboring$canonical_id <- "neighboring-construction-permits"
-  neighboring$aliases <- list()
   neighboring$service_url <- "https://neighbor.example.org/arcgis/rest/services/Permits/FeatureServer"
   expect_invisible(.validate_registry(list(entry, neighboring)))
   expect_error(.validate_checked_catalog(list(entry, neighboring)),

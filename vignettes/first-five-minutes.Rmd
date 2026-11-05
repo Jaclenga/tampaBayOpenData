@@ -37,7 +37,7 @@ Search the offline catalog:
 
 ```{r find-parks, eval=TRUE}
 matches <- tbod_search_datasets("parks", source = "checked")
-matches[, c("canonical_id", "publisher", "title")]
+matches[, c("id", "title")]
 ```
 
 Use the `hillsborough-parks` ID below.

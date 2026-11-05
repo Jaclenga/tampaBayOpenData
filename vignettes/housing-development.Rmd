@@ -51,15 +51,15 @@ knitr::kable(catalog_hits, row.names = FALSE)
 
 `search_term` shows which query found each dataset.
 
-Use `tampa-development-cases`, Tampa's active entitlement-application layer.
+Use `development-cases`, Tampa's active entitlement-application layer.
 Permits and assisted-housing inventories cover different subjects.
 
 ```{r inspect-source, eval=TRUE}
-case_info <- tbod_dataset_info("tampa-development-cases")
+case_info <- tbod_dataset_info("development-cases")
 case_info[c("publisher", "title", "source_url", "verified",
             "scope_note", "terms")]
 
-case_schema <- tbod_schema("tampa-development-cases")
+case_schema <- tbod_schema("development-cases")
 case_fields <- c("OBJECTID", "RECORDID", "APPSTATUS", "NEIGHBORHOOD",
                  "CREATEDDATE", "LASTUPDATE")
 stopifnot(all(case_fields %in% case_schema$fields$name))
@@ -76,7 +76,7 @@ Retrieve all matching rows and stop if the download is incomplete.
 
 ```{r retrieve-cases}
 cases <- tryCatch(
-  tbod_get_dataset("tampa-development-cases", fields = case_fields,
+  tbod_get_dataset("development-cases", fields = case_fields,
                    total_timeout = 180),
   error = function(e) {
     stop("Could not retrieve Tampa active development cases: ",
