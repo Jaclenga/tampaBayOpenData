@@ -193,7 +193,9 @@
     values <- catalog[[name]][[i]]
     tolower(values[!is.na(values)])
   }
-  list(id = scalar("id"), title = scalar("title"),
+  list(canonical_id = if ("canonical_id" %in% names(catalog)) scalar("canonical_id") else "",
+       aliases = if ("aliases" %in% names(catalog)) multi("aliases") else character(),
+       id = scalar("id"), title = scalar("title"),
        tags = multi("tags"), categories = multi("categories"),
        category = scalar("category"), publisher = scalar("publisher"),
        description = scalar("description"))
@@ -209,7 +211,7 @@
     fields <- .search_fields(rows, i)
     title <- fields$title
     id <- fields$id
-    headline <- c(title, id)
+    headline <- c(title, id, fields$canonical_id, fields$aliases)
     if (any(headline == phrase)) {
       tier[[i]] <- 6L
     } else if (any(startsWith(headline, phrase))) {
@@ -272,12 +274,15 @@
   metadata <- attributes(live)[names(.discovery_metadata())]
   metadata$discovery_issues <- metadata$discovery_issues %||% character()
   metadata$discovery_failed_portals <- metadata$discovery_failed_portals %||% character()
-  # The overlay supplies these five checked-catalog fields after validating live rows.
+  # The overlay supplies checked-catalog fields after validating live rows.
   required <- setdiff(names(checked), c("category", "verified", "terms",
-                                        "date_fields", "modified_source"))
+                                        "date_fields", "modified_source",
+                                        "canonical_id", "aliases"))
   if (!inherits(live, "data.frame") || !all(required %in% names(live))) {
     .abort("Live discovery returned an invalid catalog table.", subclass = "tampa_response_error")
   }
+  live$canonical_id <- live$id
+  live$aliases <- rep(list(character()), nrow(live))
   live$category <- vapply(live$categories, function(x) {
     if (length(x)) x[[1L]] else NA_character_
   }, character(1))
@@ -337,10 +342,10 @@
 #'   `metadata` (raw ArcGIS layer metadata), and `inspected_at` (UTC).
 #' @noRd
 #' @examples
-#' info <- tbod_dataset_info("construction-permits")
+#' info <- tbod_dataset_info("tampa-construction-permits")
 #' info[c("id", "title", "publisher", "source_url")]
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   current <- tbod_dataset_info("construction-permits", refresh = TRUE)
+#'   current <- tbod_dataset_info("tampa-construction-permits", refresh = TRUE)
 #'   current$fields
 #' }
 .dataset_info_impl <- function(id, jurisdiction = NULL, refresh = FALSE, timeout = 30,

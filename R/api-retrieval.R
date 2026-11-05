@@ -7,6 +7,10 @@
 #' and editing metadata. The registry's `verified` date records an endpoint
 #' check, not record freshness. Use [tbod_schema()] to inspect the schema or
 #' [tbod_check_schema()] to compare it with the checked snapshot.
+#' Checked datasets expose a publisher-qualified `canonical_id` and a character
+#' vector of legacy `aliases`. The `id` column retains its historical value.
+#' Prefer canonical IDs in new scripts; existing aliases keep their targets.
+#' Unqualified subjects without a legacy mapping must identify a unique dataset.
 #' @param refresh Whether to request current ArcGIS layer metadata.
 #' @param timeout Per-request timeout in seconds.
 #' @param total_timeout Maximum elapsed seconds for inspection, including
@@ -24,7 +28,7 @@
 #'   `metadata` (raw ArcGIS layer metadata), and UTC `inspected_at`.
 #' @export
 #' @examples
-#' info <- tbod_dataset_info("construction-permits")
+#' info <- tbod_dataset_info("tampa-construction-permits")
 #' info[c("id", "title", "publisher", "source_url")]
 tbod_dataset_info <- function(id, jurisdiction = NULL, refresh = FALSE,
                               timeout = 30, total_timeout = 60,
@@ -140,7 +144,7 @@ tbod_dataset_info <- function(id, jurisdiction = NULL, refresh = FALSE,
 #' @export
 #' @examples
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   data <- tbod_get_dataset("construction-permits", limit = 5)
+#'   data <- tbod_get_dataset("tampa-construction-permits", limit = 5)
 #'   tbod_provenance(data)$source_url
 #' }
 tbod_get_dataset <- function(id, jurisdiction = NULL, where = "1=1",
@@ -212,7 +216,7 @@ tbod_get_dataset <- function(id, jurisdiction = NULL, where = "1=1",
 #' @export
 #' @examples
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   url <- tbod_dataset_info("construction-permits")$source_url
+#'   url <- tbod_dataset_info("tampa-construction-permits")$source_url
 #'   data <- tbod_get_arcgis_layer(url, limit = 10)
 #'   tbod_provenance(data)$validation_status
 #' }

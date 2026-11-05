@@ -72,6 +72,10 @@ By default, scans the configured Tampa Bay ArcGIS portals and combines their
 layers with the bundled checked catalog. Use \code{source = "checked"} to list
 checked entries offline. Live scans may be incomplete; see Details for the
 result attributes. Use \code{\link[=tbod_discover]{tbod_discover()}} to scan another portal.
+Checked datasets expose a publisher-qualified \code{canonical_id} and a character
+vector of legacy \code{aliases}. The \code{id} column retains its historical value.
+Prefer canonical IDs in new scripts; existing aliases keep their targets.
+Unqualified subjects without a legacy mapping must identify a unique dataset.
 }
 \details{
 Values within a filter are combined with OR; different filters

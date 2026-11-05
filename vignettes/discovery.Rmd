@@ -24,16 +24,17 @@ library(tampaBayOpenData)
 
 tampaBayOpenData::tbod_list_portals()[, c("id", "publisher", "jurisdiction")]
 tampaBayOpenData::tbod_list_datasets(source = "checked")[,
-  c("id", "title", "jurisdiction", "validation_status")]
+  c("canonical_id", "publisher", "title", "jurisdiction", "validation_status")]
 tampaBayOpenData::tbod_search_datasets(
   "park", source = "checked", spatial = TRUE,
   jurisdiction = c("stpete", "clearwater")
 )
-tampaBayOpenData::tbod_dataset_info("construction-permits")[
+tampaBayOpenData::tbod_dataset_info("tampa-construction-permits")[
   c("title", "scope_note", "verified")]
 ```
 
-Choose a layer by title and jurisdiction, then use its dataset `id`.
+Choose a layer by title and publisher, then use its `canonical_id`.
+The historical `id` remains available, and `aliases` lists accepted legacy names.
 
 `tbod_dataset_info(id)` gives its scope, terms, source URL, and endpoint
 check date. See [coverage](coverage.html) for catalog limits.
@@ -49,11 +50,11 @@ whether each source fits your question.
 
 ```{r checked-search-ranking, eval=TRUE}
 tbod_search_datasets("permit", source = "checked", limit = 5)[,
-  c("id", "title", "publisher")]
+  c("canonical_id", "publisher", "title")]
 tbod_search_datasets("permti", source = "checked", limit = 5)[,
-  c("id", "title", "publisher")]
+  c("canonical_id", "publisher", "title")]
 tbod_search_datasets("", source = "checked", limit = 5)[,
-  c("id", "title", "publisher")]
+  c("canonical_id", "publisher", "title")]
 ```
 
 Compare `permit`, the typo `permti`, and an empty query.
@@ -65,7 +66,7 @@ service items scanned per live portal. Neither guarantees a complete search.
 
 ```{r live-search}
 found <- tbod_search_datasets("housing", source = "live", portals = "city")
-found[, c("id", "title", "publisher", "validation_status", "modified")]
+found[, c("canonical_id", "publisher", "title", "validation_status", "modified")]
 
 # A one-row result carries the source needed for inspection or retrieval.
 if (nrow(found)) {
@@ -130,7 +131,7 @@ county_transport <- tbod_search_datasets(
   topic = "transportation", modified_after = as.Date("2025-01-01"),
   max_items = 10
 )
-county_transport[, c("id", "title", "publisher", "modified", "modified_source")]
+county_transport[, c("canonical_id", "publisher", "title", "modified", "modified_source")]
 ```
 
 `modified` dates a portal item or saved catalog snapshot, not every record.

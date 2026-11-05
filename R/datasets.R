@@ -91,9 +91,9 @@
 #'   `retrieved_at` attributes; [tbod_provenance()] returns the full record.
 #' @noRd
 #' @examples
-#' tbod_dataset_info("construction-permits")$source_url
+#' tbod_dataset_info("tampa-construction-permits")$source_url
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   permits <- tbod_get_dataset("construction-permits", limit = 10,
+#'   permits <- tbod_get_dataset("tampa-construction-permits", limit = 10,
 #'     fields = c("RECORD_ID", "PROJECTSTATUS", "LASTUPDATE"))
 #'   tbod_provenance(permits)$returned_rows
 #' }

@@ -48,20 +48,20 @@ Search the offline catalog:
 project_matches <- tbod_search_datasets(
   "capital", jurisdiction = "tampa", source = "checked"
 )
-project_matches[, c("id", "title", "geometry_type")]
+project_matches[, c("canonical_id", "publisher", "title", "geometry_type")]
 ```
 
-Use `capital-projects` for locations and `city-boundary` for the backdrop.
+Use `tampa-capital-projects` for locations and `tampa-city-boundary` for the backdrop.
 
 Check the source and field names:
 
 ```{r inspect-capital-data, eval=TRUE}
-project_info <- tbod_dataset_info("capital-projects")
+project_info <- tbod_dataset_info("tampa-capital-projects")
 project_info[c("publisher", "source_url", "scope_note")]
 
-tbod_dataset_info("city-boundary")[c("title", "geometry_type")]
+tbod_dataset_info("tampa-city-boundary")[c("title", "geometry_type")]
 project_fields <- c("OBJECTID", "projid", "projname", "projtype", "Neighborhood")
-project_schema <- tbod_schema("capital-projects")
+project_schema <- tbod_schema("tampa-capital-projects")
 project_schema$fields[
   match(project_fields, project_schema$fields$name),
   c("name", "alias", "type")
@@ -78,11 +78,11 @@ to share WGS 84 longitude and latitude.
 
 ```{r download-capital-data, eval=live_data}
 capital_projects <- tbod_get_dataset(
-  "capital-projects", fields = project_fields,
+  "tampa-capital-projects", fields = project_fields,
   spatial = TRUE, out_sr = 4326, limit = 1000
 )
 tampa_boundary <- tbod_get_dataset(
-  "city-boundary", fields = "OBJECTID",
+  "tampa-city-boundary", fields = "OBJECTID",
   spatial = TRUE, out_sr = 4326, limit = 100
 )
 ```

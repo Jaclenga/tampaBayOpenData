@@ -258,3 +258,24 @@ they do not justify adding weak checked layers merely to fill cells.
 
 See [architecture](architecture.md), [coverage](../vignettes/coverage.Rmd), and
 the [test guide](../tests/README.md) for implementation and test boundaries.
+
+## Dataset identifiers
+
+Every checked entry records an immutable `canonical_id`, `subject_id`, and an
+array of `aliases`. Choose a canonical slug from the actual publisher and the
+subject, for example `tampa-bike-lanes` or `st-pete-bike-lanes`. Coverage does
+not determine the publisher: HART routes in this catalog are published by
+Hillsborough County. Existing publisher prefixes are `tampa`, `st-pete`,
+`clearwater`, `hillsborough`, `pinellas`, and `tbrpc`.
+
+Keep existing `id` and alias mappings unchanged. For new entries, set `id` to
+the canonical ID; use `subject_id` for the unqualified subject and add aliases
+only when they are intentionally reserved for that entry. Shared subjects are
+allowed; shared canonical IDs or aliases are rejected. An established alias
+wins over subject matching, including when a jurisdiction filter is supplied.
+Never reassign an old identifier to a new source. Canonical IDs are explicit
+metadata so renaming a publisher, title, or jurisdiction cannot change them.
+
+Discovery returns `canonical_id`, `publisher`, and the `aliases` list column;
+`id` retains its historical value. Live layers retain their existing stable
+ArcGIS item/layer IDs as canonical IDs and have no legacy aliases.

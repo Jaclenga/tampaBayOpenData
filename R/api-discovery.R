@@ -4,6 +4,10 @@
 #' layers with the bundled checked catalog. Use `source = "checked"` to list
 #' checked entries offline. Live scans may be incomplete; see Details for the
 #' result attributes. Use [tbod_discover()] to scan another portal.
+#' Checked datasets expose a publisher-qualified `canonical_id` and a character
+#' vector of legacy `aliases`. The `id` column retains its historical value.
+#' Prefer canonical IDs in new scripts; existing aliases keep their targets.
+#' Unqualified subjects without a legacy mapping must identify a unique dataset.
 #' @param jurisdiction Jurisdiction code or vector of codes from
 #'   [tbod_list_portals()], or `"all"` (default). Filters checked and live
 #'   results and narrows the portal scan.
@@ -86,8 +90,8 @@ tbod_list_datasets <- function(jurisdiction = "all", source = "all",
 #'   case-insensitive filters; use [tbod_list_portals()] to inspect them. A
 #'   publisher with no match returns no rows.
 #'
-#'   Checked entries search ID, title, description, publisher, category, and
-#'   tags. Exact title or ID matches rank first, then title or ID prefixes,
+#'   Checked entries search canonical IDs, legacy aliases, title, description,
+#'   publisher, category, and tags. Exact title or ID matches rank first, then title or ID prefixes,
 #'   substrings, and matches across title or ID words. Tags, categories, and
 #'   publisher matches follow; description-only matches rank after those.
 #'   Within a rank, each word scores title, ID, tags or categories, publisher,

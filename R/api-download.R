@@ -78,7 +78,7 @@
 #' @export
 #' @examples
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   saved <- tbod_download_dataset("construction-permits",
+#'   saved <- tbod_download_dataset("tampa-construction-permits",
 #'     tempfile("permit-download-"), where = "OBJECTID <= 10", page_size = 5)
 #'   if (length(saved$files)) tbod_provenance(readRDS(saved$files[[1L]]))
 #' }
@@ -123,7 +123,7 @@ tbod_download_dataset <- function(id, path, jurisdiction = NULL,
 #' @export
 #' @examples
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-#'   url <- tbod_dataset_info("construction-permits")$source_url
+#'   url <- tbod_dataset_info("tampa-construction-permits")$source_url
 #'   tbod_download_arcgis_layer(url, tempfile("permit-url-download-"),
 #'     where = "OBJECTID <= 10", page_size = 5)
 #' }
