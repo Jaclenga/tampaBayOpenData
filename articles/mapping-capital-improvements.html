@@ -100,16 +100,16 @@ below.</p>
 <code class="sourceCode R"><span><span class="va">project_matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_search_datasets.html">tbod_search_datasets</a></span><span class="op">(</span></span>
 <span>  <span class="st">"capital"</span>, jurisdiction <span class="op">=</span> <span class="st">"tampa"</span>, source <span class="op">=</span> <span class="st">"checked"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">project_matches</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"title"</span>, <span class="st">"geometry_type"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">#&gt;   id               title                        geometry_type    </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> capital-projects Capital improvement projects esriGeometryPoint</span></span></code></pre></div>
-<p>Use <code>capital-projects</code> for locations and
-<code>city-boundary</code> for the backdrop.</p>
+<span><span class="va">project_matches</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"canonical_id"</span>, <span class="st">"publisher"</span>, <span class="st">"title"</span>, <span class="st">"geometry_type"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   canonical_id           publisher     title                       geometry_type</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> tampa-capital-projects City of Tampa Capital improvement projec… esriGeometry…</span></span></code></pre></div>
+<p>Use <code>tampa-capital-projects</code> for locations and
+<code>tampa-city-boundary</code> for the backdrop.</p>
 <p>Check the source and field names:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">project_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"capital-projects"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">project_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"tampa-capital-projects"</span><span class="op">)</span></span>
 <span><span class="va">project_info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"source_url"</span>, <span class="st">"scope_note"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $publisher</span></span>
 <span><span class="co">#&gt; [1] "City of Tampa"</span></span>
@@ -120,14 +120,14 @@ below.</p>
 <span><span class="co">#&gt; $scope_note</span></span>
 <span><span class="co">#&gt; [1] "The service description says its definition query selects Show to Public = Yes, while the layer metadata does not expose that definition expression. Coordinates use ArcGIS WKID 103023 / latestWKID 6443, in feet, rather than the Web Mercator CRS used by the other selected layers."</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"city-boundary"</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"geometry_type"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"tampa-city-boundary"</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"geometry_type"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $title</span></span>
 <span><span class="co">#&gt; [1] "Tampa boundary (shoreline representation)"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $geometry_type</span></span>
 <span><span class="co">#&gt; [1] "esriGeometryPolygon"</span></span>
 <span><span class="va">project_fields</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBJECTID"</span>, <span class="st">"projid"</span>, <span class="st">"projname"</span>, <span class="st">"projtype"</span>, <span class="st">"Neighborhood"</span><span class="op">)</span></span>
-<span><span class="va">project_schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"capital-projects"</span><span class="op">)</span></span>
+<span><span class="va">project_schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"tampa-capital-projects"</span><span class="op">)</span></span>
 <span><span class="va">project_schema</span><span class="op">$</span><span class="va">fields</span><span class="op">[</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">project_fields</span>, <span class="va">project_schema</span><span class="op">$</span><span class="va">fields</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"alias"</span>, <span class="st">"type"</span><span class="op">)</span></span>
@@ -151,11 +151,11 @@ identifies a project and may repeat across locations.</p>
 latitude.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">capital_projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"capital-projects"</span>, fields <span class="op">=</span> <span class="va">project_fields</span>,</span>
+<span>  <span class="st">"tampa-capital-projects"</span>, fields <span class="op">=</span> <span class="va">project_fields</span>,</span>
 <span>  spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span>, limit <span class="op">=</span> <span class="fl">1000</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">tampa_boundary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
+<span>  <span class="st">"tampa-city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>,</span>
 <span>  spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span>, limit <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The snapshot has 201 project features and one boundary. Check

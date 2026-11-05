@@ -100,7 +100,7 @@ Read each layer’s `scope_note` and source metadata before analysis.
 
 library(tampaBayOpenData)
 
-info <- tbod_dataset_info("construction-permits")
+info <- tbod_dataset_info("tampa-construction-permits")
 info[c("title", "source_url", "scope_note", "terms", "verified")]
 ```
 
@@ -117,7 +117,7 @@ the data:
 
 ``` r
 
-projects <- tbod_get_dataset("development-cases", spatial = TRUE, out_sr = 4326)
+projects <- tbod_get_dataset("tampa-development-cases", spatial = TRUE, out_sr = 4326)
 source <- tbod_provenance(projects)
 saveRDS(list(data = projects, provenance = source), "development-cases.rds")
 ```
@@ -133,7 +133,7 @@ Check selected layers against current metadata:
 
 ``` r
 
-health <- tbod_check_catalog(ids = c("construction-permits", "stpete-parks"))
+health <- tbod_check_catalog(ids = c("tampa-construction-permits", "st-pete-parks"))
 health[, c("dataset_id", "status", "schema_status", "details")]
 ```
 

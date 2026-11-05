@@ -5,7 +5,11 @@ their layers with the bundled checked catalog. Use `source = "checked"`
 to list checked entries offline. Live scans may be incomplete; see
 Details for the result attributes. Use
 [`tbod_discover()`](https://jaclenga.github.io/tampaBayOpenData/reference/tbod_discover.md)
-to scan another portal.
+to scan another portal. Checked datasets expose a publisher-qualified
+`canonical_id` and a character vector of legacy `aliases`. The `id`
+column retains its historical value. Prefer canonical IDs in new
+scripts; existing aliases keep their targets. Unqualified subjects
+without a legacy mapping must identify a unique dataset.
 
 ## Usage
 
@@ -122,7 +126,7 @@ are `NA`.
 
 ``` r
 tbod_list_datasets(source = "checked")
-#> # A tibble: 52 × 23
+#> # A tibble: 52 × 25
 #>    id            title description jurisdiction publisher source_url service_url
 #>    <chr>         <chr> <chr>       <chr>        <chr>     <chr>      <chr>      
 #>  1 construction… Perm… Permit loc… tampa        City of … https://a… https://ar…
@@ -136,9 +140,10 @@ tbod_list_datasets(source = "checked")
 #>  9 fire-stations City… Mapped Cit… tampa        City of … https://a… https://ar…
 #> 10 bike-lanes    Bicy… Mapped Tam… tampa        City of … https://t… https://ar…
 #> # ℹ 42 more rows
-#> # ℹ 16 more variables: geometry_type <chr>, category <chr>, verified <date>,
-#> #   terms <chr>, layer_id <int>, date_fields <list>, tags <list>,
-#> #   item_id <chr>, portal <chr>, validation_status <chr>, modified <dttm>,
-#> #   modified_source <chr>, service_type <chr>, layer_type <chr>,
-#> #   categories <list>, original_metadata <list>
+#> # ℹ 18 more variables: geometry_type <chr>, category <chr>, verified <date>,
+#> #   terms <chr>, canonical_id <chr>, aliases <list>, layer_id <int>,
+#> #   date_fields <list>, tags <list>, item_id <chr>, portal <chr>,
+#> #   validation_status <chr>, modified <dttm>, modified_source <chr>,
+#> #   service_type <chr>, layer_type <chr>, categories <list>,
+#> #   original_metadata <list>
 ```

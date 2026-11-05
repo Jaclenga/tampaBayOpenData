@@ -185,11 +185,11 @@ catalog table, and <code>ggplot2</code> for the chart:</p>
 </tbody>
 </table>
 <p><code>search_term</code> shows which query found each dataset.</p>
-<p>Use <code>development-cases</code>, Tampa’s active
+<p>Use <code>tampa-development-cases</code>, Tampa’s active
 entitlement-application layer. Permits and assisted-housing inventories
 cover different subjects.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">case_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"development-cases"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">case_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_dataset_info.html">tbod_dataset_info</a></span><span class="op">(</span><span class="st">"tampa-development-cases"</span><span class="op">)</span></span>
 <span><span class="va">case_info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"publisher"</span>, <span class="st">"title"</span>, <span class="st">"source_url"</span>, <span class="st">"verified"</span>,</span>
 <span>            <span class="st">"scope_note"</span>, <span class="st">"terms"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $publisher</span></span>
@@ -210,7 +210,7 @@ cover different subjects.</p>
 <span><span class="co">#&gt; $terms</span></span>
 <span><span class="co">#&gt; [1] "No explicit dataset license was found for this exact FeatureServer; its service iteminfo licenseInfo is empty. No license is inferred from a separate MapServer or the GeoHub site item. Source: https://arcgis.tampagov.net/arcgis/rest/services/Planning/ActiveEntitlementLocations/FeatureServer/info/iteminfo?f=pjson. City Conditions and Use says data is generally available to copy or distribute, subject to specified exceptions; it does not guarantee accuracy, completeness, or adequacy, and maps are reasonable representations rather than official records. Source: https://www.tampa.gov/about-us/tampagov/conditions-and-use."</span></span>
 <span></span>
-<span><span class="va">case_schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"development-cases"</span><span class="op">)</span></span>
+<span><span class="va">case_schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"tampa-development-cases"</span><span class="op">)</span></span>
 <span><span class="va">case_fields</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBJECTID"</span>, <span class="st">"RECORDID"</span>, <span class="st">"APPSTATUS"</span>, <span class="st">"NEIGHBORHOOD"</span>,</span>
 <span>                 <span class="st">"CREATEDDATE"</span>, <span class="st">"LASTUPDATE"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">case_fields</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">case_schema</span><span class="op">$</span><span class="va">fields</span><span class="op">$</span><span class="va">name</span><span class="op">)</span><span class="op">)</span></span>
@@ -235,7 +235,7 @@ endpoint check, not individual records.</p>
 incomplete.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cases</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"development-cases"</span>, fields <span class="op">=</span> <span class="va">case_fields</span>,</span>
+<span>  <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span><span class="st">"tampa-development-cases"</span>, fields <span class="op">=</span> <span class="va">case_fields</span>,</span>
 <span>                   total_timeout <span class="op">=</span> <span class="fl">180</span><span class="op">)</span>,</span>
 <span>  error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Could not retrieve Tampa active development cases: "</span>,</span>

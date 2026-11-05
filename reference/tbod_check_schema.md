@@ -70,7 +70,7 @@ current schemas. An incompatible missing endpoint has no current schema.
 
 ``` r
 if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
-  report <- tbod_check_schema("construction-permits")
+  report <- tbod_check_schema("tampa-construction-permits")
   report$status
   report$issues
 }

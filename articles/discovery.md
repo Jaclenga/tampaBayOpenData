@@ -22,36 +22,37 @@ tampaBayOpenData::tbod_list_portals()[, c("id", "publisher", "jurisdiction")]
 #> 5 hillsborough Hillsborough County                 hillsborough
 #> 6 pinellas     Pinellas County                     pinellas
 tampaBayOpenData::tbod_list_datasets(source = "checked")[,
-  c("id", "title", "jurisdiction", "validation_status")]
-#> # A tibble: 52 × 4
-#>    id                   title                     jurisdiction validation_status
-#>    <chr>                <chr>                     <chr>        <chr>            
-#>  1 construction-permits Permits (active GIS view) tampa        checked          
-#>  2 development-cases    Active development coord… tampa        checked          
-#>  3 capital-projects     Capital improvement proj… tampa        checked          
-#>  4 city-boundary        Tampa boundary (shorelin… tampa        checked          
-#>  5 neighborhoods        Neighborhood association… tampa        checked          
-#>  6 council-districts    City council districts    tampa        checked          
-#>  7 riverwalk            Tampa Riverwalk segments  tampa        checked          
-#>  8 parks                Park polygons             tampa        checked          
-#>  9 fire-stations        City of Tampa fire stati… tampa        checked          
-#> 10 bike-lanes           Bicycle network segments  tampa        checked          
+  c("canonical_id", "publisher", "title", "jurisdiction", "validation_status")]
+#> # A tibble: 52 × 5
+#>    canonical_id               publisher     title jurisdiction validation_status
+#>    <chr>                      <chr>         <chr> <chr>        <chr>            
+#>  1 tampa-construction-permits City of Tampa Perm… tampa        checked          
+#>  2 tampa-development-cases    City of Tampa Acti… tampa        checked          
+#>  3 tampa-capital-projects     City of Tampa Capi… tampa        checked          
+#>  4 tampa-city-boundary        City of Tampa Tamp… tampa        checked          
+#>  5 tampa-neighborhoods        City of Tampa Neig… tampa        checked          
+#>  6 tampa-council-districts    City of Tampa City… tampa        checked          
+#>  7 tampa-riverwalk            City of Tampa Tamp… tampa        checked          
+#>  8 tampa-parks                City of Tampa Park… tampa        checked          
+#>  9 tampa-fire-stations        City of Tampa City… tampa        checked          
+#> 10 tampa-bike-lanes           City of Tampa Bicy… tampa        checked          
 #> # ℹ 42 more rows
 tampaBayOpenData::tbod_search_datasets(
   "park", source = "checked", spatial = TRUE,
   jurisdiction = c("stpete", "clearwater")
 )
-#> # A tibble: 2 × 23
+#> # A tibble: 2 × 25
 #>   id             title description jurisdiction publisher source_url service_url
 #>   <chr>          <chr> <chr>       <chr>        <chr>     <chr>      <chr>      
 #> 1 clearwater-pa… Clea… City of Cl… clearwater   City of … https://g… https://gi…
 #> 2 stpete-parks   St. … Public par… stpete       City of … https://c… https://se…
-#> # ℹ 16 more variables: geometry_type <chr>, category <chr>, verified <date>,
-#> #   terms <chr>, layer_id <int>, date_fields <list>, tags <list>,
-#> #   item_id <chr>, portal <chr>, validation_status <chr>, modified <dttm>,
-#> #   modified_source <chr>, service_type <chr>, layer_type <chr>,
-#> #   categories <list>, original_metadata <list>
-tampaBayOpenData::tbod_dataset_info("construction-permits")[
+#> # ℹ 18 more variables: geometry_type <chr>, category <chr>, verified <date>,
+#> #   terms <chr>, canonical_id <chr>, aliases <list>, layer_id <int>,
+#> #   date_fields <list>, tags <list>, item_id <chr>, portal <chr>,
+#> #   validation_status <chr>, modified <dttm>, modified_source <chr>,
+#> #   service_type <chr>, layer_type <chr>, categories <list>,
+#> #   original_metadata <list>
+tampaBayOpenData::tbod_dataset_info("tampa-construction-permits")[
   c("title", "scope_note", "verified")]
 #> $title
 #> [1] "Permits (active GIS view)"
@@ -63,7 +64,9 @@ tampaBayOpenData::tbod_dataset_info("construction-permits")[
 #> [1] "2026-09-29"
 ```
 
-Choose a layer by title and jurisdiction, then use its dataset `id`.
+Choose a layer by title and publisher, then use its `canonical_id`. The
+historical `id` remains available, and `aliases` lists accepted legacy
+names.
 
 `tbod_dataset_info(id)` gives its scope, terms, source URL, and endpoint
 check date. See
@@ -82,27 +85,27 @@ whether each source fits your question.
 ``` r
 
 tbod_search_datasets("permit", source = "checked", limit = 5)[,
-  c("id", "title", "publisher")]
+  c("canonical_id", "publisher", "title")]
 #> # A tibble: 1 × 3
-#>   id                   title                     publisher    
-#>   <chr>                <chr>                     <chr>        
-#> 1 construction-permits Permits (active GIS view) City of Tampa
+#>   canonical_id               publisher     title                    
+#>   <chr>                      <chr>         <chr>                    
+#> 1 tampa-construction-permits City of Tampa Permits (active GIS view)
 tbod_search_datasets("permti", source = "checked", limit = 5)[,
-  c("id", "title", "publisher")]
+  c("canonical_id", "publisher", "title")]
 #> # A tibble: 1 × 3
-#>   id                   title                     publisher    
-#>   <chr>                <chr>                     <chr>        
-#> 1 construction-permits Permits (active GIS view) City of Tampa
+#>   canonical_id               publisher     title                    
+#>   <chr>                      <chr>         <chr>                    
+#> 1 tampa-construction-permits City of Tampa Permits (active GIS view)
 tbod_search_datasets("", source = "checked", limit = 5)[,
-  c("id", "title", "publisher")]
+  c("canonical_id", "publisher", "title")]
 #> # A tibble: 5 × 3
-#>   id                   title                                     publisher    
-#>   <chr>                <chr>                                     <chr>        
-#> 1 construction-permits Permits (active GIS view)                 City of Tampa
-#> 2 development-cases    Active development coordination cases     City of Tampa
-#> 3 capital-projects     Capital improvement projects              City of Tampa
-#> 4 city-boundary        Tampa boundary (shoreline representation) City of Tampa
-#> 5 neighborhoods        Neighborhood association boundaries       City of Tampa
+#>   canonical_id               publisher     title                                
+#>   <chr>                      <chr>         <chr>                                
+#> 1 tampa-construction-permits City of Tampa Permits (active GIS view)            
+#> 2 tampa-development-cases    City of Tampa Active development coordination cases
+#> 3 tampa-capital-projects     City of Tampa Capital improvement projects         
+#> 4 tampa-city-boundary        City of Tampa Tampa boundary (shoreline representa…
+#> 5 tampa-neighborhoods        City of Tampa Neighborhood association boundaries
 ```
 
 Compare `permit`, the typo `permti`, and an empty query.
@@ -116,7 +119,7 @@ search.
 ``` r
 
 found <- tbod_search_datasets("housing", source = "live", portals = "city")
-found[, c("id", "title", "publisher", "validation_status", "modified")]
+found[, c("canonical_id", "publisher", "title", "validation_status", "modified")]
 
 # A one-row result carries the source needed for inspection or retrieval.
 if (nrow(found)) {
@@ -190,7 +193,7 @@ county_transport <- tbod_search_datasets(
   topic = "transportation", modified_after = as.Date("2025-01-01"),
   max_items = 10
 )
-county_transport[, c("id", "title", "publisher", "modified", "modified_source")]
+county_transport[, c("canonical_id", "publisher", "title", "modified", "modified_source")]
 ```
 
 `modified` dates a portal item or saved catalog snapshot, not every

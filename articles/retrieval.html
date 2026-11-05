@@ -88,7 +88,7 @@ access and do not run during site builds.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jaclenga.github.io/tampaBayOpenData/">tampaBayOpenData</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">permits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"construction-permits"</span>,</span>
+<span>  <span class="st">"tampa-construction-permits"</span>,</span>
 <span>  where <span class="op">=</span> <span class="st">"PROJECTSTATUS IS NOT NULL"</span>,</span>
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RECORD_ID"</span>, <span class="st">"PROJECTSTATUS"</span>, <span class="st">"LASTUPDATE"</span><span class="op">)</span>,</span>
 <span>  limit <span class="op">=</span> <span class="fl">100</span></span>
@@ -101,7 +101,7 @@ access and do not run during site builds.</p>
 is <code>TRUE</code> only when all matches were returned.</p>
 <p><code>where</code> uses ArcGIS SQL; <code>fields</code> needs exact
 source names. Inspect them with
-<code>tbod_dataset_info("construction-permits", refresh = TRUE)$fields</code>.
+<code>tbod_dataset_info("tampa-construction-permits", refresh = TRUE)$fields</code>.
 See <code><a href="../reference/tbod_get_dataset.html">?tbod_get_dataset</a></code> for advanced <code>query</code>
 filters.</p>
 <p>Omit <code>limit</code> to retrieve all matches. Use
@@ -134,8 +134,8 @@ and reuse terms.</p>
 <code>refresh = TRUE</code> reads the service. Compare them with
 <code><a href="../reference/tbod_check_schema.html">tbod_check_schema()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">expected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
-<span><span class="va">report</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_check_schema.html">tbod_check_schema</a></span><span class="op">(</span><span class="st">"construction-permits"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">expected</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_schema.html">tbod_schema</a></span><span class="op">(</span><span class="st">"tampa-construction-permits"</span><span class="op">)</span></span>
+<span><span class="va">report</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_check_schema.html">tbod_check_schema</a></span><span class="op">(</span><span class="st">"tampa-construction-permits"</span><span class="op">)</span></span>
 <span><span class="va">report</span><span class="op">$</span><span class="va">status</span></span>
 <span><span class="va">report</span><span class="op">$</span><span class="va">issues</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"category"</span>, <span class="st">"severity"</span>, <span class="st">"field"</span>, <span class="st">"expected"</span>, <span class="st">"actual"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>The report lists affected fields, expected and actual definitions,
@@ -200,10 +200,10 @@ geometry. Use <code>out_sr = 4326</code> for WGS 84, or omit it to keep
 the native CRS.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">projects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
+<span>  <span class="st">"tampa-development-cases"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">boundary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_get_dataset.html">tbod_get_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
+<span>  <span class="st">"tampa-city-boundary"</span>, fields <span class="op">=</span> <span class="st">"OBJECTID"</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, out_sr <span class="op">=</span> <span class="fl">4326</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">projects</span><span class="op">)</span><span class="op">$</span><span class="va">epsg</span></span></code></pre></div>
 <p>Both results are <code>sf</code> tables. The CRS check should print
@@ -243,7 +243,7 @@ one-million-match limit. Use <code><a href="../reference/tbod_download_arcgis_la
 for direct URLs.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">saved</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbod_download_dataset.html">tbod_download_dataset</a></span><span class="op">(</span></span>
-<span>  <span class="st">"construction-permits"</span>,</span>
+<span>  <span class="st">"tampa-construction-permits"</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"~/tampaBayOpenData-downloads/permits"</span>,</span>
 <span>  fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBJECTID"</span>, <span class="st">"RECORD_ID"</span>, <span class="st">"LASTUPDATE"</span><span class="op">)</span>,</span>
 <span>  page_size <span class="op">=</span> <span class="fl">500</span>,</span>
