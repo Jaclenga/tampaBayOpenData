@@ -13,56 +13,96 @@ live data; check provenance for the download time.
 and its [ArcGIS item and reuse information](https://tampa.maps.arcgis.com/home/item.html?id=d54aac9d4559488fa439e454df5f09ce).
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
-                      fig.width = 8, fig.height = 4.5)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE,
+                      fig.width = 9, fig.height = 5, out.width = "100%")
 library(tampaBayOpenData)
 ```
 
 ## Retrieve data
 
-Retrieve all records and check completeness and IDs.
+Retrieve all records rather than a preview. Each row represents a **mapped
+line segment**, not a complete bicycle route: a route may cross many segments,
+and the layer alone does not establish whether they form a usable connection.
+
+The download includes a provenance record:
+
+- `complete = TRUE` means all records matching this request were returned.
+- `integrity` describes the checks used to validate the download.
+  `full-manifest` means returned object IDs were checked against the full list
+  of IDs requested from the service, rather than just a bounded preview.
+- `validation_status = "checked"` identifies a bundled, reviewed package
+  entry. It does not certify the accuracy or current condition of every feature.
+
+Unique, nonmissing `OBJECTID` values ensure that each mapped record is counted
+once. These checks protect the shares below from a partial or duplicated download;
+if they fail, rerun the retrieval and inspect `tbod_provenance(segments)`.
+The qualified ID below is supported by this package checkout; older installations
+can use the preserved `"bike-lanes"` alias if needed.
 
 ```{r retrieve}
 segments <- tbod_get_dataset(
-  "bike-lanes",
+  "tampa-bike-lanes",
   fields = c("OBJECTID", "CONN_TYPE", "MILEAGE", "ROADWAY"),
   page_size = 500,
   total_timeout = 120
 )
 source <- tbod_provenance(segments)
-stopifnot(
-  isTRUE(source$complete),
-  identical(source$integrity, "full-manifest"),
-  identical(source$validation_status, "checked"),
-  nrow(segments) == source$matched_rows,
-  nrow(segments) == source$returned_rows,
-  !anyDuplicated(segments$OBJECTID)
-)
+if (!isTRUE(source$complete) ||
+    !identical(source$integrity, "full-manifest") ||
+    !identical(source$validation_status, "checked") ||
+    !isTRUE(nrow(segments) == source$matched_rows) ||
+    !isTRUE(nrow(segments) == source$returned_rows)) {
+  stop("The download is not a complete, checked full-manifest retrieval. Rerun and inspect its provenance.")
+}
+required_fields <- c("OBJECTID", "CONN_TYPE", "MILEAGE", "ROADWAY")
+if (!all(required_fields %in% names(segments)) ||
+    !is.numeric(segments$MILEAGE)) {
+  stop("Expected fields or numeric MILEAGE changed. Inspect tbod_dataset_info('tampa-bike-lanes', refresh = TRUE).")
+}
+if (!nrow(segments)) stop("The live layer is empty; there are no segments to compare. Try again later.")
+if (anyNA(segments$OBJECTID) || anyDuplicated(segments$OBJECTID)) {
+  stop("Missing or duplicate OBJECTID values would distort counts. Rerun the download before analysis.")
+}
 
+# A vertical table keeps provenance readable on a narrow article page.
 knitr::kable(data.frame(
-  publisher = source$publisher,
-  retrieved_at_utc = format(source$retrieved_at, tz = "UTC", usetz = TRUE),
-  matched_rows = source$matched_rows,
-  returned_rows = source$returned_rows,
-  complete = source$complete,
-  integrity = source$integrity
-))
+  item = c("Publisher", "Retrieved at (UTC)", "Matched rows", "Returned rows",
+           "Complete", "Integrity", "Validation status"),
+  value = c(source$publisher,
+            format(source$retrieved_at, tz = "UTC", usetz = TRUE),
+            source$matched_rows, source$returned_rows,
+            source$complete, source$integrity, source$validation_status)
+), col.names = c("Download detail", "Value"))
 knitr::kable(utils::head(segments, 5))
 ```
 
-Each row is a line segment. Connection labels come from live metadata.
+Connection labels come from the coded-value **domain**: the publisher's lookup
+from stored `CONN_TYPE` codes to readable labels. The next chunk finds that field
+in the metadata returned with this download and displays the lookup. Without it,
+we cannot verify what the codes mean, so the tutorial stops rather than guessing.
 
 ```{r field-definitions}
 connection_fields <- Filter(
   function(field) identical(field$name, "CONN_TYPE"), source$field_schema
 )
-stopifnot(length(connection_fields) == 1L)
+if (length(connection_fields) != 1L) {
+  stop("CONN_TYPE metadata is missing or duplicated. Inspect the live layer field definitions before continuing.")
+}
 codes <- connection_fields[[1]]$domain$codedValues
-stopifnot(length(codes) > 0L)
+if (!length(codes) || !all(vapply(codes, function(value) {
+  is.character(value$code) && length(value$code) == 1L && !is.na(value$code) &&
+    nzchar(value$code) && is.character(value$name) && length(value$name) == 1L &&
+    !is.na(value$name) && nzchar(trimws(value$name))
+}, logical(1)))) {
+  stop("CONN_TYPE has no usable coded-value domain. Review the publisher metadata before assigning families.")
+}
 code_names <- stats::setNames(
-  vapply(codes, function(value) as.character(value$name), character(1)),
+  vapply(codes, function(value) trimws(as.character(value$name)), character(1)),
   vapply(codes, function(value) as.character(value$code), character(1))
 )
+if (anyDuplicated(names(code_names))) {
+  stop("The CONN_TYPE domain contains duplicate codes. Review its definitions before analysis.")
+}
 knitr::kable(data.frame(
   code = names(code_names), publisher_label = unname(code_names)
 ))
@@ -70,8 +110,19 @@ knitr::kable(data.frame(
 
 ## Check mileage
 
-`MILEAGE` is the publisher's value. Missing mileage contributes no miles
-but still counts as a segment. The source does not explain zero values.
+`MILEAGE` is the publisher's reported mileage attribute (field alias `Mileage`),
+not a length calculated here from geometry. The service's map-coordinate unit is
+meters; it is not the unit of this separate attribute. The field metadata does
+not document its calculation method, precision, or whether overlaps are removed.
+We treat the attribute as reported miles, not independently measured route miles.
+
+Missing mileage is **unknown, not zero**: those records remain in segment counts
+but are excluded from mileage sums. A reported zero remains a known zero; its
+cause is not explained by the field metadata. The table makes both visible.
+Negative or infinite values invalidate the comparison and stop the analysis.
+
+The code below counts missing values, finds codes absent from the live lookup,
+and summarizes each publisher category without dropping unclassified records.
 
 ```{r quality}
 connection_code <- as.character(segments$CONN_TYPE)
@@ -93,10 +144,22 @@ quality <- data.frame(
             sum(segments$MILEAGE < 0, na.rm = TRUE),
             sum(toupper(roadway) %in% c("", "NA", "N/A")))
 )
-knitr::kable(quality)
-if (length(unknown_codes)) print(unknown_codes)
+knitr::kable(quality, col.names = c("Check", "Count"))
+if (length(unknown_codes)) {
+  warning("Codes absent from current metadata: ", paste(unknown_codes, collapse = ", "),
+          ". These records remain in Other or new code.")
+}
+if (any(connection_code == "(missing)")) {
+  warning("Missing CONN_TYPE values remain in Other or new code.")
+}
+if (anyNA(segments$MILEAGE)) {
+  warning("Missing MILEAGE values are excluded from mileage sums, but their segments remain in counts.")
+}
+if (any(!is.finite(segments$MILEAGE) & !is.na(segments$MILEAGE))) {
+  stop("Non-finite MILEAGE values need publisher review before aggregation.")
+}
 if (any(segments$MILEAGE < 0, na.rm = TRUE)) {
-  stop("Negative MILEAGE values need review before aggregation")
+  stop("Negative MILEAGE values need publisher review before aggregation; do not remove them silently.")
 }
 
 class_summary <- do.call(rbind, lapply(
@@ -104,7 +167,7 @@ class_summary <- do.call(rbind, lapply(
   function(rows) {
     code <- connection_code[rows[1]]
     label <- unname(code_names[code])
-    if (is.na(label)) label <- code
+    if (is.na(label)) label <- paste("Unclassified:", code)
     data.frame(
       code = code, publisher_label = label,
       segments = length(rows),
@@ -116,14 +179,47 @@ class_summary <- do.call(rbind, lapply(
 ))
 class_summary <- class_summary[order(-class_summary$reported_miles), ]
 rownames(class_summary) <- NULL
-knitr::kable(class_summary, digits = 2)
+knitr::kable(class_summary, digits = 2,
+             col.names = c("Code", "Publisher category", "Segments", "Reported miles",
+                           "Missing mileage", "Zero-mileage segments"))
 ```
 
 ## Compare shares
 
-Group source codes into four families; keep new codes under *Other or new code*.
+These are **tutorial-defined analytical groupings**, not official City of Tampa
+classifications. The displayed publisher labels remain the authoritative meanings
+of the individual codes. We combine the three shared-roadway stress categories;
+the two bike-lane categories; and multi-use paths with trails. Difficult connections,
+neighborhood greenways, and sidewalk connections stay in *Other connections*:
+this broad residual group makes no claim that they share a design or stress level.
+In particular, a neighborhood greenway is not reclassified as a dedicated lane.
 
-```{r family-comparison, fig.height=5}
+The expected labels below were checked against the publisher's live `BikeLaneType`
+domain. Each knit compares those meanings again. A new code, a removed definition,
+or a changed label triggers a warning and stays in *Other or new code* until
+reviewed. Whitespace around publisher labels does not change their meaning.
+
+```{r family-comparison, fig.height=6, fig.alt="Grouped horizontal bars compare segment and reported mileage shares for each tutorial-defined connection family on a 0 to 100 percent scale."}
+expected_labels <- c(
+  SR_LT_LS = "Shared Roadway (Low Stress)",
+  SR_MHT_LS = "Shared Roadway (Moderate Stress)",
+  SR_LT_HS = "Shared Roadway (High Stress)",
+  BL_HT_HS = "Bike Lane (High Stress)",
+  SBL_LT_LS = "Bike Lane (Separated and/or Low Stress)",
+  MUP = "Multi-Use Path", TR = "Trail", DC = "Difficult Connection",
+  NG = "Neighborhood Greenway", SC = "Sidewalk Connection"
+)
+verified_codes <- names(expected_labels)[
+  !is.na(code_names[names(expected_labels)]) &
+    code_names[names(expected_labels)] == expected_labels
+]
+review_codes <- union(setdiff(names(expected_labels), verified_codes),
+                      setdiff(names(code_names), names(expected_labels)))
+if (length(review_codes)) {
+  warning("Review new, missing, or changed CONN_TYPE definitions: ",
+          paste(review_codes, collapse = ", "),
+          ". Affected records remain in Other or new code.")
+}
 family_by_code <- c(
   SR_LT_LS = "Shared roadway", SR_MHT_LS = "Shared roadway",
   SR_LT_HS = "Shared roadway",
@@ -132,6 +228,7 @@ family_by_code <- c(
   DC = "Other connections", NG = "Other connections",
   SC = "Other connections"
 )
+family_by_code <- family_by_code[verified_codes]
 family_name <- unname(family_by_code[connection_code])
 family_name[is.na(family_name)] <- "Other or new code"
 family <- do.call(rbind, lapply(split(seq_len(nrow(segments)), family_name),
@@ -142,48 +239,57 @@ family <- do.call(rbind, lapply(split(seq_len(nrow(segments)), family_name),
 ))
 rownames(family) <- NULL
 total_miles <- sum(segments$MILEAGE, na.rm = TRUE)
-stopifnot(total_miles > 0)
+if (total_miles <= 0) {
+  stop("Total observed MILEAGE is zero or all mileage is missing. Mileage shares are undefined; inspect the quality table and publisher data.")
+}
 family$segment_share_pct <- 100 * family$segments / nrow(segments)
 family$mileage_share_pct <- 100 * family$reported_miles / total_miles
 family_order <- c("Shared roadway", "Bike-lane categories",
                   "Paths and trails", "Other connections", "Other or new code")
 family <- family[order(match(family$family, family_order)), ]
 rownames(family) <- NULL
-knitr::kable(family, digits = 2)
+knitr::kable(family, digits = 2,
+             col.names = c("Tutorial family", "Segments", "Reported miles",
+                           "Segment share (%)", "Mileage share (%)"))
 
 shares <- rbind("Segments" = family$segment_share_pct,
                 "Reported miles" = family$mileage_share_pct)
-old_par <- par(mar = c(4, 14, 3, 1))
+# Reserve space above the bars for a legend, and left of them for labels.
+old_par <- par(mar = c(4.5, 12, 6, 1))
 barplot(shares, beside = TRUE, horiz = TRUE, names.arg = family$family,
-        las = 1, col = c("#276fa6", "#e59a40"),
-        xlim = c(0, max(shares) * 1.25),
-        xlab = "Share of complete public layer (%)",
-        main = "Mapped connection mix", legend.text = rownames(shares),
-        args.legend = list(x = "topright", bty = "n"))
+        las = 1, cex.names = 0.9, col = c("#0072B2", "#E69F00"),
+        border = NA, xlim = c(0, 100),
+        xlab = "Share of segments or reported mileage (%)")
+legend("top", inset = c(0, -0.17), xpd = NA, horiz = TRUE,
+       legend = rownames(shares), fill = c("#0072B2", "#E69F00"), bty = "n")
+title("Mapped connection mix", line = 4)
 par(old_par)
-largest_shift <- family[which.max(abs(family$segment_share_pct -
-                                      family$mileage_share_pct)), ]
 ```
 
-Counting segments gives each line one vote. Summing `MILEAGE` weights longer
-lines more heavily. The two shares can therefore differ without implying a
-data error. The largest gap in this retrieval is **`r largest_shift$family`**:
-`r sprintf("%.1f", largest_shift$segment_share_pct)`% of segments versus
-`r sprintf("%.1f", largest_shift$mileage_share_pct)`% of reported miles.
+The fixed 0 to 100% scale makes both series directly comparable. Segment shares
+use all returned rows; mileage shares use only the sum of observed mileage.
+Missing mileage can therefore affect the comparison as well as segment length.
 
 ## Check zero mileage
 
-Count zero-mileage records by class:
+Count records with a reported zero by the publisher's individual categories,
+not the tutorial families. Long labels wrap onto multiple lines. Zero values
+could reflect source-data conventions or unrecorded lengths; this chart cannot
+determine why they occur. Missing mileage is excluded from these counts.
 
-```{r zero-mileage, fig.height=4.5}
+```{r zero-mileage, fig.height=7, fig.alt="Horizontal bars count zero-mileage segments by publisher category, with long category labels wrapped."}
 zero_classes <- class_summary[class_summary$zero_mile_segments > 0, ]
 if (nrow(zero_classes)) {
   zero_classes <- zero_classes[order(zero_classes$zero_mile_segments), ]
-  old_par <- par(mar = c(4, 18, 3, 1))
+  wrapped_labels <- vapply(zero_classes$publisher_label, function(label) {
+    paste(strwrap(label, width = 34), collapse = "\n")
+  }, character(1))
+  old_par <- par(mar = c(4.5, 16, 3, 1))
   barplot(zero_classes$zero_mile_segments, horiz = TRUE,
-          names.arg = zero_classes$publisher_label, las = 1,
-          col = "#a45760", xlab = "Segments with zero reported MILEAGE",
-          main = "Zero-mileage records by publisher class")
+          names.arg = wrapped_labels, las = 1, cex.names = 0.85, space = 0.6,
+          col = "#0072B2", border = NA,
+          xlab = "Number of segments with zero reported mileage",
+          main = "Zero reported mileage by publisher category")
   par(old_par)
 } else {
   cat("No zero-mileage segments in this run.\n")
@@ -196,10 +302,48 @@ cat(sprintf(
 ))
 ```
 
+## What do the results tell us?
+
+```{r interpretation, include=FALSE}
+leading_families <- family$family[family$reported_miles == max(family$reported_miles)]
+leading_miles <- max(family$reported_miles)
+leading_share <- max(family$mileage_share_pct)
+share_gap <- abs(family$segment_share_pct - family$mileage_share_pct)
+largest_shifts <- family[abs(share_gap - max(share_gap)) < 1e-8, ]
+```
+
+**Observed in this retrieval:** **`r paste(leading_families, collapse = " and ")`**
+has the most reported mileage (`r sprintf("%.2f", leading_miles)` miles,
+`r sprintf("%.1f", leading_share)`% of the observed total; multiple names
+indicate a tie). The largest absolute gap between segment share and mileage
+share is `r sprintf("%.1f", max(share_gap))` percentage points:
+
+```{r share-gap}
+knitr::kable(largest_shifts[, c("family", "segment_share_pct", "mileage_share_pct")],
+             digits = 1, row.names = FALSE,
+             col.names = c("Tutorial family", "Segment share (%)", "Mileage share (%)"))
+```
+
+**Interpretation:** Counting segments gives each mapped line one vote; summing
+mileage gives longer lines more weight. Splitting one line into smaller records
+can change segment counts without changing the underlying mileage. Missing
+mileage can also reduce a family's observed mileage share. These are possible
+explanations, not evidence of the cause for any particular category.
+
 ## Limits
 
-Counts and mileage do not measure route usability, safety, or access.
-Overlapping segments may count more than once; stress labels are source categories.
+Mapped mileage does not directly measure safety, comfort, connectivity, or
+accessibility. Shared roadways and difficult or sidewalk connections are included;
+not every mapped connection is protected or dedicated bicycle infrastructure.
+Even the separated/low-stress lane label combines alternatives and does not
+establish protection for every record. Stress labels are publisher categories,
+not an independent safety assessment in this tutorial.
 
-Live attributes may change during retrieval. Review
-`tbod_dataset_info("bike-lanes")$terms` before reuse.
+Overlapping segments may count more than once in mileage totals. Unique
+`OBJECTID` values prevent repeated records, not overlapping geometry. We have
+not assembled routes, tested network continuity, or checked conditions on the ground.
+
+Live attributes may change during retrieval. The UTC timestamp above records
+this download, not when the City last updated every segment. Before reuse, review
+`tbod_dataset_info("tampa-bike-lanes")$terms`, the linked ArcGIS item, and the
+[City's conditions and use](https://www.tampa.gov/about-us/tampagov/conditions-and-use).

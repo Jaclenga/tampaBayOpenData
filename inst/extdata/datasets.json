@@ -1,6 +1,9 @@
 [
   {
     "id": "construction-permits",
+    "canonical_id": "tampa-construction-permits",
+    "subject_id": "construction-permits",
+    "aliases": ["construction-permits"],
     "title": "Permits (active GIS view)",
     "description": "Permit locations and attributes from the City active-permits GIS viewer. The service describes daily updates; it does not establish a complete historical permit ledger.",
     "jurisdiction": "tampa",
@@ -50,6 +53,9 @@
   },
   {
     "id": "development-cases",
+    "canonical_id": "tampa-development-cases",
+    "subject_id": "development-cases",
+    "aliases": ["development-cases"],
     "title": "Active development coordination cases",
     "description": "Locations of active Tampa entitlement applications used by the public Current Development Coordination Applications map.",
     "jurisdiction": "tampa",
@@ -99,6 +105,9 @@
   },
   {
     "id": "capital-projects",
+    "canonical_id": "tampa-capital-projects",
+    "subject_id": "capital-projects",
+    "aliases": ["capital-projects"],
     "title": "Capital improvement projects",
     "description": "Locations and attributes for public-facing City capital projects, including phase, cost, and planned and actual dates.",
     "jurisdiction": "tampa",
@@ -150,6 +159,9 @@
   },
   {
     "id": "city-boundary",
+    "canonical_id": "tampa-city-boundary",
+    "subject_id": "city-boundary",
+    "aliases": ["city-boundary"],
     "title": "Tampa boundary (shoreline representation)",
     "description": "A Tampa city-limits representation modified to follow the shoreline, as explicitly described by the City layer.",
     "jurisdiction": "tampa",
@@ -194,6 +206,9 @@
   },
   {
     "id": "neighborhoods",
+    "canonical_id": "tampa-neighborhoods",
+    "subject_id": "neighborhoods",
+    "aliases": ["neighborhoods"],
     "title": "Neighborhood association boundaries",
     "description": "City of Tampa neighborhood association boundaries and the attributes supplied by the City GIS layer.",
     "jurisdiction": "tampa",
@@ -239,6 +254,9 @@
   },
   {
     "id": "council-districts",
+    "canonical_id": "tampa-council-districts",
+    "subject_id": "council-districts",
+    "aliases": ["council-districts"],
     "title": "City council districts",
     "description": "Tampa City Council district polygons with the City-supplied district, representative, and update attributes.",
     "jurisdiction": "tampa",
@@ -282,6 +300,9 @@
   },
   {
     "id": "riverwalk",
+    "canonical_id": "tampa-riverwalk",
+    "subject_id": "riverwalk",
+    "aliases": ["riverwalk"],
     "title": "Tampa Riverwalk segments",
     "description": "Tampa Riverwalk line segments along Garrison Channel and the Hillsborough River, with source status labels for completed and other segments.",
     "jurisdiction": "tampa",
@@ -326,6 +347,9 @@
   },
   {
     "id": "parks",
+    "canonical_id": "tampa-parks",
+    "subject_id": "parks",
+    "aliases": ["parks"],
     "title": "Park polygons",
     "description": "Park polygon coverage published by City of Tampa GIS, with names, address, ownership, acreage, and descriptive source attributes.",
     "jurisdiction": "tampa",
@@ -369,6 +393,9 @@
   },
   {
     "id": "fire-stations",
+    "canonical_id": "tampa-fire-stations",
+    "subject_id": "fire-stations",
+    "aliases": ["fire-stations"],
     "title": "City of Tampa fire stations",
     "description": "Mapped City of Tampa fire station locations and source facility attributes.",
     "jurisdiction": "tampa",
@@ -412,6 +439,9 @@
   },
   {
     "id": "bike-lanes",
+    "canonical_id": "tampa-bike-lanes",
+    "subject_id": "bike-lanes",
+    "aliases": ["bike-lanes"],
     "title": "Bicycle network segments",
     "description": "Mapped Tampa bicycle network lines categorized as bike lanes, shared roadways, paths, trails, and other connections.",
     "jurisdiction": "tampa",
@@ -458,6 +488,9 @@
   },
   {
     "id": "recycling-pickup",
+    "canonical_id": "tampa-recycling-pickup",
+    "subject_id": "recycling-pickup",
+    "aliases": ["recycling-pickup"],
     "title": "Recycling pickup service areas",
     "description": "City GIS polygons identifying service-area schedules for curbside recycling pickup.",
     "jurisdiction": "tampa",
@@ -502,6 +535,9 @@
   },
   {
     "id": "community-redevelopment",
+    "canonical_id": "tampa-community-redevelopment",
+    "subject_id": "community-redevelopment",
+    "aliases": ["community-redevelopment"],
     "title": "Community redevelopment areas",
     "description": "City of Tampa community redevelopment area polygons and source ordinance attributes.",
     "jurisdiction": "tampa",
@@ -546,6 +582,9 @@
   },
   {
     "id": "high-injury-network",
+    "canonical_id": "tampa-high-injury-network",
+    "subject_id": "high-injury-network",
+    "aliases": ["high-injury-network"],
     "title": "High Injury Network road segments",
     "description": "Tampa road segments in the City High Injury Network, with source crash-severity and network-year attributes.",
     "jurisdiction": "tampa",
@@ -591,6 +630,9 @@
   },
   {
     "id": "historic-district-local",
+    "canonical_id": "tampa-historic-district-local",
+    "subject_id": "historic-district-local",
+    "aliases": ["historic-district-local"],
     "title": "Local historic districts",
     "description": "Polygons for locally designated historic districts within the City of Tampa.",
     "jurisdiction": "tampa",
@@ -635,6 +677,9 @@
   },
   {
     "id": "historic-landmarks-local",
+    "canonical_id": "tampa-historic-landmarks-local",
+    "subject_id": "historic-landmarks-local",
+    "aliases": ["historic-landmarks-local"],
     "title": "Local historic landmarks",
     "description": "Point locations for City of Tampa local historic landmarks and source designation attributes.",
     "jurisdiction": "tampa",
@@ -679,6 +724,9 @@
   },
   {
     "id": "police-districts",
+    "canonical_id": "tampa-police-districts",
+    "subject_id": "police-districts",
+    "aliases": ["police-districts"],
     "title": "Police districts",
     "description": "City of Tampa Police Department district polygons with source district identifiers.",
     "jurisdiction": "tampa",
@@ -722,6 +770,9 @@
   },
   {
     "id": "street-speed-reductions",
+    "canonical_id": "tampa-street-speed-reductions",
+    "subject_id": "street-speed-reductions",
+    "aliases": ["street-speed-reductions"],
     "title": "Street speed limit reductions",
     "description": "Tampa street segments mapped for speed limit reductions, with source speed, status, and reduction-date attributes.",
     "jurisdiction": "tampa",
@@ -768,6 +819,9 @@
   },
   {
     "id": "truck-routes",
+    "canonical_id": "tampa-truck-routes",
+    "subject_id": "truck-routes",
+    "aliases": ["truck-routes"],
     "title": "Truck routes",
     "description": "City of Tampa truck-route line segments with the source route-type attribute.",
     "jurisdiction": "tampa",
@@ -811,6 +865,9 @@
   },
   {
     "id": "water-service-area",
+    "canonical_id": "tampa-water-service-area",
+    "subject_id": "water-service-area",
+    "aliases": ["water-service-area"],
     "title": "Tampa water service area",
     "description": "Polygons representing the City of Tampa water service area and source service-provider attributes.",
     "jurisdiction": "tampa",
@@ -856,6 +913,9 @@
   },
   {
     "id": "zoning-districts",
+    "canonical_id": "tampa-zoning-districts",
+    "subject_id": "zoning-districts",
+    "aliases": ["zoning-districts"],
     "title": "Zoning districts",
     "description": "City of Tampa zoning district polygons with source zoning class, description, and reference attributes.",
     "jurisdiction": "tampa",
@@ -900,6 +960,9 @@
   },
   {
     "id": "stpete-parks",
+    "canonical_id": "st-pete-parks",
+    "subject_id": "parks",
+    "aliases": ["stpete-parks"],
     "title": "St. Petersburg parks",
     "description": "Public park polygons published by the City of St. Petersburg, with source park names and addresses.",
     "jurisdiction": "stpete",
@@ -945,6 +1008,9 @@
   },
   {
     "id": "stpete-city-boundary",
+    "canonical_id": "st-pete-city-boundary",
+    "subject_id": "city-boundary",
+    "aliases": ["stpete-city-boundary"],
     "title": "St. Petersburg city boundary",
     "description": "Municipal boundary polygon published by the City of St. Petersburg, retaining municipal name and source identifiers.",
     "jurisdiction": "stpete",
@@ -990,6 +1056,9 @@
   },
   {
     "id": "stpete-streets",
+    "canonical_id": "st-pete-streets",
+    "subject_id": "streets",
+    "aliases": ["stpete-streets"],
     "title": "St. Petersburg streets",
     "description": "City of St. Petersburg street linework with names and source roadway attributes.",
     "jurisdiction": "stpete",
@@ -1035,6 +1104,9 @@
   },
   {
     "id": "clearwater-park-buffers",
+    "canonical_id": "clearwater-park-buffers",
+    "subject_id": "park-buffers",
+    "aliases": ["clearwater-park-buffers"],
     "title": "Clearwater park buffers",
     "description": "City of Clearwater park buffer polygons with source site names, acreage, and buffer distances.",
     "jurisdiction": "clearwater",
@@ -1086,6 +1158,9 @@
   },
   {
     "id": "clearwater-zoning",
+    "canonical_id": "clearwater-zoning",
+    "subject_id": "zoning",
+    "aliases": ["clearwater-zoning"],
     "title": "Clearwater zoning",
     "description": "City of Clearwater zoning polygons with source district codes and descriptions.",
     "jurisdiction": "clearwater",
@@ -1129,6 +1204,9 @@
   },
   {
     "id": "clearwater-libraries",
+    "canonical_id": "clearwater-libraries",
+    "subject_id": "libraries",
+    "aliases": ["clearwater-libraries"],
     "title": "Clearwater libraries",
     "description": "Public library locations from the City of Clearwater services map, with source facility names and identifiers.",
     "jurisdiction": "clearwater",
@@ -1167,6 +1245,9 @@
   },
   {
     "id": "hillsborough-libraries",
+    "canonical_id": "hillsborough-libraries",
+    "subject_id": "libraries",
+    "aliases": ["hillsborough-libraries"],
     "title": "Hillsborough County libraries",
     "description": "Locations of Hillsborough County Public Library Cooperative headquarters and branches, with library names and addresses.",
     "jurisdiction": "hillsborough",
@@ -1216,6 +1297,9 @@
   },
   {
     "id": "hillsborough-sidewalks",
+    "canonical_id": "hillsborough-sidewalks",
+    "subject_id": "sidewalks",
+    "aliases": ["hillsborough-sidewalks"],
     "title": "Hillsborough County sidewalks",
     "description": "Sidewalk centerlines from the county public works asset inventory, with source ownership, condition, width, and material attributes.",
     "jurisdiction": "hillsborough",
@@ -1271,6 +1355,9 @@
   },
   {
     "id": "hillsborough-parks",
+    "canonical_id": "hillsborough-parks",
+    "subject_id": "parks",
+    "aliases": ["hillsborough-parks"],
     "title": "Hillsborough County parks and recreation properties",
     "description": "Polygon boundaries of properties managed by the county Parks & Recreation Department, with source names, types, and ownership attributes.",
     "jurisdiction": "hillsborough",
@@ -1321,6 +1408,9 @@
   },
   {
     "id": "pinellas-fire-stations",
+    "canonical_id": "pinellas-fire-stations",
+    "subject_id": "fire-stations",
+    "aliases": ["pinellas-fire-stations"],
     "title": "Pinellas County fire stations",
     "description": "Fire-station locations and county-provided station, address, agency, and status attributes.",
     "jurisdiction": "pinellas",
@@ -1370,6 +1460,9 @@
   },
   {
     "id": "pinellas-park-boundaries",
+    "canonical_id": "pinellas-park-boundaries",
+    "subject_id": "park-boundaries",
+    "aliases": ["pinellas-park-boundaries"],
     "title": "Pinellas County park boundaries",
     "description": "County-owned or managed parks, preserves, beach access, marina, and related areas represented by planning polygons.",
     "jurisdiction": "pinellas",
@@ -1420,6 +1513,9 @@
   },
   {
     "id": "pinellas-trail",
+    "canonical_id": "pinellas-trail",
+    "subject_id": "trail",
+    "aliases": ["pinellas-trail"],
     "title": "Pinellas Trail segments",
     "description": "Pinellas Trail line segments and Parks and Conservation Resources asset attributes, including surface and condition fields.",
     "jurisdiction": "pinellas",
@@ -1477,6 +1573,9 @@
   },
   {
     "id": "tbrpc-developments-of-regional-impact",
+    "canonical_id": "tbrpc-developments-of-regional-impact",
+    "subject_id": "developments-of-regional-impact",
+    "aliases": ["tbrpc-developments-of-regional-impact"],
     "title": "Developments of regional impact",
     "description": "Boundaries of large-scale developments reviewed as developments of regional impact in the Tampa Bay region.",
     "jurisdiction": "tampa-bay",
@@ -1529,6 +1628,9 @@
   },
   {
     "id": "tbrpc-regional-storm-surge-zones",
+    "canonical_id": "tbrpc-regional-storm-surge-zones",
+    "subject_id": "regional-storm-surge-zones",
+    "aliases": ["tbrpc-regional-storm-surge-zones"],
     "title": "Regional storm-surge zones (historical model)",
     "description": "Storm-surge planning polygons for the TBRPC region derived from SLOSH maximum-of-maximums modeling.",
     "jurisdiction": "tampa-bay",
@@ -1575,6 +1677,9 @@
   },
   {
     "id": "tbrpc-regional-data-centers",
+    "canonical_id": "tbrpc-regional-data-centers",
+    "subject_id": "regional-data-centers",
+    "aliases": ["tbrpc-regional-data-centers"],
     "title": "Tampa Bay region data centers",
     "description": "Point inventory of data-center locations in the Tampa Bay region compiled by the TBRPC.",
     "jurisdiction": "tampa-bay",
@@ -1621,6 +1726,9 @@
   },
   {
     "id": "stpete-zoning-districts",
+    "canonical_id": "st-pete-zoning-districts",
+    "subject_id": "zoning-districts",
+    "aliases": ["stpete-zoning-districts"],
     "title": "St. Petersburg zoning districts",
     "description": "City zoning district polygons with class, description, and ordinance reference links.",
     "jurisdiction": "stpete",
@@ -1666,6 +1774,9 @@
   },
   {
     "id": "stpete-future-land-use",
+    "canonical_id": "st-pete-future-land-use",
+    "subject_id": "future-land-use",
+    "aliases": ["stpete-future-land-use"],
     "title": "St. Petersburg future land use",
     "description": "City future-land-use plan polygons with land-use code and description.",
     "jurisdiction": "stpete",
@@ -1711,6 +1822,9 @@
   },
   {
     "id": "stpete-sidewalks",
+    "canonical_id": "st-pete-sidewalks",
+    "subject_id": "sidewalks",
+    "aliases": ["stpete-sidewalks"],
     "title": "St. Petersburg sidewalks",
     "description": "Mapped sidewalk segments with surface, width, ownership, and maintenance attributes.",
     "jurisdiction": "stpete",
@@ -1756,6 +1870,9 @@
   },
   {
     "id": "stpete-public-works-projects",
+    "canonical_id": "st-pete-public-works-projects",
+    "subject_id": "public-works-projects",
+    "aliases": ["stpete-public-works-projects"],
     "title": "St. Petersburg mapped public works projects",
     "description": "Mapped City public works projects with scope, status, department, and budget attributes.",
     "jurisdiction": "stpete",
@@ -1803,6 +1920,9 @@
   },
   {
     "id": "clearwater-future-land-use",
+    "canonical_id": "clearwater-future-land-use",
+    "subject_id": "future-land-use",
+    "aliases": ["clearwater-future-land-use"],
     "title": "Clearwater future land use",
     "description": "City planning polygons with future-land-use code and adopted amendment attributes.",
     "jurisdiction": "clearwater",
@@ -1848,6 +1968,9 @@
   },
   {
     "id": "clearwater-critical-assets",
+    "canonical_id": "clearwater-critical-assets",
+    "subject_id": "critical-assets",
+    "aliases": ["clearwater-critical-assets"],
     "title": "Clearwater vulnerability-assessment critical assets",
     "description": "Mapped critical-asset polygons with modeled tidal, storm-surge, and rainfall exposure scenarios.",
     "jurisdiction": "clearwater",
@@ -1895,6 +2018,9 @@
   },
   {
     "id": "clearwater-sidewalks",
+    "canonical_id": "clearwater-sidewalks",
+    "subject_id": "sidewalks",
+    "aliases": ["clearwater-sidewalks"],
     "title": "Clearwater sidewalks",
     "description": "City sidewalk segments with type, material, width, ownership, and edit-date fields.",
     "jurisdiction": "clearwater",
@@ -1939,6 +2065,9 @@
   },
   {
     "id": "pinellas-countywide-plan",
+    "canonical_id": "pinellas-countywide-plan",
+    "subject_id": "countywide-plan",
+    "aliases": ["pinellas-countywide-plan"],
     "title": "Pinellas countywide plan map categories",
     "description": "Countywide plan polygons with current and previous future-land-use categories.",
     "jurisdiction": "pinellas",
@@ -1987,6 +2116,9 @@
   },
   {
     "id": "pinellas-bicycle-facilities",
+    "canonical_id": "pinellas-bicycle-facilities",
+    "subject_id": "bicycle-facilities",
+    "aliases": ["pinellas-bicycle-facilities"],
     "title": "Pinellas bicycle facilities",
     "description": "Bicycle facility segments with type, width, jurisdiction, roadway, and high-injury-network attributes.",
     "jurisdiction": "pinellas",
@@ -2035,6 +2167,9 @@
   },
   {
     "id": "pinellas-sidewalks",
+    "canonical_id": "pinellas-sidewalks",
+    "subject_id": "sidewalks",
+    "aliases": ["pinellas-sidewalks"],
     "title": "Pinellas sidewalks",
     "description": "Countywide sidewalk segments with surface, width, condition, accessibility, and municipality attributes.",
     "jurisdiction": "pinellas",
@@ -2085,6 +2220,9 @@
   },
   {
     "id": "pinellas-assisted-housing",
+    "canonical_id": "pinellas-assisted-housing",
+    "subject_id": "assisted-housing",
+    "aliases": ["pinellas-assisted-housing"],
     "title": "Pinellas assisted housing",
     "description": "Assisted-housing development polygons with program, unit-count, target-population, and subsidy attributes.",
     "jurisdiction": "pinellas",
@@ -2133,6 +2271,9 @@
   },
   {
     "id": "hillsborough-hart-routes",
+    "canonical_id": "hillsborough-hart-routes",
+    "subject_id": "hart-routes",
+    "aliases": ["hillsborough-hart-routes"],
     "title": "Hillsborough HART bus routes",
     "description": "Hillsborough-hosted HART route linework with route, direction, and vehicle-type attributes.",
     "jurisdiction": "hillsborough",
@@ -2178,6 +2319,9 @@
   },
   {
     "id": "hillsborough-fema-flood-zones",
+    "canonical_id": "hillsborough-fema-flood-zones",
+    "subject_id": "fema-flood-zones",
+    "aliases": ["hillsborough-fema-flood-zones"],
     "title": "Hillsborough FEMA flood hazard zones",
     "description": "County-hosted FEMA National Flood Hazard Layer polygons with zone and base-flood-elevation attributes.",
     "jurisdiction": "hillsborough",
@@ -2223,6 +2367,9 @@
   },
   {
     "id": "hillsborough-zoning",
+    "canonical_id": "hillsborough-zoning",
+    "subject_id": "zoning",
+    "aliases": ["hillsborough-zoning"],
     "title": "Hillsborough unincorporated zoning",
     "description": "Adopted zoning polygons for unincorporated Hillsborough County with district and status attributes.",
     "jurisdiction": "hillsborough",
@@ -2271,6 +2418,9 @@
   },
   {
     "id": "hillsborough-water-quality",
+    "canonical_id": "hillsborough-water-quality",
+    "subject_id": "water-quality",
+    "aliases": ["hillsborough-water-quality"],
     "title": "Hillsborough EPC water-quality observations",
     "description": "Latest staff-reviewed monitoring samples with station, time, nutrients, bacteria, salinity, and oxygen attributes.",
     "jurisdiction": "hillsborough",
@@ -2318,6 +2468,9 @@
   },
   {
     "id": "hillsborough-land-cover-2023",
+    "canonical_id": "hillsborough-land-cover-2023",
+    "subject_id": "land-cover-2023",
+    "aliases": ["hillsborough-land-cover-2023"],
     "title": "Hillsborough 2023 land use and land cover",
     "description": "County-hosted SWFWMD 2023 land-cover polygons with Florida land-use-code descriptions.",
     "jurisdiction": "hillsborough",
@@ -2365,6 +2518,9 @@
   },
   {
     "id": "tbrpc-regional-boundary",
+    "canonical_id": "tbrpc-regional-boundary",
+    "subject_id": "regional-boundary",
+    "aliases": ["tbrpc-regional-boundary"],
     "title": "TBRPC six-county regional boundary",
     "description": "Dissolved boundary of the Tampa Bay Regional Planning Council's six-county service area.",
     "jurisdiction": "tampa-bay",

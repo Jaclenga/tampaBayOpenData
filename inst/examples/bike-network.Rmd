@@ -20,9 +20,9 @@ Look up the source offline:
 library(tampaBayOpenData)
 
 bike_catalog <- tbod_search_datasets("bike", source = "checked")
-bike_catalog[, c("id", "title", "category", "verified")]
+bike_catalog[, c("canonical_id", "publisher", "title", "category", "verified")]
 
-bike_info <- tbod_dataset_info("bike-lanes")
+bike_info <- tbod_dataset_info("tampa-bike-lanes")
 bike_info[c("title", "source_url", "verified", "scope_note")]
 ```
 
@@ -34,7 +34,7 @@ Order by object ID:
 
 ```{r retrieve, eval=params$live}
 bike <- tbod_get_dataset(
-  "bike-lanes",
+  "tampa-bike-lanes",
   fields = c("OBJECTID", "ROADWAY", "CONN_TYPE"),
   order_by = "OBJECTID ASC",
   limit = 20,
@@ -70,7 +70,7 @@ Request WGS 84 coordinates. This second request may differ if records changed.
 ```{r map, eval=params$live}
 if (requireNamespace("sf", quietly = TRUE)) {
   bike_map <- tbod_get_dataset(
-    "bike-lanes",
+    "tampa-bike-lanes",
     fields = c("OBJECTID", "ROADWAY", "CONN_TYPE"),
     order_by = "OBJECTID ASC",
     limit = 20,

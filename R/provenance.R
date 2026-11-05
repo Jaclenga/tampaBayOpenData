@@ -57,7 +57,7 @@
 #'   object IDs. The list is the result's attached `source` attribute.
 #' @noRd
 #' @examples
-#' tbod_dataset_info("construction-permits")$publisher
+#' tbod_dataset_info("tampa-construction-permits")$publisher
 #' if (identical(Sys.getenv("TAMPA_OPEN_DATA_LIVE"), "true")) {
 #'   permits <- tbod_get_permits(limit = 10)
 #'   tbod_provenance(permits)
