@@ -19,7 +19,7 @@ devtools::check(args = "--no-manual")
 Commit generated `man/` and `NAMESPACE` changes when updating roxygen comments.
 Add tests for changed behavior. Ordinary tests and package checks use mocked
 responses and block live HTTP. Keep examples and vignettes offline; set network
-retrieval chunks to `eval = FALSE`. The [test guide](tests/README.md) covers
+retrieval chunks to `eval = FALSE`. The [test guide](https://github.com/Jaclenga/tampaBayOpenData/blob/main/tests/README.md) covers
 focused checks, bounded scheduled monitoring, and opt-in live tests. When
 adding a monitored source, use a small row limit, current IDs rather than
 fixed counts, a finite portal item limit, and explicit timeouts. Leave source
@@ -41,7 +41,7 @@ after the current HTML has reached `gh-pages`. Compare the branch's
 
 ## Registry and retrieval changes
 
-Use the [checked catalog policy](docs/checked-catalog-policy.md) when proposing,
+Use the [checked catalog policy](https://github.com/Jaclenga/tampaBayOpenData/blob/main/docs/checked-catalog-policy.md) when proposing,
 refreshing, or retiring a layer. Before editing `inst/extdata/datasets.json`,
 verify the official publisher source page, layer metadata, terms, and a small
 query. Record source and service URLs, layer ID, publisher, stable ID, geometry,

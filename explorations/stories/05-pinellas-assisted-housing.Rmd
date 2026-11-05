@@ -7,13 +7,14 @@ output: html_document
 knitr::opts_chunk$set(error = FALSE)
 ```
 
-The Pinellas County assisted-housing layer reports total units and assisted units for mapped housing records. This report asks how often both counts are usable and how their reported values compare. It treats each polygon row as a mapped record, because repeated site identifiers could otherwise double-count units.
+Compare total and assisted units in Pinellas housing records.
+Each row is a polygon; repeated site IDs need review before adding totals.
 
 Source: [Pinellas assisted-housing layer](https://services.arcgis.com/f5HgUpxURgEzTccH/ArcGIS/rest/services/Pinellas_AssistedHousing_view/FeatureServer/0). The package's checked catalog provides the publisher attribution and scope note.
 
-## 1. Inspect the checked source
+## 1. Check fields
 
-The numeric unit fields and source identifiers are verified against the bundled schema. Their values come from the live publisher service when the next cell runs.
+Check the unit fields and identifiers.
 
 ```{r inspect_source}
 library(tampaBayOpenData)
@@ -29,9 +30,9 @@ cat("Source:", info$source_url, "\n")
 cat("Scope:", info$scope_note, "\n")
 ```
 
-## 2. Retrieve the full matching layer
+## 2. Retrieve records
 
-The provenance check requires a complete result before interpreting its distribution. It still represents a live service rather than a frozen historical snapshot.
+Retrieve all rows and check completeness.
 
 ```{r retrieve_housing}
 homes <- tbod_get_dataset(id, fields = fields, total_timeout = 180)
@@ -47,7 +48,8 @@ cat(sprintf("%s mapped records retrieved at %s; integrity: %s\n",
 
 ## 3. Check the unit fields
 
-A share is defined only when total units are positive and assisted units fall between zero and total units. Missing and inconsistent rows remain visible in the audit instead of silently disappearing.
+Use positive totals with assisted counts between zero and total units.
+Count missing and inconsistent values separately.
 
 ```{r audit_unit_fields}
 total <- homes$TOTALUNITS
@@ -73,9 +75,10 @@ if (nrow(usable)) {
 }
 ```
 
-## 4. Compare counts within each mapped record
+## 4. Plot counts
 
-The diagonal represents equal assisted and total units. Points below it report fewer assisted units than total units. No unit counts are summed across polygons, so repeated site identifiers cannot inflate a regional total here.
+The diagonal marks equal assisted and total units. Counts are compared
+within rows, not added across polygons.
 
 ```{r plot_unit_counts, fig.width=7, fig.height=5}
 if (nrow(usable)) {
@@ -94,8 +97,9 @@ if (nrow(usable)) {
 }
 ```
 
-## What this shows
+## Limits
 
-The analysis describes the publisher's mapped housing records, with each polygon row shown once. Program participation and unit counts can change. The layer does not establish current eligibility, vacancies, or a complete affordable-housing inventory. Repeated PIDs in the audit warrant site-level review before aggregating unit totals.
+The inventory does not confirm current vacancies, eligibility, or all
+affordable housing. Review repeated PIDs before aggregating units.
 
 **Observed on 2026-10-06:** Of 191 mapped records, 151 had usable unit pairs and 40 were missing at least one count. Seven nonblank PID occurrences repeated an earlier value; 33 of the 151 usable records reported fewer assisted than total units. Rerunning this report will calculate the current figures.

@@ -7,11 +7,11 @@ output: html_document
 knitr::opts_chunk$set(error = FALSE)
 ```
 
-[Clearwater library locations](https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/1) and [Hillsborough library locations](https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Libraries_hc/FeatureServer/0) describe different service areas with different field names. This report explores the schema and missing values needed to make a small combined directory. It does not compare access, quality, or service levels.
+Combine [Clearwater](https://gis.myclearwater.com/arcgis/rest/services/ArcGISMapServices/ClearwaterServicesApp_WGS84/MapServer/1) and [Hillsborough](https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/Libraries_hc/FeatureServer/0) library locations into one directory.
 
-## 1. Retrieve two complete checked layers
+## 1. Retrieve records
 
-Each result carries its own provenance. Save it before combining rows because ordinary data-frame operations may drop attributes.
+Save each source's provenance before combining rows.
 
 ```{r retrieve_libraries}
 library(tampaBayOpenData)
@@ -32,9 +32,9 @@ print(data.frame(source = c("Clearwater", "Hillsborough"),
                  retrieved_at = vapply(sources, function(x) as.character(x$retrieved_at), "")))
 ```
 
-## 2. Measure which source fields actually carry a name
+## 2. Check the name fields
 
-A field existing in the schema does not mean it is filled in the live records. Hillsborough offers both `Name_Full` and `Name_Label`; we inspect them before choosing a fallback.
+Check whether `Name_Full` or `Name_Label` is filled.
 
 ```{r inspect_name_fields, fig.width=7, fig.height=4}
 present <- function(x) !is.na(x) & nzchar(trimws(as.character(x)))
@@ -56,9 +56,10 @@ barplot(name_fields$percent_filled,
 par(previous)
 ```
 
-## 3. Make a small, traceable directory
+## 3. Combine the directories
 
-The mapping keeps the publisher and source object ID. Missing Hillsborough full names fall back to the label field. We keep each agency's own address text without geocoding or merging likely duplicate facilities.
+Keep publisher and object ID. Fall back to `Name_Label` when the full name
+is missing, preserving source addresses.
 
 ```{r make_directory}
 hill_name <- as.character(hillsborough$Name_Full)
@@ -76,8 +77,9 @@ print(data.frame(records = nrow(directory), missing_name = sum(!present(director
 print(utils::head(directory, 8))
 ```
 
-## What this means
+## Limits
 
-The two layers can be placed in a common *directory* shape, but they are separate publisher inventories. Counts cannot be read as a comparison of library access, and this mapping makes no claim that the publisher records represent the same facility type or update schedule.
+The directory does not merge duplicates or compare access. Publishers may
+use different facility definitions and update schedules.
 
 **Observed on 2026-10-06:** All five Clearwater `NAME` values were filled. All 31 Hillsborough `Name_Full` values were blank, while all 31 `Name_Label` values were filled. The mapped directory therefore had 36 rows and used the Hillsborough fallback 31 times. Rerunning this report will calculate the current figures.

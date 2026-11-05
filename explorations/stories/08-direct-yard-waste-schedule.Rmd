@@ -7,11 +7,11 @@ output: html_document
 knitr::opts_chunk$set(error = FALSE)
 ```
 
-This example uses a [City of Tampa ArcGIS layer URL](https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/4) directly, without a checked catalog ID. It groups complete polygon records by the publisher's `COLLECTIONDAYS` field, then compares feature counts with mapped polygon area. The chart describes this layer's geometry, not households served or a guaranteed current pickup schedule.
+Group Tampa's [yard-waste polygons](https://arcgis.tampagov.net/arcgis/rest/services/OpenData/SolidWaste/MapServer/4) by collection day. Compare polygon counts with area.
 
-## 1. Retrieve spatial features through the general client
+## 1. Retrieve by URL
 
-Direct URL results have `not_checked` catalog status. The package still records provenance and verifies a complete full retrieval.
+Direct URLs have `not_checked` status; retrieval still checks completeness.
 
 ```{r retrieve_pickup_polygons}
 library(tampaBayOpenData)
@@ -29,9 +29,10 @@ print(data.frame(retrieved_at = source$retrieved_at, polygons = nrow(pickup),
                  crs = sf::st_crs(pickup)$input, integrity = source$integrity))
 ```
 
-## 2. Count polygons and sum projected areas
+## 2. Summarize
 
-UTM zone 17N (EPSG:26917) gives an appropriate local projected area for this exploratory calculation. The result is square kilometres of *polygon records* in each day label; overlaps, if present, would be counted more than once.
+Use EPSG:26917 and convert area to square kilometres. Overlaps count more
+than once.
 
 ```{r compare_count_and_area}
 day <- trimws(as.character(pickup$COLLECTIONDAYS))
@@ -46,7 +47,7 @@ print(summary)
 print(table(pickup$SCHEDULE, useNA = "ifany"))
 ```
 
-## 3. Compare the two ways of counting
+## 3. Plot
 
 ```{r plot_pickup_days, fig.width=10, fig.height=4}
 short_day <- sub(" Collection$", "", summary$day)
@@ -58,8 +59,9 @@ barplot(summary$mapped_area_km2, names.arg = short_day,
 par(previous)
 ```
 
-## What this means
+## Limits
 
-A day with more polygons need not have more mapped area. Neither measure estimates households, route distance, workload, or service eligibility. Verify any practical pickup question with the City's current address-specific service information.
+Counts and area do not measure households or workload. Confirm pickup
+dates with the City's current address-specific service information.
 
 **Observed on 2026-10-06:** The layer returned 43 polygons across four collection-day labels. Thursday had 10 polygons and the largest summed mapped area (50.11 square kilometres); Friday had the most polygons (12). Rerunning this report will calculate the current figures.

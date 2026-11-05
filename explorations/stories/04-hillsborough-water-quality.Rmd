@@ -3,13 +3,14 @@ title: "A paired look at Hillsborough water-quality readings"
 output: html_document
 ---
 
-The Hillsborough County Environmental Protection Commission publishes its latest staff-reviewed monitoring samples. This report asks whether the two reported dissolved-oxygen fields, DO_T and DO_B, differ within records where both are present. The layer is a current sample view, so these records cannot support a time trend.
+Compare `DO_T` and `DO_B` in Hillsborough EPC's latest reviewed samples,
+using rows with both readings.
 
 Source: [Hillsborough EPC water-quality layer](https://services.arcgis.com/apTfC6SUmnNfnxuF/arcgis/rest/services/EPC_WQM_DATA/FeatureServer/0). The package's checked catalog supplies the publisher attribution and scope note.
 
-## 1. Inspect the checked source
+## 1. Check fields
 
-The bundled schema check catches a missing or renamed field before we make the live request. Field labels are kept exactly as published; their units and sampling methods need the publisher's documentation.
+Check the saved schema. Confirm measurement units and methods with the publisher.
 
 ```{r s04-step-1}
 library(tampaBayOpenData)
@@ -24,9 +25,9 @@ cat("Source:", info$source_url, "\n")
 cat("Scope:", info$scope_note, "\n")
 ```
 
-## 2. Retrieve the full matching layer
+## 2. Retrieve records
 
-A full pull lets us compare every returned row with the package's object-ID manifest. The result is live and may change on a later run.
+Retrieve all rows and check completeness.
 
 ```{r s04-step-2}
 samples <- tbod_get_dataset(id, fields = fields, total_timeout = 180)
@@ -42,7 +43,7 @@ cat(sprintf("%s records retrieved at %s; integrity: %s\n",
 
 ## 3. Count usable pairs
 
-Missing values matter here: a comparison between DO_T and DO_B is only paired when both values were reported on the same row. We show the exclusions before plotting.
+Count excluded rows before plotting.
 
 ```{r s04-step-3}
 paired <- samples[is.finite(samples$DO_T) & is.finite(samples$DO_B), , drop = FALSE]
@@ -63,9 +64,9 @@ if (nrow(paired)) {
 }
 ```
 
-## 4. Compare the two reported fields
+## 4. Plot pairs
 
-The diagonal marks equal reported values. This is an exploratory field comparison, not a water-quality classification or a test of improvement.
+The diagonal marks equal reported values.
 
 ```{r s04-step-4, fig.width=7, fig.height=4}
 if (nrow(paired)) {
@@ -83,8 +84,9 @@ if (nrow(paired)) {
 }
 ```
 
-## What this shows
+## Limits
 
-The chart describes only rows with both measurements; the count table shows how much of the layer that covers. The source describes the **latest reviewed samples**, not a full station history. Units, detection limits, methods, and uneven station coverage need source review before environmental comparisons or policy use.
+Only paired records enter the chart. This view lacks a full sampling
+history; it cannot show trends or classify water quality.
 
 **Observed on October 6, 2026:** The complete pull returned 263 records. Of these, 161 had both reported oxygen values; the median `DO_T - DO_B` in those pairs was 0.26. Source methods and units need review before interpreting that difference.

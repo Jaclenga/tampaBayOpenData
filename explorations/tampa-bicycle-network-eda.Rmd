@@ -3,15 +3,11 @@ title: "What makes up Tampa's mapped bicycle network?"
 output: html_document
 ---
 
-The City of Tampa calls this layer **Bike Lanes**, but its connection types also
-include shared roadways, paths, trails, and other links. How does the mix change
-when we count mapped segments versus sum the source's reported mileage?
+Compare Tampa's bicycle connections by segment count and reported mileage.
+The layer includes shared roads, paths, and trails as well as bike lanes.
 
-This report retrieves the complete, current `bike-lanes` layer through
-`tampaBayOpenData`. It requires an internet connection and the installed R
-packages `tampaBayOpenData`, `knitr`, and `rmarkdown`. The source can change
-between runs; the tables and charts below reflect the retrieval time printed
-in the provenance table. No raw data file is bundled.
+Install `tampaBayOpenData`, `knitr`, and `rmarkdown`. Knitting retrieves
+live data; check provenance for the download time.
 
 **Source:** [City of Tampa Bike Lanes layer and field definitions](https://arcgis.tampagov.net/arcgis/rest/services/OpenData/Transportation/MapServer/0)
 and its [ArcGIS item and reuse information](https://tampa.maps.arcgis.com/home/item.html?id=d54aac9d4559488fa439e454df5f09ce).
@@ -22,12 +18,9 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
 library(tampaBayOpenData)
 ```
 
-## Retrieve and verify the complete layer
+## Retrieve data
 
-`tbod_get_dataset()` checks the checked catalog schema and retrieves all
-matching object IDs. Full retrieval compares the result with the service's
-object-ID manifest. We stop if provenance reports an incomplete result or an
-unexpected record count or duplicate ID.
+Retrieve all records and check completeness and IDs.
 
 ```{r retrieve}
 segments <- tbod_get_dataset(
@@ -57,9 +50,7 @@ knitr::kable(data.frame(
 knitr::kable(utils::head(segments, 5))
 ```
 
-One record is one mapped line segment, not necessarily a whole route. The
-publisher's `CONN_TYPE` coded-value domain supplies the labels below; this
-report reads those labels from live layer metadata attached to the result.
+Each row is a line segment. Connection labels come from live metadata.
 
 ```{r field-definitions}
 connection_fields <- Filter(
@@ -77,13 +68,10 @@ knitr::kable(data.frame(
 ))
 ```
 
-## Check the measurements before adding them
+## Check mileage
 
-`MILEAGE` is a publisher-supplied attribute; we do not remeasure geometry.
-A zero may represent a short, rounded, or unmeasured connection, and its exact
-meaning is not specified by the layer. Missing mileage remains in the segment
-count but cannot contribute to a mileage sum. We also count missing class codes
-and roadway labels so they cannot disappear from the story.
+`MILEAGE` is the publisher's value. Missing mileage contributes no miles
+but still counts as a segment. The source does not explain zero values.
 
 ```{r quality}
 connection_code <- as.character(segments$CONN_TYPE)
@@ -131,11 +119,9 @@ rownames(class_summary) <- NULL
 knitr::kable(class_summary, digits = 2)
 ```
 
-## Segment share versus reported-mile share
+## Compare shares
 
-For a compact comparison, we group the City's codes into four families. These
-family names are this report's analytical grouping; the preceding table keeps
-the publisher's classes intact. Any new code remains in *Other or new code*.
+Group source codes into four families; keep new codes under *Other or new code*.
 
 ```{r family-comparison, fig.height=5}
 family_by_code <- c(
@@ -185,10 +171,9 @@ data error. The largest gap in this retrieval is **`r largest_shift$family`**:
 `r sprintf("%.1f", largest_shift$segment_share_pct)`% of segments versus
 `r sprintf("%.1f", largest_shift$mileage_share_pct)`% of reported miles.
 
-## Where are the zero-mileage records?
+## Check zero mileage
 
-Segments with zero reported miles are still visible in the segment inventory.
-The check below shows which publisher classes contribute these records.
+Count zero-mileage records by class:
 
 ```{r zero-mileage, fig.height=4.5}
 zero_classes <- class_summary[class_summary$zero_mile_segments > 0, ]
@@ -211,16 +196,10 @@ cat(sprintf(
 ))
 ```
 
-## Interpretation and limits
+## Limits
 
-The layer's name covers more than dedicated bike lanes. Neither a feature
-count nor summed reported mileage establishes usable route length, current
-condition, rider safety, or geographic access. The City's stress labels are
-source classifications, not safety findings from this analysis. Overlapping
-alignments may be counted more than once.
+Counts and mileage do not measure route usability, safety, or access.
+Overlapping segments may count more than once; stress labels are source categories.
 
-The package's complete-result check guards against missing or duplicate
-record IDs and membership changes detected during retrieval. It cannot freeze
-attribute values while the publisher edits the service. Review
-`tbod_dataset_info("bike-lanes")$terms` and the linked publisher item before
-reusing the data.
+Live attributes may change during retrieval. Review
+`tbod_dataset_info("bike-lanes")$terms` before reuse.

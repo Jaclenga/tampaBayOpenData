@@ -38,17 +38,17 @@ navbar:
       id: articles-menu
       aria-label: Toggle articles menu
       menu:
-        - text: More ways to get started
+        - text: Package basics
           href: articles/introduction.html
-        - text: Discovering Tampa Bay data
+        - text: Find data
           href: articles/discovery.html
-        - text: Retrieving and downloading data
+        - text: Retrieve and download
           href: articles/retrieval.html
         - text: Housing and development activity
           href: articles/housing-development.html
-        - text: Water quality around Tampa Bay
+        - text: Hillsborough water quality
           href: articles/water-quality.html
-        - text: Mapping Tampa capital improvements
+        - text: Map capital projects
           href: articles/mapping-capital-improvements.html
         - text: Infrastructure and capital projects
           href: articles/infrastructure-projects.html
@@ -70,14 +70,19 @@ articles:
     contents:
       - first-five-minutes
       - introduction
-  - title: In depth
+  - title: Guides
     desc: Discovery, retrieval, and source limits.
     contents:
       - discovery
       - retrieval
       - coverage
-  - title: Applied tutorials
-    desc: Examples using checked sources, summaries, and visualizations.
+  - title: Walkthroughs
+    desc: >-
+      Summarize records and make charts or maps.
+      More examples on GitHub:
+      [eight short reports](https://github.com/Jaclenga/tampaBayOpenData/tree/main/explorations/stories),
+      [bicycle-network analysis](https://github.com/Jaclenga/tampaBayOpenData/blob/main/explorations/tampa-bicycle-network-eda.Rmd),
+      and a [bicycle notebook](https://github.com/Jaclenga/tampaBayOpenData/blob/main/inst/examples/bike-network.Rmd).
     contents:
       - housing-development
       - water-quality
