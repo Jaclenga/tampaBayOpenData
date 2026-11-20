@@ -39,7 +39,7 @@ Layers without a saved field and geometry comparison
 
 Latest verification
 
-2026-11-19 16:41 UTC
+2026-11-20 16:21 UTC
 
 Latest matching health report
 
@@ -49,12 +49,12 @@ Latest matching health report
 
 | Publisher | Checked entries | Last verification | Healthy | Problematic | Unverified |
 |----|----|----|----|----|----|
-| City of Clearwater | 6 | 2026-11-19health report | 5 | 1 | 0 |
-| City of St. Petersburg | 7 | 2026-11-19health report | 7 | 0 | 0 |
-| City of Tampa | 20 | 2026-11-19health report | 20 | 0 | 0 |
-| Hillsborough County | 8 | 2026-11-19health report | 8 | 0 | 0 |
-| Pinellas County | 7 | 2026-11-19health report | 7 | 0 | 0 |
-| Tampa Bay Regional Planning Council | 4 | 2026-11-19health report | 4 | 0 | 0 |
+| City of Clearwater | 6 | 2026-11-20health report | 5 | 1 | 0 |
+| City of St. Petersburg | 7 | 2026-11-20health report | 7 | 0 | 0 |
+| City of Tampa | 20 | 2026-11-20health report | 20 | 0 | 0 |
+| Hillsborough County | 8 | 2026-11-20health report | 8 | 0 | 0 |
+| Pinellas County | 7 | 2026-11-20health report | 7 | 0 | 0 |
+| Tampa Bay Regional Planning Council | 4 | 2026-11-20health report | 4 | 0 | 0 |
 
 Checked catalog entries and current verification by publisher {.table
 .tb-coverage-table}
